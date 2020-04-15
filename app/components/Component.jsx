@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Component.css';
 
 let index = 0;
 
@@ -15,7 +16,10 @@ class Component extends React.Component {
 
     render() {
         return (
-            <div>Hello World! {this.state.msg}</div>
+            <div>
+                <div className={styles.header}></div>
+                <div className={styles.tap_bar}></div>
+            </div>
         )
     }
 }
