@@ -1,15 +1,15 @@
 {
-  "name": "front-example-project",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "rotrics-app",
+  "version": "0.0.1",
+  "description": "Computer client application for controlling Rotrics Arm",
+  "main": "main.js",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/liumingzw/front-example-project.git"
+    "url": "git+https://github.com/liumingzw/rotrics-app.git"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +26,6 @@
     "antd": "^4.1.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-import": "^1.13.0",
-
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
     "less-loader": "^5.0.0",
