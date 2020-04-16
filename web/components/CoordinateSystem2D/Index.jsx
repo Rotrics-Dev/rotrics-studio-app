@@ -23,6 +23,7 @@ class Index extends React.Component {
     componentDidMount() {
         this.setupThree();
         this.animate();
+        this.setupZoom();
 
         this.group.add(new PrintablePlate(new THREE.Vector2(100, 100)));
 
@@ -74,6 +75,34 @@ class Index extends React.Component {
 
     getVisibleHeight() {
         return this.node.current.parentElement.clientHeight;
+    }
+
+    setupZoom() {
+        const mousewheel = (e) => {
+            e.preventDefault();
+            //e.stopPropagation();
+            const delta = 3;
+            let z = this.camera.position.z;
+            if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件
+                if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                    z -= delta;
+                }
+                if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                    z += delta;
+                }
+            } else if (e.detail) {  //Firefox滑轮事件
+                if (e.detail > 0) { //当滑轮向上滚动时
+                    z -= delta;
+                }
+                if (e.detail < 0) { //当滑轮向下滚动时
+                    z += delta;
+                }
+            }
+            this.camera.position.z = z;
+            this.camera.updateProjectionMatrix();
+        };
+
+        this.renderer.domElement.addEventListener('mousewheel', mousewheel, false);
     }
 
     render() {
