@@ -9,7 +9,7 @@
     position: absolute;
     top: 44px;
     bottom: 0;
-    background-color: lightcyan;
+    background-color: white;
 }
 
 .div_workspace {
@@ -24,14 +24,13 @@
 .btn_welcome {
     width: 40px;
     height: 40px;
-    margin: 4px;
-    background-image: url(../images/test.png);
-
-    border-radius: 5px;
-    border: 2px solid #A9A9A9;
+    margin: 6px;
+    background-size: 40px 40px;
+    background-image: url(../images/icon.png);
+    outline: none;
+    border: none;
 }
 
 .btn_welcome:active {
-    border: none;
     opacity: 0.7;
 }

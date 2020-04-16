@@ -7,6 +7,7 @@ import Laser from './Laser/Index.jsx';
 import WriteDraw from './WriteDraw/Index.jsx';
 import Settings from './Settings/Index.jsx';
 
+
 class Index extends React.Component {
     state = {
         tap: "basic"
