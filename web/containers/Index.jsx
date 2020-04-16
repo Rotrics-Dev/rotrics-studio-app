@@ -7,7 +7,6 @@ import Laser from './Laser/Index.jsx';
 import WriteDraw from './WriteDraw/Index.jsx';
 import Settings from './Settings/Index.jsx';
 
-
 class Index extends React.Component {
     state = {
         tap: "basic"
@@ -30,27 +29,27 @@ class Index extends React.Component {
                 <div className={styles.div_tap_bar}>
                     <ReactTooltip place="right" type="info" effect="solid"/>
                     <button
-                        data-tip="welcome"
+                        data-tip="Welcome"
                         onClick={() => actions.changeTap("welcome")}
                         className={styles.btn_welcome}
                     />
                     <button
-                        data-tip="basic"
+                        data-tip="Basic"
                         onClick={() => actions.changeTap("basic")}
                         className={styles.btn_welcome}
                     />
                     <button
-                        data-tip="writeDraw"
+                        data-tip="Write/Draw"
                         onClick={() => actions.changeTap("writeDraw")}
                         className={styles.btn_welcome}
                     />
                     <button
-                        data-tip="laser"
+                        data-tip="Laser"
                         onClick={() => actions.changeTap("laser")}
                         className={styles.btn_welcome}
                     />
                     <button
-                        data-tip="settings"
+                        data-tip="Settings"
                         onClick={() => actions.changeTap("settings")}
                         className={styles.btn_welcome}
                     />
