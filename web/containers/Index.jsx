@@ -9,7 +9,7 @@ import Settings from './Settings/Index.jsx';
 
 class Index extends React.Component {
     state = {
-        tap: "basic"
+        tap: "laser"
     };
 
     actions = {
