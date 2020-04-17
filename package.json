@@ -4,7 +4,8 @@
   "description": "Computer client application for controlling Rotrics Arm",
   "main": "main.js",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start-web": "webpack-dev-server",
+    "start-server": "node ./server/index.js",
     "build": "webpack"
   },
   "repository": {
@@ -36,12 +37,17 @@
     "url-loader": "^2.1.0",
     "webpack": "^4.31.0",
     "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.3.1",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
     "antd": "^3.26.9",
+    "image-size": "^0.8.3",
     "react-tooltip": "^4.2.3"
   }
 }
