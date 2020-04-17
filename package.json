@@ -48,6 +48,7 @@
     "@babel/polyfill": "^7.4.4",
     "antd": "^3.26.9",
     "image-size": "^0.8.3",
-    "react-tooltip": "^4.2.3"
+    "react-tooltip": "^4.2.3",
+    "three": "^0.115.0"
   }
 }
