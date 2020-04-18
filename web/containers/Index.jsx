@@ -7,9 +7,12 @@ import Laser from './Laser/Index.jsx';
 import WriteDraw from './WriteDraw/Index.jsx';
 import Settings from './Settings/Index.jsx';
 
+import DebugSocket from './Debug/Socket.jsx';
+import DebugHttpServer from './Debug/HttpServer.jsx';
+
 class Index extends React.Component {
     state = {
-        tap: "laser"
+        tap: "DebugSocket"
     };
 
     actions = {
@@ -60,6 +63,8 @@ class Index extends React.Component {
                     {tap === "writeDraw" && <WriteDraw/>}
                     {tap === "laser" && <Laser/>}
                     {tap === "settings" && <Settings/>}
+                    {tap === "DebugSocket" && <DebugSocket/>}
+                    {tap === "DebugHttpServer" && <DebugHttpServer/>}
                 </div>
             </div>
         )

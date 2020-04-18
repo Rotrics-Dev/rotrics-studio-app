@@ -1,2 +1,2 @@
-const startHttpServer = require('./startHttpServer');
-startHttpServer();
+require('./start-http-server')();
+require('./start-socket-io')();

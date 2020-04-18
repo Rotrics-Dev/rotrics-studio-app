@@ -66,7 +66,7 @@ const startHttpServer = () => {
 
     app.listen(SERVER_PORT);
 
-    console.log('start server succeed at port ' + SERVER_PORT);
+    console.log('start server success at port ' + SERVER_PORT);
 
     if (!fs.existsSync(UPLOAD_PATH)) {
         fs.mkdirSync(UPLOAD_PATH, {recursive: true});

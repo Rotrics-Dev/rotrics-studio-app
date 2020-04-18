@@ -2,7 +2,8 @@ import React from 'react';
 import styles from './styles.css';
 import {uploadFile, uploadImage} from '../../api/index.js';
 import socketManager from "../../socket/socketManager"
-class Index extends React.Component {
+
+class HttpServer extends React.Component {
     fileInput = React.createRef();
     state = {};
 
@@ -32,8 +33,7 @@ class Index extends React.Component {
         const actions = this.actions;
         return (
             <div>
-                <h2>{"welcome"}</h2>
-
+                <h2>{"debug"}</h2>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -50,7 +50,6 @@ class Index extends React.Component {
                 >
                     {'Upload File'}
                 </button>
-
                 <button
                     type="button"
                     style={{float: 'right'}}
@@ -58,18 +57,21 @@ class Index extends React.Component {
                 >
                     {'init socket'}
                 </button>
-
                 <button
                     type="button"
-                    onClick={()=>{
-                        socketManager.emit("query-serialPort")
-                    }}
+                    onClick={()=> socketManager.querySerialPort()}
                 >
-                    {'init socket'}
+                    {'querySerialPort'}
+                </button>
+                <button
+                    type="button"
+                    onClick={()=> socketManager.openSerialPort("eeee")}
+                >
+                    {'open sp port'}
                 </button>
             </div>
         )
     }
 }
 
-export default Index;
+export default HttpServer;
