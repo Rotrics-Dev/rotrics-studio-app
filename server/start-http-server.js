@@ -36,7 +36,7 @@ const startHttpServer = () => {
 
 //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
     router.post('/uploadFile', async (ctx) => {
-        ctx.set('Access-Control-Allow-Origin', '*');
+        // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
         const filename = saveFile(file);
         const url = getFileUrl(filename);
@@ -45,7 +45,7 @@ const startHttpServer = () => {
     });
 
     router.post('/uploadImage', async (ctx) => {
-        ctx.set('Access-Control-Allow-Origin', '*');
+        // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
         const filename = saveFile(file);
         const url = getFileUrl(filename);
@@ -54,10 +54,10 @@ const startHttpServer = () => {
         return ctx.body = {url, width, height};
     });
 
-// app.use(async (ctx, next) => {
-//     ctx.set('Access-Control-Allow-Origin', '*');
-//     await next();
-// });
+    app.use(async (ctx, next) => {
+        ctx.set('Access-Control-Allow-Origin', '*');
+        await next();
+    });
 
     app.use(koaBody({multipart: true}));
     app.use(serve(UPLOAD_PATH));
