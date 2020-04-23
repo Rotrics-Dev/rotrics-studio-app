@@ -1,73 +1,68 @@
 import React from 'react';
 import styles from './styles.css';
 import {uploadFile, uploadImage} from '../../api/index.js';
-import socketManager from "../../socket/socketManager"
 
 class HttpServer extends React.Component {
     fileInput = React.createRef();
+    imageInput = React.createRef();
     state = {};
 
     actions = {
-        onClickToUpload: () => {
+        onClickToUploadFile: () => {
             this.fileInput.current.value = null;
             this.fileInput.current.click();
         },
-        onChangeFile: (event) => {
+        onClickToUploadImage: () => {
+            this.imageInput.current.value = null;
+            this.imageInput.current.click();
+        },
+        onChangeFile: async (event) => {
             const file = event.target.files[0];
-            uploadImage(
-                file,
-                (json) => {
-                    console.log(json)
-                },
-                (err) => {
-                    console.log(err)
-                }
-            );
+            const response = await uploadFile(file);
+            console.log(response)
         },
-        initSocket: () => {
-            socketManager.setupSocket();
-        },
+        onChangeImage: async (event) => {
+            const file = event.target.files[0];
+            const response = await uploadImage(file);
+            console.log(response)
+        }
     };
 
     render() {
         const actions = this.actions;
         return (
             <div>
-                <h2>{"debug"}</h2>
+                <h2>{"DebugHttpServer"}</h2>
                 <input
                     ref={this.fileInput}
                     type="file"
-                    accept=".stl, .obj, .png, .jpg"
+                    accept=".stl, .obj"
                     style={{display: 'none'}}
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
+                <input
+                    ref={this.imageInput}
+                    type="file"
+                    accept=".png, .jpg"
+                    style={{display: 'none'}}
+                    multiple={false}
+                    onChange={actions.onChangeImage}
+                />
                 <button
                     type="button"
-                    style={{float: 'left'}}
                     title={'Upload File'}
-                    onClick={actions.onClickToUpload}
+                    onClick={actions.onClickToUploadFile}
                 >
                     {'Upload File'}
                 </button>
+                <br/>
                 <button
                     type="button"
-                    style={{float: 'right'}}
-                    onClick={actions.initSocket}
+                    title={'Upload File'}
+                    onClick={actions.onClickToUploadImage}
                 >
-                    {'init socket'}
-                </button>
-                <button
-                    type="button"
-                    onClick={()=> socketManager.querySerialPort()}
-                >
-                    {'querySerialPort'}
-                </button>
-                <button
-                    type="button"
-                    onClick={()=> socketManager.openSerialPort("eeee")}
-                >
-                    {'open sp port'}
+                    {'Upload Image'}
                 </button>
             </div>
         )

@@ -3,6 +3,7 @@ import styles from './styles.css';
 import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
 import laserManager from "../../manager/laserManager.js";
+import TransformControls2D from '../../three-extensions/TransformControls2D';
 import IntersectDetector from '../../three-extensions/IntersectDetector';
 
 class Index extends React.Component {
@@ -19,6 +20,7 @@ class Index extends React.Component {
         this.modelGroup = null;
 
         //controls
+        this.transformControls = null; // pan/scale/rotate selected model
         this.intersectDetector = null; // detect the intersected model with mouse
     }
 
@@ -29,11 +31,66 @@ class Index extends React.Component {
     componentDidMount() {
         this.setupThree();
         laserManager.setModelsParent(this.modelGroup);
-        this.setupZoom();
-        this.setupIntersectDetector();
         this.animate();
+        this.setupZoom();
+        this.setupTransformControls();
+        this.setupIntersectDetector();
+
+
+
         this.group.add(new PrintablePlate(new THREE.Vector2(100, 100)));
+
         window.addEventListener('resize', this.resizeWindow, false);
+
+
+        // this.geometry = new THREE.PlaneGeometry(45, 50, 32);
+        // this.material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
+        // this.plane = new THREE.Mesh(this.geometry, this.material);
+        // this.scene.add(this.plane);
+
+        // setInterval(()=>{
+        //     this.plane.scale.x = this.plane.scale.x * 1.05;
+        //     console.log("change material: " + JSON.stringify(this.plane.scale))
+        //     if (++index % 2 === 0){
+        //         this.plane.material = new THREE.MeshBasicMaterial( {color: 0x00ff00, side: THREE.DoubleSide} );
+        //         this.plane.geometry = new THREE.PlaneGeometry( index, 50, 32 );
+        //     } else {
+        //         this.plane.material = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+        //     }
+        // }, 1000)
+    }
+
+    setupTransformControls() {
+        this.transformControls = new TransformControls2D(this.camera, this.renderer.domElement);
+        this.group.add(this.transformControls);
+
+        this.transformControls.addEventListener(
+            'change',
+            () => {
+                // this.renderScene();
+                console.log("change")
+            }
+        );
+        // triggered when "mouse down on an axis"
+        this.transformControls.addEventListener(
+            'mouseDown',
+            () => {
+                console.log("mouseDown")
+            }
+        );
+        // triggered when "mouse up on an axis"
+        this.transformControls.addEventListener(
+            'mouseUp',
+            () => {
+                console.log("mouseUp")
+            }
+        );
+        // triggered when "transform model"
+        this.transformControls.addEventListener(
+            'objectChange', () => {
+                console.log("objectChange")
+            }
+        );
     }
 
     setupIntersectDetector() {
@@ -48,8 +105,8 @@ class Index extends React.Component {
             'detected',
             (event) => {
                 console.log("detected")
-                const model = event.object;
-                laserManager.selectModel(model)
+                const modelMesh = event.object;
+                this.transformControls && this.transformControls.attach(modelMesh);
             }
         );
     }

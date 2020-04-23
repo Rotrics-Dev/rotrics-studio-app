@@ -1,7 +1,6 @@
 var path = require('path');
 
 module.exports = {
-    devtool: 'source-map',
     entry: "./web/main.js",
     output: {
         path: __dirname + "/build",

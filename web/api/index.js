@@ -1,28 +1,27 @@
-import noop from 'lodash/noop';
+//fetch doc: https://developer.mozilla.org/zh-CN/docs/Web/API/Response
 
-const uploadFile = (file, onSuccess = noop, onError = noop) => {
+//error交给调用者处理
+const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    fetch('http://localhost:3002/uploadFile', {
+    const response = await fetch('http://localhost:3002/uploadFile', {
         method: 'POST',
         body: formData
-    })
-        .then(response => response.json())
-        .catch(error => onError(error))
-        .then(response => onSuccess(response))
+    }).then(response => response.json());
+    //response: {url: "http://localhost:3002/1587458545878.jpg"}
+    return response;
 };
 
-
-const uploadImage = (file, onSuccess = noop, onError = noop) => {
+//error交给调用者处理
+const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    fetch('http://localhost:3002/uploadImage', {
+    const response = await fetch('http://localhost:3002/uploadImage', {
         method: 'POST',
         body: formData
-    })
-        .then(response => response.json())
-        .catch(error => onError(error))
-        .then(response => onSuccess(response))
+    }).then(response => response.json());
+    //response: {url: "http://localhost:3002/1587459128571.jpg", width: 500, height: 575}
+    return response;
 };
 
 export {uploadFile, uploadImage}
