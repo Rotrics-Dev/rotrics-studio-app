@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import laser from './laser';
+import shortcutKey from "./shortcutKey";
 
 export default combineReducers({
-    laser
+    shortcutKey
 });

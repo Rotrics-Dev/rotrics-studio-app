@@ -2,6 +2,7 @@ import events from "events";
 import {uploadImage} from '../api/index.js';
 import Model2D from "./Model2D";
 
+
 class LaserManager extends events.EventEmitter {
     constructor() {
         super();
@@ -19,6 +20,7 @@ class LaserManager extends events.EventEmitter {
     }
 
     //selected model的状态有改变: x, y, rotation, width, height; 切换selected model
+    //应该分4种event：transform change，model change，config change，working parameters change
     _emmitChangeEvent() {
         this.emit('onChange', this._selected);
     }
@@ -43,9 +45,7 @@ class LaserManager extends events.EventEmitter {
         const {url, width, height} = response;
         const model2D = new Model2D(fileType);
         model2D.loadImage(url, width, height);
-
         this.modelsParent.add(model2D);
-
         this.selectModel(model2D)
     }
 
@@ -53,81 +53,41 @@ class LaserManager extends events.EventEmitter {
 
     }
 
-    //使用id？
-    removeModel(model) {
-
-    }
-
     selectModel(model) {
-        console.log("111")
         if (this._selected === model) {
             return;
         }
         this._selected = model;
-
-        console.log("222")
         for (const child of this.modelsParent.children) {
             model.setSelected(this._selected === child);
         }
-
         this._emmitChangeEvent();
     }
 
+    removeSelected() {
+
+    }
+
     //生成gcode并展示在modelsParent中，替换之前的展示内容
-    previewGcode(model) {
+    previewSelected() {
 
     }
 
-    //改变transformation
-    setWidth(value) {
-        console.log("setWidth: " + value)
-        if (!this._selected) {
-            return;
-        }
-        this._selected.setWidth(value)
-        this.emit('onChange', this._selected);
-        ;
+    updateTransformation(key, value){
+        console.log(key + "-->" + value)
+        this._selected.updateTransformation(key, value);
+        this._emmitChangeEvent();
     }
 
-    setHeight(value) {
-        if (!this._selected) {
-            return;
-        }
-        this._selected.setHeight(value);
-        this.emit('onChange', this._selected);
-        ;
+    updateConfig(key, value){
+        this._selected.updateConfig(key, value);
+        this._emmitChangeEvent();
     }
 
-    //angle
-    setRotation(value) {
-        if (!this._selected) {
-            return;
-        }
-        this._selected.setRotation(value);
-        this.emit('onChange', this._selected);
-        ;
+    updateWorkingParameters(key, value){
+        this._selected.updateWorkingParameters(key, value);
+        this._emmitChangeEvent();
     }
-
-    setX(value) {
-        if (!this._selected) {
-            return;
-        }
-        this._selected.setX(value);
-        this.emit('onChange', this._selected);
-        ;
-
-    }
-
-    setY(value) {
-        if (!this._selected) {
-            return;
-        }
-        this._selected.setY(value);
-        this.emit('onChange', this._selected);
-        ;
-    }
-
-
 }
 
 const laserManager = new LaserManager();

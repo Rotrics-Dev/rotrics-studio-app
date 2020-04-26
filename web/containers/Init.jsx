@@ -1,10 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {actions} from '../reducers/laser';
 
 class Init extends React.Component {
     componentDidMount() {
-        this.props.initLaser();
     }
 
     render() {
@@ -14,7 +12,7 @@ class Init extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        initLaser: () => dispatch(actions.init()),
+        initLaser: () => dispatch(),
     };
 };
 

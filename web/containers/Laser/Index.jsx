@@ -1,13 +1,13 @@
 import React from 'react';
+import _ from 'lodash';
 import styles from './styles.css';
 import CoordinateSystem2D from '../../components/CoordinateSystem2D/Index.jsx'
-import {uploadFile, uploadImage} from "../../api";
 import laserManager from "../../manager/laserManager.js";
-import {Button, message} from 'antd';
+import {Button} from 'antd';
 import "antd/dist/antd.css";
-import {connect} from 'react-redux';
-import {actions} from '../../reducers/laser';
-import Transformation from './Transformation';
+import Transformation from './Transformation.jsx';
+import ConfigBW from './ConfigBW.jsx';
+import WorkingParameters from './WorkingParameters.jsx';
 
 const getAccept = (mode) => {
     let accept = '';
@@ -21,19 +21,17 @@ const getAccept = (mode) => {
 
 class Index extends React.Component {
     fileInput = React.createRef();
-
     state = {
         fileType: '', // bw, greyscale, vector
-        accept: ''
+        accept: '',
     };
 
     actions = {
         onChangeFile: async (event) => {
             const file = event.target.files[0];
             const fileType = this.state.fileType;
-            laserManager.loadModel(fileType, file);
+            await laserManager.loadModel(fileType, file);
         },
-
         onClickToUpload: (mode) => {
             this.setState({
                 fileType: mode,
@@ -45,14 +43,15 @@ class Index extends React.Component {
         },
         onClickInsertText: () => {
             console.log("text")
-            // this.props.insertDefaultTextVector();
-        }
+        },
+        changeSettings: (e) => {
+            console.log("text")
+        },
     };
 
     render() {
         const {accept} = this.state;
         const actions = this.actions;
-
         return (
             <div style={{
                 width: "100%",
@@ -107,27 +106,12 @@ class Index extends React.Component {
                         {"text"}
                     </Button>
                     <Transformation/>
+                    <ConfigBW/>
+                    <WorkingParameters/>
                 </div>
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model2d, width, height, x, y} = state.laser;
-    return {
-        model2d, width, height, x, y
-    };
-};
-//
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         uploadImage: (file, fileType) => dispatch(actions.uploadImage(file, fileType)),
-//         insertDefaultTextVector: () => dispatch(actions.insertDefaultTextVector('laser')),
-//         updateSelectedModelTransformation: (params) => dispatch(actions.updateSelectedModelTransformation('laser', params)),
-//         updateSelectedModelGcodeConfig: (params) => dispatch(actions.updateSelectedModelGcodeConfig('laser', params)),
-//         updateSelectedModelPrintOrder: (printOrder) => dispatch(actions.updateSelectedModelPrintOrder('laser', printOrder))
-//     };
-// };
-
-export default connect(mapStateToProps)(Index);
+export default Index;

@@ -57,11 +57,6 @@ class Index extends React.Component {
     resizeWindow = () => {
         const width = this.getVisibleWidth();
         const height = this.getVisibleHeight();
-
-        console.log("width: " + this.getVisibleWidth())
-        console.log("height: " + this.getVisibleHeight())
-        console.log("--------------")
-
         if (width * height !== 0) {
             this.camera.aspect = width / height;
             this.camera.updateProjectionMatrix();

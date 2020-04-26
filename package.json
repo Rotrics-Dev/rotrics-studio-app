@@ -52,6 +52,7 @@
     "antd": "^3.26.9",
     "events": "^3.1.0",
     "image-size": "^0.8.3",
+    "lodash": "^4.17.15",
     "react-tooltip": "^4.2.3",
     "serialport": "^8.0.7",
     "socket.io": "^2.3.0",
