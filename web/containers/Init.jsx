@@ -1,8 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import { actions } from '../reducers/shortcutKey';
 
 class Init extends React.Component {
     componentDidMount() {
+        this.props.initShortcutKey();
     }
 
     render() {
@@ -12,7 +14,7 @@ class Init extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        initLaser: () => dispatch(),
+        initShortcutKey: () => dispatch(actions.init()),
     };
 };
 

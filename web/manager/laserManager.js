@@ -65,7 +65,11 @@ class LaserManager extends events.EventEmitter {
     }
 
     removeSelected() {
-
+        if (this._selected) {
+            this.modelsParent.remove(this._selected)
+            this._selected = null;
+            this._emmitChangeEvent();
+        }
     }
 
     //生成gcode并展示在modelsParent中，替换之前的展示内容
