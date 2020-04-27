@@ -1,4 +1,4 @@
-import hotkeys from 'hotkeys-js';
+import hotKeys from 'hotkeys-js';
 import laserManager from "../../manager/laserManager.js";
 
 //放在redux中是为了方便管理，
@@ -6,11 +6,10 @@ import laserManager from "../../manager/laserManager.js";
 //可以通过state，方便获取tap
 export const actions = {
     init: () => {
-        hotkeys('a', (event, handler) => {
+        hotKeys('a', (event, handler) => {
             event.preventDefault();
         });
-
-        hotkeys('backspace,del', (event, handler) => {
+        hotKeys('backspace,del', (event, handler) => {
             event.preventDefault();
             laserManager.removeSelected();
         });
@@ -18,7 +17,6 @@ export const actions = {
             type: ""
         };
     }
-
 };
 
 export default function reducer() {

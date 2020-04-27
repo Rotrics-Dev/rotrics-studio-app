@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import shortcutKey from "./shortcutKey";
+import hotKeys from "./hotKeys";
 
 export default combineReducers({
-    shortcutKey
+    hotKeys
 });

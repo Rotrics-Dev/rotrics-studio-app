@@ -2,15 +2,10 @@ import events from "events";
 import {uploadImage} from '../api/index.js';
 import Model2D from "./Model2D";
 
-
 class LaserManager extends events.EventEmitter {
     constructor() {
         super();
         this.modelsParent = null;
-        //modelsParent的children可能不止包含models
-        //因此需要models记录
-        this.models = [];
-
         this._selected = null;
     }
 
