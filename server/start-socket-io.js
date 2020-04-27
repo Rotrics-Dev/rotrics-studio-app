@@ -63,6 +63,14 @@ const startSocket = () => {
                     serialPortManager.write(data.gcode);
                 }
             );
+
+            //gcode generate
+            client.on(
+                'gcode-generate-laser',
+                (data) => {
+                    console.log("gcode-generate-laser: " + JSON.stringify(data, null, 2))
+                }
+            );
         }
     );
     io.listen(port);

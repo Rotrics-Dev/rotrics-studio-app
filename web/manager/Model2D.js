@@ -5,7 +5,8 @@ import greyscaleSettings from "./laser_settings_greyscale.json";
 import vectorSettings from "./laser_settings_vector.json";
 import txtSettings from "./laser_settings_txt.json";
 import {degree2radian} from '../lib/numeric-utils';
-
+import {getUuid} from '../lib/utils';
+import socketManager from "../socket/socketManager"
 /**
  * 根据限制，重新计算width，height
  * todo: 最小值也要限制
@@ -55,6 +56,7 @@ class Model2D extends THREE.Mesh {
     constructor(fileType) {
         super();
         this.fileType = fileType; // bw, greyscale, vector, text
+        this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
         this._isSelected = false;
         this.edgesLine = null;// 模型selected状态下的边框线
@@ -65,9 +67,19 @@ class Model2D extends THREE.Mesh {
         this.max_width = max_width;
         this.min_height = min_height;
         this.max_height = max_height;
+
+        this.updateId = getUuid();
+
+        //data: {id, gcode}
+        socketManager.on('on-gcode-generate-laser', (data) => {
+            if (this.id === data.id){
+                console.log("on-gcode-generate-laser： " + JSON.stringify(data))
+            }
+        });
     }
 
     loadImage(url, mWidth, mHeight) {
+        this.url = url;
         this.imageRatio = mWidth / mHeight;
         const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
         const loader = new THREE.TextureLoader();
@@ -110,6 +122,8 @@ class Model2D extends THREE.Mesh {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value) {
+        //todo: 根绝setting是否变化，决定更新id
+        this.updateId = getUuid();
         console.log(key + "-->" + value);
         switch (key) {
             case "width": {
@@ -152,11 +166,13 @@ class Model2D extends THREE.Mesh {
     }
 
     updateConfig(key, value) {
+        this.updateId = getUuid();
         console.log(key + "-->" + value);
         this.settings.config.children[key].default_value = value;
     }
 
     updateWorkingParameters(key, value) {
+        this.updateId = getUuid();
         console.log(key + "-->" + value);
         //multi_pass.passes
         //multi_pass.pass_depth

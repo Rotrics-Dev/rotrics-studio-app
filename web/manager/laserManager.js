@@ -1,6 +1,7 @@
 import events from "events";
 import {uploadImage} from '../api/index.js';
 import Model2D from "./Model2D";
+import socketManager from "../socket/socketManager"
 
 class LaserManager extends events.EventEmitter {
     constructor() {
@@ -69,7 +70,10 @@ class LaserManager extends events.EventEmitter {
 
     //生成gcode并展示在modelsParent中，替换之前的展示内容
     previewSelected() {
-
+        if (this._selected){
+            const {url, settings, updateId} = this._selected;
+            socketManager.generateGcodeLaser(url, settings, updateId)
+        }
     }
 
     updateTransformation(key, value){

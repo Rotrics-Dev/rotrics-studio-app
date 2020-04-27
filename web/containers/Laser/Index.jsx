@@ -47,6 +47,8 @@ class Index extends React.Component {
         changeSettings: (e) => {
             console.log("text")
         },
+
+
     };
 
     render() {
@@ -104,6 +106,12 @@ class Index extends React.Component {
                         onClick={actions.onClickInsertText}
                     >
                         {"text"}
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={() => laserManager.previewSelected()}
+                    >
+                        {"preview"}
                     </Button>
                     <Transformation/>
                     <ConfigBW/>

@@ -13,6 +13,7 @@ class SocketManager extends events.EventEmitter {
     setupSocket() {
         this.socket = io('http://localhost:3003');
 
+        //socket
         this.socket.on('connect', () => {
             console.log('socket -> connect')
             this.emit('on-socket-connect');
@@ -23,6 +24,7 @@ class SocketManager extends events.EventEmitter {
             this.emit('on-socket-disconnect');
         });
 
+        //serial port
         this.socket.on("on-serialPort-query", (data) => {
             this.emit('on-serialPort-query', data);
         });
@@ -37,6 +39,11 @@ class SocketManager extends events.EventEmitter {
         });
         this.socket.on("on-serialPort-data", (data) => {
             this.emit('on-serialPort-data', data);
+        });
+
+        //gcode
+        this.socket.on("on-gcode-generate-laser", (data) => {
+            this.emit('on-gcode-generate-laser', data);
         });
     }
 
@@ -61,8 +68,18 @@ class SocketManager extends events.EventEmitter {
         this._sendData("serialPort-write-gcode", {gcode});
     }
 
-    generateGcode() {
-        this._sendData("gcode-generate");
+    /**
+     *
+     * @param url       model2d的图片url
+     * @param settings  model2d.settings
+     * @param id        model2d的状态id(uuid)，settings有变化则id也随着变化
+     */
+    generateGcodeLaser(url, settings, updateId) {
+        this._sendData("gcode-generate-laser", {url, settings, updateId});
+    }
+
+    generateGcode3dp() {
+        this._sendData("gcode-generate-3dp");
     }
 }
 
