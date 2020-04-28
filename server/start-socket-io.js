@@ -1,5 +1,6 @@
 const io = require('socket.io')();
 const serialPortManager = require('./serialPortManager');
+const generateToolPathLines4BW = require('./laser/generateToolPathLines4BW');
 const port = 3003;
 
 const startSocket = () => {
@@ -66,9 +67,11 @@ const startSocket = () => {
 
             //gcode generate
             client.on(
-                'gcode-generate-laser',
-                (data) => {
-                    console.log("gcode-generate-laser: " + JSON.stringify(data, null, 2))
+                'gcode-generate-laser-bw',
+                async (data) => {
+                    const {url, settings, toolPathId} = data;
+                    const toolPathLines = await generateToolPathLines4BW(url, settings);
+                    client.emit('on-gcode-generate-laser-bw', {toolPathLines, toolPathId});
                 }
             );
         }

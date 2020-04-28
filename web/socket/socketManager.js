@@ -42,8 +42,8 @@ class SocketManager extends events.EventEmitter {
         });
 
         //gcode
-        this.socket.on("on-gcode-generate-laser", (data) => {
-            this.emit('on-gcode-generate-laser', data);
+        this.socket.on("on-gcode-generate-laser-bw", (data) => {
+            this.emit('on-gcode-generate-laser-bw', data);
         });
     }
 
@@ -70,12 +70,12 @@ class SocketManager extends events.EventEmitter {
 
     /**
      *
-     * @param url       model2d的图片url
-     * @param settings  model2d.settings
-     * @param id        model2d的状态id(uuid)，settings有变化则id也随着变化
+     * @param url         model2d的图片url
+     * @param settings    model2d.settings
+     * @param toolPathId  (uuid)，settings有变化则id也随着变化
      */
-    generateGcodeLaser(url, settings, updateId) {
-        this._sendData("gcode-generate-laser", {url, settings, updateId});
+    generateGcodeLaser(url, settings, toolPathId) {
+        this._sendData("gcode-generate-laser-bw", {url, settings, toolPathId});
     }
 
     generateGcode3dp() {

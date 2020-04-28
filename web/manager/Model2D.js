@@ -7,8 +7,11 @@ import txtSettings from "./laser_settings_txt.json";
 import {degree2radian} from '../lib/numeric-utils';
 import {getUuid} from '../lib/utils';
 import socketManager from "../socket/socketManager"
+import toolPathRenderer from './toolPathRenderer';
+
 /**
  * 根据限制，重新计算width，height
+ * 可以参考jimp的代码
  * todo: 最小值也要限制
  */
 const resize = (width, height, ratio, min_width, max_width, min_height, max_height) => {
@@ -52,6 +55,9 @@ const getSizeRestriction = (fileType) => {
     return {min_width, max_width, min_height, max_height}
 };
 
+/**
+ * Model2D作为容器，一直保持：rotation=0, scale=1
+ */
 class Model2D extends THREE.Mesh {
     constructor(fileType) {
         super();
@@ -68,12 +74,18 @@ class Model2D extends THREE.Mesh {
         this.min_height = min_height;
         this.max_height = max_height;
 
-        this.updateId = getUuid();
+        this.toolPathId = "";
 
-        //data: {id, gcode}
-        socketManager.on('on-gcode-generate-laser', (data) => {
-            if (this.id === data.id){
-                console.log("on-gcode-generate-laser： " + JSON.stringify(data))
+        this.toolPathObj3d = null;
+
+        //data: {toolPathLines, toolPathId}
+        socketManager.on('on-gcode-generate-laser-bw', (data) => {
+            if (this.toolPathId === data.toolPathId) {
+                const {toolPathLines} = data;
+                this.toolPathObj3d && this.remove(this.toolPathObj3d);
+                this.toolPathObj3d = toolPathRenderer.render(toolPathLines);
+                this.toolPathObj3d.position.set(100, 0, 0);
+                this.add(this.toolPathObj3d)
             }
         });
     }
@@ -93,9 +105,10 @@ class Model2D extends THREE.Mesh {
             side: THREE.DoubleSide
         });
 
-        this.geometry = new THREE.PlaneGeometry(width, height);
+        this.geometry = new THREE.PlaneGeometry(width, height); //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
         this.material = material;
         this._initSettings(width, height);
+        this._preview();
     }
 
     //必须等loadImage，并resize后再设置
@@ -122,8 +135,6 @@ class Model2D extends THREE.Mesh {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value) {
-        //todo: 根绝setting是否变化，决定更新id
-        this.updateId = getUuid();
         console.log(key + "-->" + value);
         switch (key) {
             case "width": {
@@ -147,10 +158,15 @@ class Model2D extends THREE.Mesh {
                 break;
             }
             case "rotate":
+            {
+                //todo: 从其他地方获取width，height
+                const width = this.settings.transformation.children.width.default_value;
+                const height = this.settings.transformation.children.height.default_value;
                 //rotate unit is degree
-                this.rotation.z = degree2radian(value);
+                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(value));
                 this.settings.transformation.children[key].default_value = value;
                 break;
+            }
             case "x":
                 this.position.x = value;
                 this.settings.transformation.children[key].default_value = value;
@@ -163,16 +179,19 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+        //todo: setting是否变化，决定preview
+        this._preview();
     }
 
     updateConfig(key, value) {
-        this.updateId = getUuid();
         console.log(key + "-->" + value);
         this.settings.config.children[key].default_value = value;
+
+        //todo: config是否变化，决定preview
+        this._preview();
     }
 
     updateWorkingParameters(key, value) {
-        this.updateId = getUuid();
         console.log(key + "-->" + value);
         //multi_pass.passes
         //multi_pass.pass_depth
@@ -201,6 +220,11 @@ class Model2D extends THREE.Mesh {
         this.edgesLine.geometry = new THREE.EdgesGeometry(this.geometry)
     }
 
+    //生成tool path
+    _preview() {
+        this.toolPathId = getUuid();
+        socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId)
+    }
 }
 
 export default Model2D;

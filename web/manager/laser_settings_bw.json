@@ -12,7 +12,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 200
+        "maximum_value": 60
       },
       "height": {
         "label": "Height",
@@ -79,7 +79,7 @@
       "bw": {
         "label": "B&W",
         "description": "B&W description",
-        "default_value": 0,
+        "default_value": 140,
         "type": "int",
         "minimum_value": 0,
         "maximum_value": 255
@@ -124,6 +124,7 @@
       "jog_speed": {
         "label": "Jog Speed",
         "description": "Jog Speed description",
+        "placeholder": "#jog_speed#",
         "default_value": 3000,
         "type": "int",
         "unit": "mm/min",
@@ -133,6 +134,7 @@
       "work_speed": {
         "label": "Work Speed",
         "description": "Work Speed description ",
+        "placeholder": "#work_speed#",
         "default_value": 800,
         "type": "int",
         "unit": "mm/min",

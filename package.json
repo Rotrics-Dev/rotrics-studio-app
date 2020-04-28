@@ -53,6 +53,7 @@
     "events": "^3.1.0",
     "hotkeys-js": "^3.7.6",
     "image-size": "^0.8.3",
+    "jimp": "^0.10.3",
     "lodash": "^4.17.15",
     "react-tooltip": "^4.2.3",
     "serialport": "^8.0.7",
