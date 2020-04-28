@@ -47,8 +47,13 @@ class Index extends React.Component {
         changeSettings: (e) => {
             console.log("text")
         },
+        generateGcode: () => {
+            laserManager._selected.generateGcode();
 
+        },
+        exportGcode: () => {
 
+        },
     };
 
     render() {
@@ -109,9 +114,9 @@ class Index extends React.Component {
                     </Button>
                     <Button
                         type="primary"
-                        onClick={() => laserManager.previewSelected()}
+                        onClick={actions.generateGcode}
                     >
-                        {"preview"}
+                        {"generateGcode"}
                     </Button>
                     <Transformation/>
                     <ConfigBW/>

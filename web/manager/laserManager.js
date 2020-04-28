@@ -68,14 +68,6 @@ class LaserManager extends events.EventEmitter {
         }
     }
 
-    //生成gcode并展示在modelsParent中，替换之前的展示内容
-    previewSelected() {
-        if (this._selected){
-            const {url, settings, updateId} = this._selected;
-            socketManager.generateGcodeLaser(url, settings, updateId)
-        }
-    }
-
     updateTransformation(key, value){
         console.log(key + "-->" + value)
         this._selected.updateTransformation(key, value);

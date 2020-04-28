@@ -8,6 +8,7 @@ import {degree2radian} from '../lib/numeric-utils';
 import {getUuid} from '../lib/utils';
 import socketManager from "../socket/socketManager"
 import toolPathRenderer from './toolPathRenderer';
+import generateGcode4laserBw from "./generateGcode4laserBw";
 
 /**
  * 根据限制，重新计算width，height
@@ -76,14 +77,18 @@ class Model2D extends THREE.Mesh {
 
         this.toolPathId = "";
 
-        this.toolPathObj3d = null;
+        this.toolPathObj3d = null; //three Object3D
+
+        this.toolPathLines = null; //Array
+
+        this.gcode = null;
 
         //data: {toolPathLines, toolPathId}
         socketManager.on('on-gcode-generate-laser-bw', (data) => {
             if (this.toolPathId === data.toolPathId) {
-                const {toolPathLines} = data;
+                this.toolPathLines = data.toolPathLines
                 this.toolPathObj3d && this.remove(this.toolPathObj3d);
-                this.toolPathObj3d = toolPathRenderer.render(toolPathLines);
+                this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
                 this.toolPathObj3d.position.set(100, 0, 0);
                 this.add(this.toolPathObj3d)
             }
@@ -224,6 +229,21 @@ class Model2D extends THREE.Mesh {
     _preview() {
         this.toolPathId = getUuid();
         socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId)
+    }
+
+    generateGcode() {
+        switch (this.fileType) {
+            case "bw":
+                this.gcode = generateGcode4laserBw(this.toolPathLines, this.settings);
+                console.log("gcode: " + this.gcode)
+                break;
+            case "greyscale":
+                break;
+            case "vector":
+                break;
+            case "txt":
+                break;
+        }
     }
 }
 

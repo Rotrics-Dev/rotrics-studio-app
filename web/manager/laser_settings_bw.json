@@ -12,7 +12,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 60
+        "maximum_value": 200
       },
       "height": {
         "label": "Height",
