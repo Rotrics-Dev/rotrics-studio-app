@@ -8,6 +8,7 @@ import "antd/dist/antd.css";
 import Transformation from './Transformation.jsx';
 import ConfigBW from './ConfigBW.jsx';
 import WorkingParameters from './WorkingParameters.jsx';
+import FileSaver from 'file-saver';
 
 const getAccept = (mode) => {
     let accept = '';
@@ -49,10 +50,12 @@ class Index extends React.Component {
         },
         generateGcode: () => {
             laserManager._selected.generateGcode();
-
         },
         exportGcode: () => {
-
+            const gcode =  laserManager._selected.gcode;
+            const blob = new Blob([gcode], { type: 'text/plain;charset=utf-8' });
+            const fileName = "be.gcode";
+            FileSaver.saveAs(blob, fileName, true);
         },
     };
 
@@ -117,6 +120,12 @@ class Index extends React.Component {
                         onClick={actions.generateGcode}
                     >
                         {"generateGcode"}
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={actions.exportGcode}
+                    >
+                        {"export gcode"}
                     </Button>
                     <Transformation/>
                     <ConfigBW/>
