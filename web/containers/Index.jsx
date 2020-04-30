@@ -21,7 +21,7 @@ const reduxStore = createStore(reducer, applyMiddleware(thunk));
 
 class Index extends React.Component {
     state = {
-        tap: "laser"
+        tap: "DebugSocket"
     };
 
     actions = {

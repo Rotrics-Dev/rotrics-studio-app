@@ -1,6 +1,8 @@
 const io = require('socket.io')();
 const serialPortManager = require('./serialPortManager');
 const generateToolPathLines4BW = require('./laser/generateToolPathLines4BW');
+const gcodeSender = require('./gcode/gcodeSender');
+
 const port = 3003;
 
 const startSocket = () => {
@@ -29,7 +31,7 @@ const startSocket = () => {
                 'disconnect',
                 () => {
                     console.log('-> socket disconnect');
-                    serialPortManager.removeAllListeners();
+                    // serialPortManager.removeAllListeners();
                 }
             );
 
@@ -44,6 +46,7 @@ const startSocket = () => {
                 'serialPort-open',
                 (data) => {
                     serialPortManager.open(data.path);
+
                 }
             );
             client.on(
@@ -52,16 +55,31 @@ const startSocket = () => {
                     serialPortManager.close();
                 }
             );
-            // client.on(
-            //     'serialPort-write',
-            //     (data) => {
-            //         serialPortManager.write(data);
-            //     }
-            // );
             client.on(
-                'serialPort-write-gcode',
+                'serialPort-write',
                 (data) => {
                     serialPortManager.write(data.gcode);
+                }
+            );
+
+            //gcode send
+            client.on(
+                'gcode-send-load',
+                (data) => {
+                    const {gcode} = data;
+                    gcodeSender.load(gcode);
+                }
+            );
+            client.on(
+                'gcode-send-start',
+                () => {
+                    gcodeSender.start();
+                }
+            );
+            client.on(
+                'gcode-send-stop',
+                () => {
+                    gcodeSender.stop();
                 }
             );
 

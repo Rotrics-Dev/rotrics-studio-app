@@ -69,6 +69,7 @@ class SerialPortManager extends EventEmitter {
     }
 
     _setupListener() {
+        console.log("# _setupListener")
         this.serialPort.on("open", () => {
             this.emit('on-serialPort-open', {path: this.serialPort.path});
         });
@@ -86,11 +87,14 @@ class SerialPortManager extends EventEmitter {
         //data: 类型是buffer的数组
         //将buffer转为string，发送到前端
         this.serialPort.on("data", (buffer) => {
+            console.log("# serialPort.on data")
             if (Buffer.isBuffer(buffer)){
                 const arr = [];
                 for (let i = 0; i < buffer.length; i++){
                     arr.push(buffer[i]);
                 }
+
+                console.log("serialPort received: " + utf8bytes2string(arr));
                 this.emit('on-serialPort-data', {received: utf8bytes2string(arr)});
             }
         });

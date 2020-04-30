@@ -9,6 +9,7 @@ import Transformation from './Transformation.jsx';
 import ConfigBW from './ConfigBW.jsx';
 import WorkingParameters from './WorkingParameters.jsx';
 import FileSaver from 'file-saver';
+import socketManager from "../../socket/socketManager"
 
 const getAccept = (mode) => {
     let accept = '';
@@ -56,6 +57,16 @@ class Index extends React.Component {
             const blob = new Blob([gcode], { type: 'text/plain;charset=utf-8' });
             const fileName = "be.gcode";
             FileSaver.saveAs(blob, fileName, true);
+        },
+        loadGcode: () => {
+            const gcode =  laserManager._selected.gcode;
+           socketManager.loadGcode(gcode)
+        },
+        startSend: () => {
+            socketManager.startSendGcode()
+        },
+        stopSend: () => {
+            socketManager.stopSendGcode()
         },
     };
 
@@ -126,6 +137,27 @@ class Index extends React.Component {
                         onClick={actions.exportGcode}
                     >
                         {"export gcode"}
+                    </Button>
+
+                    <Button
+                        type="primary"
+                        onClick={actions.loadGcode}
+                    >
+                        {"load gcode"}
+                    </Button>
+
+                    <Button
+                        type="primary"
+                        onClick={actions.startSend}
+                    >
+                        {"start Send"}
+                    </Button>
+
+                    <Button
+                        type="primary"
+                        onClick={actions.stopSend}
+                    >
+                        {"stop Send"}
                     </Button>
                     <Transformation/>
                     <ConfigBW/>

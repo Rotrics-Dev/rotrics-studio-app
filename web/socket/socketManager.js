@@ -65,9 +65,21 @@ class SocketManager extends events.EventEmitter {
 
     writeGcodeSerialPort(gcode) {
         gcode += "\n";
-        this._sendData("serialPort-write-gcode", {gcode});
+        console.log("writeGcodeSerialPort: " + JSON.stringify(gcode))
+        this._sendData("serialPort-write", {gcode});
     }
 
+    loadGcode(gcode) {
+        this._sendData("gcode-send-load", {gcode});
+    }
+
+    startSendGcode() {
+        this._sendData("gcode-send-start");
+    }
+
+    stopSendGcode() {
+        this._sendData("gcode-send-stop");
+    }
     /**
      *
      * @param url         model2d的图片url
