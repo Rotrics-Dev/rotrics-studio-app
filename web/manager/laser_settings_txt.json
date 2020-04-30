@@ -1,31 +1,14 @@
 {
-  "metadata": {
-    "visible": false,
-    "name": "Preview settings for laser B&W",
-    "version": 1,
-    "author": "liumingzw",
-    "email": "374406742@qq.com",
-    "github": "https://github.com/liumingzw"
-  },
-  "upload": {
-    "visible": false,
-    "label": "Upload",
-    "icon": "base64xxx",
-    "accept": [
-      ".svg",
-      ".png"
-    ]
-  },
   "transformation": {
     "icon": "base64xxx",
     "label": "Transformation",
     "type": "category",
-    "description": "Transformation of B&W",
+    "description": "Transformation B&W description",
     "children": {
       "width": {
         "label": "Width",
-        "description": "Width#",
-        "default_value": 0,
+        "description": "Width description",
+        "default_value": 5,
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
@@ -33,8 +16,8 @@
       },
       "height": {
         "label": "Height",
-        "description": "Height#",
-        "default_value": 0,
+        "description": "Height description",
+        "default_value": 5,
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
@@ -42,7 +25,7 @@
       },
       "rotate": {
         "label": "Rotate",
-        "description": "Rotation#",
+        "description": "Rotation description",
         "default_value": 0,
         "type": "int",
         "unit": "degree",
@@ -51,7 +34,7 @@
       },
       "x": {
         "label": "Move X",
-        "description": "Move X#",
+        "description": "Move X description",
         "default_value": 0,
         "type": "float",
         "unit": "mm",
@@ -60,7 +43,7 @@
       },
       "y": {
         "label": "Move Y",
-        "description": "Move Y#",
+        "description": "Move Y description",
         "default_value": 0,
         "type": "float",
         "unit": "mm",
@@ -68,9 +51,9 @@
         "maximum_value": 100
       },
       "flip_model": {
-        "label": "Move Y",
-        "description": "Move Y#",
-        "default_value": "lines",
+        "label": "Flip Model",
+        "description": "Flip Model description",
+        "default_value": "None",
         "type": "enum",
         "options": {
           "None": "None",
@@ -81,46 +64,85 @@
       }
     }
   },
+  "config_text": {
+    "icon": "base64xxx",
+    "label": "Text",
+    "type": "category",
+    "description": "Config of Text-1",
+    "children": {
+      "text": {
+        "label": "Text",
+        "description": "text description",
+        "default_value": "Hex Bot",
+        "type": "string"
+      },
+      "font": {
+        "label": "Font",
+        "description": "Font description",
+        "default_value": "Font-1",
+        "type": "enum",
+        "options": {
+          "Font-1": "Font-1",
+          "Font-2": "Font-2"
+        }
+      },
+      "font_size": {
+        "label": "Font Size",
+        "description": "Font Size description",
+        "default_value": 20,
+        "type": "int",
+        "unit": "pt",
+        "minimum_value": 1,
+        "maximum_value": 50
+      },
+      "line_height": {
+        "label": "Line Height",
+        "description": "Line Height description",
+        "default_value": 1.5,
+        "type": "float",
+        "minimum_value": 0.1,
+        "maximum_value": 5
+      },
+      "alignment": {
+        "label": "Alignment",
+        "description": "Alignment description",
+        "default_value": "Left",
+        "type": "enum",
+        "options": {
+          "Left": "Left",
+          "Middle": "Middle",
+          "Right": "Right"
+        }
+      }
+    }
+  },
   "config": {
     "icon": "base64xxx",
-    "label": "B&W",
+    "label": "Vector",
     "type": "category",
-    "description": "Config of B&W",
+    "description": "Config of Vector",
     "children": {
-      "invert": {
-        "label": "Invert",
-        "description": "invert#",
+      "optimize_path": {
+        "label": "Optimize Path",
+        "description": "Optimize Path description",
         "default_value": false,
         "type": "bool"
       },
-      "bw": {
-        "label": "B&W",
-        "description": "B&W#",
-        "default_value": 0,
-        "type": "int",
-        "minimum_value": 0,
-        "maximum_value": 255
-      },
-      "line_direction": {
-        "label": "Line Direction",
-        "description": "line_direction#",
-        "default_value": "lines",
-        "type": "enum",
-        "options": {
-          "Vertical": "Vertical",
-          "Horizontal": "Horizontal",
-          "Diagonal": "Diagonal",
-          "Diagonal2": "Diagonal2"
+      "fill": {
+        "default_value": false,
+        "label": "Fill",
+        "type": "bool",
+        "description": "Fill description",
+        "children": {
+          "fill_density": {
+            "label": "Fill Density",
+            "description": "Fill Density description",
+            "default_value": 4,
+            "type": "int",
+            "minimum_value": 0,
+            "maximum_value": 20
+          }
         }
-      },
-      "density": {
-        "label": "Density",
-        "description": "density#",
-        "default_value": 4,
-        "type": "int",
-        "unit": "dot/mm",
-        "minimum_value": 1,
-        "maximum_value": 20
       }
     }
   },
@@ -128,11 +150,11 @@
     "icon": "base64xxx",
     "label": "Working Parameters",
     "type": "category",
-    "description": "Transformation of B&W",
+    "description": "Working Parameters description",
     "children": {
       "print_order": {
         "label": "Print Order",
-        "description": "Print Order#",
+        "description": "Print Order description",
         "default_value": 1,
         "type": "int",
         "minimum_value": 1,
@@ -140,7 +162,8 @@
       },
       "jog_speed": {
         "label": "Jog Speed",
-        "description": "jog_speed#",
+        "description": "Jog Speed description",
+        "placeholder": "#jog_speed#",
         "default_value": 3000,
         "type": "int",
         "unit": "mm/min",
@@ -149,7 +172,8 @@
       },
       "work_speed": {
         "label": "Work Speed",
-        "description": "work_speed#",
+        "description": "Work Speed description ",
+        "placeholder": "#work_speed#",
         "default_value": 800,
         "type": "int",
         "unit": "mm/min",
@@ -157,14 +181,14 @@
         "maximum_value": 4000
       },
       "multi_pass": {
-        "default_value": false,
         "label": "Multi-Pass",
+        "description": "Multi-Pass description",
+        "default_value": false,
         "type": "bool",
-        "description": "multi_pass#",
         "children": {
           "passes": {
             "label": "Passes",
-            "description": "passes#",
+            "description": "Passes description",
             "default_value": 2,
             "type": "int",
             "minimum_value": 1,
@@ -172,12 +196,29 @@
           },
           "pass_depth": {
             "label": "Pass Depth",
-            "description": "pass_depth#",
+            "description": "Pass Depth description",
             "default_value": 1,
             "type": "float",
             "unit": "mm",
             "minimum_value": 0.1,
             "maximum_value": 10
+          }
+        }
+      },
+      "fixed_power": {
+        "default_value": false,
+        "label": "Fixed Power",
+        "type": "bool",
+        "description": "Fixed Power description",
+        "children": {
+          "power": {
+            "label": "Power",
+            "description": "Power description",
+            "default_value": 50,
+            "type": "int",
+            "unit": "%",
+            "minimum_value": 0,
+            "maximum_value": 100
           }
         }
       }
