@@ -1,10 +1,11 @@
 import { parseFloats, cssColor2Hex, xformMultiply } from './Utils.js';
 
+const log = console.log;
 
 function parseDAttribute(value) {
     const items = [];
 
-    const re = /([A-Za-z]|(-?[0-9]+\.?[0-9]*(e-?[0-9]*)?))/g;
+    const re = /([A-Za-z]|(-?\.?[0-9]+\.?[0-9]*(e-?[0-9]*)?))/g;
     let m = re.exec(value);
     while (m) {
         const f = parseFloat(m[1]);
@@ -47,11 +48,11 @@ function parseCoordinate(value) {
 
             // Not supported
             case 'em':
-                console.warn('No supported unit em');
+                log.warn('No supported unit em');
                 // fontSize needed
                 return num;
             case 'ex':
-                console.warn('No supported unit ex');
+                log.warn('No supported unit ex');
                 // fontSize needed
                 return num;
             case '%':
@@ -90,12 +91,12 @@ function parseColor(value) {
         if (value.indexOf('%') === -1) {
             if (floats.length === 3) {
                 const hexValue = 0x1000000 + 0x10000 * floats[0] + 0x100 * floats[1] + floats[2];
-                return '#' + Number(hexValue).toString(16).substr(1);
+                return `#${Number(hexValue).toString(16).substr(1)}`;
             }
         } else if (floats.length === 3) {
             // in percentage
             const hexValue = 0x1000000 + 0x10000 * (floats[0] / 100) * 255 + 0x100 * (floats[1] / 100) * 255 + (floats[2] / 100) * 255;
-            return '#' + Number(hexValue).toString(16).substr(1);
+            return `#${Number(hexValue).toString(16).substr(1)}`;
         }
     }
 
@@ -104,7 +105,7 @@ function parseColor(value) {
         return cssColor;
     }
 
-    console.warn('Unsupported color: ', value);
+    log.warn('Unsupported color: ', value);
     // TODO: rgba?, hsl?, url?
     return null;
 }
@@ -193,7 +194,7 @@ function parseTransform(value) {
                 break;
             }
             default: {
-                console.warn(`Unknown transform function ${func}`);
+                log.warn(`Unknown transform function ${func}`);
                 break;
             }
         }
