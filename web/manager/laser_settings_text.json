@@ -79,10 +79,10 @@
       "font": {
         "label": "Font",
         "description": "Font description",
-        "default_value": "Font-1",
+        "default_value": "Georgia",
         "type": "enum",
         "options": {
-          "Font-1": "Font-1",
+          "Georgia": "Georgia",
           "Font-2": "Font-2"
         }
       },

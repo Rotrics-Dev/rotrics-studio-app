@@ -1,13 +1,18 @@
-const Koa = require('koa');
-const koaBody = require('koa-body');
-const Router = require('koa-router');
-const fs = require('fs');
-const path = require('path');
+import Koa from 'koa';
+import koaBody from 'koa-body';
+import Router from 'koa-router';
+import fs from 'fs' ;
+import path from 'path' ;
+import serve from  'koa-static';
+
+
 const app = new Koa();
 const router = new Router();
-const serve = require('koa-static');
 
-const {getImageSize, getUniqueFilename} = require('./utils');
+import {getImageSize, getUniqueFilename} from'./utils.js';
+
+
+let __dirname = path.resolve();
 
 const SERVER_PORT = 3002;
 const UPLOAD_PATH = path.join(__dirname) + '/static/upload/';
@@ -79,5 +84,5 @@ const startHttpServer = () => {
     }
 };
 
-module.exports = startHttpServer;
+export default startHttpServer;
 

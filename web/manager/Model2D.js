@@ -1,14 +1,16 @@
 import * as THREE from 'three';
 import _ from 'lodash';
+
 import bwSettings from "./laser_settings_bw.json";
 import greyscaleSettings from "./laser_settings_greyscale.json";
-import vectorSettings from "./laser_settings_vector.json";
-import txtSettings from "./laser_settings_txt.json";
-import {degree2radian} from '../lib/numeric-utils';
-import {getUuid} from '../lib/utils';
+import svgVectorSettings from "./laser_settings_svg_vector.json";
+import textSettings from "./laser_settings_text.json";
+import {degree2radian} from '../../shared/lib/numeric-utils.js';
+import {getUuid} from '../../shared/lib/utils.js';
 import socketManager from "../socket/socketManager"
 import toolPathRenderer from './toolPathRenderer';
 import generateGcode4laserBw from "./generateGcode4laserBw";
+
 
 /**
  * 根据限制，重新计算width，height
@@ -41,11 +43,11 @@ const getSizeRestriction = (fileType) => {
         case "greyscale":
             settings = greyscaleSettings;
             break;
-        case "vector":
-            settings = vectorSettings;
+        case "svg-vector":
+            settings = svgVectorSettings;
             break;
-        case "txt":
-            settings = txtSettings;
+        case "text":
+            settings = textSettings;
             break;
     }
     const children = settings.transformation.children;
@@ -62,7 +64,7 @@ const getSizeRestriction = (fileType) => {
 class Model2D extends THREE.Mesh {
     constructor(fileType) {
         super();
-        this.fileType = fileType; // bw, greyscale, vector, text
+        this.fileType = fileType; // bw, greyscale, svg-vector, text
         this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
         this._isSelected = false;
@@ -83,13 +85,16 @@ class Model2D extends THREE.Mesh {
 
         this.gcode = null;
 
+
         //data: {toolPathLines, toolPathId}
-        socketManager.on('on-gcode-generate-laser-bw', (data) => {
+        socketManager.on('on-tool-path-generate-laser', (data) => {
+            console.log("on-tool-path-generate-laser")
             if (this.toolPathId === data.toolPathId) {
+                console.log("on-tool-path-generate-laser2322")
                 this.toolPathLines = data.toolPathLines
                 this.toolPathObj3d && this.remove(this.toolPathObj3d);
                 this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-                this.toolPathObj3d.position.set(100, 0, 0);
+                this.toolPathObj3d.position.set(40, 0, 0);
                 this.add(this.toolPathObj3d)
             }
         });
@@ -113,6 +118,14 @@ class Model2D extends THREE.Mesh {
         this.geometry = new THREE.PlaneGeometry(width, height); //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
         this.material = material;
         this._initSettings(width, height);
+
+
+        //特殊处理svg
+        if (this.fileType === "svg-vector") {
+            this.settings.transformation.children.svg_width.default_value = mWidth;
+            this.settings.transformation.children.svg_height.default_value = mHeight;
+        }
+
         this._preview();
     }
 
@@ -126,11 +139,11 @@ class Model2D extends THREE.Mesh {
             case "greyscale":
                 this.settings = _.cloneDeep(greyscaleSettings);
                 break;
-            case "vector":
-                this.settings = _.cloneDeep(vectorSettings);
+            case "svg-vector":
+                this.settings = _.cloneDeep(svgVectorSettings);
                 break;
-            case "txt":
-                this.settings = _.cloneDeep(txtSettings);
+            case "text":
+                this.settings = _.cloneDeep(textSettings);
                 break;
         }
         this.settings.transformation.children.width.default_value = width;
@@ -162,8 +175,7 @@ class Model2D extends THREE.Mesh {
                 this._updateEdges();
                 break;
             }
-            case "rotate":
-            {
+            case "rotate": {
                 //todo: 从其他地方获取width，height
                 const width = this.settings.transformation.children.width.default_value;
                 const height = this.settings.transformation.children.height.default_value;
@@ -188,9 +200,28 @@ class Model2D extends THREE.Mesh {
         this._preview();
     }
 
+
     updateConfig(key, value) {
         console.log(key + "-->" + value);
-        this.settings.config.children[key].default_value = value;
+
+        //fill.fill_density
+        if (key.indexOf(".") !== -1) {
+            const arr = key.split(".");
+            const keyParent = arr[0];
+            const keyChild = arr[1];
+            this.settings.config.children[keyParent].children[keyChild].default_value = value;
+        } else {
+            this.settings.config.children[key].default_value = value;
+        }
+
+        //todo: config是否变化，决定preview
+        this._preview();
+    }
+
+    //text模型独有
+    updateConfigText(key, value) {
+        console.log(key + "-->" + value);
+        this.settings.config_text.children[key].default_value = value;
 
         //todo: config是否变化，决定preview
         this._preview();
@@ -227,8 +258,9 @@ class Model2D extends THREE.Mesh {
 
     //生成tool path
     _preview() {
+        console.log("_preview: " + this.fileType)
         this.toolPathId = getUuid();
-        socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId)
+        socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
     }
 
     generateGcode() {
@@ -239,9 +271,10 @@ class Model2D extends THREE.Mesh {
                 break;
             case "greyscale":
                 break;
-            case "vector":
+            case "svg-vector":
+
                 break;
-            case "txt":
+            case "text":
                 break;
         }
     }

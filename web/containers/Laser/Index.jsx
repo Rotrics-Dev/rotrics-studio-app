@@ -1,21 +1,31 @@
 import React from 'react';
 import _ from 'lodash';
+import FileSaver from 'file-saver';
+
 import styles from './styles.css';
 import CoordinateSystem2D from '../../components/CoordinateSystem2D/Index.jsx'
 import laserManager from "../../manager/laserManager.js";
-import {Button} from 'antd';
+import {Button, Input} from 'antd';
+
 import "antd/dist/antd.css";
+
 import Transformation from './Transformation.jsx';
-import ConfigBW from './ConfigBW.jsx';
+
+import ConfigGreyscale from './ConfigGreyscale.jsx';
+import ConfigRasterBW from './ConfigRasterBW.jsx';
+import ConfigSvgVector from './ConfigSvgVector.jsx';
+import ConfigText from './ConfigText.jsx';
+
 import WorkingParameters from './WorkingParameters.jsx';
-import FileSaver from 'file-saver';
+
+
 import socketManager from "../../socket/socketManager"
 
 const getAccept = (mode) => {
     let accept = '';
     if (['bw', 'greyscale'].includes(mode)) {
         accept = '.png, .jpg, .jpeg, .bmp';
-    } else if (['vector'].includes(mode)) {
+    } else if (['svg-vector'].includes(mode)) {
         accept = '.svg, .png, .jpg, .jpeg, .bmp';
     }
     return accept;
@@ -26,7 +36,23 @@ class Index extends React.Component {
     state = {
         fileType: '', // bw, greyscale, vector
         accept: '',
+        fileTypeSelected: "null"
     };
+
+    componentDidMount() {
+        laserManager.on("onChange", (model2d) => {
+            let obj = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
+            console.log(JSON.stringify(obj, null, 2))
+
+            let fileTypeSelected = "null"
+            if (model2d) {
+                fileTypeSelected = model2d.fileType;
+            }
+            this.setState({
+                fileTypeSelected
+            })
+        });
+    }
 
     actions = {
         onChangeFile: async (event) => {
@@ -34,33 +60,31 @@ class Index extends React.Component {
             const fileType = this.state.fileType;
             await laserManager.loadModel(fileType, file);
         },
-        onClickToUpload: (mode) => {
+        onClickToUpload: (fileType) => {
+            console.log("fileType: " + fileType)
+            if (fileType === "text"){
+                return;
+            }
             this.setState({
-                fileType: mode,
-                accept: getAccept(mode)
+                fileType,
+                accept: getAccept(fileType)
             }, () => {
                 this.fileInput.current.value = null;
                 this.fileInput.current.click();
             });
         },
-        onClickInsertText: () => {
-            console.log("text")
-        },
-        changeSettings: (e) => {
-            console.log("text")
-        },
         generateGcode: () => {
             laserManager._selected.generateGcode();
         },
         exportGcode: () => {
-            const gcode =  laserManager._selected.gcode;
-            const blob = new Blob([gcode], { type: 'text/plain;charset=utf-8' });
+            const gcode = laserManager._selected.gcode;
+            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
             const fileName = "be.gcode";
             FileSaver.saveAs(blob, fileName, true);
         },
         loadGcode: () => {
-            const gcode =  laserManager._selected.gcode;
-           socketManager.loadGcode(gcode)
+            const gcode = laserManager._selected.gcode;
+            socketManager.loadGcode(gcode)
         },
         startSend: () => {
             socketManager.startSendGcode()
@@ -72,6 +96,7 @@ class Index extends React.Component {
 
     render() {
         const {accept} = this.state;
+        const {fileTypeSelected} = this.state;
         const actions = this.actions;
         return (
             <div style={{
@@ -94,6 +119,7 @@ class Index extends React.Component {
                     bottom: 0,
                     width: "240px"
                 }}>
+                    <h2>{fileTypeSelected}</h2>
                     <input
                         ref={this.fileInput}
                         type="file"
@@ -106,7 +132,7 @@ class Index extends React.Component {
                         type="primary"
                         onClick={() => actions.onClickToUpload('bw')}
                     >
-                        {"B&W"}
+                        {"bw"}
                     </Button>
                     <Button
                         type="primary"
@@ -116,16 +142,17 @@ class Index extends React.Component {
                     </Button>
                     <Button
                         type="primary"
-                        onClick={() => actions.onClickToUpload('vector')}
+                        onClick={() => actions.onClickToUpload('svg-vector')}
                     >
-                        {"vector"}
+                        {"svg-vector"}
                     </Button>
                     <Button
                         type="primary"
-                        onClick={actions.onClickInsertText}
+                        onClick={() => actions.onClickToUpload('text')}
                     >
                         {"text"}
                     </Button>
+                    <br/><br/>
                     <Button
                         type="primary"
                         onClick={actions.generateGcode}
@@ -159,8 +186,12 @@ class Index extends React.Component {
                     >
                         {"stop Send"}
                     </Button>
+
                     <Transformation/>
-                    <ConfigBW/>
+                    <ConfigGreyscale/>
+                    <ConfigRasterBW/>
+                    <ConfigSvgVector/>
+                    <ConfigText/>
                     <WorkingParameters/>
                 </div>
             </div>

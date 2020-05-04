@@ -1,5 +1,5 @@
-const EventEmitter = require('events');
-const serialPortManager = require('../serialPortManager');
+import EventEmitter from 'events';
+import serialPortManager from '../serialPortManager.js';
 
 /**
  * 收到数据
@@ -81,4 +81,4 @@ class GcodeSender extends EventEmitter {
 
 const gcodeSender = new GcodeSender();
 
-module.exports = gcodeSender;
+export default gcodeSender;

@@ -1,8 +1,6 @@
-const Jimp = require('jimp');
-const Normalizer = require('./Normalizer');
-
-const TOKEN_COMMENT = 'C';
-const TOKEN_EMPTY_LINE = 'N';
+import Jimp from 'jimp';
+import Normalizer from './Normalizer.js';
+import getFlipFlag from "./getFlipFlag.js";
 
 const file2greyscaleImage = (url, settings) => {
     const {transformation, config} = settings;
@@ -16,26 +14,12 @@ const file2greyscaleImage = (url, settings) => {
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
 
-    let flip = 0;
-    switch (flip_model) {
-        case "None":
-            flip = 0;
-            break;
-        case "Vertical":
-            flip = 1;
-            break;
-        case "Horizontal":
-            flip = 2;
-            break;
-        case "Both":
-            flip = 3;
-            break;
-    }
+    let flipFlag = getFlipFlag(flip_model);
 
     return Jimp.read(url).then(image => {
         return image
             .greyscale()
-            .flip(!!(Math.floor(flip / 2)), !!(flip % 2))
+            .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
             .resize(width * density, height * density)
             .rotate(rotate) // rotate: unit is degree and clockwise
             .scan(0, 0, image.bitmap.width, image.bitmap.height, (x, y, idx) => {
@@ -132,7 +116,6 @@ const greyscaleImage2toolPathStr = (image, settings) => {
     content += `G0 F${jog_speed}\n`;
     content += `G1 F${work_speed}\n`;
 
-    //
     if (!line_direction || line_direction === 'Horizontal') {
         const direction = {x: 1, y: 0};
         for (let j = 0; j < height; j++) {
@@ -244,58 +227,9 @@ const greyscaleImage2toolPathStr = (image, settings) => {
     return content;
 };
 
-// G0 X1 Y2;this is comment --> {G: 0, X: 1, Y: 2, C: 'this is comment'}
-const toolPathStr2toolPathObj = (toolPathStr) => {
-    const data = [];
-    const lines = toolPathStr.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        //trim，替换所有多个空格为一个空格
-        const line = lines[i].trim().replace(/\s+/g, " ");
-
-        // 空行也不忽略
-        if (line.length === 0) {
-            data.push({[TOKEN_EMPTY_LINE]: ""}); //{N: ""}
-            break;
-        }
-
-        const lineObject = {}; //{G: 0, X: 0, Y: 0}
-        let comment = null;
-        let cmdData = null;
-
-        //split(";")有问题，comment中也可能包含";"
-        const commentIndex = line.indexOf(';');
-        if (commentIndex !== -1) {
-            cmdData = line.substring(0, commentIndex);
-            comment = line.substring(commentIndex);
-        } else {
-            cmdData = line;
-        }
-
-        comment && (lineObject[TOKEN_COMMENT] = comment);
-        if (cmdData) {
-            const tokens = cmdData.trim().split(' ');
-            for (let i = 0; i < tokens.length; i++) {
-                const token = tokens[i];
-                const cmdType = token.substring(0, 1);
-                let value = parseFloat(token.substring(1, token.length));
-                if (Number.isNaN(value)) {
-                    value = token.substring(1, token.length);
-                }
-                lineObject[cmdType] = value;
-            }
-        }
-
-        data.push(lineObject);
-    }
-    return data;
-};
-
-const generateToolPathLines4BW = async (url, settings) => {
+const toolPathStr4bw = async (url, settings) => {
     const image = await file2greyscaleImage(url, settings);
-    const toolPathStr = greyscaleImage2toolPathStr(image, settings);
-    //toolPathLines: Array
-    const toolPathLines = toolPathStr2toolPathObj(toolPathStr);
-    return toolPathLines;
+    return greyscaleImage2toolPathStr(image, settings);
 };
 
-module.exports = generateToolPathLines4BW;
+export default toolPathStr4bw;

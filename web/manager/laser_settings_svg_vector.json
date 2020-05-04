@@ -23,6 +23,12 @@
         "minimum_value": 5,
         "maximum_value": 200
       },
+      "svg_width": {
+        "default_value": 0
+      },
+      "svg_height": {
+        "default_value": 0
+      },
       "rotate": {
         "label": "Rotate",
         "description": "Rotation description",

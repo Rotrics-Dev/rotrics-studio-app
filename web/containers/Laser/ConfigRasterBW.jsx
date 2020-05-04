@@ -1,11 +1,11 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select} from 'antd';
 import laserManager from "../../manager/laserManager.js";
-import {toFixed} from '../../lib/numeric-utils';
+import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import NumberInput from '../../components/NumberInput/Index.jsx';
 
-class ConfigBW extends PureComponent {
+class ConfigRasterBW extends PureComponent {
     state = {
         model2d: null,
         config: null
@@ -38,9 +38,10 @@ class ConfigBW extends PureComponent {
     };
 
     render() {
-        if (!this.state.model2d) {
+        if (!this.state.model2d || this.state.model2d.fileType !== "bw") {
             return null;
         }
+
         const actions = this.actions;
         const {config} = this.state;
         const {invert, bw, line_direction, density} = config.children;
@@ -81,5 +82,5 @@ class ConfigBW extends PureComponent {
     }
 }
 
-export default ConfigBW;
+export default ConfigRasterBW;
 

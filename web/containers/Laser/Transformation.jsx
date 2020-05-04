@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Select} from 'antd';
 import laserManager from "../../manager/laserManager.js";
-import {toFixed} from '../../lib/numeric-utils';
+import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import _ from 'lodash';
 import NumberInput from '../../components/NumberInput/Index.jsx';

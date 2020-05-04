@@ -41,9 +41,9 @@ class SocketManager extends events.EventEmitter {
             this.emit('on-serialPort-data', data);
         });
 
-        //gcode
-        this.socket.on("on-gcode-generate-laser-bw", (data) => {
-            this.emit('on-gcode-generate-laser-bw', data);
+        //tool path
+        this.socket.on("on-tool-path-generate-laser", (data) => {
+            this.emit('on-tool-path-generate-laser', data);
         });
     }
 
@@ -86,8 +86,8 @@ class SocketManager extends events.EventEmitter {
      * @param settings    model2d.settings
      * @param toolPathId  (uuid)，settings有变化则id也随着变化
      */
-    generateGcodeLaser(url, settings, toolPathId) {
-        this._sendData("gcode-generate-laser-bw", {url, settings, toolPathId});
+    generateGcodeLaser(url, settings, toolPathId, fileType) {
+        this._sendData("tool-path-generate-laser", {url, settings, toolPathId, fileType});
     }
 
     generateGcode3dp() {

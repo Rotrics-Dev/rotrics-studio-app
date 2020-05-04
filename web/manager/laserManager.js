@@ -1,5 +1,5 @@
 import events from "events";
-import {uploadImage} from '../api/index.js';
+import {uploadImage, uploadFile} from '../api/index.js';
 import Model2D from "./Model2D";
 import socketManager from "../socket/socketManager"
 
@@ -31,18 +31,33 @@ class LaserManager extends events.EventEmitter {
         }
     }
 
+    async _uploadFile(file) {
+        try {
+            const response = await uploadFile(file);
+            return response;
+        } catch (e) {
+            console.log("_uploadFile err: " + JSON.stringify(e))
+            return e;
+        }
+    }
+
     /**
      * 加载模型
      * 异步
      * 成功后，得到texture mesh，展示在modelsParent上
      */
     async loadModel(fileType, file) {
-        const response = await this._uploadImage(file);
-        const {url, width, height} = response;
-        const model2D = new Model2D(fileType);
-        model2D.loadImage(url, width, height);
-        this.modelsParent.add(model2D);
-        this.selectModel(model2D)
+        if (fileType === "text") {
+
+        } else {
+            const response = await this._uploadImage(file);
+            const {url, width, height} = response;
+
+            const model2D = new Model2D(fileType);
+            model2D.loadImage(url, width, height);
+            this.modelsParent.add(model2D);
+            this.selectModel(model2D)
+        }
     }
 
     loadText(text) {
@@ -68,19 +83,25 @@ class LaserManager extends events.EventEmitter {
         }
     }
 
-    updateTransformation(key, value){
+    updateTransformation(key, value) {
         console.log(key + "-->" + value)
         this._selected.updateTransformation(key, value);
         this._emmitChangeEvent();
     }
 
-    updateConfig(key, value){
+    updateConfig(key, value) {
         this._selected.updateConfig(key, value);
         this._emmitChangeEvent();
     }
 
-    updateWorkingParameters(key, value){
+    updateWorkingParameters(key, value) {
         this._selected.updateWorkingParameters(key, value);
+        this._emmitChangeEvent();
+    }
+
+    //text模型独有
+    updateConfigText(key, value) {
+        this._selected.updateConfigText(key, value);
         this._emmitChangeEvent();
     }
 }

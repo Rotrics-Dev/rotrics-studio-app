@@ -1,6 +1,5 @@
 /**
  * Normalizer
- *
  * @param anchor
  *
  * TODO: document
@@ -38,5 +37,4 @@ class Normalizer {
     }
 }
 
-
-module.exports = Normalizer;
+export default Normalizer;

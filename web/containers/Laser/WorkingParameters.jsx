@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
-import { Checkbox} from 'antd';
+import {Checkbox} from 'antd';
 import laserManager from "../../manager/laserManager.js";
-import {toFixed} from '../../lib/numeric-utils';
+import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import NumberInput from '../../components/NumberInput/Index.jsx';
 
@@ -32,6 +32,9 @@ class WorkingParameters extends PureComponent {
         setWorkSpeed: (value) => {
             laserManager.updateWorkingParameters("work_speed", value)
         },
+        setDwellTime: (value) => {
+            laserManager.updateWorkingParameters("dwell_time", value)
+        },
         //TODO: fix-me
         //multi pass
         setMultiPass: (e) => {
@@ -58,7 +61,7 @@ class WorkingParameters extends PureComponent {
         }
         const actions = this.actions;
         const {working_parameters} = this.state;
-        const {print_order, jog_speed, work_speed, multi_pass, fixed_power} = working_parameters.children;
+        const {print_order, jog_speed, work_speed, multi_pass, fixed_power, dwell_time} = working_parameters.children;
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
 
@@ -86,6 +89,15 @@ class WorkingParameters extends PureComponent {
                                  value={toFixed(work_speed.default_value, 0)}
                                  onChange={actions.setWorkSpeed}/>
                 </div>
+                {dwell_time &&
+                <div>
+                    <span>{dwell_time.label}</span>
+                    <span>{"(" + dwell_time.unit + ")"}</span>
+                    <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
+                                 value={toFixed(dwell_time.default_value, 0)}
+                                 onChange={actions.setDwellTime}/>
+                </div>
+                }
                 <div>
                     <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
                     <span>{multi_pass.label}</span>

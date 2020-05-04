@@ -12,7 +12,13 @@ const uploadFile = async (file) => {
     return response;
 };
 
-//error交给调用者处理
+/**
+ * 上传图片文件，返回url, width, height
+ * 支持png, jpg, svg
+ * error抛出，交给调用者处理
+ * @param file
+ * @returns {Promise<any>}
+ */
 const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);

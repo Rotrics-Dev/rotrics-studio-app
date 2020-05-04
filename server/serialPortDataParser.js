@@ -1,5 +1,5 @@
-const EventEmitter = require('events');
-const SerialPort = require('serialport');
+import EventEmitter from 'events';
+import SerialPort from 'serialport';
 const baudRate = 115200;
 
 class serialPortDataParser extends EventEmitter {
@@ -14,4 +14,4 @@ class serialPortDataParser extends EventEmitter {
 
 const serialPortDataParser = new serialPortDataParser();
 
-module.exports = serialPortDataParser;
+export default serialPortDataParser;

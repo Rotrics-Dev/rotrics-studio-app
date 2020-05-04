@@ -1,5 +1,12 @@
+import path from 'path' ;
+import sizeOf from 'image-size';
+/**
+ * 支持svg, jpg, png, bmp等多种文件格式
+ * doc: https://github.com/image-size/image-size#readme
+ * @param imagePath
+ * @returns {{width: *, height: *}}
+ */
 const getImageSize = (imagePath) => {
-    const sizeOf = require('image-size');
     const dimensions = sizeOf(imagePath);
     return {
         width: dimensions.width,
@@ -8,7 +15,6 @@ const getImageSize = (imagePath) => {
 };
 
 const getUniqueFilename = (filename) => {
-    const path = require('path');
     return Date.now() + path.extname(filename);
 };
 
@@ -50,4 +56,4 @@ const utf8bytes2string = (bytes) => {
     return str;
 };
 
-module.exports = {getImageSize, getUniqueFilename, utf8bytes2string};
+export {getImageSize, getUniqueFilename, utf8bytes2string};

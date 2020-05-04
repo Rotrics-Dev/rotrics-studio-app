@@ -1,7 +1,7 @@
-const EventEmitter = require('events');
-const SerialPort = require('serialport');
+import EventEmitter from 'events';
+import SerialPort from 'serialport';
 
-const {utf8bytes2string} = require('./utils');
+import {utf8bytes2string} from './utils.js';
 
 const baudRate = 115200;
 
@@ -103,4 +103,4 @@ class SerialPortManager extends EventEmitter {
 
 const serialPortManager = new SerialPortManager();
 
-module.exports = serialPortManager;
+export default serialPortManager;
