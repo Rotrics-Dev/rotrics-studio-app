@@ -14,17 +14,17 @@
       "font": {
         "label": "Font",
         "description": "Font description",
-        "default_value": "ipag",
+        "default_value": "ipag.ttf",
         "type": "enum",
         "options": {
-          "ipag": "ipag",
+          "ipag": "ipag.ttf",
           "ipag2": "ipag2"
         }
       },
       "font_size": {
         "label": "Font Size",
         "description": "Font Size description",
-        "default_value": 72,
+        "default_value": 24,
         "type": "int"
       }
     }

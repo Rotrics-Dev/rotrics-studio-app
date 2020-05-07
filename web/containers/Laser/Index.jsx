@@ -25,6 +25,7 @@ import TextToSVG from 'text-to-svg';
 
 import config_text from "../../manager/laser_config_text.json";
 import greyscaleSettings from "../../manager/laser_settings_greyscale";
+import {generateAndUploadSvg} from "./svgUtils.js";
 
 const getAccept = (mode) => {
     let accept = '';
@@ -47,7 +48,7 @@ class Index extends React.Component {
     componentDidMount() {
         laserManager.on("onChange", (model2d) => {
             let obj = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
-            console.log(JSON.stringify(obj, null, 2))
+            // console.log(JSON.stringify(obj, null, 2))
 
             let fileTypeSelected = "null"
             if (model2d) {
@@ -76,37 +77,18 @@ class Index extends React.Component {
         onClickToUpload: async (fileType) => {
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
-                const {text, font, font_size} = config.config_text.children;
 
-                //options: https://github.com/shrhdk/text-to-svg
-                const fontUrl = "http://localhost:3002/ipag.ttf"
-                TextToSVG.load(fontUrl, async (err, textToSVG) => {
-                    const attributes = {fill: 'black', stroke: 'black'};
-                    const options = {
-                        tracking: 100,
-                        x: 0,
-                        y: 0,
-                        fontSize: font_size.default_value,
-                        anchor: 'top',
-                        attributes: attributes
-                    };
-                    const svg = textToSVG.getSVG(text.default_value, options);
-                    const filename = "test.svg";
-                    const blob = new Blob([svg], {type: 'text/plain'});
-                    const file = new File([blob], filename);
+                const response = await generateAndUploadSvg(config.config_text);
 
-                    const response = await uploadImage(file);
-                    const {url, width, height} = response;
-                    console.log("response: " + JSON.stringify(response))
+                const {url, width, height} = response;
+                console.log("response: " + JSON.stringify(response))
 
-                    const model2D = new Model2D(fileType);
-                    model2D.setImage(url, width, height);
+                const model2D = new Model2D(fileType);
+                model2D.setImage(url, width, height);
 
-                    //增加数据config_text
-
-                    model2D.userData = {}
-                    laserManager.addModel2D(model2D);
-                });
+                //增加数据config_text
+                model2D.userData = {config_text: config.config_text};
+                laserManager.addModel2D(model2D);
                 return;
             }
 
@@ -236,7 +218,7 @@ class Index extends React.Component {
                     <ConfigGreyscale/>
                     <ConfigRasterBW/>
                     <ConfigSvgVector/>
-                    {/*<ConfigText/>*/}
+                    <ConfigText/>
                     <WorkingParameters/>
                 </div>
             </div>

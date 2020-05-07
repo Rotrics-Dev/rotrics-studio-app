@@ -215,7 +215,7 @@ class Model2D extends THREE.Mesh {
     //text模型独有
     updateConfigText(key, value) {
         console.log(key + "-->" + value);
-        this.settings.config_text.children[key].default_value = value;
+        this.userData.config_text.children[key].default_value = value;
 
         //todo: config是否变化，决定preview
         this._preview();

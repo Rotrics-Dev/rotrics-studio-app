@@ -1,11 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { actions } from '../reducers/hotKeys';
+import { actions as hotKeysActions} from '../reducers/hotKeys';
+import { actions as laserTextActions} from '../reducers/laserText';
 import socketManager from "../socket/socketManager"
 
 class Init extends React.Component {
     componentDidMount() {
         this.props.initHotKeys();
+        this.props.initLaserText();
         socketManager.setupSocket();
     }
 
@@ -16,7 +18,8 @@ class Init extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        initHotKeys: () => dispatch(actions.init()),
+        initHotKeys: () => dispatch(hotKeysActions.init()),
+        initLaserText: () => dispatch(laserTextActions.init()),
     };
 };
 

@@ -1,21 +1,27 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input} from 'antd';
+import {connect} from 'react-redux';
 import laserManager from "../../manager/laserManager.js";
 import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
+import {actions as laserTextActions} from '../../reducers/laserText';
 import NumberInput from '../../components/NumberInput/Index.jsx';
+import _ from 'lodash';
 
 class ConfigText extends PureComponent {
     state = {
         model2d: null,
         config: null,
-        config_text: null
+        //config_text
+        text: "",
+        font: "",
+        font_size: 72
     };
 
     componentDidMount() {
         laserManager.on("onChange", (model2d) => {
             let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-            let config_text = model2d ? _.cloneDeep(model2d.settings.config_text) : null;
+            let config_text = model2d ? _.cloneDeep(model2d.userData.config_text) : null;
 
             // console.log("change: " + JSON.stringify(config, null, 2))
             this.setState({
@@ -28,20 +34,15 @@ class ConfigText extends PureComponent {
 
     actions = {
         //config text
-        setText: (value) => {
-            laserManager.updateConfigText("text", value)
+        setText: (e) => {
+            console.log(e.target.value)
+            this.props.updateConfigText("text", e.target.value.trim())
         },
         setFont: (value) => {
-            laserManager.updateConfigText("font", value)
+            this.props.updateConfigText("font", value)
         },
         setFontSize: (value) => {
-            laserManager.updateConfigText("font_size",value)
-        },
-        setLineHeight: (value) => {
-            laserManager.updateConfigText("line_height", value)
-        },
-        setAlignment: (value) => {
-            laserManager.updateConfigText("alignment", value)
+            this.props.updateConfigText("font_size", value)
         },
         //config
         setOptimizePath: (e) => {
@@ -51,7 +52,7 @@ class ConfigText extends PureComponent {
             laserManager.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            laserManager.updateConfig("fill_density", value)
+            laserManager.updateConfig("fill.fill_density", value)
         },
     };
 
@@ -60,20 +61,15 @@ class ConfigText extends PureComponent {
             return null;
         }
         const actions = this.actions;
-        const {config_text, config} = this.state;
+        const {config_text} = this.props;
+        const {config} = this.state;
 
-        const {text, font, font_size, line_height, alignment} = config_text.children;
+        const {text, font, font_size} = config_text.children;
 
         const fontOptions = [];
         Object.keys(font.options).forEach((key) => {
             const option = font.options[key];
             fontOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
-        });
-
-        const alignmentOptions = [];
-        Object.keys(alignment.options).forEach((key) => {
-            const option = alignment.options[key];
-            alignmentOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
         });
 
         const {optimize_path, fill} = config.children;
@@ -84,7 +80,9 @@ class ConfigText extends PureComponent {
                 <h2>{config.label}</h2>
                 <div>
                     <span>{text.label}</span>
-                    <Input.TextArea rows={4} defaultValue={"Hex Bot"} autoSize={false} onPressEnter={(e) => console.log(e.target.value)}/>
+                    <Input.TextArea defaultValue={"Hex Bot"} autoSize={{minRows: 1, maxRows: 1}}
+                                    onChange={actions.setText}
+                    />
                 </div>
                 <div>
                     <span>{font.label}</span>
@@ -99,22 +97,6 @@ class ConfigText extends PureComponent {
                     <NumberInput min={font_size.minimum_value} max={font_size.maximum_value}
                                  value={toFixed(font_size.default_value, 0)}
                                  onChange={actions.setFontSize}/>
-                </div>
-
-                <div>
-                    <span>{line_height.label}</span>
-                    <NumberInput min={line_height.minimum_value} max={line_height.maximum_value}
-                                 value={toFixed(line_height.default_value, 0)}
-                                 onChange={actions.setLineHeight}/>
-                </div>
-
-
-                <div>
-                    <span>{alignment.label}</span>
-                    <Select value={alignment.default_value} style={{width: 110}}
-                            onChange={actions.setAlignment}>
-                        {alignmentOptions}
-                    </Select>
                 </div>
 
                 <div>
@@ -136,5 +118,20 @@ class ConfigText extends PureComponent {
     }
 }
 
-export default ConfigText;
+const mapStateToProps = (state) => {
+    const {config_text} = state.laserText;
+    console.log("mapStateToProps: " + JSON.stringify(config_text, null, 2))
+    return {
+        config_text
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateConfigText: (key, value) => dispatch(laserTextActions.updateConfigText(key, value)),
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigText);
 
