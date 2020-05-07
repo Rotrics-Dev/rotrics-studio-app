@@ -8,16 +8,20 @@ import NumberInput from '../../components/NumberInput/Index.jsx';
 class ConfigText extends PureComponent {
     state = {
         model2d: null,
-        config: null
+        config: null,
+        config_text: null
     };
 
     componentDidMount() {
         laserManager.on("onChange", (model2d) => {
             let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
+            let config_text = model2d ? _.cloneDeep(model2d.settings.config_text) : null;
+
             // console.log("change: " + JSON.stringify(config, null, 2))
             this.setState({
                 model2d,
-                config
+                config,
+                config_text
             })
         });
     }

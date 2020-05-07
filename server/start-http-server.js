@@ -4,12 +4,12 @@ import Router from 'koa-router';
 import fs from 'fs' ;
 import path from 'path' ;
 import serve from  'koa-static';
-
+import TextToSVG from 'text-to-svg';
 
 const app = new Koa();
 const router = new Router();
 
-import {getImageSize, getUniqueFilename} from'./utils.js';
+import {getImageSize, getUniqueFilename, text2svg} from'./utils.js';
 
 
 let __dirname = path.resolve();
@@ -31,6 +31,13 @@ const saveFile = (file) => {
     let filePath = UPLOAD_PATH + filename;
     const upStream = fs.createWriteStream(filePath);
     reader.pipe(upStream);
+    return filename;
+};
+
+const saveStringToFile = (str, extension) => {
+    const filename = getUniqueFilename("x" + extension); //x.svg
+    let filePath = UPLOAD_PATH + filename;
+    fs.writeFileSync(filePath, str);
     return filename;
 };
 
@@ -56,6 +63,15 @@ const startHttpServer = () => {
         const url = getFileUrl(filename);
         const {width, height} = getImageSize(file.path);
         console.log("uploadImage ok: " + file.name + " size: " + width + 'x' + height + " -> " + url);
+        return ctx.body = {url, width, height};
+    });
+
+    router.post('/text2svg', async (ctx) => {
+        const body = JSON.parse(ctx.request.body)
+        const {text, options} = body;
+        const {svg, width, height} = text2svg(text, options);
+        const filename = saveStringToFile(svg, ".svg");
+        const url = getFileUrl(filename);
         return ctx.body = {url, width, height};
     });
 

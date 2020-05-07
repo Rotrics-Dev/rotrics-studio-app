@@ -18,8 +18,13 @@ import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
-
 import socketManager from "../../socket/socketManager"
+import Model2D from "../../manager/Model2D";
+import {uploadImage, uploadFile} from '../../api/index.js';
+import TextToSVG from 'text-to-svg';
+
+import config_text from "../../manager/laser_config_text.json";
+import greyscaleSettings from "../../manager/laser_settings_greyscale";
 
 const getAccept = (mode) => {
     let accept = '';
@@ -56,15 +61,55 @@ class Index extends React.Component {
 
     actions = {
         onChangeFile: async (event) => {
+            //bw, greyscale, svg
             const file = event.target.files[0];
             const fileType = this.state.fileType;
-            await laserManager.loadModel(fileType, file);
+            const response = await uploadImage(file);
+            const {url, width, height} = response;
+            console.log("response: " + JSON.stringify(response))
+
+            const model2D = new Model2D(fileType);
+            model2D.setImage(url, width, height);
+
+            laserManager.addModel2D(model2D);
         },
-        onClickToUpload: (fileType) => {
-            console.log("fileType: " + fileType)
-            if (fileType === "text"){
+        onClickToUpload: async (fileType) => {
+            if (fileType === "text") {
+                const config = _.cloneDeep(config_text);
+                const {text, font, font_size} = config.config_text.children;
+
+                //options: https://github.com/shrhdk/text-to-svg
+                const fontUrl = "http://localhost:3002/ipag.ttf"
+                TextToSVG.load(fontUrl, async (err, textToSVG) => {
+                    const attributes = {fill: 'black', stroke: 'black'};
+                    const options = {
+                        tracking: 100,
+                        x: 0,
+                        y: 0,
+                        fontSize: font_size.default_value,
+                        anchor: 'top',
+                        attributes: attributes
+                    };
+                    const svg = textToSVG.getSVG(text.default_value, options);
+                    const filename = "test.svg";
+                    const blob = new Blob([svg], {type: 'text/plain'});
+                    const file = new File([blob], filename);
+
+                    const response = await uploadImage(file);
+                    const {url, width, height} = response;
+                    console.log("response: " + JSON.stringify(response))
+
+                    const model2D = new Model2D(fileType);
+                    model2D.setImage(url, width, height);
+
+                    //增加数据config_text
+
+                    model2D.userData = {}
+                    laserManager.addModel2D(model2D);
+                });
                 return;
             }
+
             this.setState({
                 fileType,
                 accept: getAccept(fileType)
@@ -191,7 +236,7 @@ class Index extends React.Component {
                     <ConfigGreyscale/>
                     <ConfigRasterBW/>
                     <ConfigSvgVector/>
-                    <ConfigText/>
+                    {/*<ConfigText/>*/}
                     <WorkingParameters/>
                 </div>
             </div>

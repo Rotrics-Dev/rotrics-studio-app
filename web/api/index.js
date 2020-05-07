@@ -20,6 +20,7 @@ const uploadFile = async (file) => {
  * @returns {Promise<any>}
  */
 const uploadImage = async (file) => {
+    console.log("uploadImage")
     const formData = new FormData();
     formData.append('file', file);
     const response = await fetch('http://localhost:3002/uploadImage', {
@@ -30,6 +31,16 @@ const uploadImage = async (file) => {
     return response;
 };
 
-export {uploadFile, uploadImage}
+//options: https://github.com/shrhdk/text-to-svg
+const text2svg = async (text, options) => {
+    const response = await fetch('http://localhost:3002/text2svg', {
+        method: 'POST',
+        body: JSON.stringify({text, options})
+    }).then(response => response.json());
+    //response: {url: "http://localhost:3002/1587459128571.svg", width: 500, height: 575}
+    return response;
+};
+
+export {uploadFile, uploadImage, text2svg}
 
 

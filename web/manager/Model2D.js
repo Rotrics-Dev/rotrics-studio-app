@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import _ from 'lodash';
 
+import TextToSVG from 'text-to-svg';
+
 import bwSettings from "./laser_settings_bw.json";
 import greyscaleSettings from "./laser_settings_greyscale.json";
 import svgVectorSettings from "./laser_settings_svg_vector.json";
-import textSettings from "./laser_settings_text.json";
 import {degree2radian} from '../../shared/lib/numeric-utils.js';
 import {getUuid} from '../../shared/lib/utils.js';
 import socketManager from "../socket/socketManager"
 import toolPathRenderer from './toolPathRenderer';
-import generateGcode4laserBw from "./generateGcode4laserBw";
-
+import toolPathLines2gcode from "./toolPathLines2gcode";
 
 /**
  * 根据限制，重新计算width，height
@@ -44,10 +44,8 @@ const getSizeRestriction = (fileType) => {
             settings = greyscaleSettings;
             break;
         case "svg-vector":
-            settings = svgVectorSettings;
-            break;
         case "text":
-            settings = textSettings;
+            settings = svgVectorSettings;
             break;
     }
     const children = settings.transformation.children;
@@ -68,7 +66,6 @@ class Model2D extends THREE.Mesh {
         this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
         this._isSelected = false;
-        this.edgesLine = null;// 模型selected状态下的边框线
         this.settings = null;
 
         const {min_width, max_width, min_height, max_height} = getSizeRestriction(fileType);
@@ -85,6 +82,19 @@ class Model2D extends THREE.Mesh {
 
         this.gcode = null;
 
+        //需要deep clone
+        switch (this.fileType) {
+            case "bw":
+                this.settings = _.cloneDeep(bwSettings);
+                break;
+            case "greyscale":
+                this.settings = _.cloneDeep(greyscaleSettings);
+                break;
+            case "svg-vector":
+            case "text":
+                this.settings = _.cloneDeep(svgVectorSettings);
+                break;
+        }
 
         //data: {toolPathLines, toolPathId}
         socketManager.on('on-tool-path-generate-laser', (data) => {
@@ -100,10 +110,11 @@ class Model2D extends THREE.Mesh {
         });
     }
 
-    loadImage(url, mWidth, mHeight) {
+    //url: 支持svg，raster
+    setImage(url, image_width, image_height) {
         this.url = url;
-        this.imageRatio = mWidth / mHeight;
-        const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+        this.imageRatio = image_width / image_height;
+        const {width, height} = resize(image_width, image_height, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
         const loader = new THREE.TextureLoader();
         // loader.setCrossOrigin("anonymous");
         const texture = loader.load(url);
@@ -117,37 +128,14 @@ class Model2D extends THREE.Mesh {
 
         this.geometry = new THREE.PlaneGeometry(width, height); //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
         this.material = material;
-        this._initSettings(width, height);
 
+        this.updateTransformation("image_width", image_width);
+        this.updateTransformation("image_height", image_height);
 
-        //特殊处理svg
-        if (this.fileType === "svg-vector") {
-            this.settings.transformation.children.svg_width.default_value = mWidth;
-            this.settings.transformation.children.svg_height.default_value = mHeight;
-        }
+        this.updateTransformation("width", width);
+        this.updateTransformation("height", height);
 
         this._preview();
-    }
-
-    //必须等loadImage，并resize后再设置
-    _initSettings(width, height) {
-        //需要deep clone
-        switch (this.fileType) {
-            case "bw":
-                this.settings = _.cloneDeep(bwSettings);
-                break;
-            case "greyscale":
-                this.settings = _.cloneDeep(greyscaleSettings);
-                break;
-            case "svg-vector":
-                this.settings = _.cloneDeep(svgVectorSettings);
-                break;
-            case "text":
-                this.settings = _.cloneDeep(textSettings);
-                break;
-        }
-        this.settings.transformation.children.width.default_value = width;
-        this.settings.transformation.children.height.default_value = height;
     }
 
     //todo: 增加返回值，是否有修改
@@ -155,6 +143,14 @@ class Model2D extends THREE.Mesh {
     updateTransformation(key, value) {
         console.log(key + "-->" + value);
         switch (key) {
+            case "image_width": {
+                this.settings.transformation.children.image_width.default_value = value;
+                break;
+            }
+            case "image_height": {
+                this.settings.transformation.children.image_height.default_value = value;
+                break;
+            }
             case "width": {
                 const mWidth = value;
                 const mHeight = mWidth / this.imageRatio;
@@ -162,7 +158,6 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 this.geometry = new THREE.PlaneGeometry(width, height);
-                this._updateEdges();
                 break;
             }
             case "height": {
@@ -172,7 +167,6 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 this.geometry = new THREE.PlaneGeometry(width, height);
-                this._updateEdges();
                 break;
             }
             case "rotate": {
@@ -245,15 +239,6 @@ class Model2D extends THREE.Mesh {
     //todo: 使用controls替换
     setSelected(isSelected) {
         this._isSelected = isSelected;
-        if (!this.edgesLine) {
-            const edges = new THREE.EdgesGeometry(this.geometry);
-            this.edgesLine = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xff0000}));
-            this.add(this.edgesLine)
-        }
-    }
-
-    _updateEdges() {
-        this.edgesLine.geometry = new THREE.EdgesGeometry(this.geometry)
     }
 
     //生成tool path
@@ -264,19 +249,8 @@ class Model2D extends THREE.Mesh {
     }
 
     generateGcode() {
-        switch (this.fileType) {
-            case "bw":
-                this.gcode = generateGcode4laserBw(this.toolPathLines, this.settings);
-                console.log("gcode: " + this.gcode)
-                break;
-            case "greyscale":
-                break;
-            case "svg-vector":
-
-                break;
-            case "text":
-                break;
-        }
+        this.gcode = toolPathLines2gcode(this.toolPathLines, this.settings);
+        console.log("gcode: " + this.gcode)
     }
 }
 

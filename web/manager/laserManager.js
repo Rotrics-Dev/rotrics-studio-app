@@ -1,7 +1,7 @@
 import events from "events";
-import {uploadImage, uploadFile} from '../api/index.js';
 import Model2D from "./Model2D";
 import socketManager from "../socket/socketManager"
+import {text2svg} from "../api/index";
 
 class LaserManager extends events.EventEmitter {
     constructor() {
@@ -21,47 +21,41 @@ class LaserManager extends events.EventEmitter {
         this.emit('onChange', this._selected);
     }
 
-    async _uploadImage(file) {
-        try {
-            const response = await uploadImage(file);
-            return response;
-        } catch (e) {
-            console.log("_uploadImage err: " + JSON.stringify(e))
-            return e;
-        }
-    }
-
-    async _uploadFile(file) {
-        try {
-            const response = await uploadFile(file);
-            return response;
-        } catch (e) {
-            console.log("_uploadFile err: " + JSON.stringify(e))
-            return e;
-        }
-    }
-
     /**
      * 加载模型
      * 异步
      * 成功后，得到texture mesh，展示在modelsParent上
      */
-    async loadModel(fileType, file) {
-        if (fileType === "text") {
+    // async addModel2D(model2D) {
+    //     if (fileType === "text") {
+    //         const text = "Hex Bot";
+    //         const attributes = {fill: 'red', stroke: 'black'};
+    //         const options = {x: 0, y: 0, fontSize: 40, anchor: 'top', attributes: attributes};
+    //
+    //         const response = await text2svg(text, options);
+    //
+    //         const {url, width, height} = response;
+    //
+    //         console.log(JSON.stringify(response));
+    //
+    //         const model2D = new Model2D(fileType);
+    //         model2D.setImage(url, width, height);
+    //         this.modelsParent.add(model2D);
+    //         this.selectModel(model2D)
+    //     } else {
+    //         const response = await this._uploadImage(file);
+    //         const {url, width, height} = response;
+    //
+    //         const model2D = new Model2D(fileType);
+    //         model2D.setImage(url, width, height);
+    //         this.modelsParent.add(model2D);
+    //         this.selectModel(model2D)
+    //     }
+    // }
 
-        } else {
-            const response = await this._uploadImage(file);
-            const {url, width, height} = response;
-
-            const model2D = new Model2D(fileType);
-            model2D.loadImage(url, width, height);
-            this.modelsParent.add(model2D);
-            this.selectModel(model2D)
-        }
-    }
-
-    loadText(text) {
-
+    addModel2D(model2D) {
+        this.modelsParent.add(model2D);
+        this.selectModel(model2D)
     }
 
     selectModel(model) {

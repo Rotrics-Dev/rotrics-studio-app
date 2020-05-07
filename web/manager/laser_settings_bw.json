@@ -5,6 +5,12 @@
     "type": "category",
     "description": "Transformation B&W description",
     "children": {
+      "image_width": {
+        "default_value": 0
+      },
+      "image_height": {
+        "default_value": 0
+      },
       "width": {
         "label": "Width",
         "description": "Width description",

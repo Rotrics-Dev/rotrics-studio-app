@@ -25,8 +25,8 @@ const svg2toolPathStr = async (url, settings) => {
     const jogSpeed = working_parameters.children.jog_speed.placeholder;
 
 
-    const originWidth = transformation.children.svg_width.default_value;
-    const originHeight = transformation.children.svg_height.default_value;
+    const originWidth = transformation.children.image_width.default_value;
+    const originHeight = transformation.children.image_height.default_value;
     const rotation = transformation.children.rotate.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
 

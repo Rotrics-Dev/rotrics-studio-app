@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles.css';
-import {uploadFile, uploadImage} from '../../api/index.js';
+import {uploadFile, uploadImage, text2svg} from '../../api/index.js';
 
 class HttpServer extends React.Component {
     fileInput = React.createRef();
@@ -25,7 +25,17 @@ class HttpServer extends React.Component {
             const file = event.target.files[0];
             const response = await uploadImage(file);
             console.log(response)
-        }
+        },
+        text2svg: async () => {
+            const text = "hello world";
+
+            const attributes = {fill: 'red', stroke: 'black'};
+            const options = {x: 0, y: 0, fontSize: 40, anchor: 'top', attributes: attributes};
+
+            const response = await text2svg(text, options);
+            console.log(response)
+        },
+
     };
 
     render() {
@@ -63,6 +73,13 @@ class HttpServer extends React.Component {
                     onClick={actions.onClickToUploadImage}
                 >
                     {'Upload Image'}
+                </button>
+
+                <button
+                    type="button"
+                    onClick={actions.text2svg}
+                >
+                    {'text2svg'}
                 </button>
             </div>
         )

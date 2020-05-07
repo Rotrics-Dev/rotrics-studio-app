@@ -1,0 +1,32 @@
+{
+  "config_text": {
+    "icon": "base64xxx",
+    "label": "Text",
+    "type": "category",
+    "description": "Config of Text",
+    "children": {
+      "text": {
+        "label": "Text",
+        "description": "text description",
+        "default_value": "Hex Bot",
+        "type": "string"
+      },
+      "font": {
+        "label": "Font",
+        "description": "Font description",
+        "default_value": "ipag",
+        "type": "enum",
+        "options": {
+          "ipag": "ipag",
+          "ipag2": "ipag2"
+        }
+      },
+      "font_size": {
+        "label": "Font Size",
+        "description": "Font Size description",
+        "default_value": 72,
+        "type": "int"
+      }
+    }
+  }
+}

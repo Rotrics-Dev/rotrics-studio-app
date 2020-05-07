@@ -1,5 +1,7 @@
 import path from 'path' ;
 import sizeOf from 'image-size';
+import TextToSVG from 'text-to-svg';
+
 /**
  * 支持svg, jpg, png, bmp等多种文件格式
  * doc: https://github.com/image-size/image-size#readme
@@ -56,4 +58,13 @@ const utf8bytes2string = (bytes) => {
     return str;
 };
 
-export {getImageSize, getUniqueFilename, utf8bytes2string};
+//options: https://github.com/shrhdk/text-to-svg
+const text2svg = (text, options = {}) => {
+    const textToSVG = TextToSVG.loadSync(); //使用默认字体
+    const svg = textToSVG.getSVG(text, options);
+
+    const {width, height} = textToSVG.getMetrics(text, options);
+    return {svg, width, height}
+};
+
+export {getImageSize, getUniqueFilename, utf8bytes2string, text2svg};
