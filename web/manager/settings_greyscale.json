@@ -72,31 +72,74 @@
   },
   "config": {
     "icon": "base64xxx",
-    "label": "Vector",
+    "label": "Greyscale",
     "type": "category",
-    "description": "Config of Vector",
+    "description": "Config of Greyscale",
     "children": {
-      "optimize_path": {
-        "label": "Optimize Path",
-        "description": "Optimize Path description",
+      "invert": {
+        "label": "Invert",
+        "description": "Invert description",
         "default_value": false,
         "type": "bool"
       },
-      "fill": {
-        "default_value": false,
-        "label": "Fill",
-        "type": "bool",
-        "description": "Fill description",
-        "children": {
-          "fill_density": {
-            "label": "Fill Density",
-            "description": "Fill Density description",
-            "default_value": 4,
-            "type": "int",
-            "minimum_value": 0,
-            "maximum_value": 20
-          }
+      "contrast": {
+        "label": "Contrast",
+        "description": "contrast description",
+        "default_value": 50,
+        "type": "int",
+        "minimum_value": 1,
+        "maximum_value": 100
+      },
+      "brightness": {
+        "label": "Brightness",
+        "description": "brightness description",
+        "default_value": 50,
+        "type": "int",
+        "minimum_value": 0,
+        "maximum_value": 100
+      },
+      "white_clip": {
+        "label": "White Clip",
+        "description": "White Clip description",
+        "default_value": 100,
+        "type": "int",
+        "minimum_value": 0,
+        "maximum_value": 255
+      },
+      "algorithm": {
+        "label": "Algorithm",
+        "description": "algorithm description",
+        "default_value": "FloydSteinburg",
+        "type": "enum",
+        "options": {
+          "Floyd-Steinburg": "FloydSteinburg",
+          "Jarvis-Judice-Ninke": "JarvisJudiceNinke",
+          "Stucki": "Stucki",
+          "Atkinson": "Atkinson",
+          "Burkes": "Burkes",
+          "Sierra-2": "Sierra2",
+          "Sierra-3": "Sierra3",
+          "Sierra Lite": "SierraLite"
         }
+      },
+      "movement_mode": {
+        "label": "Movement Mode",
+        "description": "Movement Mode description",
+        "default_value": "greyscale-line",
+        "type": "enum",
+        "options": {
+          "Line (Normal Quality)": "greyscale-line",
+          "Dot (High Quality)": "greyscale-dot"
+        }
+      },
+      "density": {
+        "label": "Density",
+        "description": "Density description",
+        "default_value": 4,
+        "type": "int",
+        "unit": "dot/mm",
+        "minimum_value": 1,
+        "maximum_value": 20
       }
     }
   },
@@ -133,6 +176,16 @@
         "unit": "mm/min",
         "minimum_value": 100,
         "maximum_value": 4000
+      },
+      "dwell_time": {
+        "label": "Dwell Time",
+        "description": "Dwell Time description ",
+        "placeholder": "#dwell_time#",
+        "default_value": 5,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 1,
+        "maximum_value": 10
       },
       "multi_pass": {
         "label": "Multi-Pass",

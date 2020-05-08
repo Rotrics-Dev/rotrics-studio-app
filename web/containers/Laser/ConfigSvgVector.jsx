@@ -35,7 +35,7 @@ class ConfigSvgVector extends PureComponent {
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "svg-vector") {
+        if (!this.state.model2d || this.state.model2d.fileType !== "svg") {
             return null;
         }
         const actions = this.actions;

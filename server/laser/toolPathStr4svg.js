@@ -10,8 +10,6 @@ function pointEqual(p1, p2) {
 }
 
 const svg2toolPathStr = async (url, settings) => {
-    console.log('generateToolPathLines4svg: url ' + url);
-
     let __dirname = path.resolve();
 
     const urlItems = url.split("/");

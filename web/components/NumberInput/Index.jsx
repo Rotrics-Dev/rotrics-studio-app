@@ -1,12 +1,7 @@
 import React, {PureComponent} from 'react';
 
-// import classNames from 'classnames';
-
-
 class Index extends PureComponent {
     onChange = (event) => {
-        console.log("onChange: " + event.target.value)
-
         this.setState({
             displayValue: event.target.value
         });
@@ -19,8 +14,6 @@ class Index extends PureComponent {
     onKeyUp = (event) => {
         // 按下[回车]
         if (event.keyCode === 13) {
-            console.log("onKeyUp: " + event.target.value)
-
             this.onAfterChangeWrapper(event.target.value);
         }
     };
@@ -51,8 +44,6 @@ class Index extends PureComponent {
     }
 
     onAfterChangeWrapper(value) {
-        console.log("onAfterChangeWrapper: " + value)
-
         const {min, max, onChange} = this.props;
 
         let numericValue = parseFloat(value);
@@ -61,9 +52,6 @@ class Index extends PureComponent {
         // If value is invalid, use defaultValue
         if (Number.isNaN(numericValue)) {
             const absentValue = this.getAbsentValue();
-
-            console.log("absentValue: " + absentValue)
-
 
             onChange(absentValue);
             this.setState({

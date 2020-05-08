@@ -20,7 +20,6 @@ const uploadFile = async (file) => {
  * @returns {Promise<any>}
  */
 const uploadImage = async (file) => {
-    console.log("uploadImage")
     const formData = new FormData();
     formData.append('file', file);
     const response = await fetch('http://localhost:3002/uploadImage', {

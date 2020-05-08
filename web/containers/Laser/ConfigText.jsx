@@ -86,7 +86,7 @@ class ConfigText extends PureComponent {
                 </div>
                 <div>
                     <span>{font.label}</span>
-                    <Select value={font.default_value} style={{width: 110}}
+                    <Select value={font.default_value} style={{width: 150}}
                             onChange={actions.setFont}>
                         {fontOptions}
                     </Select>
@@ -120,7 +120,6 @@ class ConfigText extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {config_text} = state.laserText;
-    console.log("mapStateToProps: " + JSON.stringify(config_text, null, 2))
     return {
         config_text
     };

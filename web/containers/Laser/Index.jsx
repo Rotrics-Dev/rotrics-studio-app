@@ -20,19 +20,26 @@ import WorkingParameters from './WorkingParameters.jsx';
 
 import socketManager from "../../socket/socketManager"
 import Model2D from "../../manager/Model2D";
-import {uploadImage, uploadFile} from '../../api/index.js';
-import TextToSVG from 'text-to-svg';
+import {uploadImage} from '../../api/index.js';
+import config_text from "../../manager/config_text.json";
+import {generateSvg} from "./svgUtils.js";
 
-import config_text from "../../manager/laser_config_text.json";
-import greyscaleSettings from "../../manager/laser_settings_greyscale";
-import {generateAndUploadSvg} from "./svgUtils.js";
-
-const getAccept = (mode) => {
+//Jimp支持的文件格式  https://github.com/oliver-moran/jimp
+const getAccept = (fileType) => {
     let accept = '';
-    if (['bw', 'greyscale'].includes(mode)) {
-        accept = '.png, .jpg, .jpeg, .bmp';
-    } else if (['svg-vector'].includes(mode)) {
-        accept = '.svg, .png, .jpg, .jpeg, .bmp';
+    switch (fileType) {
+        case "bw":
+        case "greyscale":
+            //TODO: .tiff读取报错
+            // Error: read ECONNRESET
+            //       at TCP.onStreamRead (internal/stream_base_commons.js:205:27)
+            // accept = '.bmp, .gif, .jpeg, .jpg, .png, .tiff';
+            accept = '.bmp, .gif, .jpeg, .jpg, .png';
+            break;
+        case "svg":
+        case "text":
+            accept = '.svg';
+            break;
     }
     return accept;
 };
@@ -77,8 +84,13 @@ class Index extends React.Component {
         onClickToUpload: async (fileType) => {
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
+                const svg = await generateSvg(config.config_text);
 
-                const response = await generateAndUploadSvg(config.config_text);
+                const filename = "test.svg";
+                const blob = new Blob([svg], {type: 'text/plain'});
+                const file = new File([blob], filename);
+
+                const response = await uploadImage(file);
 
                 const {url, width, height} = response;
                 console.log("response: " + JSON.stringify(response))
@@ -169,9 +181,9 @@ class Index extends React.Component {
                     </Button>
                     <Button
                         type="primary"
-                        onClick={() => actions.onClickToUpload('svg-vector')}
+                        onClick={() => actions.onClickToUpload('svg')}
                     >
-                        {"svg-vector"}
+                        {"svg"}
                     </Button>
                     <Button
                         type="primary"

@@ -10,7 +10,7 @@ import getFlipFlag from "./getFlipFlag.js";
  * config: {invert, bw, density}
  * @returns {Promise<DepreciatedJimp>}
  */
-const file2Img = async (url, settings) => {
+const file2img = async (url, settings) => {
     const {transformation, config} = settings;
 
     const width = transformation.children.width.default_value;
@@ -246,7 +246,7 @@ const img2toolPathStr = (img, settings) => {
 };
 
 const toolPathStr4bw = async (url, settings) => {
-    const img = await file2Img(url, settings);
+    const img = await file2img(url, settings);
     return img2toolPathStr(img, settings);
 };
 

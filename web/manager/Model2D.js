@@ -1,11 +1,8 @@
 import * as THREE from 'three';
 import _ from 'lodash';
-
-import TextToSVG from 'text-to-svg';
-
-import bwSettings from "./laser_settings_bw.json";
-import greyscaleSettings from "./laser_settings_greyscale.json";
-import svgVectorSettings from "./laser_settings_svg_vector.json";
+import bwSettings from "./settings_bw.json";
+import greyscaleSettings from "./settings_greyscale.json";
+import svgVectorSettings from "./settings_svg.json";
 import {degree2radian} from '../../shared/lib/numeric-utils.js';
 import {getUuid} from '../../shared/lib/utils.js';
 import socketManager from "../socket/socketManager"
@@ -43,7 +40,7 @@ const getSizeRestriction = (fileType) => {
         case "greyscale":
             settings = greyscaleSettings;
             break;
-        case "svg-vector":
+        case "svg":
         case "text":
             settings = svgVectorSettings;
             break;
@@ -62,7 +59,7 @@ const getSizeRestriction = (fileType) => {
 class Model2D extends THREE.Mesh {
     constructor(fileType) {
         super();
-        this.fileType = fileType; // bw, greyscale, svg-vector, text
+        this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
         this._isSelected = false;
@@ -90,7 +87,7 @@ class Model2D extends THREE.Mesh {
             case "greyscale":
                 this.settings = _.cloneDeep(greyscaleSettings);
                 break;
-            case "svg-vector":
+            case "svg":
             case "text":
                 this.settings = _.cloneDeep(svgVectorSettings);
                 break;
@@ -98,13 +95,12 @@ class Model2D extends THREE.Mesh {
 
         //data: {toolPathLines, toolPathId}
         socketManager.on('on-tool-path-generate-laser', (data) => {
-            console.log("on-tool-path-generate-laser")
+            console.timeEnd(this.toolPathId)
             if (this.toolPathId === data.toolPathId) {
-                console.log("on-tool-path-generate-laser2322")
                 this.toolPathLines = data.toolPathLines
                 this.toolPathObj3d && this.remove(this.toolPathObj3d);
                 this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-                this.toolPathObj3d.position.set(40, 0, 0);
+                this.toolPathObj3d.position.set(0, 100, 0);
                 this.add(this.toolPathObj3d)
             }
         });
@@ -141,7 +137,6 @@ class Model2D extends THREE.Mesh {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value) {
-        console.log(key + "-->" + value);
         switch (key) {
             case "image_width": {
                 this.settings.transformation.children.image_width.default_value = value;
@@ -196,8 +191,6 @@ class Model2D extends THREE.Mesh {
 
 
     updateConfig(key, value) {
-        console.log(key + "-->" + value);
-
         //fill.fill_density
         if (key.indexOf(".") !== -1) {
             const arr = key.split(".");
@@ -212,17 +205,7 @@ class Model2D extends THREE.Mesh {
         this._preview();
     }
 
-    //text模型独有
-    updateConfigText(key, value) {
-        console.log(key + "-->" + value);
-        this.userData.config_text.children[key].default_value = value;
-
-        //todo: config是否变化，决定preview
-        this._preview();
-    }
-
     updateWorkingParameters(key, value) {
-        console.log(key + "-->" + value);
         //multi_pass.passes
         //multi_pass.pass_depth
         //fixed_power.power
@@ -243,9 +226,9 @@ class Model2D extends THREE.Mesh {
 
     //生成tool path
     _preview() {
-        console.log("_preview: " + this.fileType)
         this.toolPathId = getUuid();
         socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
+        console.time(this.toolPathId)
     }
 
     generateGcode() {

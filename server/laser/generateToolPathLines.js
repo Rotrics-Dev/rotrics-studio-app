@@ -1,6 +1,7 @@
 import toolPathStr4bw from './toolPathStr4bw.js';
 import toolPathStr4svg from './toolPathStr4svg.js';
 import toolPathStr2toolPathLines from "./toolPathStr2toolPathLines.js";
+import toolPathStr4greyscale from "./toolPathStr4greyscale.js";
 
 const generateToolPathLines = async (fileType, url, settings) => {
     let toolPathStr = null;
@@ -9,8 +10,9 @@ const generateToolPathLines = async (fileType, url, settings) => {
             toolPathStr = await toolPathStr4bw(url, settings);
             break;
         case "greyscale":
+            toolPathStr = await toolPathStr4greyscale(url, settings);
             break;
-        case "svg-vector":
+        case "svg":
         case "text":
             toolPathStr = await toolPathStr4svg(url, settings);
             break;
