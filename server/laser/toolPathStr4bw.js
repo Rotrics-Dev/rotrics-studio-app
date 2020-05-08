@@ -2,64 +2,82 @@ import Jimp from 'jimp';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 
-const file2greyscaleImage = (url, settings) => {
+/**
+ * 读取文件，然后转为Jimp img，并根据参数处理底层的bitmap data
+ * @param url
+ * @param settings
+ * {transformation, config}
+ * config: {invert, bw, density}
+ * @returns {Promise<DepreciatedJimp>}
+ */
+const file2Img = async (url, settings) => {
     const {transformation, config} = settings;
 
     const width = transformation.children.width.default_value;
     const height = transformation.children.height.default_value;
     const rotate = transformation.children.rotate.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
+    let flipFlag = getFlipFlag(flip_model);
 
     const invert = config.children.invert.default_value;
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
 
-    let flipFlag = getFlipFlag(flip_model);
+    const img = await Jimp.read(url);
 
-    return Jimp.read(url).then(image => {
-        return image
-            .greyscale()
-            .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
-            .resize(width * density, height * density)
-            .rotate(rotate) // rotate: unit is degree and clockwise
-            .scan(0, 0, image.bitmap.width, image.bitmap.height, (x, y, idx) => {
-                //idx: rgba
-                if (image.bitmap.data[idx + 3] === 0) {
-                    // transparent
-                    for (let k = 0; k < 3; ++k) {
-                        image.bitmap.data[idx + k] = 255;
-                    }
-                } else {
-                    const value = image.bitmap.data[idx];
-                    if (invert) {
-                        if (value <= bw) {
-                            for (let k = 0; k < 3; ++k) {
-                                image.bitmap.data[idx + k] = 255;
-                            }
-                        } else {
-                            for (let k = 0; k < 3; ++k) {
-                                image.bitmap.data[idx + k] = 0;
-                            }
+    img
+        .greyscale()
+        .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
+        .resize(width * density, height * density)
+        .rotate(rotate) // rotate: unit is degree and clockwise
+        .scan(0, 0, img.bitmap.width, img.bitmap.height, (x, y, idx) => {
+            //idx: rgba
+            if (img.bitmap.data[idx + 3] === 0) {
+                // transparent
+                for (let k = 0; k < 3; ++k) {
+                    img.bitmap.data[idx + k] = 255;
+                }
+            } else {
+                const value = img.bitmap.data[idx];
+                if (invert) {
+                    if (value <= bw) {
+                        for (let k = 0; k < 3; ++k) {
+                            img.bitmap.data[idx + k] = 255;
                         }
                     } else {
-                        if (value <= bw) {
-                            for (let k = 0; k < 3; ++k) {
-                                image.bitmap.data[idx + k] = 0;
-                            }
-                        } else {
-                            for (let k = 0; k < 3; ++k) {
-                                image.bitmap.data[idx + k] = 255;
-                            }
+                        for (let k = 0; k < 3; ++k) {
+                            img.bitmap.data[idx + k] = 0;
+                        }
+                    }
+                } else {
+                    if (value <= bw) {
+                        for (let k = 0; k < 3; ++k) {
+                            img.bitmap.data[idx + k] = 0;
+                        }
+                    } else {
+                        for (let k = 0; k < 3; ++k) {
+                            img.bitmap.data[idx + k] = 255;
                         }
                     }
                 }
-            })
-            .flip(false, true)
-            .background(0xffffffff);
-    });
+            }
+        })
+        .flip(false, true)
+        .background(0xffffffff);
+
+    return img;
 };
 
-const greyscaleImage2toolPathStr = (image, settings) => {
+/**
+ * 将Jimp img转为tool path string
+ * @param img
+ * @param settings
+ * {config, working_parameters}
+ * config: {bw, density, line_direction}
+ * working_parameters: {work_speed, jog_speed}
+ * @returns {string}
+ */
+const img2toolPathStr = (img, settings) => {
     function extractSegment(data, start, box, direction, sign) {
         let len = 1;
 
@@ -95,17 +113,17 @@ const greyscaleImage2toolPathStr = (image, settings) => {
         return (a <= bw && b <= bw) || (a > bw && b > bw);
     }
 
-    const width = image.bitmap.width;
-    const height = image.bitmap.height;
+    const width = img.bitmap.width;
+    const height = img.bitmap.height;
 
     const {config, working_parameters} = settings;
-
-    const work_speed = working_parameters.children.work_speed.placeholder;
-    const jog_speed = working_parameters.children.jog_speed.placeholder;
 
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
     const line_direction = config.children.line_direction.default_value;
+
+    const work_speed = working_parameters.children.work_speed.placeholder;
+    const jog_speed = working_parameters.children.jog_speed.placeholder;
 
     const normalizer = new Normalizer('Center', 0, width, 0, height, {
         x: 1 / density,
@@ -124,12 +142,12 @@ const greyscaleImage2toolPathStr = (image, settings) => {
             const sign = isReverse ? -1 : 1;
             for (let i = (isReverse ? width - 1 : 0); isReverse ? i >= 0 : i < width; i += len * sign) {
                 const idx = i * 4 + j * width * 4;
-                if (image.bitmap.data[idx] <= bw) {
+                if (img.bitmap.data[idx] <= bw) {
                     const start = {
                         x: i,
                         y: j
                     };
-                    len = extractSegment(image.bitmap.data, start, image.bitmap, direction, sign);
+                    len = extractSegment(img.bitmap.data, start, img.bitmap, direction, sign);
                     const end = {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
@@ -148,12 +166,12 @@ const greyscaleImage2toolPathStr = (image, settings) => {
             const sign = isReverse ? -1 : 1;
             for (let j = (isReverse ? height - 1 : 0); isReverse ? j >= 0 : j < height; j += len * sign) {
                 const idx = i * 4 + j * width * 4;
-                if (image.bitmap.data[idx] <= bw) {
+                if (img.bitmap.data[idx] <= bw) {
                     const start = {
                         x: i,
                         y: j
                     };
-                    len = extractSegment(image.bitmap.data, start, image.bitmap, direction, sign);
+                    len = extractSegment(img.bitmap.data, start, img.bitmap, direction, sign);
                     const end = {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
@@ -176,12 +194,12 @@ const greyscaleImage2toolPathStr = (image, settings) => {
                     len = 1; // FIXME: optimize
                 } else {
                     const idx = i * 4 + j * width * 4;
-                    if (image.bitmap.data[idx] <= bw) {
+                    if (img.bitmap.data[idx] <= bw) {
                         const start = {
                             x: i,
                             y: j
                         };
-                        len = extractSegment(image.bitmap.data, start, image.bitmap, direction, sign);
+                        len = extractSegment(img.bitmap.data, start, img.bitmap, direction, sign);
                         const end = {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
@@ -205,12 +223,12 @@ const greyscaleImage2toolPathStr = (image, settings) => {
                     len = 1;
                 } else {
                     const idx = i * 4 + j * width * 4;
-                    if (image.bitmap.data[idx] <= bw) {
+                    if (img.bitmap.data[idx] <= bw) {
                         let start = {
                             x: i,
                             y: j
                         };
-                        len = extractSegment(image.bitmap.data, start, image.bitmap, direction, sign);
+                        len = extractSegment(img.bitmap.data, start, img.bitmap, direction, sign);
                         const end = {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
@@ -228,8 +246,8 @@ const greyscaleImage2toolPathStr = (image, settings) => {
 };
 
 const toolPathStr4bw = async (url, settings) => {
-    const image = await file2greyscaleImage(url, settings);
-    return greyscaleImage2toolPathStr(image, settings);
+    const img = await file2Img(url, settings);
+    return img2toolPathStr(img, settings);
 };
 
 export default toolPathStr4bw;
