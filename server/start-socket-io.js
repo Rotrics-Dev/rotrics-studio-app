@@ -1,6 +1,6 @@
 import IO from 'socket.io';
 import serialPortManager from './serialPortManager.js';
-import generateToolPathLines from './laser/generateToolPathLines.js';
+import generateToolPathLines from './toolPath/generateToolPathLines.js';
 
 
 import gcodeSender from'./gcode/gcodeSender.js';

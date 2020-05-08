@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.css';
 import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
-import laserManager from "../../manager/laserManager.js";
+import laserManager from "../../laser/laserManager.js";
 import TransformControls2D from '../../three-extensions/TransformControls2D';
 import IntersectDetector from '../../three-extensions/IntersectDetector';
 

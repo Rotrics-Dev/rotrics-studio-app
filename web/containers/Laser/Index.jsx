@@ -4,7 +4,7 @@ import FileSaver from 'file-saver';
 
 import styles from './styles.css';
 import CoordinateSystem2D from '../../components/CoordinateSystem2D/Index.jsx'
-import laserManager from "../../manager/laserManager.js";
+import laserManager from "../../laser/laserManager.js";
 import {Button, Input} from 'antd';
 
 import "antd/dist/antd.css";
@@ -19,9 +19,9 @@ import ConfigText from './ConfigText.jsx';
 import WorkingParameters from './WorkingParameters.jsx';
 
 import socketManager from "../../socket/socketManager"
-import Model2D from "../../manager/Model2D";
+import Model2D from "../../laser/Model2D";
 import {uploadImage} from '../../api/index.js';
-import config_text from "../../manager/config_text.json";
+import config_text from "../../laser/settings/config_text.json";
 import {generateSvg} from "./svgUtils.js";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp

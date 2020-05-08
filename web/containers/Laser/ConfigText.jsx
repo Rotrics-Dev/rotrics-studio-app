@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input} from 'antd';
 import {connect} from 'react-redux';
-import laserManager from "../../manager/laserManager.js";
+import laserManager from "../../laser/laserManager.js";
 import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import {actions as laserTextActions} from '../../reducers/laserText';

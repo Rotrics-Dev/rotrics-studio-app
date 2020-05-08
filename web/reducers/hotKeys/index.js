@@ -1,5 +1,5 @@
 import hotKeys from 'hotkeys-js';
-import laserManager from "../../manager/laserManager.js";
+import laserManager from "../../laser/laserManager.js";
 
 //放在redux中是为了方便管理，
 //根绝当前的tap，执行不同的操作

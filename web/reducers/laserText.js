@@ -1,4 +1,4 @@
-import laserManager from "../manager/laserManager.js";
+import laserManager from "../laser/laserManager.js";
 import _ from 'lodash';
 import {generateSvg} from "../containers/Laser/svgUtils";
 import {uploadImage} from "../api";

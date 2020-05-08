@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Select} from 'antd';
-import laserManager from "../../manager/laserManager.js";
+import laserManager from "../../laser/laserManager.js";
 import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import _ from 'lodash';

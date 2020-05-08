@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import _ from 'lodash';
-import bwSettings from "./settings_bw.json";
-import greyscaleSettings from "./settings_greyscale.json";
-import svgVectorSettings from "./settings_svg.json";
+
+import bwSettings from "./settings/bw.json";
+import greyscaleSettings from "./settings/greyscale.json";
+import svgVectorSettings from "./settings/svg.json";
+
 import {degree2radian} from '../../shared/lib/numeric-utils.js';
 import {getUuid} from '../../shared/lib/utils.js';
 import socketManager from "../socket/socketManager"
