@@ -2,8 +2,7 @@ import TextToSVG from 'text-to-svg';
 
 const generateSvg = async (config_text) => {
     const {text, font, font_size} = config_text.children;
-    // const fontUrl = "http://localhost:3002/ipag.ttf"
-    const fontUrl = "http://localhost:3002/" + font.default_value;
+    const fontUrl = "http://localhost:3002/fonts/" + font.default_value;
     let promise = new Promise((resolve, reject) => {
         TextToSVG.load(fontUrl, (err, textToSVG) => {
             const attributes = {fill: 'black', stroke: 'black'};

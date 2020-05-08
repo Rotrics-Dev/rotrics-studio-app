@@ -11,8 +11,12 @@ import startSocket from "./start-socket-io.js";
    server.listen(3000);
  */
 
+console.log("==================================")
+
 startHttpServer();
 startSocket();
+
+console.log("==================================")
 
 
 

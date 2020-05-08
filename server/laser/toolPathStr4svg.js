@@ -1,27 +1,19 @@
-import path from 'path'
 import SVGParser, {flip, rotate, scale, sortShapes, translate} from '../SVGParser/index.js';
 import {svgToSegments} from './SVGFill.js';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 import {degree2radian} from '../../shared/lib/numeric-utils.js';
+import http from "http";
 
 function pointEqual(p1, p2) {
     return p1[0] === p2[0] && p1[1] === p2[1];
 }
 
 const svg2toolPathStr = async (url, settings) => {
-    let __dirname = path.resolve();
-
-    const urlItems = url.split("/");
-    const modelPath = path.join(__dirname) + '/static/upload/' + urlItems[urlItems.length - 1];
-
-    console.log("modelPath: " + modelPath)
-
     const {transformation, config, working_parameters} = settings;
 
     const workSpeed = working_parameters.children.work_speed.placeholder;
     const jogSpeed = working_parameters.children.jog_speed.placeholder;
-
 
     const originWidth = transformation.children.image_width.default_value;
     const originHeight = transformation.children.image_height.default_value;
@@ -37,9 +29,11 @@ const svg2toolPathStr = async (url, settings) => {
     const fillDensity = config.children.fill.children.fill_density.default_value;
     const optimizePath = config.children.optimize_path.default_value;
 
-    const svgParser = new SVGParser();
+    const svgStr = await getSvgStr(url);
 
-    const svg = await svgParser.parseFile(modelPath);
+    const svgParser = new SVGParser();
+    const svg = await svgParser.parse(svgStr);
+
     flip(svg, 1);
     flip(svg, flipFlag);
     scale(svg, {
@@ -102,6 +96,21 @@ const svg2toolPathStr = async (url, settings) => {
     return content;
 };
 
+const getSvgStr = async (url) => {
+    let promise = new Promise((resolve, reject) => {
+        http.get(url, (req, res) => {
+            let svg = '';
+            req.on('data', (data) => {
+                svg += data;
+            });
+            req.on('end', () => {
+                resolve(svg);
+            });
+        })
+    });
+    let svg = await promise;
+    return svg;
+};
 
 const toolPathStr4svg = async (url, settings) => {
     return await svg2toolPathStr(url, settings);
