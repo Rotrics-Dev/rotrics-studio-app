@@ -12,8 +12,8 @@ import "antd/dist/antd.css";
 import Transformation from './Transformation.jsx';
 
 import ConfigGreyscale from './ConfigGreyscale.jsx';
-import ConfigRasterBW from './ConfigRasterBW.jsx';
-import ConfigSvgVector from './ConfigSvgVector.jsx';
+import ConfigBW from './ConfigBW.jsx';
+import ConfigSvg from './ConfigSvg.jsx';
 import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
@@ -228,8 +228,8 @@ class Index extends React.Component {
 
                     <Transformation/>
                     <ConfigGreyscale/>
-                    <ConfigRasterBW/>
-                    <ConfigSvgVector/>
+                    <ConfigBW/>
+                    <ConfigSvg/>
                     <ConfigText/>
                     <WorkingParameters/>
                 </div>

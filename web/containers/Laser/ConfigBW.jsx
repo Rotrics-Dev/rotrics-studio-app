@@ -5,7 +5,7 @@ import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import NumberInput from '../../components/NumberInput/Index.jsx';
 
-class ConfigRasterBW extends PureComponent {
+class ConfigBW extends PureComponent {
     state = {
         model2d: null,
         config: null
@@ -82,5 +82,5 @@ class ConfigRasterBW extends PureComponent {
     }
 }
 
-export default ConfigRasterBW;
+export default ConfigBW;
 

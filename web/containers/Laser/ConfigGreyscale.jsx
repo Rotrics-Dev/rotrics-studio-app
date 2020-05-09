@@ -95,7 +95,7 @@ class ConfigGreyscale extends PureComponent {
 
                 <div>
                     <span>{algorithm.label}</span>
-                    <Select value={algorithm.default_value} style={{width: 110}}
+                    <Select value={algorithm.default_value} style={{width: 180}}
                             onChange={actions.setAlgorithm}>
                         {algorithmOptions}
                     </Select>
@@ -103,7 +103,7 @@ class ConfigGreyscale extends PureComponent {
 
                 <div>
                     <span>{movement_mode.label}</span>
-                    <Select value={movement_mode.default_value} style={{width: 110}}
+                    <Select value={movement_mode.default_value} style={{width: 180}}
                             onChange={actions.setMovementMode}>
                         {movementModeOptions}
                     </Select>

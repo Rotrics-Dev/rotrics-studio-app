@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {TOOL_PATH_RENDER_METHOD_POINT} from "../../shared/constants.js"
 
 const UNIFORMS = {
     // rgba
@@ -37,7 +38,16 @@ class ToolPathRenderer {
     }
 
     render(toolPathLines) {
-        return this._parseToLine(toolPathLines);
+        if (toolPathLines.length === 1) {
+            return null;
+        }
+
+        //gcode第一行的comment，标识tool path渲染方式
+        if (toolPathLines[0].C === TOOL_PATH_RENDER_METHOD_POINT) {
+            return this._parseToPoints(toolPathLines);
+        } else {
+            return this._parseToLine(toolPathLines);
+        }
     }
 
     _parseToLine(toolPathLines) {
@@ -52,7 +62,7 @@ class ToolPathRenderer {
         };
         for (let i = 0; i < toolPathLines.length; i++) {
             const lineObj = toolPathLines[i];
-            const newState = { ...state };
+            const newState = {...state};
             lineObj.G !== undefined && (newState.G = lineObj.G);
             lineObj.X !== undefined && (newState.X = lineObj.X);
             lineObj.Y !== undefined && (newState.Y = lineObj.Y);
@@ -93,10 +103,13 @@ class ToolPathRenderer {
         return new THREE.Line(bufferGeometry, material);
     }
 
-    _parseToPoints(data) {
+    _parseToPoints(toolPathLines) {
         const geometry = new THREE.Geometry();
+        //TODO：
+        //dwell time会影响point颜色深浅
+        //size被什么影响呢？
         const material = new THREE.PointsMaterial({
-            size: 0.1,
+            size: 0.4,
             vertexColors: THREE.VertexColors,
             opacity: 0.9,
             transparent: true
@@ -107,9 +120,9 @@ class ToolPathRenderer {
             Y: 0,
             Z: 0
         };
-        for (let i = 0; i < data.length; i++) {
-            const item = data[i];
-            const newState = { ...state };
+        for (let i = 0; i < toolPathLines.length; i++) {
+            const item = toolPathLines[i];
+            const newState = {...state};
             item.G !== undefined && (newState.G = item.G);
             item.X !== undefined && (newState.X = item.X);
             item.Y !== undefined && (newState.Y = item.Y);

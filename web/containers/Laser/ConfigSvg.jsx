@@ -5,7 +5,7 @@ import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import NumberInput from '../../components/NumberInput/Index.jsx';
 
-class ConfigSvgVector extends PureComponent {
+class ConfigSvg extends PureComponent {
     state = {
         model2d: null,
         config: null
@@ -64,5 +64,5 @@ class ConfigSvgVector extends PureComponent {
     }
 }
 
-export default ConfigSvgVector;
+export default ConfigSvg;
 

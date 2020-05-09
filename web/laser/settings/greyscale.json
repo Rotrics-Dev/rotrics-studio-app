@@ -18,7 +18,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 200
+        "maximum_value": 100
       },
       "height": {
         "label": "Height",
@@ -27,7 +27,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 200
+        "maximum_value": 100
       },
       "rotate": {
         "label": "Rotate",
@@ -106,6 +106,9 @@
         "minimum_value": 0,
         "maximum_value": 255
       },
+      "bw": {
+        "default_value": 168
+      },
       "algorithm": {
         "label": "Algorithm",
         "description": "algorithm description",
@@ -125,7 +128,7 @@
       "movement_mode": {
         "label": "Movement Mode",
         "description": "Movement Mode description",
-        "default_value": "greyscale-line",
+        "default_value": "greyscale-dot",
         "type": "enum",
         "options": {
           "Line (Normal Quality)": "greyscale-line",
@@ -140,6 +143,18 @@
         "unit": "dot/mm",
         "minimum_value": 1,
         "maximum_value": 20
+      },
+      "line_direction": {
+        "label": "Line Direction",
+        "description": "Line Direction description",
+        "default_value": "Horizontal",
+        "type": "enum",
+        "options": {
+          "Horizontal": "Horizontal",
+          "Vertical": "Vertical",
+          "Diagonal": "Diagonal",
+          "Diagonal2": "Diagonal2"
+        }
       }
     }
   },
@@ -185,7 +200,8 @@
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 1,
-        "maximum_value": 10
+        "maximum_value": 10,
+        "visible": "todo: movement_mode === greyscale-line"
       },
       "multi_pass": {
         "label": "Multi-Pass",

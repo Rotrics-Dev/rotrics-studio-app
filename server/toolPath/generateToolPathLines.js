@@ -1,4 +1,4 @@
-import toolPathStr4bw from './toolPathStr4bw.js';
+import {toolPathStr4bw} from './toolPathStr4bw.js';
 import toolPathStr4svg from './toolPathStr4svg.js';
 import toolPathStr2toolPathLines from "./toolPathStr2toolPathLines.js";
 import toolPathStr4greyscale from "./toolPathStr4greyscale.js";

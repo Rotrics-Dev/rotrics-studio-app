@@ -4,6 +4,7 @@ import getFlipFlag from "./getFlipFlag.js";
 
 /**
  * 读取文件，然后转为Jimp img，并根据参数处理底层的bitmap data
+ * 模式：bw
  * @param url
  * @param settings
  * {transformation, config}
@@ -70,6 +71,7 @@ const file2img = async (url, settings) => {
 
 /**
  * 将Jimp img转为tool path string
+ * 模式：bw
  * @param img
  * @param settings
  * {config, working_parameters}
@@ -77,7 +79,7 @@ const file2img = async (url, settings) => {
  * working_parameters: {work_speed, jog_speed}
  * @returns {string}
  */
-const img2toolPathStr = (img, settings) => {
+const img2toolPathStrBw = (img, settings) => {
     function extractSegment(data, start, box, direction, sign) {
         let len = 1;
 
@@ -247,7 +249,8 @@ const img2toolPathStr = (img, settings) => {
 
 const toolPathStr4bw = async (url, settings) => {
     const img = await file2img(url, settings);
-    return img2toolPathStr(img, settings);
+    return img2toolPathStrBw(img, settings);
 };
 
-export default toolPathStr4bw;
+
+export {toolPathStr4bw, img2toolPathStrBw};
