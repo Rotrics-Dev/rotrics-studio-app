@@ -17,7 +17,7 @@ const svg2toolPathStr = async (url, settings) => {
 
     const originWidth = transformation.children.image_width.default_value;
     const originHeight = transformation.children.image_height.default_value;
-    const rotation = transformation.children.rotate.default_value; //degree and counter-clockwise
+    const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
 
     let flipFlag = getFlipFlag(flip_model);

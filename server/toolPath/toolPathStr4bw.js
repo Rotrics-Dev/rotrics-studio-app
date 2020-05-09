@@ -16,7 +16,7 @@ const file2img = async (url, settings) => {
 
     const width = transformation.children.width.default_value;
     const height = transformation.children.height.default_value;
-    const rotate = transformation.children.rotate.default_value; //degree and counter-clockwise
+    const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
     let flipFlag = getFlipFlag(flip_model);
 
@@ -30,7 +30,7 @@ const file2img = async (url, settings) => {
         .greyscale()
         .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
         .resize(width * density, height * density)
-        .rotate(rotate) // rotate: unit is degree and clockwise
+        .rotate(rotation) // rotation: unit is degree and clockwise
         .scan(0, 0, img.bitmap.width, img.bitmap.height, (x, y, idx) => {
             //idx: rgba
             if (img.bitmap.data[idx + 3] === 0) {

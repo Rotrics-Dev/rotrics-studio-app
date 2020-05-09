@@ -74,7 +74,7 @@ const file2img = async (url, settings) => {
 
     const width = transformation.children.width.default_value;
     const height = transformation.children.height.default_value;
-    const rotation = transformation.children.rotate.default_value; //degree and counter-clockwise
+    const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
     let flipFlag = getFlipFlag(flip_model);
 

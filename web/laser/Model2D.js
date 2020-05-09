@@ -166,11 +166,11 @@ class Model2D extends THREE.Mesh {
                 this.geometry = new THREE.PlaneGeometry(width, height);
                 break;
             }
-            case "rotate": {
+            case "rotation": {
                 //todo: 从其他地方获取width，height
                 const width = this.settings.transformation.children.width.default_value;
                 const height = this.settings.transformation.children.height.default_value;
-                //rotate unit is degree
+                //rotation unit is degree
                 this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(value));
                 this.settings.transformation.children[key].default_value = value;
                 break;

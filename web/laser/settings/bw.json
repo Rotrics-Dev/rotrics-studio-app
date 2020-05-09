@@ -29,8 +29,8 @@
         "minimum_value": 5,
         "maximum_value": 100
       },
-      "rotate": {
-        "label": "Rotate",
+      "rotation": {
+        "label": "Rotation",
         "description": "Rotation description",
         "default_value": 0,
         "type": "int",

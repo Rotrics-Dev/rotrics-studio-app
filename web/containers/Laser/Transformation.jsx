@@ -30,7 +30,7 @@ class Transformation extends PureComponent {
             laserManager.updateTransformation("height", value)
         },
         setRotationDegree: (value) => {
-            laserManager.updateTransformation("rotate", value)
+            laserManager.updateTransformation("rotation", value)
         },
         setX: (value) => {
             laserManager.updateTransformation("x", value)
@@ -49,7 +49,7 @@ class Transformation extends PureComponent {
         }
         const actions = this.actions;
         const {transformation} = this.state;
-        const {width, height, rotate, x, y, flip_model} = transformation.children;
+        const {width, height, rotation, x, y, flip_model} = transformation.children;
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
@@ -73,10 +73,10 @@ class Transformation extends PureComponent {
                                  onChange={actions.setHeight}/>
                 </div>
                 <div>
-                    <span>{rotate.label}</span>
-                    <span>{"(" + rotate.unit + ")"}</span>
-                    <NumberInput min={rotate.minimum_value} max={rotate.maximum_value}
-                                 value={toFixed(rotate.default_value, 0)}
+                    <span>{rotation.label}</span>
+                    <span>{"(" + rotation.unit + ")"}</span>
+                    <NumberInput min={rotation.minimum_value} max={rotation.maximum_value}
+                                 value={toFixed(rotation.default_value, 0)}
                                  onChange={actions.setRotationDegree}/>
                 </div>
                 <div>
