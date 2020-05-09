@@ -26,5 +26,7 @@ npm-*
 # others
 /.eslintcache
 
-# web upload
-/server/static/upload
+# server cache
+/server/static/cache
+
+
