@@ -5,6 +5,46 @@ import {toFixed} from '../../../shared/lib/numeric-utils.js';
 import styles from './styles.css';
 import NumberInput from '../../components/NumberInput/Index.jsx';
 
+//hiddenStr: "config.movement_mode === greyscale-dot"
+const getHiddenValue = (hiddenStr = "", settings) => {
+    let hidden = false;
+    hiddenStr = hiddenStr.trim();
+    if (hiddenStr.length > 0) {
+        //替换所有多个空格为一个空格
+        hiddenStr = hiddenStr.replace(/\s+/g, " ");
+
+        const tokens = hiddenStr.split(" ");
+
+        const left = tokens[0];
+        const keys = left.split(".");
+        const parentKey = keys[0];
+        const childKey = keys[1];
+        const leftValue = settings[parentKey].children[childKey].default_value;
+
+        const rightValue = tokens[2];
+
+        const opt = tokens[1];
+
+        switch (opt) {
+            case "==" :
+            case "===" :
+                hidden = (leftValue === rightValue)
+                break;
+            case "!=" :
+            case "!==" :
+                hidden = (leftValue !== rightValue)
+                break
+            case ">" :
+                hidden = (leftValue > rightValue)
+                break
+            case "<" :
+                hidden = (leftValue < rightValue)
+                break
+        }
+    }
+    return hidden;
+};
+
 class WorkingParameters extends PureComponent {
     state = {
         model2d: null,
@@ -61,10 +101,23 @@ class WorkingParameters extends PureComponent {
         }
         const actions = this.actions;
         const {working_parameters} = this.state;
-        const {print_order, jog_speed, work_speed, multi_pass, fixed_power, dwell_time} = working_parameters.children;
+
+        const {print_order, multi_pass, fixed_power} = working_parameters.children;
+
+        //bw/svg: {work_speed, jog_speed}
+        //greyscale:
+        //config.movement_mode === greyscale-dot => {work_speed, jog_speed(不可见), dwell_time}
+        //config.movement_mode === greyscale-line => {work_speed, jog_speed, dwell_time(不可见)}
+        const {work_speed, jog_speed, dwell_time} = working_parameters.children;
+
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
 
+        let jogSpeedHidden = getHiddenValue(jog_speed.hidden, this.state.model2d.settings);
+        let dwellTimeHidden = false;
+        if (dwell_time) {
+            dwellTimeHidden = getHiddenValue(dwell_time.hidden, this.state.model2d.settings);
+        }
 
         return (
             <React.Fragment>
@@ -76,20 +129,22 @@ class WorkingParameters extends PureComponent {
                                  onChange={actions.setPrintOrder}/>
                 </div>
                 <div>
-                    <span>{jog_speed.label}</span>
-                    <span>{"(" + jog_speed.unit + ")"}</span>
-                    <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
-                                 value={toFixed(jog_speed.default_value, 0)}
-                                 onChange={actions.setJogSpeed}/>
-                </div>
-                <div>
                     <span>{work_speed.label}</span>
                     <span>{"(" + work_speed.unit + ")"}</span>
                     <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
                                  value={toFixed(work_speed.default_value, 0)}
                                  onChange={actions.setWorkSpeed}/>
                 </div>
-                {dwell_time &&
+                {!jogSpeedHidden &&
+                <div>
+                    <span>{jog_speed.label}</span>
+                    <span>{"(" + jog_speed.unit + ")"}</span>
+                    <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
+                                 value={toFixed(jog_speed.default_value, 0)}
+                                 onChange={actions.setJogSpeed}/>
+                </div>
+                }
+                {!dwellTimeHidden &&
                 <div>
                     <span>{dwell_time.label}</span>
                     <span>{"(" + dwell_time.unit + ")"}</span>

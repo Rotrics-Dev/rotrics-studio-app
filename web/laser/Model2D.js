@@ -102,7 +102,9 @@ class Model2D extends THREE.Mesh {
                 this.toolPathLines = data.toolPathLines
                 this.toolPathObj3d && this.remove(this.toolPathObj3d);
                 this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-                this.toolPathObj3d.position.set(0, 100, 0);
+                this.toolPathObj3d.position.set(0, 50, 0);
+                this.position.set(0, -50, 0)
+
                 this.add(this.toolPathObj3d)
             }
         });
