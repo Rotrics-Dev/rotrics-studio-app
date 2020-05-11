@@ -61,6 +61,8 @@ const getSizeRestriction = (fileType) => {
 class Model2D extends THREE.Mesh {
     constructor(fileType) {
         super();
+        this.name = fileType;
+
         this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
@@ -80,6 +82,8 @@ class Model2D extends THREE.Mesh {
         this.toolPathLines = null; //Array
 
         this.gcode = null;
+
+        this.edgesLine = null; //选中时候，显示模型的边框线
 
         //需要deep clone
         switch (this.fileType) {
@@ -103,7 +107,7 @@ class Model2D extends THREE.Mesh {
                 this.toolPathObj3d && this.remove(this.toolPathObj3d);
                 this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
                 this.toolPathObj3d.position.set(0, 50, 0);
-                this.position.set(0, -50, 0)
+                // this.position.set(0, -50, 0)
 
                 this.add(this.toolPathObj3d)
             }
@@ -127,6 +131,7 @@ class Model2D extends THREE.Mesh {
         });
 
         this.geometry = new THREE.PlaneGeometry(width, height); //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
+
         this.material = material;
 
         this.updateTransformation("image_width", image_width);
@@ -141,6 +146,7 @@ class Model2D extends THREE.Mesh {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value) {
+        // console.log(key + " -> " + value)
         switch (key) {
             case "image_width": {
                 this.settings.transformation.children.image_width.default_value = value;
@@ -156,7 +162,8 @@ class Model2D extends THREE.Mesh {
                 const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
-                this.geometry = new THREE.PlaneGeometry(width, height);
+                const rotation = this.settings.transformation.children.rotation.default_value;
+                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
                 break;
             }
             case "height": {
@@ -165,7 +172,8 @@ class Model2D extends THREE.Mesh {
                 const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
-                this.geometry = new THREE.PlaneGeometry(width, height);
+                const rotation = this.settings.transformation.children.rotation.default_value;
+                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
                 break;
             }
             case "rotation": {
@@ -186,13 +194,14 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children[key].default_value = value;
                 break;
             case "flip_model":
+                // this.geometry.translate(50, 0, 0)
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
         //todo: setting是否变化，决定preview
         this._preview();
+        this.updateEdgesLine();
     }
-
 
     updateConfig(key, value) {
         //fill.fill_density
@@ -226,6 +235,20 @@ class Model2D extends THREE.Mesh {
     //todo: 使用controls替换
     setSelected(isSelected) {
         this._isSelected = isSelected;
+        this.updateEdgesLine();
+    }
+
+    //_isSelected == true: 重新计算，并显示
+    //_isSelected == false: 隐藏
+    updateEdgesLine() {
+        if (this._isSelected) {
+            this.edgesLine && this.remove(this.edgesLine);
+            const edges = new THREE.EdgesGeometry(this.geometry);
+            this.edgesLine = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xff0000}));
+            this.add(this.edgesLine);
+        } else {
+            this.edgesLine && (this.edgesLine.visible = false);
+        }
     }
 
     //生成tool path

@@ -29,7 +29,7 @@ class LaserManager extends events.EventEmitter {
         }
         this._selected = model;
         for (const child of this.modelsParent.children) {
-            model.setSelected(this._selected === child);
+            child.setSelected(this._selected === child);
         }
         this._emmitChangeEvent();
     }
