@@ -24,7 +24,7 @@ class Index extends React.Component {
             );
         },
         initSocket: () => {
-            socketManager.setupSocket();
+            socketManager.setup();
         },
     };
 

@@ -10,7 +10,7 @@ class SocketManager extends events.EventEmitter {
         this.socket = null;
     }
 
-    setupSocket() {
+    setup() {
         this.socket = io('http://localhost:3003');
 
         //socket

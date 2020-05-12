@@ -17,13 +17,11 @@ class GcodeSender extends EventEmitter {
     setupListener() {
         console.log("##### GcodeSender linstener")
         serialPortManager.on("on-serialPort-data", data => {
+            console.log("---------------------------------------------------")
+            console.log("gcode sender parsed: ");
             const {received} = data;
-            console.log("# received: " + JSON.stringify(received))
-
-            this.receivedBuffer += received.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-
-            //全部\r\n, \r, 都替换为\n
-            console.log("# 1 receivedBuffer：" + this.receivedBuffer)
+            //全部\r\n, \r, 多个\n，都替换为一个\n
+            this.receivedBuffer += received.replace(/(\r\n|\r|\n)/g, '\n');
 
             let buffer = "";
             for (let i = 0; i < this.receivedBuffer.length; i++) {
@@ -32,16 +30,15 @@ class GcodeSender extends EventEmitter {
                     if (buffer === "ok") {
                         this._sendNextCmd();
                     }
-                    console.log("buffer: " + buffer);
+                    console.log(buffer);
                     buffer = "";
                 } else {
                     buffer += char;
                 }
             }
-            this.receivedBuffer = buffer;
-            console.log("# 2 receivedBuffer：" + this.receivedBuffer)
 
-            console.log("-----------------------------------")
+            //剩余的buffer不能丢掉
+            this.receivedBuffer = buffer;
         })
     }
 
@@ -56,21 +53,32 @@ class GcodeSender extends EventEmitter {
         this.lines = gcode.split('\n');
     }
 
+    //发送注释，固件不会返回ok
+    //\n会返回ok
+    //空行，注释不发送
     _sendNextCmd() {
-        //todo: 不发送注释，空行等
         const line = this.lines.shift();
+        //发完了
         if (line === null || line === undefined) {
             this.emit('gcode-send-end', {id: "gcode id"});
-        } else {
-            console.log("# send: " + line + "\n")
-            serialPortManager.write(line + "\n");
+            return;
         }
+        //注释
+        if (line.trim().indexOf(";") === 0) {
+            this._sendNextCmd();
+            return;
+        }
+        //空行
+        if (line.trim().length === 0) {
+            this._sendNextCmd();
+            return;
+        }
+        serialPortManager.write(line + "\n");
     }
 
     start() {
         console.log("# start")
         this._sendNextCmd();
-
     }
 
     stop() {

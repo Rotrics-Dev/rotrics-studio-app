@@ -8,7 +8,7 @@ class Init extends React.Component {
     componentDidMount() {
         this.props.initHotKeys();
         this.props.initLaserText();
-        socketManager.setupSocket();
+        socketManager.setup();
     }
 
     render() {

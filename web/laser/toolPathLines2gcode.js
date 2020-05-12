@@ -109,7 +109,7 @@ const processGcodeForFixedPower = (gcodeStr, settings) => {
         const powerStrength = Math.floor(power.default_value * 255 / 100);
         const fixedPowerGcode = [
             '; Laser: setting power',
-            `M3 P${power.default_value} S${powerStrength}`,
+            `M3 S${powerStrength}`,
             'G4 P1',
             'M5'
         ].join('\n') + '\n\n';

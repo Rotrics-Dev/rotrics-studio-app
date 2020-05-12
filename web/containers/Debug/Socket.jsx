@@ -43,7 +43,7 @@ class Socket extends React.Component {
 
     actions = {
         setupSocket: () => {
-            socketManager.setupSocket();
+            socketManager.setup();
         },
         querySerialPort: () => {
             socketManager.querySerialPort();
