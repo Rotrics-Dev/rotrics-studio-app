@@ -140,6 +140,7 @@ class Model2D extends THREE.Group {
         this.settings.transformation.children.rotation.default_value = 0;
 
         this._display('img');
+        this._display('edge');
 
         this._preview();
     }
