@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import _ from 'lodash';
 
-import bwSettings from "./settings/bw.json";
-import greyscaleSettings from "./settings/greyscale.json";
-import svgVectorSettings from "./settings/svg.json";
+import settingsBw from "./settings/bw.json";
+import settingsGs from "./settings/greyscale.json";
+import settingsSvg from "./settings/svg.json";
 
 import {degree2radian} from '../../shared/lib/numeric-utils.js';
 import {getUuid} from '../../shared/lib/utils.js';
@@ -37,14 +37,14 @@ const getSizeRestriction = (fileType) => {
     let settings = null;
     switch (fileType) {
         case "bw":
-            settings = bwSettings;
+            settings = settingsBw;
             break;
         case "greyscale":
-            settings = greyscaleSettings;
+            settings = settingsGs;
             break;
         case "svg":
         case "text":
-            settings = svgVectorSettings;
+            settings = settingsSvg;
             break;
     }
     const children = settings.transformation.children;
@@ -58,13 +58,14 @@ const getSizeRestriction = (fileType) => {
 /**
  * Model2D作为容器，一直保持：rotation=0, scale=1, position会变化
  * 三个child：toolPathObj3d，imgObj3d，edgeObj3d
+ * remove(null)是OK的：https://github.com/mrdoob/three.js/blob/master/src/core/Object3D.js
  */
 class Model2D extends THREE.Group {
     constructor(fileType) {
         super();
         this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
-        this.imageRatio = 1; // 图片原始的比例: width/height
+        this._imgRatio = 1; // 图片原始的比例: width/height
         this._isSelected = false;
         this.settings = null;
 
@@ -74,11 +75,10 @@ class Model2D extends THREE.Group {
         this.min_height = min_height;
         this.max_height = max_height;
 
-        this.toolPathId = "";
-
+        //tool path
         this.toolPathObj3d = null; //tool path渲染的结果，Object3D
-
         this.toolPathLines = null; //Array
+        this.toolPathId = ""; //每次preview的tool path id
 
         this.imgObj3d = new THREE.Mesh();//图片渲染的结果，Object3D
 
@@ -89,20 +89,20 @@ class Model2D extends THREE.Group {
         //需要deep clone
         switch (this.fileType) {
             case "bw":
-                this.settings = _.cloneDeep(bwSettings);
+                this.settings = _.cloneDeep(settingsBw);
                 break;
             case "greyscale":
-                this.settings = _.cloneDeep(greyscaleSettings);
+                this.settings = _.cloneDeep(settingsGs);
                 break;
             case "svg":
             case "text":
-                this.settings = _.cloneDeep(svgVectorSettings);
+                this.settings = _.cloneDeep(settingsSvg);
                 break;
         }
 
         //data: {toolPathLines, toolPathId}
         socketManager.on('on-tool-path-generate-laser', (data) => {
-            console.timeEnd(this.toolPathId)
+            console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines)
             }
@@ -110,12 +110,13 @@ class Model2D extends THREE.Group {
     }
 
     //url: 支持svg，raster
-    loadImg(url, image_width, image_height) {
+    loadImg(url, img_width, img_height) {
         this.url = url;
-        this.imageRatio = image_width / image_height;
-        const {width, height} = resize(image_width, image_height, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
-        const loader = new THREE.TextureLoader();
+        this._imgRatio = img_width / img_height;
+        const {width, height} = resize(img_width, img_height, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+
         // loader.setCrossOrigin("anonymous");
+        const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
 
         //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
@@ -130,8 +131,8 @@ class Model2D extends THREE.Group {
         this.add(this.imgObj3d);
 
         //reset transformation的部分配置
-        this.settings.transformation.children.image_width.default_value = image_width;
-        this.settings.transformation.children.image_height.default_value = image_height;
+        this.settings.transformation.children.img_width.default_value = img_width;
+        this.settings.transformation.children.img_height.default_value = img_height;
 
         this.settings.transformation.children.width.default_value = width;
         this.settings.transformation.children.height.default_value = height;
@@ -144,8 +145,9 @@ class Model2D extends THREE.Group {
     }
 
     loadToolPath(toolPathLines) {
-        this.toolPathLines = toolPathLines
-        this.toolPathObj3d && this.remove(this.toolPathObj3d);
+        this.remove(this.toolPathObj3d);
+        this.toolPathLines = toolPathLines;
+
         this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
         this.toolPathObj3d.position.set(0, 100, 0);
         this.add(this.toolPathObj3d);
@@ -166,9 +168,9 @@ class Model2D extends THREE.Group {
                 break;
             case "edge":
                 if (this._isSelected) {
-                    this.edgeObj3d && this.remove(this.edgeObj3d);
-                    const edges = new THREE.EdgesGeometry(this.imgObj3d.geometry);
-                    this.edgeObj3d = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xff0000}));
+                    this.remove(this.edgeObj3d);
+                    const geometry = new THREE.EdgesGeometry(this.imgObj3d.geometry);
+                    this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: 0xff0000}));
                     this.add(this.edgeObj3d);
                 } else {
                     this.edgeObj3d && (this.edgeObj3d.visible = false);
@@ -182,18 +184,16 @@ class Model2D extends THREE.Group {
     updateTransformation(key, value) {
         // console.log(key + " -> " + value)
         switch (key) {
-            case "image_width": {
-                this.settings.transformation.children.image_width.default_value = value;
+            case "img_width":
+                this.settings.transformation.children.img_width.default_value = value;
                 break;
-            }
-            case "image_height": {
-                this.settings.transformation.children.image_height.default_value = value;
+            case "img_height":
+                this.settings.transformation.children.img_height.default_value = value;
                 break;
-            }
             case "width": {
                 const mWidth = value;
-                const mHeight = mWidth / this.imageRatio;
-                const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mHeight = mWidth / this._imgRatio;
+                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -202,8 +202,8 @@ class Model2D extends THREE.Group {
             }
             case "height": {
                 const mHeight = value;
-                const mWidth = mHeight * this.imageRatio;
-                const {width, height} = resize(mWidth, mHeight, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mWidth = mHeight * this._imgRatio;
+                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -230,6 +230,7 @@ class Model2D extends THREE.Group {
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+
 
         this._display("img");
         this._display("edge");
