@@ -28,17 +28,17 @@ const getHiddenValue = (hiddenStr = "", settings) => {
         switch (opt) {
             case "==" :
             case "===" :
-                hidden = (leftValue === rightValue)
+                hidden = (leftValue === rightValue);
                 break;
             case "!=" :
             case "!==" :
-                hidden = (leftValue !== rightValue)
-                break
+                hidden = (leftValue !== rightValue);
+                break;
             case ">" :
-                hidden = (leftValue > rightValue)
-                break
+                hidden = (leftValue > rightValue);
+                break;
             case "<" :
-                hidden = (leftValue < rightValue)
+                hidden = (leftValue < rightValue);
                 break
         }
     }
@@ -75,7 +75,6 @@ class WorkingParameters extends PureComponent {
         setDwellTime: (value) => {
             laserManager.updateWorkingParameters("dwell_time", value)
         },
-        //TODO: fix-me
         //multi pass
         setMultiPass: (e) => {
             laserManager.updateWorkingParameters("multi_pass", e.target.checked)
@@ -117,6 +116,8 @@ class WorkingParameters extends PureComponent {
         let dwellTimeHidden = false;
         if (dwell_time) {
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, this.state.model2d.settings);
+        } else {
+            dwellTimeHidden = true;
         }
 
         return (

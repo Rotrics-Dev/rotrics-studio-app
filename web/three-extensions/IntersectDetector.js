@@ -2,6 +2,7 @@
 
 /**
  * @author walker https://github.com/liumingzw
+ * TODO: 用ES6重写
  */
 
 import * as THREE from 'three';
