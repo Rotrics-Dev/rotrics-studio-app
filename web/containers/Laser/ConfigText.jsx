@@ -80,7 +80,7 @@ class ConfigText extends PureComponent {
                 <h2>{config.label}</h2>
                 <div>
                     <span>{text.label}</span>
-                    <Input.TextArea defaultValue={"Hex Bot"} autoSize={{minRows: 1, maxRows: 1}}
+                    <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
                                     onChange={actions.setText}
                     />
                 </div>
