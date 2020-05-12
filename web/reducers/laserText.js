@@ -41,7 +41,7 @@ export const actions = {
 
         const {url, width, height} = response;
 
-        laserManager._selected.setImage(url, width, height);
+        laserManager._selected.loadImg(url, width, height);
         laserManager._emmitChangeEvent();
 
         dispatch(actions._updateConfigText(key, value));

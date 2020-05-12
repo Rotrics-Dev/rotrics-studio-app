@@ -47,8 +47,9 @@ class Index extends React.Component {
         this.intersectDetector.addEventListener(
             'detected',
             (event) => {
-                console.log("detected")
-                const model = event.object;
+                console.log("detected: " )
+                //detect到的是model2d的children
+                const model = event.object.parent;
                 laserManager.selectModel(model)
             }
         );

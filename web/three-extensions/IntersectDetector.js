@@ -27,7 +27,7 @@ THREE.IntersectDetector = function (objects, camera, domElement) {
         if (event.button === THREE.MOUSE.LEFT){
             event.preventDefault();
             raycaster.setFromCamera(getMousePosition(event), camera);
-            var intersects = raycaster.intersectObjects(objects, false);
+            var intersects = raycaster.intersectObjects(objects, true);
             if (intersects.length > 0) {
                 var detectedObject = intersects[0].object;
                 scope.dispatchEvent({type: 'detected', object: detectedObject});

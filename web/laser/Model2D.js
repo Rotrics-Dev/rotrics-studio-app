@@ -56,13 +56,12 @@ const getSizeRestriction = (fileType) => {
 };
 
 /**
- * Model2D作为容器，一直保持：rotation=0, scale=1
+ * Model2D作为容器，一直保持：rotation=0, scale=1, position会变化
+ * 三个child：toolPathObj3d，imgObj3d，edgeObj3d
  */
-class Model2D extends THREE.Mesh {
+class Model2D extends THREE.Group {
     constructor(fileType) {
         super();
-        this.name = fileType;
-
         this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
         this.imageRatio = 1; // 图片原始的比例: width/height
@@ -77,13 +76,15 @@ class Model2D extends THREE.Mesh {
 
         this.toolPathId = "";
 
-        this.toolPathObj3d = null; //three Object3D
+        this.toolPathObj3d = null; //tool path渲染的结果，Object3D
 
         this.toolPathLines = null; //Array
 
-        this.gcode = null;
+        this.imgObj3d = new THREE.Mesh();//图片渲染的结果，Object3D
 
-        this.edgesLine = null; //选中时候，显示模型的边框线
+        this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
+
+        this.gcode = null;
 
         //需要deep clone
         switch (this.fileType) {
@@ -103,44 +104,77 @@ class Model2D extends THREE.Mesh {
         socketManager.on('on-tool-path-generate-laser', (data) => {
             console.timeEnd(this.toolPathId)
             if (this.toolPathId === data.toolPathId) {
-                this.toolPathLines = data.toolPathLines
-                this.toolPathObj3d && this.remove(this.toolPathObj3d);
-                this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-                this.toolPathObj3d.position.set(0, 50, 0);
-                // this.position.set(0, -50, 0)
-
-                this.add(this.toolPathObj3d)
+                this.loadToolPath(data.toolPathLines)
             }
         });
     }
 
     //url: 支持svg，raster
-    setImage(url, image_width, image_height) {
+    loadImg(url, image_width, image_height) {
         this.url = url;
         this.imageRatio = image_width / image_height;
         const {width, height} = resize(image_width, image_height, this.imageRatio, this.min_width, this.max_width, this.min_height, this.max_height);
         const loader = new THREE.TextureLoader();
         // loader.setCrossOrigin("anonymous");
         const texture = loader.load(url);
-        const material = new THREE.MeshBasicMaterial({
+
+        //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
+        this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height);
+        this.imgObj3d.material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             transparent: true,
             opacity: 1,
             map: texture,
             side: THREE.DoubleSide
         });
+        this.add(this.imgObj3d);
 
-        this.geometry = new THREE.PlaneGeometry(width, height); //PlaneGeometry is Geometry: https://github.com/mrdoob/three.js/blob/master/src/geometries/PlaneGeometry.js
+        //reset transformation的部分配置
+        this.settings.transformation.children.image_width.default_value = image_width;
+        this.settings.transformation.children.image_height.default_value = image_height;
 
-        this.material = material;
+        this.settings.transformation.children.width.default_value = width;
+        this.settings.transformation.children.height.default_value = height;
 
-        this.updateTransformation("image_width", image_width);
-        this.updateTransformation("image_height", image_height);
+        this.settings.transformation.children.rotation.default_value = 0;
 
-        this.updateTransformation("width", width);
-        this.updateTransformation("height", height);
+        this._display('img');
 
         this._preview();
+    }
+
+    loadToolPath(toolPathLines) {
+        this.toolPathLines = toolPathLines
+        this.toolPathObj3d && this.remove(this.toolPathObj3d);
+        this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
+        this.toolPathObj3d.position.set(0, 100, 0);
+        this.add(this.toolPathObj3d);
+
+        this._display('toolPath');
+    }
+
+    //obj3d: img, toolPath, edge
+    _display(type) {
+        switch (type) {
+            case "img":
+                this.imgObj3d && (this.imgObj3d.visible = true);
+                // this.toolPathObj3d && (this.toolPathObj3d.visible = false);
+                break;
+            case "toolPath":
+                // this.imgObj3d && (this.imgObj3d.visible = false);
+                this.toolPathObj3d && (this.toolPathObj3d.visible = true);
+                break;
+            case "edge":
+                if (this._isSelected) {
+                    this.edgeObj3d && this.remove(this.edgeObj3d);
+                    const edges = new THREE.EdgesGeometry(this.imgObj3d.geometry);
+                    this.edgeObj3d = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xff0000}));
+                    this.add(this.edgeObj3d);
+                } else {
+                    this.edgeObj3d && (this.edgeObj3d.visible = false);
+                }
+                break;
+        }
     }
 
     //todo: 增加返回值，是否有修改
@@ -163,7 +197,7 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
-                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
+                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
                 break;
             }
             case "height": {
@@ -173,15 +207,14 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
-                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
+                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
                 break;
             }
             case "rotation": {
-                //todo: 从其他地方获取width，height
                 const width = this.settings.transformation.children.width.default_value;
                 const height = this.settings.transformation.children.height.default_value;
                 //rotation unit is degree
-                this.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(value));
+                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(value));
                 this.settings.transformation.children[key].default_value = value;
                 break;
             }
@@ -194,13 +227,15 @@ class Model2D extends THREE.Mesh {
                 this.settings.transformation.children[key].default_value = value;
                 break;
             case "flip_model":
-                // this.geometry.translate(50, 0, 0)
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+
+        this._display("img");
+        this._display("edge");
+
         //todo: setting是否变化，决定preview
         this._preview();
-        this.updateEdgesLine();
     }
 
     updateConfig(key, value) {
@@ -235,24 +270,12 @@ class Model2D extends THREE.Mesh {
     //todo: 使用controls替换
     setSelected(isSelected) {
         this._isSelected = isSelected;
-        this.updateEdgesLine();
-    }
-
-    //_isSelected == true: 重新计算，并显示
-    //_isSelected == false: 隐藏
-    updateEdgesLine() {
-        if (this._isSelected) {
-            this.edgesLine && this.remove(this.edgesLine);
-            const edges = new THREE.EdgesGeometry(this.geometry);
-            this.edgesLine = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xff0000}));
-            this.add(this.edgesLine);
-        } else {
-            this.edgesLine && (this.edgesLine.visible = false);
-        }
+        this._display("edge");
     }
 
     //生成tool path
     _preview() {
+        console.log("preview")
         this.toolPathId = getUuid();
         socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
         console.time(this.toolPathId)

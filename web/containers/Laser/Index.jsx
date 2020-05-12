@@ -77,7 +77,7 @@ class Index extends React.Component {
             console.log("response: " + JSON.stringify(response))
 
             const model2D = new Model2D(fileType);
-            model2D.setImage(url, width, height);
+            model2D.loadImg(url, width, height);
 
             laserManager.addModel2D(model2D);
         },
@@ -96,7 +96,7 @@ class Index extends React.Component {
                 console.log("response: " + JSON.stringify(response))
 
                 const model2D = new Model2D(fileType);
-                model2D.setImage(url, width, height);
+                model2D.loadImg(url, width, height);
 
                 //增加数据config_text
                 model2D.userData = {config_text: config.config_text};
