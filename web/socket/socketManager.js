@@ -65,7 +65,6 @@ class SocketManager extends events.EventEmitter {
 
     writeGcodeSerialPort(gcode) {
         gcode += "\n";
-        console.log("writeGcodeSerialPort: " + JSON.stringify(gcode))
         this._sendData("serialPort-write", {gcode});
     }
 

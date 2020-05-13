@@ -7,6 +7,8 @@ import Laser from './Laser/Index.jsx';
 import WriteDraw from './WriteDraw/Index.jsx';
 import Settings from './Settings/Index.jsx';
 
+import Header from './Header/Index.jsx';
+
 import Init from './Init.jsx';
 
 import DebugSocket from './Debug/Socket.jsx';
@@ -39,7 +41,9 @@ class Index extends React.Component {
             <Provider store={reduxStore}>
                 <div>
                     <Init/>
-                    <div className={styles.div_header}></div>
+                    <div className={styles.div_header}>
+                        <Header/>
+                    </div>
                     <div className={styles.div_tap_bar}>
                         <ReactTooltip place="right" type="info" effect="solid"/>
                         <button

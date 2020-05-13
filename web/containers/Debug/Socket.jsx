@@ -48,7 +48,7 @@ class Socket extends React.Component {
         querySerialPort: () => {
             socketManager.querySerialPort();
         },
-        changeSerialPort: (path) => {
+        selectPath: (path) => {
             this.setState({path})
         },
         openSerialPort: () => {
@@ -73,7 +73,7 @@ class Socket extends React.Component {
                 <h2>{"DebugSocket"}</h2>
                 <h3>socket : {state.socketStatus}</h3>
                 <h3>serialPort : {state.serialPortStatus}</h3>
-                <Select style={{width: 300}} onChange={actions.changeSerialPort}>
+                <Select style={{width: 300}} onChange={actions.selectPath}>
                     {state.paths.map((item) => {
                         return <Select.Option key={item} value={item}>{item}</Select.Option>
                     })}
