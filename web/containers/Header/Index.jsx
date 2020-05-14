@@ -50,6 +50,9 @@ class Index extends React.Component {
             const gcode = e.target.value;
             this.props.write(gcode)
         },
+        emergencyStop: () => {
+            console.log("emergencyStop")
+        }
     };
 
     render() {
@@ -59,7 +62,7 @@ class Index extends React.Component {
 
         return (
             <div style={{
-                width: "320px",
+                width: "400px",
                 height: "100%",
                 float: "right",
                 marginRight: "15px",
@@ -67,7 +70,10 @@ class Index extends React.Component {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-
+                <button
+                    onClick={actions.emergencyStop}
+                    className={styles.btn_emergency_stop}
+                />
                 <Button type="primary" onClick={actions.openSerialPortModal}>Serial Port</Button>
                 <Modal
                     title="Serial Port"

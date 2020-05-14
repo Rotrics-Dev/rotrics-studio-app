@@ -167,31 +167,22 @@ class Index extends React.Component {
                         multiple={false}
                         onChange={actions.onChangeFile}
                     />
-                    <Button
-                        type="primary"
+                    <button
+                        className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}
-                    >
-                        {"bw"}
-                    </Button>
-                    <Button
-                        type="primary"
+                    />
+                    <button
+                        className={styles.btn_greyscale}
                         onClick={() => actions.onClickToUpload('greyscale')}
-                    >
-                        {"greyscale"}
-                    </Button>
-                    <Button
-                        type="primary"
+                    />
+                    <button
+                        className={styles.btn_svg}
                         onClick={() => actions.onClickToUpload('svg')}
-                    >
-                        {"svg"}
-                    </Button>
-                    <Button
-                        type="primary"
+                    />
+                    <button
+                        className={styles.btn_text}
                         onClick={() => actions.onClickToUpload('text')}
-                    >
-                        {"text"}
-                    </Button>
-                    <br/><br/>
+                    />
                     <Button
                         type="primary"
                         onClick={actions.generateGcode}

@@ -2,13 +2,12 @@ import React from 'react';
 import styles from './styles.css';
 
 class Index extends React.Component {
-    state = {
-    };
+    state = {};
 
     render() {
         return (
             <div>
-                {"writeDraw"}
+                <h1>{"writeDraw"}</h1>
             </div>
         )
     }

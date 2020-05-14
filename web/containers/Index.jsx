@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactTooltip from "react-tooltip";
 import styles from './styles.css';
-import Welcome from './Welcome/Index.jsx';
-import Basic from './Basic/Index.jsx';
-import Laser from './Laser/Index.jsx';
-import WriteDraw from './WriteDraw/Index.jsx';
-import Settings from './Settings/Index.jsx';
-
-import Header from './Header/Index.jsx';
 
 import Init from './Init.jsx';
+import Header from './Header/Index.jsx';
+
+import WriteDraw from './WriteDraw/Index.jsx';
+import Laser from './Laser/Index.jsx';
+import P3D from './P3D/Index.jsx';
+import Code from './Code/Index.jsx';
+import Settings from './Settings/Index.jsx';
 
 import DebugSocket from './Debug/Socket.jsx';
 import DebugHttpServer from './Debug/HttpServer.jsx';
@@ -45,39 +45,41 @@ class Index extends React.Component {
                         <Header/>
                     </div>
                     <div className={styles.div_tap_bar}>
-                        <ReactTooltip place="right" type="info" effect="solid"/>
-                        <button
-                            data-tip="Welcome"
-                            onClick={() => actions.changeTap("welcome")}
-                            className={styles.btn_welcome}
-                        />
-                        <button
-                            data-tip="Basic"
-                            onClick={() => actions.changeTap("basic")}
-                            className={styles.btn_welcome}
-                        />
+                        <ReactTooltip place="right" type="info" effect="solid" backgroundColor="#c0c0c0"
+                                      textColor="#292421"/>
                         <button
                             data-tip="Write/Draw"
-                            onClick={() => actions.changeTap("writeDraw")}
-                            className={styles.btn_welcome}
+                            onClick={() => actions.changeTap("Write/Draw")}
+                            className={styles.btn_write_draw}
                         />
                         <button
                             data-tip="Laser"
-                            onClick={() => actions.changeTap("laser")}
-                            className={styles.btn_welcome}
+                            onClick={() => actions.changeTap("Laser")}
+                            className={styles.btn_laser}
+                        />
+                        <button
+                            data-tip="3D Print"
+                            onClick={() => actions.changeTap("P3D")}
+                            className={styles.btn_3d}
+                        />
+                        <button
+                            data-tip="Code"
+                            onClick={() => actions.changeTap("Code")}
+                            className={styles.btn_code}
                         />
                         <button
                             data-tip="Settings"
-                            onClick={() => actions.changeTap("settings")}
-                            className={styles.btn_welcome}
+                            onClick={() => actions.changeTap("Settings")}
+                            className={styles.btn_settings}
                         />
                     </div>
                     <div className={styles.div_workspace}>
-                        {tap === "welcome" && <Welcome/>}
-                        {tap === "basic" && <Basic/>}
-                        {tap === "writeDraw" && <WriteDraw/>}
-                        {tap === "laser" && <Laser/>}
-                        {tap === "settings" && <Settings/>}
+                        {tap === "Write/Draw" && <WriteDraw/>}
+                        {tap === "Laser" && <Laser/>}
+                        {tap === "P3D" && <P3D/>}
+                        {tap === "Code" && <Code/>}
+                        {tap === "Settings" && <Settings/>}
+
                         {tap === "DebugSocket" && <DebugSocket/>}
                         {tap === "DebugHttpServer" && <DebugHttpServer/>}
                     </div>

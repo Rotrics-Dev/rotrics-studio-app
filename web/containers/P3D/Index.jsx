@@ -4,10 +4,16 @@ import styles from './styles.css';
 class Index extends React.Component {
     state = {};
 
+    actions = {
+        onClickToUpload: () => {
+        },
+    };
+
     render() {
+        const actions = this.actions;
         return (
             <div>
-                <h1>{"settings"}</h1>
+                <h1>{"P3D"}</h1>
             </div>
         )
     }
