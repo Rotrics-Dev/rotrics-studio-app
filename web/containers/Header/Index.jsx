@@ -109,7 +109,7 @@ class Index extends React.Component {
                 <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
                     {('Official Site')}
                 </a>
-                <a href="https://www.manual.rotrics.com/v/v1.0-chinese/" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.manual.rotrics.com/" target="_blank" rel="noopener noreferrer">
                     {('User Manual')}
                 </a>
                 <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
