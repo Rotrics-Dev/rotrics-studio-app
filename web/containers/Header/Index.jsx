@@ -102,8 +102,6 @@ class Index extends React.Component {
                             </Select>
                             <Button type="primary" onClick={actions.getPaths}>get paths</Button>
                         </Space>
-
-
                     </Space>
                 </Modal>
                 <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">

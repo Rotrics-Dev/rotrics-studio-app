@@ -11,7 +11,7 @@ import P3D from './P3D/Index.jsx';
 import Code from './Code/Index.jsx';
 import Settings from './Settings/Index.jsx';
 
-import DebugSocket from './Debug/Socket.jsx';
+import DeviceControl from './Debug/DeviceControl.jsx';
 import DebugHttpServer from './Debug/HttpServer.jsx';
 
 import {createStore, applyMiddleware} from 'redux';
@@ -23,7 +23,7 @@ const reduxStore = createStore(reducer, applyMiddleware(thunk));
 
 class Index extends React.Component {
     state = {
-        tap: "laser"
+        tap: "DeviceControl"
     };
 
     actions = {
@@ -80,7 +80,7 @@ class Index extends React.Component {
                         {tap === "Code" && <Code/>}
                         {tap === "Settings" && <Settings/>}
 
-                        {tap === "DebugSocket" && <DebugSocket/>}
+                        {tap === "DeviceControl" && <DeviceControl/>}
                         {tap === "DebugHttpServer" && <DebugHttpServer/>}
                     </div>
                 </div>
