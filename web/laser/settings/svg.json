@@ -72,7 +72,7 @@
   },
   "config": {
     "icon": "base64xxx",
-    "label": "Vector",
+    "label": "Svg",
     "type": "category",
     "description": "Config of Vector",
     "children": {
@@ -93,8 +93,8 @@
             "description": "Fill Density description",
             "default_value": 4,
             "type": "int",
-            "minimum_value": 0,
-            "maximum_value": 20
+            "minimum_value": 1,
+            "maximum_value": 10
           }
         }
       }

@@ -75,6 +75,24 @@ export const actions = {
             value: status
         };
     },
+    loadGcode: (gcode) => {
+        socketManager._sendData("gcode-send-load", {gcode});
+        return {
+            type: ""
+        };
+    },
+    startSendGcode: () => {
+        socketManager._sendData("gcode-send-start");
+        return {
+            type: ""
+        };
+    },
+    stopSendGcode: () => {
+        socketManager._sendData("gcode-send-stop");
+        return {
+            type: ""
+        };
+    }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
