@@ -75,7 +75,7 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         return (
-            <div>
+            <div style={{paddingLeft: "8px"}}>
                 <Space direction={"vertical"}>
                     <Space direction={"horizontal"}>
                         <button

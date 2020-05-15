@@ -49,7 +49,7 @@ class Index extends React.Component {
     state = {
         fileType: '', // bw, greyscale, vector
         accept: '',
-        fileTypeSelected: "null"
+        fileTypeSelected: ""
     };
 
     componentDidMount() {
@@ -57,7 +57,7 @@ class Index extends React.Component {
             let obj = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
             // console.log(JSON.stringify(obj, null, 2))
 
-            let fileTypeSelected = "null"
+            let fileTypeSelected = ""
             if (model2d) {
                 fileTypeSelected = model2d.fileType;
             }
@@ -175,7 +175,7 @@ class Index extends React.Component {
                     </Button>
                 </Space>
                 <Line/>
-                <h4>{fileTypeSelected}</h4>
+                <h4>{"current image type: " + fileTypeSelected}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
