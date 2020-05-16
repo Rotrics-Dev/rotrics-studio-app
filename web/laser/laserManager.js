@@ -36,14 +36,33 @@ class LaserManager extends events.EventEmitter {
 
     removeSelected() {
         if (this._selected) {
-            this.modelsParent.remove(this._selected)
+            this.modelsParent.remove(this._selected);
             this._selected = null;
             this._emmitChangeEvent();
         }
     }
 
-    updateTransformation(key, value) {
-        this._selected.updateTransformation(key, value);
+    duplicateSelected() {
+        if (this._selected) {
+            const model2D = this._selected.clone();
+            this.addModel2D(model2D)
+        }
+    }
+
+    removeAll() {
+        this.modelsParent.remove(...this.modelsParent.children);
+        this._selected = null;
+        this._emmitChangeEvent();
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @param preview 是否触发model2d preview
+     */
+    updateTransformation(key, value, preview = true) {
+        this._selected.updateTransformation(key, value, preview);
         this._emmitChangeEvent();
     }
 

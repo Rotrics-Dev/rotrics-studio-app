@@ -1,0 +1,93 @@
+.div_root {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #C0C0C0;
+    background-color: #e9e9e9
+}
+
+.btn_undo {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-image: url(./images/undo.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_undo:active {
+    opacity: 0.4;
+}
+
+.btn_redo {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-image: url(./images/redo.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_redo:active {
+    opacity: 0.4;
+}
+
+.btn_duplicate {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-image: url(./images/duplicate.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_duplicate:active {
+    opacity: 0.4;
+}
+
+.btn_delete {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-image: url(./images/delete.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_delete:active {
+    opacity: 0.4;
+}
+
+.btn_clear {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-image: url(./images/clear.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_clear:active {
+    opacity: 0.4;
+}
+
+

@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
 import laserManager from "../../laser/laserManager.js";
 import IntersectDetector from '../../three-extensions/IntersectDetector';
+import PanControls from '../../three-extensions/PanControls';
+import TransformControls2D from "../../three-extensions/TransformControls2D";
 
 class Index extends React.Component {
     constructor(props) {
@@ -20,6 +22,7 @@ class Index extends React.Component {
 
         //controls
         this.intersectDetector = null; // detect the intersected model with mouse
+        this.panControls = null;
     }
 
     state = {
@@ -31,6 +34,8 @@ class Index extends React.Component {
         laserManager.setModelsParent(this.modelGroup);
         this.setupZoom();
         this.setupIntersectDetector();
+        this.setupPanControls();
+
         this.animate();
         this.group.add(new PrintablePlate(new THREE.Vector2(100, 100)));
         window.addEventListener('resize', this.resizeWindow, false);
@@ -47,10 +52,36 @@ class Index extends React.Component {
         this.intersectDetector.addEventListener(
             'detected',
             (event) => {
-                console.log("detected: " )
                 //detect到的是model2d的children
                 const model = event.object.parent;
                 laserManager.selectModel(model)
+                console.log("detected: " + model.fileType)
+                this.panControls.select(model);
+            }
+        );
+    }
+
+    setupPanControls() {
+        this.panControls = new PanControls(this.camera, this.renderer.domElement);
+        this.group.add(this.panControls);
+
+        this.panControls.addEventListener(
+            'panning',
+            (event) => {
+                // 比较卡
+                // const {x, y} = event.object.position;
+                // laserManager.updateTransformation("x", x, false)
+                // laserManager.updateTransformation("y", y, false)
+            }
+        );
+
+        this.panControls.addEventListener(
+            'pan-end',
+            (event) => {
+                console.log("pan-end: " + event.object.fileType)
+                const {x, y} = event.object.position;
+                laserManager.updateTransformation("x", x, false)
+                laserManager.updateTransformation("y", y, false)
             }
         );
     }

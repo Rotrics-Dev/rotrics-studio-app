@@ -182,7 +182,7 @@ class Model2D extends THREE.Group {
 
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
-    updateTransformation(key, value) {
+    updateTransformation(key, value, preview) {
         // console.log(key + " -> " + value)
         switch (key) {
             case "img_width":
@@ -237,7 +237,7 @@ class Model2D extends THREE.Group {
         this._display("edge");
 
         //todo: setting是否变化，决定preview
-        this._preview();
+        preview && this._preview();
     }
 
     updateConfig(key, value) {
@@ -286,6 +286,42 @@ class Model2D extends THREE.Group {
     generateGcode() {
         this.gcode = toolPathLines2gcode(this.toolPathLines, this.settings);
         console.log("gcode: " + this.gcode)
+    }
+
+    // clone() {
+    //     const instance = super.clone();
+    //
+    //
+    //     instance.fileType = this.fileType; // bw, greyscale, svg, text
+    //     instance.url = this.url;
+    //     instance._imgRatio = this._imgRatio; // 图片原始的比例: width/height
+    //     instance._isSelected = false;
+    //     instance.settings = this.settings;
+    //
+    //     instance.min_width = this.min_width;
+    //     instance.max_width = this.max_width;
+    //     instance.min_height = this.min_height;
+    //     instance.max_height = this.max_height;
+    //
+    //     //tool path
+    //     instance.toolPathId = ""; //每次preview的tool path id
+    //
+    //     instance.gcode = null;
+    //
+    //     return instance;
+    //
+    // }
+
+    clone() {
+        const instance = new Model2D(this.fileType);
+
+        const url = this.url;
+        const img_width = this.settings.transformation.children.img_width.default_value;
+        const img_height = this.settings.transformation.children.img_height.default_value;
+
+        instance.loadImg(url, img_width, img_height)
+
+        return instance;
     }
 }
 

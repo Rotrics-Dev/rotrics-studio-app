@@ -147,31 +147,31 @@ class Index extends React.Component {
                         block
                         onClick={actions.generateGcode}
                     >
-                        {"generateGcode"}
+                        {"Generate G-code"}
                     </Button>
                     <Button
                         block
                         onClick={actions.exportGcode}
                     >
-                        {"export gcode"}
+                        {"Export =G-code"}
                     </Button>
                     <Button
                         block
                         onClick={actions.loadGcode}
                     >
-                        {"load gcode"}
+                        {"Load G-code"}
                     </Button>
                     <Button
                         block
                         onClick={actions.startSend}
                     >
-                        {"start Send"}
+                        {"Start Send"}
                     </Button>
                     <Button
                         block
                         onClick={actions.stopSend}
                     >
-                        {"stop Send"}
+                        {"Stop Send"}
                     </Button>
                 </Space>
                 <Line/>
