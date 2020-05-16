@@ -38,11 +38,11 @@ class PanControls extends THREE.Object3D {
         //离开domElement时触发
         //TODO: 将来再处理
         this.domElement.addEventListener('mouseleave', (event) => {
-            console.log("mouseleave")
+            // console.log("mouseleave")
         });
 
         this.domElement.addEventListener('mouseout', (event) => {
-            console.log("mouseout")
+            // console.log("mouseout")
         });
     }
 
