@@ -1,7 +1,6 @@
 .btn_bw {
     width: 50px;
     height: 50px;
-    margin: 5px;
     background-size: 50px 50px;
     background-color: transparent;
     background-image: url(../../../images/laser/bw.png);
@@ -12,7 +11,6 @@
 .btn_greyscale {
     width: 50px;
     height: 50px;
-    margin: 5px;
     background-size: 50px 50px;
     background-color: transparent;
     background-image: url(../../../images/laser/greyscale.png);
@@ -23,7 +21,6 @@
 .btn_svg {
     width: 50px;
     height: 50px;
-    margin: 5px;
     background-size: 50px 50px;
     background-color: transparent;
     background-image: url(../../../images/laser/svg.png);
@@ -34,7 +31,6 @@
 .btn_text {
     width: 50px;
     height: 50px;
-    margin: 5px;
     background-size: 50px 50px;
     background-color: transparent;
     background-image: url(../../../images/laser/text.png);

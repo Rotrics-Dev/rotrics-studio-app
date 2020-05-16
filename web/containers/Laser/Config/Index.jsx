@@ -184,7 +184,7 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} size={0}>
+                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "6px"}} size={5}>
                     <button
                         className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}
