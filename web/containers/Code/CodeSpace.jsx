@@ -4,7 +4,7 @@ import makeToolboxXML from './make-toolbox-xml';
 import {connect} from 'react-redux';
 
 const BLOCKS_DEFAULT_OPTIONS = {
-    media: 'static/blocks-media/',
+    media: './asset/blocks-media/',
     zoom: {
         controls: false,
         wheel: false,
