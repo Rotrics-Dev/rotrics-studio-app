@@ -19,10 +19,53 @@ import {actions as tapActions} from "../reducers/tap";
 import {connect} from 'react-redux';
 
 class Index extends React.Component {
+    refWriteDraw = React.createRef();
+    refLaser = React.createRef();
+    refP3D = React.createRef();
+    refCode = React.createRef();
+    refSettings = React.createRef();
+
     actions = {
         setTap: (value) => {
             this.props.setTap(value);
         },
+    };
+
+    componentDidMount() {
+        this.displayTap(this.props.tap)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.tap !== nextProps.tap) {
+            this.displayTap(nextProps.tap)
+        }
+    }
+
+    // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
+    // 如此写，可以实现，先计算parent element的size，再显示指定的tap
+    displayTap = (tap) => {
+        this.refWriteDraw.current.style.display = 'none';
+        this.refLaser.current.style.display = 'none';
+        this.refP3D.current.style.display = 'none';
+        this.refCode.current.style.display = 'none';
+        this.refSettings.current.style.display = 'none';
+        switch (tap) {
+            case TAP_WRITE_DRAW:
+                this.refWriteDraw.current.style.display = 'block';
+                break;
+            case TAP_LASER:
+                this.refLaser.current.style.display = 'block';
+                break;
+            case TAP_P3D:
+                this.refP3D.current.style.display = 'block';
+                break;
+            case TAP_CODE:
+                this.refCode.current.style.display = 'block';
+                break;
+            case TAP_SETTINGS:
+                this.refSettings.current.style.display = 'block';
+                break;
+        }
     };
 
     render() {
@@ -64,14 +107,21 @@ class Index extends React.Component {
                     />
                 </div>
                 <div className={styles.div_workspace}>
-                    {tap === TAP_WRITE_DRAW && <WriteDraw/>}
-                    {tap === TAP_LASER && <Laser/>}
-                    {tap === TAP_P3D && <P3D/>}
-                    {tap === TAP_CODE && <Code/>}
-                    {tap === TAP_SETTINGS && <Settings/>}
-
-                    {tap === "DeviceControl" && <DeviceControl/>}
-                    {tap === "DebugHttpServer" && <DebugHttpServer/>}
+                    <div ref={this.refWriteDraw}>
+                        <WriteDraw/>
+                    </div>
+                    <div ref={this.refLaser}>
+                        <Laser/>
+                    </div>
+                    <div ref={this.refP3D}>
+                        <P3D/>
+                    </div>
+                    <div ref={this.refCode}>
+                        <Code/>
+                    </div>
+                    <div ref={this.refSettings}>
+                        <Settings/>
+                    </div>
                 </div>
             </div>
         )
