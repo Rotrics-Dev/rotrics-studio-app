@@ -7,7 +7,9 @@ import { actions as serialPortActions} from '../reducers/serialPort';
 import { actions as vmActions} from '../reducers/vm';
 
 class Init extends React.Component {
-    componentDidMount() {
+
+    constructor(props) {
+        super(props);
         this.props.initHotKeys();
         this.props.initLaserText();
         this.props.initSerialPort();

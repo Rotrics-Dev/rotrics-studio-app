@@ -32,7 +32,7 @@ const BLOCKS_DEFAULT_OPTIONS = {
     sounds: false
 };
 
-class CodeSpace extends React.Component {
+class Blocks extends React.Component {
     constructor(props) {
         super(props);
         this.blocks = React.createRef();
@@ -122,8 +122,7 @@ class CodeSpace extends React.Component {
 
     render() {
         return (
-            <div style={{width: "100%", height: "100%"}} ref={this.blocks}>
-            </div>
+            <div style={{width: "100%", height: "100%"}} ref={this.blocks}/>
         )
     }
 }
@@ -135,5 +134,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(CodeSpace);
+export default connect(mapStateToProps, null)(Blocks);
 

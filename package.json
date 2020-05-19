@@ -5,10 +5,9 @@
   "description": "Computer client application for controlling Rotrics Arm",
   "main": "main.js",
   "scripts": {
-    "start-web": "webpack-dev-server",
+    "start-web": "npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
     "start-server": "node ./server/index.js",
-    "build": "webpack",
-    "text-to-svg": "node ./demo/text-to-svg.js"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
