@@ -14,23 +14,20 @@ import Settings from './Settings/Index.jsx';
 import DeviceControl from './Debug/DeviceControl.jsx';
 import DebugHttpServer from './Debug/HttpServer.jsx';
 
+import {TAP_WRITE_DRAW, TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants.js";
+import {actions as tapActions} from "../reducers/tap";
+import {connect} from 'react-redux';
 
 class Index extends React.Component {
-    state = {
-        tap: "Code"
-    };
-
     actions = {
-        changeTap: (tap) => {
-            console.log(tap);
-            this.setState({tap})
+        setTap: (value) => {
+            this.props.setTap(value);
         },
     };
 
     render() {
-        const state = this.state;
         const actions = this.actions;
-        const {tap} = state;
+        const {tap} = this.props;
         return (
             <div>
                 <Init/>
@@ -42,36 +39,36 @@ class Index extends React.Component {
                                   textColor="#292421"/>
                     <button
                         data-tip="Write/Draw"
-                        onClick={() => actions.changeTap("Write/Draw")}
+                        onClick={() => actions.setTap(TAP_WRITE_DRAW)}
                         className={styles.btn_write_draw}
                     />
                     <button
                         data-tip="Laser"
-                        onClick={() => actions.changeTap("Laser")}
+                        onClick={() => actions.setTap(TAP_LASER)}
                         className={styles.btn_laser}
                     />
                     <button
                         data-tip="3D Print"
-                        onClick={() => actions.changeTap("P3D")}
+                        onClick={() => actions.setTap(TAP_P3D)}
                         className={styles.btn_3d}
                     />
                     <button
                         data-tip="Code"
-                        onClick={() => actions.changeTap("Code")}
+                        onClick={() => actions.setTap(TAP_CODE)}
                         className={styles.btn_code}
                     />
                     <button
                         data-tip="Settings"
-                        onClick={() => actions.changeTap("Settings")}
+                        onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={styles.btn_settings}
                     />
                 </div>
                 <div className={styles.div_workspace}>
-                    {tap === "Write/Draw" && <WriteDraw/>}
-                    {tap === "Laser" && <Laser/>}
-                    {tap === "P3D" && <P3D/>}
-                    {tap === "Code" && <Code/>}
-                    {tap === "Settings" && <Settings/>}
+                    {tap === TAP_WRITE_DRAW && <WriteDraw/>}
+                    {tap === TAP_LASER && <Laser/>}
+                    {tap === TAP_P3D && <P3D/>}
+                    {tap === TAP_CODE && <Code/>}
+                    {tap === TAP_SETTINGS && <Settings/>}
 
                     {tap === "DeviceControl" && <DeviceControl/>}
                     {tap === "DebugHttpServer" && <DebugHttpServer/>}
@@ -81,4 +78,17 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+    const {tap} = state.tap;
+    return {
+        tap
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setTap: (value) => dispatch(tapActions.setTap(value)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
