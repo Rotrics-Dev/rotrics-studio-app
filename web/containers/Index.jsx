@@ -2,7 +2,6 @@ import React from 'react';
 import ReactTooltip from "react-tooltip";
 import styles from './styles.css';
 
-import Init from './Init.jsx';
 import Header from './Header/Index.jsx';
 
 import WriteDraw from './WriteDraw/Index.jsx';
@@ -17,13 +16,24 @@ import DebugHttpServer from './Debug/HttpServer.jsx';
 import {TAP_WRITE_DRAW, TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants.js";
 import {actions as tapActions} from "../reducers/tap";
 import {connect} from 'react-redux';
+import {actions as hotKeysActions} from "../reducers/hotKeys";
+import {actions as laserTextActions} from "../reducers/laserText";
+import {actions as serialPortActions} from "../reducers/serialPort";
+import {actions as vmActions} from "../reducers/vm";
+import socketManager from "../socket/socketManager";
 
 class Index extends React.Component {
-    refWriteDraw = React.createRef();
-    refLaser = React.createRef();
-    refP3D = React.createRef();
-    refCode = React.createRef();
-    refSettings = React.createRef();
+    constructor(props) {
+        super(props);
+        this.props.init();
+        socketManager.setup();
+
+        this.refWriteDraw = React.createRef();
+        this.refLaser = React.createRef();
+        this.refP3D = React.createRef();
+        this.refCode = React.createRef();
+        this.refSettings = React.createRef();
+    }
 
     actions = {
         setTap: (value) => {
@@ -73,7 +83,6 @@ class Index extends React.Component {
         const {tap} = this.props;
         return (
             <div>
-                <Init/>
                 <div className={styles.div_header}>
                     <Header/>
                 </div>
@@ -138,6 +147,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setTap: (value) => dispatch(tapActions.setTap(value)),
+        init: () => {
+            dispatch(hotKeysActions.init());
+            dispatch(laserTextActions.init());
+            dispatch(serialPortActions.init());
+            dispatch(vmActions.init());
+        }
     };
 };
 
