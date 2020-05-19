@@ -41,7 +41,7 @@ class Blocks extends React.Component {
     }
 
     componentDidMount() {
-        const toolbox = makeToolboxXML(false);
+        const toolbox = makeToolboxXML();
         const workspaceConfig = Object.assign(
             {},
             BLOCKS_DEFAULT_OPTIONS,

@@ -21,6 +21,37 @@ export const actions = {
     },
     _setupListener: () => (dispatch, getState) => {
         const vm = getState().vm.vm;
+
+        //参考：scratch-gui/lib/vm-listener-hoc.jsx
+        document.addEventListener('keydown', (e) => {
+            // Don't capture keys intended for Blockly inputs.
+            if (e.target !== document && e.target !== document.body) return;
+            console.log("@@@")
+            vm.postIOData('keyboard', {
+                keyCode: e.keyCode,
+                key: e.key,
+                isDown: true
+            });
+            // Prevent space/arrow key from scrolling the page.
+            if (e.keyCode === 32 || // 32=space
+                (e.keyCode >= 37 && e.keyCode <= 40)) { // 37, 38, 39, 40 are arrows
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            // Always capture up events,
+            // even those that have switched to other targets.
+            vm.postIOData('keyboard', {
+                keyCode: e.keyCode,
+                key: e.key,
+                isDown: false
+            });
+            // E.g., prevent scroll.
+            if (e.target !== document && e.target !== document.body) {
+                e.preventDefault();
+            }
+        });
+
         vm.on(
             'PROJECT_RUN_START',
             () => {
