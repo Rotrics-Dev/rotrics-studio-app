@@ -31,7 +31,6 @@ class PanControls extends THREE.Object3D {
         });
 
         this.domElement.addEventListener('mouseup', (event) => {
-            console.log("mouseup")
             this.onMouseUp(event)
         });
 

@@ -26,7 +26,6 @@ export const actions = {
         document.addEventListener('keydown', (e) => {
             // Don't capture keys intended for Blockly inputs.
             if (e.target !== document && e.target !== document.body) return;
-            console.log("@@@")
             vm.postIOData('keyboard', {
                 keyCode: e.keyCode,
                 key: e.key,

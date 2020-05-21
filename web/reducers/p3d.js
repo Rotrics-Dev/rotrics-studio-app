@@ -1,7 +1,7 @@
-import File3dToBufferGeometryWorker from '../workers/File3dToBufferGeometry.worker';
+import File3dToBufferGeometryWorker from '../containers/p3d/lib/File3dToBufferGeometry.worker';
 import * as THREE from 'three';
-import p3dModelManager from "../P3D/p3dModelManager";
-import Model3D from "../P3D/Model3D";
+import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
+import Model3D from "../containers/p3d/lib/Model3D";
 
 const ACTION_UPDATE_STATE = 'ACTION_UPDATE_STATE';
 

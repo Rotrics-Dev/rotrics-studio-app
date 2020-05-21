@@ -1,7 +1,6 @@
-import laserManager from "../laser/laserManager.js";
+import laserManager from "../containers/laser/lib/laserManager.js";
 import _ from 'lodash';
-import {generateSvg} from "../containers/Laser/svgUtils";
-import {uploadImage} from "../api";
+import {uploadImage, generateSvg} from "../api";
 
 const SET_CONFIG_TEXT = 'SET_CONFIG_TEXT';
 const UPDATE_CONFIG_TEXT = 'UPDATE_CONFIG_TEXT';

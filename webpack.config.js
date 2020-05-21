@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: "./web/main.js",
+    entry: "./web/index.jsx",
     // devtool: 'source-map',
     output: {
         path: __dirname + "/build",
@@ -53,7 +53,7 @@ module.exports = {
             },
             {
                 test: /\.worker\.js$/,
-                use: { loader: 'worker-loader' }
+                use: {loader: 'worker-loader'}
             }
         ]
     },

@@ -1,0 +1,14 @@
+.btn_emergency_stop {
+    width: 40px;
+    height: 40px;
+    background-image: url(./images/emergency-stop.png);
+    outline: none;
+    border: none;
+    background-size: 29px 26px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_emergency_stop:active {
+    opacity: 0.4;
+}

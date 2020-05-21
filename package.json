@@ -1,7 +1,6 @@
 {
   "name": "rotrics-app",
   "version": "0.0.1",
-  "type": "module",
   "description": "Computer client application for controlling Rotrics Arm",
   "main": "main.js",
   "scripts": {
@@ -51,6 +50,7 @@
     "@ant-design/icons": "^4.1.0",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
+    "colornames": "^1.1.1",
     "events": "^3.1.0",
     "file-saver": "^2.0.2",
     "hotkeys-js": "^3.7.6",

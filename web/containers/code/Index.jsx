@@ -1,11 +1,11 @@
 import React from 'react';
-import Taps from './taps/Index.jsx';
+import Workspace from "./ui/Workspace.jsx";
 
 class Index extends React.Component {
     render() {
         return (
-            <div>
-                <Taps/>
+            <div style={{width: "100%", height: "100%"}}>
+                <Workspace/>
             </div>
         )
     }

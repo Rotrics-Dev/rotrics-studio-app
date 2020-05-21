@@ -1,9 +1,9 @@
-import {TAP_WRITE_DRAW, TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants.js";
+import {TAP_WRITE_DRAW, TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants/index.js";
 
 const SET_TAP = "SET_TAP";
 
 const INITIAL_STATE = {
-    tap: TAP_CODE
+    tap: TAP_P3D
 };
 
 export const actions = {
