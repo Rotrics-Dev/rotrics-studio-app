@@ -20,10 +20,9 @@ export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE';
 
 //gcode sender
-export const GCODE_SEND_LOAD = 'GCODE_SEND_LOAD';
-export const GCODE_SEND_START = 'GCODE_SEND_START';
+export const GCODE_STATUS = 'GCODE_STATUS'; //sending/end/stopped/paused?
+export const GCODE_SEND_START = 'GCODE_SEND_START';//开始发送制定的gcode
 export const GCODE_SEND_STOP = 'GCODE_SEND_STOP';
-export const GCODE_SEND_ERROR = 'GCODE_SEND_ERROR';
 
 //tool path
 export const TOOL_PATH_GENERATE_LASER = 'TOOL_PATH_GENERATE_LASER';

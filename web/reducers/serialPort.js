@@ -6,7 +6,7 @@ import {
     SERIAL_PORT_CLOSE,
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
-    SERIAL_PORT_WRITE
+    SERIAL_PORT_WRITE,
 } from "../../shared/constants.js"
 
 const SET_PATHS = 'SET_PATHS';
@@ -87,20 +87,20 @@ export const actions = {
             value: status
         };
     },
-    loadGcode: (gcode) => {
-        socketClientManager._sendData("gcode-send-load", {gcode});
+    getSendGcodeStatus: () => {
+        socketClientManager.getSendGcodeStatus();
         return {
             type: ""
         };
     },
-    startSendGcode: () => {
-        socketClientManager._sendData("gcode-send-start");
+    startSendGcode: (gcode) => {
+        socketClientManager.startSendGcode(gcode);
         return {
             type: ""
         };
     },
     stopSendGcode: () => {
-        socketClientManager._sendData("gcode-send-stop");
+        socketClientManager.stopSendGcode();
         return {
             type: ""
         };

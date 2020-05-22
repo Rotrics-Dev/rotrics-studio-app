@@ -16,8 +16,7 @@ class Index extends React.Component {
             arr.push('G90');
             const gcode = arr.join("\n");
             console.log(gcode)
-            this.props.loadGcode(gcode);
-            this.props.startSendGcode();
+            this.props.startSendGcode(gcode);
         }
     };
 
@@ -97,8 +96,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         write: (str) => dispatch(serialPortActions.write(str)),
-        loadGcode: (str) => dispatch(serialPortActions.loadGcode(str)),
-        startSendGcode: () => dispatch(serialPortActions.startSendGcode()),
+        startSendGcode: (gcode) => dispatch(serialPortActions.startSendGcode(gcode)),
     };
 };
 

@@ -10,10 +10,9 @@ import {
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
-    GCODE_SEND_LOAD,
+    GCODE_STATUS,
     GCODE_SEND_START,
     GCODE_SEND_STOP,
-    GCODE_SEND_ERROR
 } from "../shared/constants.js"
 
 import gcodeSender from './gcode/gcodeSender.js';
@@ -43,9 +42,12 @@ const startSocket = () => {
             socket.on(SERIAL_PORT_WRITE, str => serialPortManager.write(str));
 
             //gcode send
-            socket.on(GCODE_SEND_LOAD, data => gcodeSender.load(data.gcode));
-            socket.on(GCODE_SEND_START, () => gcodeSender.start());
+            socket.on(GCODE_SEND_START, (gcode) => gcodeSender.start(gcode));
             socket.on(GCODE_SEND_STOP, () => gcodeSender.stop());
+            socket.on(GCODE_STATUS, () => {
+                const status = gcodeSender.getStatus();
+                socket.emit(GCODE_STATUS, status);
+            });
 
             //gcode generate
             socket.on(
@@ -76,6 +78,7 @@ const startSocket = () => {
             });
             serialPortManager.on(SERIAL_PORT_DATA, (data) => {
                 socket.emit(SERIAL_PORT_DATA, data);
+                gcodeSender.onSerialPortData(data)
             });
         }
     );

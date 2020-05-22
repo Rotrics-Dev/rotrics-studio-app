@@ -120,12 +120,9 @@ class Index extends React.Component {
             const fileName = "be.gcode";
             FileSaver.saveAs(blob, fileName, true);
         },
-        loadGcode: () => {
-            const gcode = laserManager._selected.gcode;
-            socketClientManager.loadGcode(gcode)
-        },
         startSend: () => {
-            socketClientManager.startSendGcode()
+            const gcode = laserManager._selected.gcode;
+            socketClientManager.startSendGcode(gcode)
         },
         stopSend: () => {
             socketClientManager.stopSendGcode()
@@ -153,12 +150,6 @@ class Index extends React.Component {
                         onClick={actions.exportGcode}
                     >
                         {"Export =G-code"}
-                    </Button>
-                    <Button
-                        block
-                        onClick={actions.loadGcode}
-                    >
-                        {"Load G-code"}
                     </Button>
                     <Button
                         block

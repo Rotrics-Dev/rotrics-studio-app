@@ -8,7 +8,7 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
-    GCODE_SEND_LOAD,
+    GCODE_STATUS,
     GCODE_SEND_START,
     GCODE_SEND_STOP,
     TOOL_PATH_GENERATE_LASER
@@ -26,7 +26,8 @@ class SocketClientManager extends EventEmitter {
         //socket
         this.socketClient.on('connect', () => {
             console.log('socket io client -> connect')
-            this.socketClient.emit(SERIAL_PORT_GET_OPENED);
+            this.getSerialPortOpened();
+            this.getSendGcodeStatus();
             this.emit('socket-connect');
         });
 
@@ -59,10 +60,19 @@ class SocketClientManager extends EventEmitter {
         this.socketClient.on(TOOL_PATH_GENERATE_LASER, (data) => {
             this.emit(TOOL_PATH_GENERATE_LASER, data);
         });
+
+        //gcode
+        this.socketClient.on(GCODE_STATUS, (status) => {
+            console.log("status -> " + status)
+        });
     }
 
     getSerialPortPath() {
         this.socketClient.emit(SERIAL_PORT_GET_PATH);
+    }
+
+    getSerialPortOpened() {
+        this.socketClient.emit(SERIAL_PORT_GET_OPENED);
     }
 
     openSerialPort(path) {
@@ -78,12 +88,14 @@ class SocketClientManager extends EventEmitter {
         this.socketClient.emit(SERIAL_PORT_WRITE, str);
     }
 
-    loadGcode(gcode) {
-        this.socketClient.emit(GCODE_SEND_LOAD, {gcode});
+    getSendGcodeStatus() {
+        this.socketClient.emit(GCODE_STATUS);
     }
 
-    startSendGcode() {
-        this.socketClient.emit(GCODE_SEND_START);
+    startSendGcode(gcode) {
+        console.log("startSendGcode: ")
+        console.log("gcode: ")
+        this.socketClient.emit(GCODE_SEND_START, gcode);
     }
 
     stopSendGcode() {

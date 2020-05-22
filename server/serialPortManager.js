@@ -12,13 +12,14 @@ import {
     SERIAL_PORT_WRITE
 } from "../shared/constants.js"
 
-const baudRate = 115200;
+const baudRate = 9600;
 
 //TODO: 打开新的串口，应该remove前一个串口的listener；等出bug时候再说
 class SerialPortManager extends EventEmitter {
     constructor() {
         super();
         this.serialPort = null;
+        this.receivedBuffer = "";
     }
 
     getPaths() {
@@ -43,7 +44,56 @@ class SerialPortManager extends EventEmitter {
 
     _openNew(path) {
         this.serialPort = new SerialPort(path, {baudRate, autoOpen: false});
-        this._setupListener();
+        this.serialPort.on("open", () => {
+            console.log("serial port -> open: " + this.serialPort.path);
+            this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
+        });
+
+        this.serialPort.on("close", () => {
+            console.log("serial port -> close: " + this.serialPort.path);
+            this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
+            this.serialPort = null;
+        });
+
+        this.serialPort.on("error", () => {
+            console.log("serial port -> error: " + this.serialPort.path);
+            this.emit(SERIAL_PORT_ERROR);
+            this.serialPort = null;
+        });
+
+        //data: 类型是buffer的数组
+        //将buffer转为string，发送到前端
+        this.serialPort.on("data", (buffer) => {
+            if (Buffer.isBuffer(buffer)) {
+                const arr = [];
+                for (let i = 0; i < buffer.length; i++) {
+                    arr.push(buffer[i]);
+                }
+
+                const received = utf8bytes2string(arr);
+
+                console.log("received raw: " + received);
+
+                //全部\r\n, \r, 多个\n，都替换为一个\n
+                this.receivedBuffer += received.replace(/(\r\n|\r|\n)/g, '\n');
+                let bufferStr = "";
+                for (let i = 0; i < this.receivedBuffer.length; i++) {
+                    const char = this.receivedBuffer.charAt(i);
+                    if (char !== '\n') {
+                        bufferStr += char;
+                    } else {
+                        console.log("received: " + bufferStr);
+                        this.emit(SERIAL_PORT_DATA, {received: bufferStr});
+                        bufferStr = "";
+                    }
+                }
+                //剩余的buffer不能丢掉
+                this.receivedBuffer = bufferStr;
+            } else {
+                console.log("received data is not buffer: " + JSON.stringify(buffer))
+            }
+        });
+
         this.serialPort.open((error) => {
             if (error) {
                 this.serialPort = null;
@@ -123,42 +173,6 @@ class SerialPortManager extends EventEmitter {
         } else {
             console.log("Port is closed");
         }
-    }
-
-    _setupListener() {
-        this.serialPort.on("open", () => {
-            console.log("event open")
-            this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
-        });
-
-        this.serialPort.on("close", () => {
-            console.log("event close")
-            this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
-            this.serialPort = null;
-        });
-
-        this.serialPort.on("error", () => {
-            console.log("event error")
-            this.emit(SERIAL_PORT_ERROR);
-            this.serialPort = null;
-        });
-
-        //data: 类型是buffer的数组
-        //将buffer转为string，发送到前端
-        this.serialPort.on("data", (buffer) => {
-            if (Buffer.isBuffer(buffer)) {
-                const arr = [];
-                for (let i = 0; i < buffer.length; i++) {
-                    arr.push(buffer[i]);
-                }
-
-                console.log("………………………………………………………………………………………………………………………………………")
-                console.log("serialPort raw received: ");
-                console.log(utf8bytes2string(arr));
-
-                this.emit(SERIAL_PORT_DATA, {received: utf8bytes2string(arr)});
-            }
-        });
     }
 }
 
