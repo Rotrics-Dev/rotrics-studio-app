@@ -14,6 +14,7 @@ import {
 
 const baudRate = 115200;
 
+//TODO: 打开新的串口，应该remove前一个串口的listener；等出bug时候再说
 class SerialPortManager extends EventEmitter {
     constructor() {
         super();
@@ -35,7 +36,6 @@ class SerialPortManager extends EventEmitter {
     }
 
     getOpened() {
-        console.log("getOpened")
         if (this.serialPort && this.serialPort.isOpen) {
             this.emit(SERIAL_PORT_GET_OPENED, this.serialPort.path);
         }

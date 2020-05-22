@@ -27,7 +27,12 @@ const startSocket = () => {
         socket => {
             console.log('socket io server -> connect');
 
-            socket.on('disconnect', () => console.log('socket io server -> disconnect'));
+            socket.on('disconnect', () => {
+                console.log('socket io server -> disconnect');
+                //必须remove all，否则多次触发event，且内存泄漏
+                socket.removeAllListeners();
+                serialPortManager.removeAllListeners();
+            });
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
             //serial port

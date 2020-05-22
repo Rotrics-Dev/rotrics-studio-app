@@ -20,24 +20,14 @@ class SocketClientManager extends EventEmitter {
         this.socketClient = null;
     }
 
-    onConnect() {
-
-    }
-
-    onDisconnect() {
-
-    }
-
-
     setup() {
         this.socketClient = io('http://localhost:3003');
 
         //socket
         this.socketClient.on('connect', () => {
             console.log('socket io client -> connect')
-            this.emit('socket-connect');
-
             this.socketClient.emit(SERIAL_PORT_GET_OPENED);
+            this.emit('socket-connect');
         });
 
         this.socketClient.on('disconnect', () => {
