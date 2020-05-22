@@ -1,4 +1,13 @@
-import socketManager from "../socket/socketManager";
+import socketClientManager from "../socket/socketClientManager";
+import {
+    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE
+} from "../../shared/constants.js"
 
 const SET_PATHS = 'SET_PATHS';
 const SET_PATH = 'SET_PATH';
@@ -12,47 +21,50 @@ const INITIAL_STATE = {
 
 export const actions = {
     init: () => (dispatch) => {
-        socketManager.on("on-serialPort-query", (data) => {
-            console.log("on-serialPort-query: " + JSON.stringify(data))
-            const paths = data.paths;
+        socketClientManager.on(SERIAL_PORT_GET_PATH, (paths) => {
+            console.log(SERIAL_PORT_GET_PATH + ": " + JSON.stringify(paths))
             dispatch(actions._setPaths(paths));
         });
-        socketManager.on("on-serialPort-open", (data) => {
+        socketClientManager.on(SERIAL_PORT_GET_OPENED, (path) => {
             const status = "open";
-            const path = data.path;
             dispatch(actions._setSerialPortStatus(status));
             dispatch(actions._setPath(path));
         });
-        socketManager.on("on-serialPort-close", (data) => {
+        socketClientManager.on(SERIAL_PORT_OPEN, (path) => {
+            const status = "open";
+            dispatch(actions._setSerialPortStatus(status));
+            dispatch(actions._setPath(path));
+        });
+        socketClientManager.on(SERIAL_PORT_CLOSE, (path) => {
             const status = "close";
             dispatch(actions._setSerialPortStatus(status));
             dispatch(actions._setPath(null));
         });
-        socketManager.on("on-serialPort-error", () => {
+        socketClientManager.on(SERIAL_PORT_ERROR, () => {
             const status = "err";
             dispatch(actions._setSerialPortStatus(status));
         });
     },
     getPaths: () => {
-        socketManager.querySerialPort();
+        socketClientManager.getSerialPortPath();
         return {
             type: null
         };
     },
-    open: (path) => async (dispatch) => {
+    open: (path) => (dispatch) => {
         const status = "opening";
         dispatch(actions._setSerialPortStatus(status));
-        socketManager.openSerialPort(path)
+        socketClientManager.openSerialPort(path)
     },
     //close当前已连接的串口
-    close: () => async (dispatch) => {
+    close: () => (dispatch) => {
         const status = "closing";
         dispatch(actions._setSerialPortStatus(status));
-        socketManager.closeSerialPort()
+        socketClientManager.closeSerialPort()
     },
     //data: string|Buffer|Array<number>
     write: (str) => {
-        socketManager.writeGcodeSerialPort(str);
+        socketClientManager.writeGcodeSerialPort(str);
         return {
             type: ""
         };
@@ -76,19 +88,19 @@ export const actions = {
         };
     },
     loadGcode: (gcode) => {
-        socketManager._sendData("gcode-send-load", {gcode});
+        socketClientManager._sendData("gcode-send-load", {gcode});
         return {
             type: ""
         };
     },
     startSendGcode: () => {
-        socketManager._sendData("gcode-send-start");
+        socketClientManager._sendData("gcode-send-start");
         return {
             type: ""
         };
     },
     stopSendGcode: () => {
-        socketManager._sendData("gcode-send-stop");
+        socketClientManager._sendData("gcode-send-stop");
         return {
             type: ""
         };

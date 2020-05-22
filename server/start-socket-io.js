@@ -1,63 +1,81 @@
-import IO from 'socket.io';
+import SocketIoServer from 'socket.io';
 import serialPortManager from './serialPortManager.js';
 import generateToolPathLines from './toolPath/generateToolPathLines.js';
-
+import {
+    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE,
+    TOOL_PATH_GENERATE_LASER,
+    GCODE_SEND_LOAD,
+    GCODE_SEND_START,
+    GCODE_SEND_STOP,
+    GCODE_SEND_ERROR
+} from "../shared/constants.js"
 
 import gcodeSender from './gcode/gcodeSender.js';
 
 const port = 3003;
-const io = new IO();
+const socketIoServer = new SocketIoServer();
 
 const startSocket = () => {
-    io.on(
+    socketIoServer.on(
         'connection',
-        client => {
-            console.log('-> socket connect');
+        socket => {
+            console.log('socket io server -> connect');
 
-            serialPortManager.on("on-serialPort-query", (data) => {
-                client.emit('on-serialPort-query', data);
-            });
-            serialPortManager.on("on-serialPort-open", (data) => {
-                client.emit('on-serialPort-open', data);
-            });
-            serialPortManager.on("on-serialPort-close", (data) => {
-                client.emit('on-serialPort-close', data);
-            });
-            serialPortManager.on("on-serialPort-error", (data) => {
-                client.emit('on-serialPort-error', data);
-            });
-            serialPortManager.on("on-serialPort-data", (data) => {
-                client.emit('on-serialPort-data', data);
-            });
-
-            client.on('disconnect', () => console.log('-> socket disconnect'));
+            socket.on('disconnect', () => console.log('socket io server -> disconnect'));
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
             //serial port
-            client.on('serialPort-query', () => serialPortManager.getPaths());
-            client.on('serialPort-close', () => serialPortManager.close());
-            client.on('serialPort-open', data => serialPortManager.open(data.path));
-            client.on('serialPort-write', data => serialPortManager.write(data.gcode));
+            socket.on(SERIAL_PORT_GET_PATH, () => serialPortManager.getPaths());
+            socket.on(SERIAL_PORT_GET_OPENED, () => serialPortManager.getOpened());
+            socket.on(SERIAL_PORT_OPEN, path => serialPortManager.open(path));
+            socket.on(SERIAL_PORT_CLOSE, () => serialPortManager.close());
+            socket.on(SERIAL_PORT_WRITE, str => serialPortManager.write(str));
 
             //gcode send
-            client.on('gcode-send-load', data => gcodeSender.load(data.gcode));
-            client.on('gcode-send-start', () => gcodeSender.start());
-            client.on('gcode-send-stop', () => gcodeSender.stop());
+            socket.on(GCODE_SEND_LOAD, data => gcodeSender.load(data.gcode));
+            socket.on(GCODE_SEND_START, () => gcodeSender.start());
+            socket.on(GCODE_SEND_STOP, () => gcodeSender.stop());
 
             //gcode generate
-            client.on(
-                'tool-path-generate-laser',
+            socket.on(
+                TOOL_PATH_GENERATE_LASER,
                 async (data) => {
-                    console.log("tool-path-generate-laser")
+                    console.log(TOOL_PATH_GENERATE_LASER)
                     const {url, settings, toolPathId, fileType} = data;
                     const toolPathLines = await generateToolPathLines(fileType, url, settings);
-                    client.emit('on-tool-path-generate-laser', {toolPathLines, toolPathId});
+                    socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
                 }
             );
+
+            serialPortManager.on(SERIAL_PORT_GET_PATH, (paths) => {
+                socket.emit(SERIAL_PORT_GET_PATH, paths);
+            });
+            serialPortManager.on(SERIAL_PORT_GET_OPENED, (path) => {
+                console.log(SERIAL_PORT_GET_OPENED + " -> " + path)
+                socket.emit(SERIAL_PORT_GET_OPENED, path);
+            });
+            serialPortManager.on(SERIAL_PORT_OPEN, (path) => {
+                socket.emit(SERIAL_PORT_OPEN, path);
+            });
+            serialPortManager.on(SERIAL_PORT_CLOSE, (path) => {
+                socket.emit(SERIAL_PORT_CLOSE, path);
+            });
+            serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
+                socket.emit(SERIAL_PORT_ERROR, error);
+            });
+            serialPortManager.on(SERIAL_PORT_DATA, (data) => {
+                socket.emit(SERIAL_PORT_DATA, data);
+            });
         }
     );
-    io.listen(port);
-    console.log('start socket io at port ' + port);
+    socketIoServer.listen(port);
+    console.log('start socket io server at port ' + port);
 };
 
 export default startSocket;

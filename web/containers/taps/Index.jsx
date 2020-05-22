@@ -16,13 +16,13 @@ import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserTextActions} from "../../reducers/laserText";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
-import socketManager from "../../socket/socketManager";
+import socketClientManager from "../../socket/socketClientManager";
 
 class Index extends React.Component {
     constructor(props) {
         super(props);
         this.props.init();
-        socketManager.setup();
+        socketClientManager.setup();
 
         this.refLaser = React.createRef();
         this.refP3D = React.createRef();

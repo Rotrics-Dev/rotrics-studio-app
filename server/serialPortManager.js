@@ -2,6 +2,15 @@ import EventEmitter from 'events';
 import SerialPort from 'serialport';
 
 import {utf8bytes2string} from './utils.js';
+import {
+    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE
+} from "../shared/constants.js"
 
 const baudRate = 115200;
 
@@ -17,12 +26,19 @@ class SerialPortManager extends EventEmitter {
                 const paths = ports.map(item => {
                     return item.path;
                 });
-                this.emit('on-serialPort-query', {paths});
+                this.emit(SERIAL_PORT_GET_PATH, paths);
             },
             (error) => {
-                this.emit('on-serialPort-error', {error});
+                this.emit(SERIAL_PORT_ERROR, error);
             }
         )
+    }
+
+    getOpened() {
+        console.log("getOpened")
+        if (this.serialPort && this.serialPort.isOpen) {
+            this.emit(SERIAL_PORT_GET_OPENED, this.serialPort.path);
+        }
     }
 
     _openNew(path) {
@@ -31,7 +47,7 @@ class SerialPortManager extends EventEmitter {
         this.serialPort.open((error) => {
             if (error) {
                 this.serialPort = null;
-                this.emit('on-serialPort-error', {error});
+                this.emit(SERIAL_PORT_ERROR, error);
             }
         })
     }
@@ -47,7 +63,6 @@ class SerialPortManager extends EventEmitter {
      *                     |         |--path相同 [case-4]，开一个新的
      *                     --not open
      *                               |--path不同 [case-5]，之前的不用管，开一个新的
-     *
      * @param path
      */
     open(path) {
@@ -60,6 +75,7 @@ class SerialPortManager extends EventEmitter {
         //case-2
         if (this.serialPort.isOpen && this.serialPort.path === path) {
             console.log("The port " + path + " has been opened");
+            this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
             return;
         }
 
@@ -87,7 +103,7 @@ class SerialPortManager extends EventEmitter {
         if (this.serialPort && this.serialPort.isOpen) {
             this.serialPort.close((error) => {
                 if (error) {
-                    this.emit('on-serialPort-error', {error});
+                    this.emit(SERIAL_PORT_ERROR, error);
                 }
             });
         }
@@ -96,10 +112,10 @@ class SerialPortManager extends EventEmitter {
     //data: string|Buffer|Array<number>
     write(data) {
         if (this.serialPort && this.serialPort.isOpen) {
-            this.serialPort.write(data, (err) => {
-                if (err) {
+            this.serialPort.write(data, (error) => {
+                if (error) {
                     console.log("write error: " + data);
-                    this.emit('on-serialPort-error', {err});
+                    this.emit(SERIAL_PORT_ERROR, error);
                 } else {
                     console.log("write ok: " + data);
                 }
@@ -112,18 +128,18 @@ class SerialPortManager extends EventEmitter {
     _setupListener() {
         this.serialPort.on("open", () => {
             console.log("event open")
-            this.emit('on-serialPort-open', {path: this.serialPort.path});
+            this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
         });
 
         this.serialPort.on("close", () => {
             console.log("event close")
-            this.emit('on-serialPort-close', {path: this.serialPort.path});
+            this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
             this.serialPort = null;
         });
 
         this.serialPort.on("error", () => {
             console.log("event error")
-            this.emit('on-serialPort-error');
+            this.emit(SERIAL_PORT_ERROR);
             this.serialPort = null;
         });
 
@@ -140,7 +156,7 @@ class SerialPortManager extends EventEmitter {
                 console.log("serialPort raw received: ");
                 console.log(utf8bytes2string(arr));
 
-                this.emit('on-serialPort-data', {received: utf8bytes2string(arr)});
+                this.emit(SERIAL_PORT_DATA, {received: utf8bytes2string(arr)});
             }
         });
     }

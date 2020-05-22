@@ -1,5 +1,13 @@
 import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
+import {
+    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE
+} from "../../shared/constants.js"
 
 /**
  * 收到数据
@@ -16,7 +24,7 @@ class GcodeSender extends EventEmitter {
 
     setupListener() {
         console.log("##### GcodeSender linstener")
-        serialPortManager.on("on-serialPort-data", data => {
+        serialPortManager.on(SERIAL_PORT_DATA, data => {
             console.log("---------------------------------------------------")
             console.log("gcode sender parsed: ");
             const {received} = data;

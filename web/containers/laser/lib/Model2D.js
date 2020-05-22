@@ -7,9 +7,13 @@ import settingsSvg from "./settings/svg.json";
 
 import {degree2radian} from '../../../../shared/lib/numeric-utils.js';
 import {getUuid} from '../../../../shared/lib/utils.js';
-import socketManager from "../../../socket/socketManager"
+import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
+
+import {
+    TOOL_PATH_GENERATE_LASER
+} from "../../../../shared/constants.js"
 
 /**
  * 根据限制，重新计算width，height
@@ -101,7 +105,7 @@ class Model2D extends THREE.Group {
         }
 
         //data: {toolPathLines, toolPathId}
-        socketManager.on('on-tool-path-generate-laser', (data) => {
+        socketClientManager.on(TOOL_PATH_GENERATE_LASER, (data) => {
             console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines)
@@ -279,7 +283,7 @@ class Model2D extends THREE.Group {
     _preview() {
         console.log("preview")
         this.toolPathId = getUuid();
-        socketManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
+        socketClientManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
         console.time(this.toolPathId)
     }
 

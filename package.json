@@ -1,5 +1,6 @@
 {
   "name": "rotrics-app",
+  "type": "module",
   "version": "0.0.1",
   "description": "Computer client application for controlling Rotrics Arm",
   "main": "main.js",

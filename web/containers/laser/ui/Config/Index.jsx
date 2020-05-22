@@ -17,7 +17,7 @@ import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
-import socketManager from "../../../../socket/socketManager"
+import socketClientManager from "../../../../socket/socketClientManager"
 import Model2D from "../../lib/Model2D";
 import {uploadImage, generateSvg} from '../../../../api/index.js';
 import config_text from "../../lib/settings/config_text.json";
@@ -122,13 +122,13 @@ class Index extends React.Component {
         },
         loadGcode: () => {
             const gcode = laserManager._selected.gcode;
-            socketManager.loadGcode(gcode)
+            socketClientManager.loadGcode(gcode)
         },
         startSend: () => {
-            socketManager.startSendGcode()
+            socketClientManager.startSendGcode()
         },
         stopSend: () => {
-            socketManager.stopSendGcode()
+            socketClientManager.stopSendGcode()
         },
     };
 

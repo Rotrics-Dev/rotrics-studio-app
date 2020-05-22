@@ -85,7 +85,7 @@ const startHttpServer = () => {
         console.error("cache_dir not exist");
     }
 
-    console.log('start server success at port ' + server_port);
+    console.log('start server at port ' + server_port);
 };
 
 export default startHttpServer;
