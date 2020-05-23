@@ -44,6 +44,15 @@ class SerialPortManager extends EventEmitter {
 
     _openNew(path) {
         this.serialPort = new SerialPort(path, {baudRate, autoOpen: false});
+
+        const Readline = SerialPort.parsers.Readline
+        const parser = new Readline()
+        this.serialPort.pipe(parser)
+        parser.on('data', (data)=>{
+            console.log("#: " + JSON.stringify(data))
+
+        })
+
         this.serialPort.on("open", () => {
             console.log("serial port -> open: " + this.serialPort.path);
             this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
