@@ -21,7 +21,7 @@ class SocketClientManager extends EventEmitter {
     }
 
     setup() {
-        this.socketClient = io('http://localhost:3003');
+        this.socketClient = io('http://localhost:3002');
 
         //socket
         this.socketClient.on('connect', () => {
