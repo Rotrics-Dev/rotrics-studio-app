@@ -8,6 +8,12 @@ import reducer from './reducers';
 
 const reduxStore = createStore(reducer, applyMiddleware(thunk));
 
+console.log("window.serverIp: " + window.serverIp);
+if (!window.serverIp) {
+    window.serverIp = "http://localhost:3002"
+}
+console.log("window.serverIp 2: " + window.serverIp);
+
 ReactDom.render(
     <Provider store={reduxStore}>
         <Index/>

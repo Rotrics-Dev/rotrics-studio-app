@@ -7,51 +7,53 @@
 
 import * as THREE from 'three';
 
-THREE.IntersectDetector = function (objects, camera, domElement) {
-    var raycaster = new THREE.Raycaster();
-    var scope = this;
-	function addListeners() {
-		domElement.addEventListener('mousedown', onMouseDown, false);
-	}
 
-	function removeListeners() {
-		domElement.removeEventListener('mousedown', onMouseDown, false);
-	}
+class IntersectDetector extends THREE.EventDispatcher {
+    constructor(objects, camera, domElement) {
+        super();
+        this.objects = objects;
+        this.camera = camera;
+        this.domElement = domElement;
+        this.enabled = true;
+        this.raycaster = new THREE.Raycaster();
 
-	function dispose() {
-		removeListeners();
-	}
+        this.addListeners();
+    }
 
-	function onMouseDown(event) {
-        if (scope.enabled === false) return;
+    addListeners() {
+        this.domElement.addEventListener('mousedown', this.onMouseDown, false);
+    }
+
+    removeListeners() {
+        this.domElement.removeEventListener('mousedown', this.onMouseDown, false);
+    }
+
+    onMouseDown = (event) => {
+        if (this.enabled === false) return;
         // only detect when left-mouse-down
-        if (event.button === THREE.MOUSE.LEFT){
+        if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
-            raycaster.setFromCamera(getMousePosition(event), camera);
-            var intersects = raycaster.intersectObjects(objects, true);
+            this.raycaster.setFromCamera(this.getMousePosition(event), this.camera);
+            const intersects = this.raycaster.intersectObjects(this.objects, true);
             if (intersects.length > 0) {
-                var detectedObject = intersects[0].object;
-                scope.dispatchEvent({type: 'detected', object: detectedObject});
+                const detectedObject = intersects[0].object;
+                this.dispatchEvent({type: 'detected', object: detectedObject});
             }
         }
-	}
+    };
 
-    function getMousePosition(event) {
-        var rect = domElement.getBoundingClientRect();
+    getMousePosition(event) {
+        const rect = this.domElement.getBoundingClientRect();
         return new THREE.Vector2(
             ((event.clientX - rect.left) / rect.width) * 2 - 1,
             -((event.clientY - rect.top) / rect.height) * 2 + 1
-		)
+        )
     }
 
-	addListeners();
+    dispose() {
+        this.removeListeners();
+    }
+}
 
-	// API
-	this.enabled = true;
-	this.dispose = dispose;
-};
 
-THREE.IntersectDetector.prototype = Object.create(THREE.EventDispatcher.prototype);
-THREE.IntersectDetector.prototype.constructor = THREE.IntersectDetector;
-
-export default THREE.IntersectDetector;
+export default IntersectDetector;

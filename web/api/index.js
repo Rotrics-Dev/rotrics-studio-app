@@ -6,7 +6,7 @@ import TextToSVG from 'text-to-svg';
 const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await fetch('http://localhost:3002/uploadFile', {
+    const response = await fetch(window.serverIp + '/uploadFile', {
         method: 'POST',
         body: formData
     }).then(response => response.json());
@@ -24,7 +24,7 @@ const uploadFile = async (file) => {
 const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await fetch('http://localhost:3002/uploadImage', {
+    const response = await fetch(window.serverIp+'/uploadImage', {
         method: 'POST',
         body: formData
     }).then(response => response.json());
@@ -34,7 +34,7 @@ const uploadImage = async (file) => {
 
 //options: https://github.com/shrhdk/text-to-svg
 const text2svg = async (text, options) => {
-    const response = await fetch('http://localhost:3002/text2svg', {
+    const response = await fetch(window.serverIp + '/text2svg', {
         method: 'POST',
         body: JSON.stringify({text, options})
     }).then(response => response.json());
@@ -44,7 +44,7 @@ const text2svg = async (text, options) => {
 
 const generateSvg = async (config_text) => {
     const {text, font, font_size} = config_text.children;
-    const fontUrl = "http://localhost:3002/fonts/" + font.default_value;
+    const fontUrl = window.serverIp + "/fonts/" + font.default_value;
     let promise = new Promise((resolve, reject) => {
         TextToSVG.load(fontUrl, (err, textToSVG) => {
             const attributes = {fill: 'black', stroke: 'black'};

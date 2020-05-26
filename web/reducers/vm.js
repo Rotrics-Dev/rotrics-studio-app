@@ -1,5 +1,6 @@
 import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
+import {actions as serialPortActions} from './serialPort';
 
 const INIT_VM = 'INIT_VM';
 const SET_RUNNING = "SET_RUNNING";
@@ -64,13 +65,21 @@ export const actions = {
             }
         );
         //自定义block发送消息
-        //见: virtual-machine.js, line-167
-        vm.on(
+        //见: rotrics-scratch-vm/src/blocks/scratch3_motions.js, line-58
+        vm.runtime.on(
             'rotrics',
             (data) => {
                 const {blockName, args} = data;
                 console.log("blockName: " + JSON.stringify(blockName))
                 console.log("args: " + JSON.stringify(args))
+
+                if (blockName === "motion_move_position") {
+                    const {x, y, z} = args;
+                    const cmd = "G0" + " X" + x + " Y" + y + " Z" + z;
+                    console.log("cmd: " + cmd);
+                    dispatch(serialPortActions.write(cmd));
+
+                }
             }
         );
     },

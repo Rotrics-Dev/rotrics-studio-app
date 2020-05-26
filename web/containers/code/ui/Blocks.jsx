@@ -115,7 +115,7 @@ class Blocks extends React.Component {
                 stageCostumes[0].name,
                 targetSounds.length > 0 ? targetSounds[0].name : ''
             );
-        } catch {
+        } catch (error) {
             return null;
         }
     };
