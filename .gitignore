@@ -1,17 +1,19 @@
 #server
 /server/node_modules
-/server/build
+/server/build-server
 /server/package-lock.json
 /server/static/cache
 
 #web
 /web/node_modules
-/web/build
+/web/build-web
 /web/package-lock.json
 
 #electron
 /electron/node_modules
-/electron/build
+/electron/build-web
+/electron/build-server
+/electron/static/cache
 /electron/package-lock.json
 
 # Development Env (Jetbrains, Vim, macOS)
