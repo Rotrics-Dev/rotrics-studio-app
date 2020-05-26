@@ -7,7 +7,7 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
-} from "../../shared/constants.js"
+} from "../constants.js"
 
 const SET_PATHS = 'SET_PATHS';
 const SET_PATH = 'SET_PATH';

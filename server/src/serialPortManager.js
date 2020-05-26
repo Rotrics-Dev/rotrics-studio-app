@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import SerialPort from 'serialport';
 
-import {utf8bytes2string} from './utils.js';
+import {utf8bytes2string} from './utils/index.js';
 import {
     SERIAL_PORT_GET_PATH,
     SERIAL_PORT_GET_OPENED,
@@ -10,7 +10,7 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE
-} from "../shared/constants.js"
+} from "./constants.js"
 
 const baudRate = 9600;
 

@@ -12,7 +12,7 @@ import {
     GCODE_SEND_START,
     GCODE_SEND_STOP,
     TOOL_PATH_GENERATE_LASER
-} from "../../shared/constants.js"
+} from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
     constructor() {

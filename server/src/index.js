@@ -1,8 +1,6 @@
-import startBoth from "./start-socket-and-http-server.js";
+import startServer from "./start-server.js";
 
-startBoth();
-
-
+startServer();
 
 
 

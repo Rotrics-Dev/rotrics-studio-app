@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
 import laserManager from "../../lib/laserManager.js";
-import {toFixed} from '../../../../../shared/lib/numeric-utils.js';
+import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'

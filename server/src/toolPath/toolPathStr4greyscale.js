@@ -2,7 +2,7 @@ import Jimp from 'jimp';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 import {img2toolPathStrBw} from './toolPathStr4bw.js';
-import {TOOL_PATH_RENDER_METHOD_POINT} from "../../shared/constants.js"
+import {TOOL_PATH_RENDER_METHOD_POINT} from "../constants.js"
 
 const algorithms = {
     Atkinson: [

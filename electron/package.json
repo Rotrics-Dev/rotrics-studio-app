@@ -1,0 +1,34 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "rebuild": "electron-rebuild -f -w serialport"
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^9.0.0",
+    "electron-rebuild": "^1.11.0"
+  },
+  "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "image-size": "^0.8.3",
+    "is-electron": "^2.2.0",
+    "jimp": "^0.10.3",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0",
+    "serialport": "^9.0.0",
+    "socket.io": "^2.3.0",
+    "text-to-svg": "^3.1.5",
+    "three-math": "^0.69.0",
+    "uuid": "^7.0.3"
+  }
+}

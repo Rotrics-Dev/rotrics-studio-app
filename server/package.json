@@ -1,19 +1,43 @@
 {
-  "name": "rotrics-studio-app-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "rotrics-app",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Computer client application for controlling Rotrics Arm",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./src/index.js",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rotrics-Dev/rotrics-studio-app-server.git"
+    "url": "git+https://github.com/liumingzw/rotrics-app.git"
   },
+  "keywords": [],
   "author": "liumingzw",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rotrics-Dev/rotrics-studio-app-server/issues"
+    "url": "https://github.com/liumingzw/front-example-project/issues"
   },
-  "homepage": "https://github.com/Rotrics-Dev/rotrics-studio-app-server#readme"
+  "homepage": "https://github.com/liumingzw/front-example-project#readme",
+  "devDependencies": {
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-loader": "^8.0.6"
+  },
+  "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "image-size": "^0.8.3",
+    "is-electron": "^2.2.0",
+    "jimp": "^0.10.3",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0",
+    "serialport": "^9.0.0",
+    "socket.io": "^2.3.0",
+    "text-to-svg": "^3.1.5",
+    "three-math": "^0.69.0"
+  }
 }

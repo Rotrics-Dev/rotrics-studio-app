@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './styles.css';
 import {Button, Slider, Space, Divider} from 'antd';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import {toFixed} from "../../../../../shared/lib/numeric-utils";
 import {uploadFile} from "../../../../api";
 import {actions as p3dActions} from "../../../../reducers/p3d";
 import {connect} from 'react-redux';

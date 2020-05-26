@@ -5,15 +5,15 @@ import settingsBw from "./settings/bw.json";
 import settingsGs from "./settings/greyscale.json";
 import settingsSvg from "./settings/svg.json";
 
-import {degree2radian} from '../../../../shared/lib/numeric-utils.js';
-import {getUuid} from '../../../../shared/lib/utils.js';
+import {degree2radian} from '../../../utils/index.js';
+import {getUuid} from '../../../utils/index.js';
 import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {
     TOOL_PATH_GENERATE_LASER
-} from "../../../../shared/constants.js"
+} from "../../../constants.js"
 
 /**
  * 根据限制，重新计算width，height

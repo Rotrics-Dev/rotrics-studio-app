@@ -3,7 +3,7 @@ import serialPortManager from '../serialPortManager.js';
 import {
     SERIAL_PORT_DATA,
     GCODE_STATUS
-} from "../../shared/constants.js"
+} from "../constants.js"
 
 /**
  * 收到数据

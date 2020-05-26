@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {TOOL_PATH_RENDER_METHOD_POINT} from "../../../../shared/constants.js"
+import {TOOL_PATH_RENDER_METHOD_POINT} from "../../../constants.js"
 
 const UNIFORMS = {
     // rgba

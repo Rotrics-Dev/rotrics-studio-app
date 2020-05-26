@@ -2,7 +2,7 @@ import SVGParser, {flip, rotate, scale, sortShapes, translate} from '../SVGParse
 import {svgToSegments} from './SVGFill.js';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
-import {degree2radian} from '../../shared/lib/numeric-utils.js';
+import {degree2radian} from '../utils/index.js';
 import http from "http";
 
 function pointEqual(p1, p2) {

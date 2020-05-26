@@ -1,4 +1,4 @@
-import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants/index.js";
+import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants.js";
 
 const SET_TAP = "SET_TAP";
 

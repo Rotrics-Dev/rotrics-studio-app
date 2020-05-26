@@ -1,10 +1,12 @@
-var path = require('path');
+const path = require('path');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: "./web/index.jsx",
+    entry: "./src/index.jsx",
     // devtool: 'source-map',
+    mode: "development", //development, production
     output: {
-        path: __dirname + "/build",
+        path: __dirname + "/build-web",
         filename: "bundle.js"
     },
     module: {
@@ -58,6 +60,9 @@ module.exports = {
         ]
     },
     devServer: {
+        port: 8001,
+        progress: true,
+        compress: true,
         contentBase: path.join(__dirname, "build")
     }
 };

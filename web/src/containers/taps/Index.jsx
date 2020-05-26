@@ -9,7 +9,7 @@ import P3D from '../p3d/Index.jsx';
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
-import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants/index.js";
+import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 import {actions as tapActions} from "../../reducers/tap";
 import {connect} from 'react-redux';
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
