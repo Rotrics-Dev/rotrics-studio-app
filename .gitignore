@@ -1,22 +1,18 @@
-# NPM
-/node_modules
-npm-*
-/package-lock.json
+#server
+/server/node_modules
+/server/build
+/server/package-lock.json
+/server/static/cache
 
-# Testing
-/.nyc_output
-/coverage
+#web
+/web/node_modules
+/web/build
+/web/package-lock.json
 
-# Build
-/build
-/dist
-/output
-/releases
-/.opt-in
-
-# generated translation files
-/translations
-/locale
+#electron
+/electron/node_modules
+/electron/build
+/electron/package-lock.json
 
 # Development Env (Jetbrains, Vim, macOS)
 .idea/
@@ -25,8 +21,5 @@ npm-*
 
 # others
 /.eslintcache
-
-# server cache
-/server/static/cache
 
 
