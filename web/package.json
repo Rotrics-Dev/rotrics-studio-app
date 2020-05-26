@@ -1,23 +1,8 @@
 {
-  "name": "rotrics-app",
-  "version": "0.0.1",
-  "description": "Computer client application for controlling Rotrics Arm",
-  "main": "main.js",
   "scripts": {
     "start": "npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
     "build": "webpack"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/liumingzw/rotrics-app.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/liumingzw/front-example-project/issues"
-  },
-  "homepage": "https://github.com/liumingzw/front-example-project#readme",
   "devDependencies": {
     "@ant-design/icons": "^4.1.0",
     "@babel/cli": "^7.4.4",

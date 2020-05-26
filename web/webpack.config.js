@@ -60,9 +60,9 @@ module.exports = {
         ]
     },
     devServer: {
-        port: 8001,
+        port: 8080,
         progress: true,
         compress: true,
-        contentBase: path.join(__dirname, "build")
+        contentBase: path.join(__dirname, "build-web")
     }
 };
