@@ -50,8 +50,8 @@ npm start
 ```bash
 cd rotrics-studio-app/web
 npm run build
-# copy rotrics-studio-app/web/build-web到rotrics-studio-app/electron下
 
+# copy rotrics-studio-app/web/build-web到rotrics-studio-app/electron下
 # copy rotrics-studio-app/server/src到rotrics-studio-app/electron/build-server下
 
 cd rotrics-studio-app/electron
@@ -79,7 +79,8 @@ electron运行时，动态获取端口，并将local server ip挂在window下
 electron使用  
 web端：build后的"index.html+js+资源"  
 local server端：使用源码  
-将上述两部分放在指定的路径即可
+将上述两部分放在指定的路径即可  
+electron执行main.js时候，先启动local server，成功后再加载web端build得到的index.html
 
 
 ## 注意事项
