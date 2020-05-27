@@ -1,11 +1,61 @@
 {
+  "name": "rotrics-studio-app",
+  "version": "0.0.1",
+  "author": "Rotrics Dev",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "rebuild": "electron-rebuild -f -w serialport"
+    "rebuild": "electron-rebuild -f -w serialport",
+    "build:mac-x64": "electron-builder --mac --x64",
+    "build:win-x64": "electron-builder --windows --x64",
+    "build": "electron-builder --mac --x64"
+  },
+  "build": {
+    "appId": "com.rotrics.rotrics-stduio-app",
+    "asar": false,
+    "productName": "Rotrics Stduio",
+    "directories": {
+      "buildResources": "build",
+      "output": "output"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "electron-builder/icon.icns",
+      "identity": "null",
+      "target": [
+        "dmg"
+      ]
+    },
+    "dmg": {
+      "background": "electron-builder/background.png",
+      "icon": "electron-builder/icon.icns",
+      "iconSize": 80,
+      "iconTextSize": 12,
+      "contents": [
+        {
+          "x": 450,
+          "y": 310,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 190,
+          "y": 310,
+          "type": "file"
+        }
+      ],
+      "window": {
+        "x": 200,
+        "y": 300,
+        "width": 640,
+        "height": 500
+      }
+    }
   },
   "devDependencies": {
     "electron": "^9.0.0",
+    "electron-builder": "^22.6.1",
     "electron-rebuild": "^1.11.0"
   },
   "dependencies": {
