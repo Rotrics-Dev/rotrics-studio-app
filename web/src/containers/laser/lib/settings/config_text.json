@@ -8,7 +8,7 @@
       "text": {
         "label": "Text",
         "description": "text description",
-        "default_value": "Hex Bot",
+        "default_value": "R",
         "type": "string"
       },
       "font": {
