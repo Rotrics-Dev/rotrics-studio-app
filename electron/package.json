@@ -51,6 +51,12 @@
         "width": 640,
         "height": 500
       }
+    },
+    "win": {
+      "icon": "electron-builder/win.ico",
+      "target": [
+        "zip"
+      ]
     }
   },
   "devDependencies": {
