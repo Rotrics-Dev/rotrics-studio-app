@@ -1,11 +1,17 @@
 import React from 'react';
-import {actions as serialPortActions} from '../../../../../reducers/serialPort';
+import {Switch, Slider} from 'antd';
 import {connect} from 'react-redux';
+import {actions as serialPortActions} from '../../../../../reducers/serialPort';
 import BaseDeviceControl from '../../../../../components/BaseDeviceControl/Index.jsx'
+import Line from "../../../../../components/Line/Index.jsx";
+
+const INIT_LASER_POWER = 1;
 
 class Index extends React.Component {
     state = {
-        step: 10
+        step: 10,
+        isLaserOn: false,
+        laserPower: INIT_LASER_POWER
     };
 
     actions = {
@@ -15,7 +21,6 @@ class Index extends React.Component {
             arr.push(moveStr);
             arr.push('G90');
             const gcode = arr.join("\n");
-            console.log(gcode)
             this.props.startSendGcode(gcode);
         }
     };
@@ -75,12 +80,59 @@ class Index extends React.Component {
         }
     };
 
+    //M3: laser on
+    //M5: laser off
+    //M3 S${power, 0~255}: set laser power
+    laserActions = {
+        switchLaser: (checked) => {
+            this.setState({isLaserOn: checked, laserPower: INIT_LASER_POWER}, () => {
+                this.laserActions._sendGcode4laser();
+            });
+        },
+        changeLaserPower: (laserPower) => {
+            this.setState({laserPower})
+        },
+        afterChangeLaserPower: (laserPower) => {
+            this.setState({laserPower}, () => {
+                this.laserActions._sendGcode4laser();
+            });
+        },
+        _sendGcode4laser: () => {
+            const {isLaserOn, laserPower} = this.state;
+            let gcode = "";
+            if (isLaserOn) {
+                gcode = `M3 S${Math.round(laserPower * 2.55)}`
+            } else {
+                gcode = "M5"
+            }
+            this.props.startSendGcode(gcode);
+        }
+    };
+
     render() {
         const baseActions = this.baseActions;
+        const laserActions = this.laserActions;
         const state = this.state;
         return (
             <div style={{paddingLeft: "8px"}}>
                 <BaseDeviceControl actions={baseActions} step={state.step}/>
+                <div style={{marginTop: "8px"}}>
+                    <Line/>
+                    <span>Laser</span>
+                    <Switch style={{position: "absolute", right: 0}} checked={state.isLaserOn}
+                            onChange={laserActions.switchLaser}/>
+                    <Slider
+                        style={{width: "90%"}}
+                        min={0}
+                        max={100}
+                        step={1}
+                        onChange={laserActions.changeLaserPower}
+                        onAfterChange={laserActions.afterChangeLaserPower}
+                        defaultValue={0}
+                        value={state.laserPower}
+                        disabled={!state.isLaserOn}
+                    />
+                </div>
             </div>
         )
     }

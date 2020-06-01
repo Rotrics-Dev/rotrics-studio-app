@@ -92,8 +92,7 @@ class SocketClientManager extends EventEmitter {
     }
 
     startSendGcode(gcode) {
-        console.log("startSendGcode: ")
-        console.log("gcode: ")
+        console.log("startSendGcode: " + gcode)
         this.socketClient.emit(GCODE_SEND_START, gcode);
     }
 
