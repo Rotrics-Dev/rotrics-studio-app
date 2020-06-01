@@ -20,9 +20,10 @@ import {
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
-    GCODE_STATUS,
-    GCODE_SEND_START,
-    GCODE_SEND_STOP,
+    GCODE_UPDATE_SENDER_STATUS,
+    GCODE_START_SEND,
+    GCODE_STOP_SEND,
+    GCODE_APPEND_SEND
 } from "./constants.js"
 
 /**
@@ -105,6 +106,7 @@ const setupSocket = () => {
                 //必须remove all，否则多次触发event，且内存泄漏
                 socket.removeAllListeners();
                 serialPortManager.removeAllListeners();
+                gcodeSender.removeAllListeners();
             });
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
@@ -113,14 +115,14 @@ const setupSocket = () => {
             socket.on(SERIAL_PORT_GET_OPENED, () => serialPortManager.getOpened());
             socket.on(SERIAL_PORT_OPEN, path => serialPortManager.open(path));
             socket.on(SERIAL_PORT_CLOSE, () => serialPortManager.close());
-            socket.on(SERIAL_PORT_WRITE, str => serialPortManager.write(str));
+            socket.on(SERIAL_PORT_WRITE, data => serialPortManager.write(data));
 
             //gcode send
-            socket.on(GCODE_SEND_START, (gcode) => gcodeSender.start(gcode));
-            socket.on(GCODE_SEND_STOP, () => gcodeSender.stop());
-            socket.on(GCODE_STATUS, () => {
-                const status = gcodeSender.getStatus();
-                socket.emit(GCODE_STATUS, status);
+            socket.on(GCODE_START_SEND, (gcode) => gcodeSender.start(gcode));
+            socket.on(GCODE_APPEND_SEND, (gcode) => gcodeSender.append(gcode));
+            socket.on(GCODE_STOP_SEND, () => gcodeSender.stop());
+            socket.on(GCODE_UPDATE_SENDER_STATUS, () => {
+                socket.emit(GCODE_UPDATE_SENDER_STATUS, gcodeSender.getStatus());
             });
 
             //gcode generate
@@ -153,6 +155,10 @@ const setupSocket = () => {
             serialPortManager.on(SERIAL_PORT_DATA, (data) => {
                 socket.emit(SERIAL_PORT_DATA, data);
                 gcodeSender.onSerialPortData(data)
+            });
+
+            gcodeSender.on(GCODE_UPDATE_SENDER_STATUS, (status) => {
+                socket.emit(GCODE_UPDATE_SENDER_STATUS, status);
             });
         }
     );

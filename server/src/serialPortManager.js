@@ -50,7 +50,6 @@ class SerialPortManager extends EventEmitter {
         this.serialPort.pipe(parser)
         parser.on('data', (data)=>{
             console.log("#: " + JSON.stringify(data))
-
         })
 
         this.serialPort.on("open", () => {

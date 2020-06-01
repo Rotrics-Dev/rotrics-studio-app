@@ -16,13 +16,13 @@ import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserTextActions} from "../../reducers/laserText";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
-import socketClientManager from "../../socket/socketClientManager";
+import {actions as socketActions} from "../../reducers/socket";
+import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 
 class Index extends React.Component {
     constructor(props) {
         super(props);
         this.props.init();
-        socketClientManager.setup();
 
         this.refLaser = React.createRef();
         this.refP3D = React.createRef();
@@ -131,9 +131,11 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setTap: (value) => dispatch(tapActions.setTap(value)),
         init: () => {
+            dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());
             dispatch(laserTextActions.init());
             dispatch(serialPortActions.init());
+            dispatch(socketActions.init());
             dispatch(vmActions.init());
         }
     };

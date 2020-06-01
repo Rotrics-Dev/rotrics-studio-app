@@ -8,16 +8,16 @@ import {actions as serialPortActions} from '../../reducers/serialPort';
 class Index extends React.Component {
     state = {
         visible: false, //serialPortModal visible
-        pathSelected: null,
+        serialPortPath: null, //当前选中的serial port path
     };
 
     componentDidMount() {
-        this.actions.getPaths();
+        this.actions.getSerialPortPaths();
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.state.pathSelected && nextProps.paths.length > 0) {
-            this.setState({pathSelected: nextProps.paths[nextProps.paths.length - 1]})
+        if (!this.state.serialPortPath && nextProps.paths.length > 0) {
+            this.setState({serialPortPath: nextProps.paths[nextProps.paths.length - 1]})
         }
     }
 
@@ -32,23 +32,22 @@ class Index extends React.Component {
                 visible: false,
             });
         },
-        open: () => {
-            const {pathSelected} = this.state;
-            const {path} = this.props;
-            this.props.open(pathSelected)
+        openSerialPort: () => {
+            const {serialPortPath} = this.state;
+            this.props.openSerialPort(serialPortPath)
         },
-        close: () => {
-            this.props.close()
+        closeSerialPort: () => {
+            this.props.closeSerialPort()
         },
-        selectPath: (pathSelected) => {
-            this.setState({pathSelected})
+        selectPath: (serialPortPath) => {
+            this.setState({serialPortPath})
         },
-        getPaths: () => {
-            this.props.getPaths();
+        getSerialPortPaths: () => {
+            this.props.getSerialPortPaths();
         },
         sendGcode: (e) => {
             const gcode = e.target.value;
-            this.props.write(gcode)
+            this.props.writeSerialPort(gcode + "\n")
         },
         emergencyStop: () => {
             console.log("emergencyStop")
@@ -80,12 +79,12 @@ class Index extends React.Component {
                     visible={state.visible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
-                        <Button key="connect" type="primary" loading={serialPortStatus === "opening"}
-                                onClick={actions.open}>
+                        <Button key="connect" type="primary"
+                                onClick={actions.openSerialPort}>
                             Open
                         </Button>,
-                        <Button key="disconnect" type="primary" loading={serialPortStatus === "closing"}
-                                onClick={actions.close}>
+                        <Button key="disconnect" type="primary"
+                                onClick={actions.closeSerialPort}>
                             Close
                         </Button>,
                     ]}
@@ -95,12 +94,12 @@ class Index extends React.Component {
                         <h4>{"port: " + path}</h4>
                         <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
                         <Space direction={"horizontal"}>
-                            <Select style={{width: 300}} onChange={actions.selectPath} value={state.pathSelected}>
+                            <Select style={{width: 300}} onChange={actions.selectPath} value={state.serialPortPath}>
                                 {paths.map((item) => {
                                     return <Select.Option key={item} value={item}>{item}</Select.Option>
                                 })}
                             </Select>
-                            <Button type="primary" onClick={actions.getPaths}>get paths</Button>
+                            <Button type="primary" onClick={actions.getSerialPortPaths}>get paths</Button>
                         </Space>
                     </Space>
                 </Modal>
@@ -119,9 +118,9 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {serialPortStatus, paths, path} = state.serialPort;
+    const {status, paths, path} = state.serialPort;
     return {
-        serialPortStatus,
+        serialPortStatus: status,
         paths,
         path
     };
@@ -129,10 +128,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getPaths: () => dispatch(serialPortActions.getPaths()),
-        open: (path) => dispatch(serialPortActions.open(path)),
-        close: () => dispatch(serialPortActions.close()),
-        write: (str) => dispatch(serialPortActions.write(str)),
+        getSerialPortPaths: () => dispatch(serialPortActions.getPaths()),
+        openSerialPort: (path) => dispatch(serialPortActions.open(path)),
+        closeSerialPort: () => dispatch(serialPortActions.close()),
+        writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
     };
 };
 

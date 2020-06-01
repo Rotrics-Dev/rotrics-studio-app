@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import _ from 'lodash';
 import FileSaver from 'file-saver';
 
@@ -17,11 +18,11 @@ import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
-import socketClientManager from "../../../../socket/socketClientManager"
 import Model2D from "../../lib/Model2D";
 import {uploadImage, generateSvg} from '../../../../api/index.js';
 import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -120,12 +121,13 @@ class Index extends React.Component {
             const fileName = "be.gcode";
             FileSaver.saveAs(blob, fileName, true);
         },
-        startSend: () => {
+        startSendGcode: () => {
             const gcode = laserManager._selected.gcode;
-            socketClientManager.startSendGcode(gcode)
+            this.props.startSendGcode(gcode);
+
         },
-        stopSend: () => {
-            socketClientManager.stopSendGcode()
+        stopSendGcode: () => {
+            this.props.stopSendGcode();
         },
     };
 
@@ -153,13 +155,13 @@ class Index extends React.Component {
                     </Button>
                     <Button
                         block
-                        onClick={actions.startSend}
+                        onClick={actions.startSendGcode}
                     >
                         {"Start Send"}
                     </Button>
                     <Button
                         block
-                        onClick={actions.stopSend}
+                        onClick={actions.stopSendGcode}
                     >
                         {"Stop Send"}
                     </Button>
@@ -203,4 +205,18 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+    const {status} = state.serialPort;
+    return {
+        serialPortStatus: status
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
+        stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

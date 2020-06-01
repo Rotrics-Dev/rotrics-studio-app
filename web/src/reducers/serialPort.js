@@ -9,40 +9,48 @@ import {
     SERIAL_PORT_WRITE,
 } from "../constants.js"
 
-const SET_PATHS = 'SET_PATHS';
-const SET_PATH = 'SET_PATH';
-const SET_SERIAL_PORT_STATUS = 'SET_SERIAL_PORT_STATUS';
+const SET_PATHS = 'serialPort/SET_PATHS';
+const SET_PATH = 'serialPort/SET_PATH';
+const SET_STATUS = 'serialPort/SET_STATUS';
 
 const INITIAL_STATE = {
-    serialPortStatus: "close", //open/close/err  opening/closing
+    status: "close", //open/close/err
     paths: [],
     path: null //当前已连接的serial port的path
 };
 
 export const actions = {
     init: () => (dispatch) => {
+        socketClientManager.on("socket", (status) => {
+            if (status === "connect") {
+                socketClientManager.getSerialPortOpened();
+            } else {
+                dispatch(actions._setStatus("close"));
+                dispatch(actions._setPaths([]));
+                dispatch(actions._setPath(null));
+            }
+        });
         socketClientManager.on(SERIAL_PORT_GET_PATH, (paths) => {
-            console.log(SERIAL_PORT_GET_PATH + ": " + JSON.stringify(paths))
             dispatch(actions._setPaths(paths));
         });
         socketClientManager.on(SERIAL_PORT_GET_OPENED, (path) => {
             const status = "open";
-            dispatch(actions._setSerialPortStatus(status));
+            dispatch(actions._setStatus(status));
             dispatch(actions._setPath(path));
         });
         socketClientManager.on(SERIAL_PORT_OPEN, (path) => {
             const status = "open";
-            dispatch(actions._setSerialPortStatus(status));
+            dispatch(actions._setStatus(status));
             dispatch(actions._setPath(path));
         });
         socketClientManager.on(SERIAL_PORT_CLOSE, (path) => {
             const status = "close";
-            dispatch(actions._setSerialPortStatus(status));
+            dispatch(actions._setStatus(status));
             dispatch(actions._setPath(null));
         });
         socketClientManager.on(SERIAL_PORT_ERROR, () => {
             const status = "err";
-            dispatch(actions._setSerialPortStatus(status));
+            dispatch(actions._setStatus(status));
         });
     },
     getPaths: () => {
@@ -51,22 +59,24 @@ export const actions = {
             type: null
         };
     },
-    open: (path) => (dispatch) => {
-        const status = "opening";
-        dispatch(actions._setSerialPortStatus(status));
+    open: (path) => () => {
         socketClientManager.openSerialPort(path)
+        return {
+            type: null
+        };
     },
     //close当前已连接的串口
-    close: () => (dispatch) => {
-        const status = "closing";
-        dispatch(actions._setSerialPortStatus(status));
+    close: () => () => {
         socketClientManager.closeSerialPort()
+        return {
+            type: null
+        };
     },
     //data: string|Buffer|Array<number>
-    write: (str) => {
-        socketClientManager.writeGcodeSerialPort(str);
+    write: (data) => {
+        socketClientManager.writeSerialPort(data);
         return {
-            type: ""
+            type: null
         };
     },
     _setPaths: (paths) => {
@@ -81,28 +91,10 @@ export const actions = {
             value: path
         };
     },
-    _setSerialPortStatus: (status) => {
+    _setStatus: (status) => {
         return {
-            type: SET_SERIAL_PORT_STATUS,
+            type: SET_STATUS,
             value: status
-        };
-    },
-    getSendGcodeStatus: () => {
-        socketClientManager.getSendGcodeStatus();
-        return {
-            type: ""
-        };
-    },
-    startSendGcode: (gcode) => {
-        socketClientManager.startSendGcode(gcode);
-        return {
-            type: ""
-        };
-    },
-    stopSendGcode: () => {
-        socketClientManager.stopSendGcode();
-        return {
-            type: ""
         };
     }
 };
@@ -113,8 +105,8 @@ export default function reducer(state = INITIAL_STATE, action) {
             return Object.assign({}, state, {paths: action.value});
         case SET_PATH:
             return Object.assign({}, state, {path: action.value});
-        case SET_SERIAL_PORT_STATUS:
-            return Object.assign({}, state, {serialPortStatus: action.value});
+        case SET_STATUS:
+            return Object.assign({}, state, {status: action.value});
         default:
             return state;
     }

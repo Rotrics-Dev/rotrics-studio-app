@@ -8,9 +8,10 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
-    GCODE_STATUS,
-    GCODE_SEND_START,
-    GCODE_SEND_STOP,
+    GCODE_UPDATE_SENDER_STATUS,
+    GCODE_START_SEND,
+    GCODE_APPEND_SEND,
+    GCODE_STOP_SEND,
     TOOL_PATH_GENERATE_LASER
 } from "../constants.js"
 
@@ -20,19 +21,16 @@ class SocketClientManager extends EventEmitter {
         this.socketClient = null;
     }
 
-    setup() {
-        this.socketClient = io(window.serverIp);
+    setup(serverIp) {
+        this.socketClient = io(serverIp);
+
         //socket
         this.socketClient.on('connect', () => {
-            console.log('socket io client -> connect')
-            this.getSerialPortOpened();
-            this.getSendGcodeStatus();
-            this.emit('socket-connect');
+            this.emit('socket', 'connect');
         });
 
         this.socketClient.on('disconnect', () => {
-            console.log('socket io client -> disconnect')
-            this.emit('socket-disconnect');
+            this.emit('socket', 'disconnect');
         });
 
         //serial port
@@ -61,11 +59,12 @@ class SocketClientManager extends EventEmitter {
         });
 
         //gcode
-        this.socketClient.on(GCODE_STATUS, (status) => {
+        this.socketClient.on(GCODE_UPDATE_SENDER_STATUS, (status) => {
             console.log("status -> " + status)
         });
     }
 
+    //serial port
     getSerialPortPath() {
         this.socketClient.emit(SERIAL_PORT_GET_PATH);
     }
@@ -82,26 +81,32 @@ class SocketClientManager extends EventEmitter {
         this.socketClient.emit(SERIAL_PORT_CLOSE);
     }
 
-    writeGcodeSerialPort(str) {
-        str += "\n";
-        this.socketClient.emit(SERIAL_PORT_WRITE, str);
+    writeSerialPort(data) {
+        console.log("writeSerialPort: " + data)
+        this.socketClient.emit(SERIAL_PORT_WRITE, data);
     }
 
-    getSendGcodeStatus() {
-        this.socketClient.emit(GCODE_STATUS);
+    //g-code
+    updateGcodeSenderStatus() {
+        this.socketClient.emit(GCODE_UPDATE_SENDER_STATUS);
     }
 
     startSendGcode(gcode) {
         console.log("startSendGcode: " + gcode)
-        this.socketClient.emit(GCODE_SEND_START, gcode);
+        this.socketClient.emit(GCODE_START_SEND, gcode);
+    }
+
+    appendSendGcode(gcode) {
+        console.log("appendSendGcode: " + gcode)
+        this.socketClient.emit(GCODE_APPEND_SEND, gcode);
     }
 
     stopSendGcode() {
-        this.socketClient.emit(GCODE_SEND_STOP);
+        console.log("stopSendGcode")
+        this.socketClient.emit(GCODE_STOP_SEND);
     }
 
     /**
-     *
      * @param url         model2d的图片url
      * @param settings    model2d.settings
      * @param toolPathId  (uuid)，settings有变化则id也随着变化

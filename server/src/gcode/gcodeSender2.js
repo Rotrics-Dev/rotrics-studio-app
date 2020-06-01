@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
 import {
     SERIAL_PORT_DATA,
-    GCODE_STATUS
+    GCODE_UPDATE_SENDER_STATUS
 } from "../constants.js"
 
 /**
@@ -60,7 +60,7 @@ class GcodeSender extends EventEmitter {
         if (line.length === 0) {
             this.lineCountTotal = 0;
             this.lineCountSend = 0;
-            this.emit(GCODE_STATUS, "end");
+            this.emit(GCODE_UPDATE_SENDER_STATUS, "end");
             return;
         }
         console.log("_sendNextCmd: " + this.lineCountSend + "/" + this.lineCountTotal)
@@ -68,7 +68,7 @@ class GcodeSender extends EventEmitter {
         if (this.lineCountTotal === this.lineCountSend && this.lineCountTotal > 0) {
             this.lineCountTotal = 0;
             this.lineCountSend = 0;
-            this.emit(GCODE_STATUS, "end");
+            this.emit(GCODE_UPDATE_SENDER_STATUS, "end");
             return;
         }
         const line = this.lines.shift();
@@ -90,7 +90,7 @@ class GcodeSender extends EventEmitter {
     start(gcode) {
         console.log("gcode sender -> start")
         if (typeof gcode !== "string" || gcode.trim().length === 0) {
-            this.emit(GCODE_STATUS, "error");
+            this.emit(GCODE_UPDATE_SENDER_STATUS, "error");
             this.lines = [];
             return;
         }
@@ -98,7 +98,7 @@ class GcodeSender extends EventEmitter {
         this.lines = gcode.split('\n');
         this.lineCountTotal = this.lines.length;
         this.lineCountSend = 0;
-        this.emit(GCODE_STATUS, "sending");
+        this.emit(GCODE_UPDATE_SENDER_STATUS, "sending");
         this._sendNextCmd();
     }
 
@@ -107,7 +107,7 @@ class GcodeSender extends EventEmitter {
         this.lines = [];
         this.lineCountTotal = 0;
         this.lineCountSend = 0;
-        this.emit(GCODE_STATUS, "stopped");
+        this.emit(GCODE_UPDATE_SENDER_STATUS, "stopped");
     }
 }
 

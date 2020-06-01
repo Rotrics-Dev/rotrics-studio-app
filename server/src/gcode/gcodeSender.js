@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
 import {
-    GCODE_STATUS
+    GCODE_UPDATE_SENDER_STATUS
 } from "../constants.js"
 
 /**
@@ -45,7 +45,7 @@ class GcodeSender extends EventEmitter {
             this.lineCountSend = 0;
             okCount = 0;
             this.status = "end";
-            this.emit(GCODE_STATUS, this.status);
+            this.emit(GCODE_UPDATE_SENDER_STATUS, this.status);
             return;
         }
 
@@ -69,13 +69,12 @@ class GcodeSender extends EventEmitter {
 
     start(gcode) {
         console.log("gcode sender -> start")
-
         okCount = 0;
         this.lines = gcode.split('\n');
         this.lineCountTotal = this.lines.length;
         this.lineCountSend = 0;
         this.status = "sending";
-        this.emit(GCODE_STATUS, this.status);
+        this.emit(GCODE_UPDATE_SENDER_STATUS, this.status);
         this._sendNextCmd();
     }
 
@@ -86,8 +85,13 @@ class GcodeSender extends EventEmitter {
         this.lineCountSend = 0;
         okCount = 0;
         this.status = "stopped";
-        this.emit(GCODE_STATUS, this.status);
+        this.emit(GCODE_UPDATE_SENDER_STATUS, this.status);
     }
+
+    append(gcode) {
+
+    }
+
 }
 
 const gcodeSender = new GcodeSender();
