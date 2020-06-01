@@ -55,29 +55,21 @@ export const actions = {
     },
     getPaths: () => {
         socketClientManager.getSerialPortPath();
-        return {
-            type: null
-        };
+        return {type: null};
     },
     open: (path) => () => {
-        socketClientManager.openSerialPort(path)
-        return {
-            type: null
-        };
+        socketClientManager.openSerialPort(path);
+        return {type: null};
     },
     //close当前已连接的串口
     close: () => () => {
-        socketClientManager.closeSerialPort()
-        return {
-            type: null
-        };
+        socketClientManager.closeSerialPort();
+        return {type: null};
     },
     //data: string|Buffer|Array<number>
     write: (data) => {
         socketClientManager.writeSerialPort(data);
-        return {
-            type: null
-        };
+        return {type: null};
     },
     _setPaths: (paths) => {
         return {

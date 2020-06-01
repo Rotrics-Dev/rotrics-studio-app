@@ -17,9 +17,7 @@ export const actions = {
                 dispatch(actions.setConfigText(config_text));
             }
         });
-        return {
-            type: ""
-        };
+        return {type: null};
     },
     setConfigText: (config_text) => {
         return {

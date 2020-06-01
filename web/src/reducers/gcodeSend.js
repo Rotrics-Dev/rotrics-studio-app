@@ -28,21 +28,15 @@ export const actions = {
     },
     start: (gcode) => {
         socketClientManager.startSendGcode(gcode + "\n");
-        return {
-            type: ""
-        };
+        return {type: null};
     },
     append: (gcode) => {
         socketClientManager.appendSendGcode(gcode);
-        return {
-            type: ""
-        };
+        return {type: null};
     },
     stop: () => {
         socketClientManager.stopSendGcode();
-        return {
-            type: ""
-        };
+        return {type: null};
     }
 };
 

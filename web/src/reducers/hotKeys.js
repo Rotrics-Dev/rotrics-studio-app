@@ -10,9 +10,7 @@ export const actions = {
             event.preventDefault();
             laserManager.removeSelected();
         });
-        return {
-            type: ""
-        };
+        return {type: null};
     }
 };
 
