@@ -12,15 +12,10 @@ class LaserManager extends events.EventEmitter {
         this.modelsParent = object3d;
     }
 
-    //selected model的状态有改变: x, y, rotation, width, height; 切换selected model
-    //应该分4种event：transform change，model change，config change，working parameters change
-    _emmitChangeEvent() {
-        this.emit('onChange', this._selected);
-    }
-
-    addModel2D(model2D) {
-        this.modelsParent.add(model2D);
-        this.selectModel(model2D)
+    addModel(model2d) {
+        this.modelsParent.add(model2d);
+        this.selectModel(model2d);
+        this.emit('onChangeModel', this._selected);
     }
 
     selectModel(model) {
@@ -31,7 +26,7 @@ class LaserManager extends events.EventEmitter {
         for (const child of this.modelsParent.children) {
             child.setSelected(this._selected === child);
         }
-        this._emmitChangeEvent();
+        this.emit('onChangeModel', this._selected);
     }
 
     removeSelected() {
@@ -40,6 +35,13 @@ class LaserManager extends events.EventEmitter {
             this._selected = null;
             this._emmitChangeEvent();
         }
+        this.emit('onChangeModel', this._selected);
+    }
+
+    removeAll() {
+        this.modelsParent.remove(...this.modelsParent.children);
+        this._selected = null;
+        this.emit('onChangeModel', this._selected);
     }
 
     duplicateSelected() {
@@ -49,31 +51,25 @@ class LaserManager extends events.EventEmitter {
         }
     }
 
-    removeAll() {
-        this.modelsParent.remove(...this.modelsParent.children);
-        this._selected = null;
-        this._emmitChangeEvent();
-    }
-
     /**
-     *
      * @param key
      * @param value
      * @param preview 是否触发model2d preview
      */
     updateTransformation(key, value, preview = true) {
+        //todo: 根据updateTransformation返回值，来确定是否需要emmit
         this._selected.updateTransformation(key, value, preview);
-        this._emmitChangeEvent();
+        this.emit('onChangeTransformation', this._selected.settings.transformation);
     }
 
     updateConfig(key, value) {
         this._selected.updateConfig(key, value);
-        this._emmitChangeEvent();
+        this.emit('onChangeConfig', this._selected.settings.config);
     }
 
     updateWorkingParameters(key, value) {
         this._selected.updateWorkingParameters(key, value);
-        this._emmitChangeEvent();
+        this.emit('onChangeWorkingParameters', this._selected.settings.working_parameters);
     }
 }
 

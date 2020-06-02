@@ -1,63 +1,47 @@
 import React, {PureComponent} from 'react';
-import {Select, Space, Row, Col, Divider} from 'antd';
-import laserManager from "../../lib/laserManager.js";
+import {Select, Row, Col} from 'antd';
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
-import _ from 'lodash';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as laserActions} from "../../../../reducers/laser";
+import {connect} from 'react-redux';
 
 class Transformation extends PureComponent {
-    state = {
-        model2d: null,
-        transformation: null
-    };
-
-    componentDidMount() {
-        laserManager.on("onChange", (model2d) => {
-            let transformation = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
-            this.setState({
-                model2d,
-                transformation
-            })
-        });
-    }
-
     actions = {
         setWidth: (value) => {
-            laserManager.updateTransformation("width", value)
+            this.props.updateTransformation("width", value, true)
         },
         setHeight: (value) => {
-            laserManager.updateTransformation("height", value)
+            this.props.updateTransformation("height", value, true)
         },
         setRotationDegree: (value) => {
-            laserManager.updateTransformation("rotation", value)
+            this.props.updateTransformation("rotation", value, true)
         },
         setX: (value) => {
-            laserManager.updateTransformation("x", value)
+            this.props.updateTransformation("x", value, true)
         },
         setY: (value) => {
-            laserManager.updateTransformation("y", value)
+            this.props.updateTransformation("y", value, true)
         },
         setFlipModel: (value) => {
-            laserManager.updateTransformation("flip_model", value)
+            this.props.updateTransformation("flip_model", value, true)
         },
     };
 
     render() {
-        if (!this.state.model2d) {
+        const {model, transformation} = this.props;
+        if (!model || !transformation) {
             return null;
         }
         const actions = this.actions;
-        const {transformation} = this.state;
         const {width, height, rotation, x, y, flip_model} = transformation.children;
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
             flipModelOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
         });
-
         return (
             <React.Fragment>
                 <Line/>
@@ -131,5 +115,21 @@ class Transformation extends PureComponent {
     }
 }
 
-export default Transformation;
+const mapStateToProps = (state) => {
+    const {model, transformation} = state.laser;
+    return {
+        model,
+        transformation
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transformation);
+
+
 

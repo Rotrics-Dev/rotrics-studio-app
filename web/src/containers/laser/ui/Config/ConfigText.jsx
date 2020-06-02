@@ -1,43 +1,21 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input, Row, Col} from 'antd';
-import {connect} from 'react-redux';
-import laserManager from "../../lib/laserManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import {actions as laserTextActions} from '../../../../reducers/laserText';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import _ from 'lodash';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as laserActions} from "../../../../reducers/laser";
+import {connect} from 'react-redux';
 
 class ConfigText extends PureComponent {
-    state = {
-        model2d: null,
-        config: null,
-        //config_text
-        text: "",
-        font: "",
-        font_size: 72
-    };
-
-    componentDidMount() {
-        laserManager.on("onChange", (model2d) => {
-            let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-            let config_text = model2d ? _.cloneDeep(model2d.userData.config_text) : null;
-
-            // console.log("change: " + JSON.stringify(config, null, 2))
-            this.setState({
-                model2d,
-                config,
-                config_text
-            })
-        });
-    }
-
     actions = {
         //config text
         setText: (e) => {
-            console.log(e.target.value)
-            this.props.updateConfigText("text", e.target.value.trim())
+            if (e.target.value.trim().length > 0) {
+                this.props.updateConfigText("text", e.target.value.trim())
+            }
         },
         setFont: (value) => {
             this.props.updateConfigText("font", value)
@@ -47,23 +25,22 @@ class ConfigText extends PureComponent {
         },
         //config
         setOptimizePath: (e) => {
-            laserManager.updateConfig("optimize_path", e.target.checked)
+            this.props.updateConfig("optimize_path", e.target.checked)
         },
         setFill: (e) => {
-            laserManager.updateConfig("fill", e.target.checked)
+            this.props.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            laserManager.updateConfig("fill.fill_density", value)
+            this.props.updateConfig("fill.fill_density", value)
         },
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "text") {
+        const {model, config_text, config} = this.props;
+        if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
         }
         const actions = this.actions;
-        const {config_text} = this.props;
-        const {config} = this.state;
 
         const {text, font, font_size} = config_text.children;
 
@@ -145,8 +122,11 @@ class ConfigText extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+    const {model, config} = state.laser;
     const {config_text} = state.laserText;
     return {
+        model,
+        config,
         config_text
     };
 };
@@ -154,9 +134,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateConfigText: (key, value) => dispatch(laserTextActions.updateConfigText(key, value)),
+        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
     };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigText);
 

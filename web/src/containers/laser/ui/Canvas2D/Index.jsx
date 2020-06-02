@@ -2,9 +2,10 @@ import React from 'react';
 import styles from './styles.css';
 import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
-import laserManager from "../../lib/laserManager.js";
 import IntersectDetector from '../../../../three-extensions/IntersectDetector';
 import PanControls from '../../../../three-extensions/PanControls';
+import {actions as laserActions} from "../../../../reducers/laser";
+import {connect} from 'react-redux';
 
 class Index extends React.Component {
     constructor(props) {
@@ -30,11 +31,10 @@ class Index extends React.Component {
 
     componentDidMount() {
         this.setupThree();
-        laserManager.setModelsParent(this.modelGroup);
         this.setupZoom();
         this.setupIntersectDetector();
         this.setupPanControls();
-
+        this.props.setModelsParent(this.modelGroup);
         this.animate();
         this.group.add(new PrintablePlate(new THREE.Vector2(100, 100)));
         window.addEventListener('resize', this.resizeWindow, false);
@@ -53,8 +53,8 @@ class Index extends React.Component {
             (event) => {
                 //detect到的是model2d的children
                 const model = event.object.parent;
-                laserManager.selectModel(model)
                 console.log("detected: " + model.fileType)
+                this.props.selectModel(model);
                 this.panControls.select(model);
             }
         );
@@ -69,8 +69,8 @@ class Index extends React.Component {
             (event) => {
                 // 比较卡
                 // const {x, y} = event.object.position;
-                // laserManager.updateTransformation("x", x, false)
-                // laserManager.updateTransformation("y", y, false)
+                // this.props.updateTransformation("x", x, false)
+                // this.props.updateTransformation("y", y, false)
             }
         );
 
@@ -79,8 +79,8 @@ class Index extends React.Component {
             (event) => {
                 console.log("pan-end: " + event.object.fileType)
                 const {x, y} = event.object.position;
-                laserManager.updateTransformation("x", x, false)
-                laserManager.updateTransformation("y", y, false)
+                this.props.updateTransformation("x", x, false)
+                this.props.updateTransformation("y", y, false)
             }
         );
     }
@@ -170,4 +170,13 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setModelsParent: (modelsParent) => dispatch(laserActions.setModelsParent(modelsParent)),
+        selectModel: (model) => dispatch(laserActions.selectModel(model)),
+        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Index);
+
