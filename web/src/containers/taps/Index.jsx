@@ -6,14 +6,16 @@ import Header from '../header/Index.jsx';
 
 import Laser from '../laser/Index.jsx';
 import P3D from '../p3d/Index.jsx';
+import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
-import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
+import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 import {actions as tapActions} from "../../reducers/tap";
 import {connect} from 'react-redux';
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserTextActions} from "../../reducers/laserText";
+import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
 import {actions as socketActions} from "../../reducers/socket";
@@ -26,6 +28,7 @@ class Index extends React.Component {
 
         this.refLaser = React.createRef();
         this.refP3D = React.createRef();
+        this.refWriteAndDraw = React.createRef();
         this.refCode = React.createRef();
         this.refSettings = React.createRef();
     }
@@ -51,6 +54,7 @@ class Index extends React.Component {
     displayTap = (tap) => {
         this.refLaser.current.style.display = 'none';
         this.refP3D.current.style.display = 'none';
+        this.refWriteAndDraw.current.style.display = 'none';
         this.refCode.current.style.display = 'none';
         this.refSettings.current.style.display = 'none';
         switch (tap) {
@@ -60,6 +64,9 @@ class Index extends React.Component {
             case TAP_P3D:
                 this.refP3D.current.style.display = 'block';
                 break;
+            case TAB_WRITE_AND_DRAW:
+                this.refWriteAndDraw.current.style.display = 'block';
+                break
             case TAP_CODE:
                 this.refCode.current.style.display = 'block';
                 break;
@@ -91,6 +98,11 @@ class Index extends React.Component {
                         className={styles.btn_3d}
                     />
                     <button
+                        data-tip="Write&Draw"
+                        onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
+                        className={styles.btn_laser}
+                    />
+                    <button
                         data-tip="Code"
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={styles.btn_code}
@@ -107,6 +119,9 @@ class Index extends React.Component {
                     </div>
                     <div ref={this.refP3D}>
                         <P3D/>
+                    </div>
+                    <div ref={this.refWriteAndDraw}>
+                        <WriteAndDraw/>
                     </div>
                     <div ref={this.refCode}>
                         <Code/>
@@ -128,6 +143,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
+    console.log("chen:"+JSON.stringify(dispatch))
     return {
         setTap: (value) => dispatch(tapActions.setTap(value)),
         init: () => {
@@ -135,6 +151,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(hotKeysActions.init());
             dispatch(laserTextActions.init());
             dispatch(serialPortActions.init());
+            dispatch(writeAndDrawActions.init());
             dispatch(socketActions.init());
             dispatch(vmActions.init());
         }
