@@ -4,7 +4,6 @@ import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
-import laserManager from "../../lib/laserManager.js";
 import {Button, Input, Space, Divider} from 'antd';
 
 import "antd/dist/antd.css";
@@ -23,6 +22,7 @@ import {uploadImage, generateSvg} from '../../../../api/index.js';
 import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import {actions as laserActions} from "../../../../reducers/laser";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -49,23 +49,7 @@ class Index extends React.Component {
     state = {
         fileType: '', // bw, greyscale, vector
         accept: '',
-        fileTypeSelected: ""
     };
-
-    componentDidMount() {
-        laserManager.on("onChange", (model2d) => {
-            let obj = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
-            // console.log(JSON.stringify(obj, null, 2))
-
-            let fileTypeSelected = ""
-            if (model2d) {
-                fileTypeSelected = model2d.fileType;
-            }
-            this.setState({
-                fileTypeSelected
-            })
-        });
-    }
 
     actions = {
         onChangeFile: async (event) => {
@@ -76,17 +60,17 @@ class Index extends React.Component {
             const {url, width, height} = response;
             console.log("response: " + JSON.stringify(response))
 
-            const model2D = new Model2D(fileType);
-            model2D.loadImg(url, width, height);
+            const model = new Model2D(fileType);
+            model.loadImg(url, width, height);
 
-            laserManager.addModel2D(model2D);
+            this.props.addModel(model);
         },
         onClickToUpload: async (fileType) => {
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
                 const svg = await generateSvg(config.config_text);
 
-                const filename = "test.svg";
+                const filename = "text.svg";
                 const blob = new Blob([svg], {type: 'text/plain'});
                 const file = new File([blob], filename);
 
@@ -95,12 +79,13 @@ class Index extends React.Component {
                 const {url, width, height} = response;
                 console.log("response: " + JSON.stringify(response))
 
-                const model2D = new Model2D(fileType);
-                model2D.loadImg(url, width, height);
+                const model = new Model2D(fileType);
+                model.loadImg(url, width, height);
 
                 //增加数据config_text
-                model2D.userData = {config_text: config.config_text};
-                laserManager.addModel2D(model2D);
+                model.userData = {config_text: config.config_text};
+
+                this.props.addModel(model);
                 return;
             }
 
@@ -113,18 +98,17 @@ class Index extends React.Component {
             });
         },
         generateGcode: () => {
-            laserManager._selected.generateGcode();
+            this.props.generateGcode();
         },
         exportGcode: () => {
-            const gcode = laserManager._selected.gcode;
+            const gcode = this.props.gcode;
             const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
             const fileName = "be.gcode";
             FileSaver.saveAs(blob, fileName, true);
         },
         startSendGcode: () => {
-            const gcode = laserManager._selected.gcode;
+            const gcode = this.props.gcode;
             this.props.startSendGcode(gcode);
-
         },
         stopSendGcode: () => {
             this.props.stopSendGcode();
@@ -133,7 +117,7 @@ class Index extends React.Component {
 
     render() {
         const {accept} = this.state;
-        const {fileTypeSelected} = this.state;
+        const {fileTypeSelected} = this.props;
         const actions = this.actions;
         return (
             <div style={{
@@ -151,7 +135,7 @@ class Index extends React.Component {
                         block
                         onClick={actions.exportGcode}
                     >
-                        {"Export =G-code"}
+                        {"Export G-code"}
                     </Button>
                     <Button
                         block
@@ -207,8 +191,12 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {status} = state.serialPort;
+    const {gcode, model} = state.laser;
+    let fileTypeSelected = model ? model.fileType : "";
     return {
-        serialPortStatus: status
+        serialPortStatus: status,
+        gcode,
+        fileTypeSelected
     };
 };
 
@@ -216,6 +204,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+        //model
+        addModel: (model) => dispatch(laserActions.addModel(model)),
+        generateGcode: () => dispatch(laserActions.generateGcode()),
     };
 };
 

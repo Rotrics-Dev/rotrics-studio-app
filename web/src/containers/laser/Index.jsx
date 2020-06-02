@@ -9,33 +9,32 @@ import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
 
 import styles from './styles.css';
-import laserManager from "./lib/laserManager";
+import {actions as laserActions} from "../../reducers/laser";
+import {connect} from 'react-redux';
 
 const {TabPane} = Tabs;
 
 class Index extends React.Component {
     operations = {
         undo: () => {
-            console.log("undo")
+            this.props.undo();
         },
         redo: () => {
-            console.log("redo")
+            this.props.redo();
         },
         duplicate: () => {
-            console.log("duplicate")
-            laserManager.duplicateSelected();
+            this.props.duplicateSelected();
         },
         del: () => {
-            laserManager.removeSelected();
+            this.props.removeSelected();
         },
         clear: () => {
-            laserManager.removeAll();
+            this.props.removeAll();
         }
     };
 
     render() {
         const operations = this.operations;
-
         const actions = this.actions;
         return (
             <div style={{
@@ -92,4 +91,21 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeSelected: () => dispatch(laserActions.removeSelected()),
+        removeAll: () => dispatch(laserActions.removeAll()),
+        duplicateSelected: () => dispatch(laserActions.duplicateSelected()),
+        undo: () => dispatch(laserActions.undo()),
+        redo: () => dispatch(laserActions.redo()),
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Index);
+
+
+
+
+
+
+

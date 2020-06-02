@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactTooltip from "react-tooltip";
+import {connect} from 'react-redux';
 import styles from './styles.css';
 
 import Header from '../header/Index.jsx';
@@ -11,8 +12,9 @@ import Settings from '../settings/Index.jsx';
 
 import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 import {actions as tapActions} from "../../reducers/tap";
-import {connect} from 'react-redux';
+
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
+import {actions as laserActions} from "../../reducers/laser";
 import {actions as laserTextActions} from "../../reducers/laserText";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
@@ -133,6 +135,7 @@ const mapDispatchToProps = (dispatch) => {
         init: () => {
             dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());
+            dispatch(laserActions.init());
             dispatch(laserTextActions.init());
             dispatch(serialPortActions.init());
             dispatch(socketActions.init());

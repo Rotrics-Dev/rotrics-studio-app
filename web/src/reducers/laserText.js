@@ -2,35 +2,51 @@ import laserManager from "../containers/laser/lib/laserManager.js";
 import _ from 'lodash';
 import {uploadImage, generateSvg} from "../api";
 
-const SET_CONFIG_TEXT = 'SET_CONFIG_TEXT';
-const UPDATE_CONFIG_TEXT = 'UPDATE_CONFIG_TEXT';
+const SET_MODEL = 'laserText/SET_MODEL';
+const SET_CONFIG_TEXT = 'laserText/SET_CONFIG_TEXT';
+const UPDATE_CONFIG_TEXT = 'laserText/UPDATE_CONFIG_TEXT';
 
 const INITIAL_STATE = {
-    config_text: {},
+    config_text: null,
+    model: null,
 };
 
 export const actions = {
-    init: () => (dispatch, getState) => {
-        laserManager.on("onChange", (model2d) => {
+    init: () => (dispatch) => {
+        laserManager.on("onChangeModel", (model2d) => {
             if (model2d && model2d.fileType === "text") {
                 const config_text = _.cloneDeep(model2d.userData.config_text);
-                dispatch(actions.setConfigText(config_text));
+                dispatch(actions._setConfigText(config_text));
+                dispatch(actions._setModel(model2d));
+            } else {
+                dispatch(actions._setConfigText(null));
+                dispatch(actions._setModel(null));
             }
         });
-        return {type: null};
     },
-    setConfigText: (config_text) => {
+    _setModel: (model) => {
+        return {
+            type: SET_MODEL,
+            value: model
+        };
+    },
+    _setConfigText: (config_text) => {
         return {
             type: SET_CONFIG_TEXT,
             value: config_text
         };
     },
     updateConfigText: (key, value) => async (dispatch, getState) => {
-        laserManager._selected.userData.config_text.children[key].default_value = value;
-        const config_text = _.cloneDeep(laserManager._selected.userData.config_text);
+        const {model} = getState().laserText;
+        if (!model || model.fileType !== "text") {
+            return {type: null};
+        }
+
+        model.userData.config_text.children[key].default_value = value;
+        const config_text = _.cloneDeep(model.userData.config_text);
 
         const svg = await generateSvg(config_text);
-        const filename = "test.svg";
+        const filename = "text.svg";
         const blob = new Blob([svg], {type: 'text/plain'});
         const file = new File([blob], filename);
 
@@ -38,8 +54,10 @@ export const actions = {
 
         const {url, width, height} = response;
 
-        laserManager._selected.loadImg(url, width, height);
-        laserManager._emmitChangeEvent();
+        model.loadImg(url, width, height);
+
+        //TODO: emit不应该放在laserManager之外调用
+        laserManager.emit('onChangeTransformation', model.settings.transformation);
 
         dispatch(actions._updateConfigText(key, value));
     },
@@ -53,6 +71,8 @@ export const actions = {
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
+        case SET_MODEL:
+            return Object.assign({}, state, {model: action.value});
         case SET_CONFIG_TEXT:
             return Object.assign({}, state, {config_text: action.value});
         case UPDATE_CONFIG_TEXT:

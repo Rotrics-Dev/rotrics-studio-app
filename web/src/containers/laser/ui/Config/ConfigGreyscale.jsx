@@ -1,57 +1,43 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Row, Col, Divider} from 'antd';
-import laserManager from "../../lib/laserManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as laserActions} from "../../../../reducers/laser";
+import {connect} from 'react-redux';
 
 class ConfigGreyscale extends PureComponent {
-    state = {
-        model2d: null,
-        config: null
-    };
-
-    componentDidMount() {
-        laserManager.on("onChange", (model2d) => {
-            let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-              this.setState({
-                model2d,
-                config
-            })
-        });
-    }
-
     actions = {
         setInvert: (e) => {
-            laserManager.updateConfig("invert", e.target.checked)
+            this.props.updateConfig("invert", e.target.checked)
         },
         setContrast: (value) => {
-            laserManager.updateConfig("contrast", value)
+            this.props.updateConfig("contrast", value)
         },
         setBrightness: (value) => {
-            laserManager.updateConfig("brightness", value)
+            this.props.updateConfig("brightness", value)
         },
         setWhiteClip: (value) => {
-            laserManager.updateConfig("white_clip", value)
+            this.props.updateConfig("white_clip", value)
         },
         setAlgorithm: (value) => {
-            laserManager.updateConfig("algorithm", value)
+            this.props.updateConfig("algorithm", value)
         },
         setMovementMode: (value) => {
-            laserManager.updateConfig("movement_mode", value)
+            this.props.updateConfig("movement_mode", value)
         },
         setDensity: (value) => {
-            laserManager.updateConfig("density", value)
+            this.props.updateConfig("density", value)
         },
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "greyscale") {
+        const {model, config} = this.props;
+        if (!model || model.fileType !== "greyscale" || !config) {
             return null;
         }
         const actions = this.actions;
-        const {config} = this.state;
         const {invert, contrast, brightness, white_clip, algorithm, movement_mode, density} = config.children;
 
         const algorithmOptions = [];
@@ -151,5 +137,19 @@ class ConfigGreyscale extends PureComponent {
     }
 }
 
-export default ConfigGreyscale;
+const mapStateToProps = (state) => {
+    const {model, config} = state.laser;
+    return {
+        model,
+        config
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigGreyscale);
 

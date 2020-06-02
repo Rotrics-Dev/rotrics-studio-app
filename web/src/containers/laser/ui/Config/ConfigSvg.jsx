@@ -1,46 +1,32 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
-import laserManager from "../../lib/laserManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as laserActions} from "../../../../reducers/laser";
+import {connect} from 'react-redux';
 
 class ConfigSvg extends PureComponent {
-    state = {
-        model2d: null,
-        config: null
-    };
-
-    componentDidMount() {
-        laserManager.on("onChange", (model2d) => {
-            let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-            // console.log("change: " + JSON.stringify(config, null, 2))
-            this.setState({
-                model2d,
-                config
-            })
-        });
-    }
-
     actions = {
         setOptimizePath: (e) => {
-            laserManager.updateConfig("optimize_path", e.target.checked)
+            this.props.updateConfig("optimize_path", e.target.checked)
         },
         setFill: (e) => {
-            laserManager.updateConfig("fill", e.target.checked)
+            this.props.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            laserManager.updateConfig("fill.fill_density", value)
+            this.props.updateConfig("fill.fill_density", value)
         },
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "svg") {
+        const {model, config} = this.props;
+        if (!model || model.fileType !== "svg" || !config) {
             return null;
         }
+
         const actions = this.actions;
-        const {config} = this.state;
         const {optimize_path, fill} = config.children;
         const {fill_density} = fill.children;
         return (
@@ -80,5 +66,20 @@ class ConfigSvg extends PureComponent {
     }
 }
 
-export default ConfigSvg;
+const mapStateToProps = (state) => {
+    const {model, config} = state.laser;
+    return {
+        model,
+        config
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigSvg);
+
 
