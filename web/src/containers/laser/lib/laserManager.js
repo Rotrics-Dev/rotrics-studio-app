@@ -5,6 +5,7 @@ class LaserManager extends events.EventEmitter {
         super();
         this.modelsParent = null;
         this._selected = null;
+        this.isAllPreviewed = false;
     }
 
     //设置模型要展示在哪个object3d上
@@ -16,6 +17,22 @@ class LaserManager extends events.EventEmitter {
         this.modelsParent.add(model2d);
         this.selectModel(model2d);
         this.emit('onChangeModel', this._selected);
+
+        model2d.addEventListener('preview', () => {
+            this._onPreviewStatusChange();
+        });
+    }
+
+    _onPreviewStatusChange() {
+        this.isAllPreviewed = true;
+        for (let i = 0; i < this.modelsParent.children.length; i++) {
+            const model = this.modelsParent.children[i];
+            if (!model.isPreviewed) {
+                this.isAllPreviewed = false;
+                break;
+            }
+        }
+        this.emit('onPreviewStatusChange', this.isAllPreviewed);
     }
 
     selectModel(model) {
@@ -46,8 +63,8 @@ class LaserManager extends events.EventEmitter {
 
     duplicateSelected() {
         if (this._selected) {
-            const model2D = this._selected.clone();
-            this.addModel2D(model2D)
+            const model2d = this._selected.clone();
+            this.addModel(model2d)
         }
     }
 

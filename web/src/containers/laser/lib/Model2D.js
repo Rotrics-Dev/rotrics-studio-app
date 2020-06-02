@@ -90,6 +90,8 @@ class Model2D extends THREE.Group {
 
         this.gcode = null;
 
+        this.isPreviewed = false;
+
         //需要deep clone
         switch (this.fileType) {
             case "bw":
@@ -108,7 +110,9 @@ class Model2D extends THREE.Group {
         socketClientManager.on(TOOL_PATH_GENERATE_LASER, (data) => {
             console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
-                this.loadToolPath(data.toolPathLines)
+                this.loadToolPath(data.toolPathLines);
+                this.isPreviewed = true;
+                this.dispatchEvent({type: 'preview'});
             }
         });
     }
@@ -284,7 +288,10 @@ class Model2D extends THREE.Group {
         console.log("preview")
         this.toolPathId = getUuid();
         socketClientManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
-        console.time(this.toolPathId)
+        console.time(this.toolPathId);
+
+        this.isPreviewed = false;
+        this.dispatchEvent({type: 'preview'});
     }
 
     generateGcode() {

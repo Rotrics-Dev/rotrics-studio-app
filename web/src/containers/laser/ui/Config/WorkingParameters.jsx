@@ -97,7 +97,14 @@ class WorkingParameters extends PureComponent {
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
 
-        let jogSpeedHidden = getHiddenValue(jog_speed.hidden, model.settings);
+
+        let jogSpeedHidden = false;
+        if (jog_speed) {
+            getHiddenValue(jog_speed.hidden, model.settings);
+        } else {
+            jogSpeedHidden = true;
+        }
+
         let dwellTimeHidden = false;
         if (dwell_time) {
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, model.settings);

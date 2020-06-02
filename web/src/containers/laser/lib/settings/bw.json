@@ -73,7 +73,7 @@
   "config": {
     "icon": "base64xxx",
     "label": "B&W",
-    "type": "category",
+    "type": "bw",
     "description": "Config of B&W",
     "children": {
       "invert": {

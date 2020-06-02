@@ -6,8 +6,10 @@ const SET_TRANSFORMATION = 'laser/SET_TRANSFORMATION';
 const SET_CONFIG = 'laser/SET_CONFIG';
 const SET_WORKING_PARAMETERS = 'laser/SET_WORKING_PARAMETERS';
 
+const SET_ALL_PREVIEWED = 'laser/SET_ALL_PREVIEWED';
+
 const INITIAL_STATE = {
-    isPreviewed: "", //是否所有model全部previewed
+    isAllPreviewed: false, //是否所有model全部previewed
     gcode: "",
     model: null,
     transformation: null,
@@ -34,6 +36,10 @@ export const actions = {
         });
         laserManager.on("onChangeWorkingParameters", (working_parameters) => {
             dispatch(actions._setWorkingParameters(_.cloneDeep(working_parameters)));
+        });
+        laserManager.on("onPreviewStatusChange", (isAllPreviewed) => {
+            console.log("onPreviewStatusChange => " + isAllPreviewed)
+            dispatch(actions._setAllPreviewed(isAllPreviewed));
         });
     },
     //modelsParent: three.Object3D
@@ -108,6 +114,12 @@ export const actions = {
             value: workingParameters
         };
     },
+    _setAllPreviewed: (isAllPreviewed) => {
+        return {
+            type: SET_ALL_PREVIEWED,
+            value: isAllPreviewed
+        };
+    },
     //g-code
     generateGcode: () => {
         console.log("generateGcode")
@@ -125,6 +137,8 @@ export default function reducer(state = INITIAL_STATE, action) {
             return Object.assign({}, state, {config: action.value});
         case SET_WORKING_PARAMETERS:
             return Object.assign({}, state, {working_parameters: action.value});
+        case SET_ALL_PREVIEWED:
+            return Object.assign({}, state, {isAllPreviewed: action.value});
         default:
             return state;
     }
