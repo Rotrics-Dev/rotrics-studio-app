@@ -1,4 +1,5 @@
 import events from "events";
+import {computeBoundary} from "./toolPathUtils";
 
 class LaserManager extends events.EventEmitter {
     constructor() {
@@ -96,6 +97,42 @@ class LaserManager extends events.EventEmitter {
             gcodeArr.push(model.generateGcode());
         }
         return gcodeArr.join("\n");
+    }
+
+    /**
+     * 所有模型都preview后才能调用，控制逻辑由ui处理
+     * @returns {Array}
+     */
+    getGcode4runBoundary() {
+        const min = Number.MIN_VALUE;
+        const max = Number.MAX_VALUE;
+        let _minX = max, _minY = max;
+        let _maxX = min, _maxY = min;
+        for (let i = 0; i < this.modelsParent.children.length; i++) {
+            const model = this.modelsParent.children[i];
+            const {toolPathLines, settings} = model;
+            const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
+            _minX = Math.min(minX, _minX);
+            _maxX = Math.max(maxX, _maxX);
+            _minY = Math.min(minY, _minY);
+            _maxY = Math.max(maxY, _maxY);
+        }
+
+        const p1 = {x: _minX.toFixed(1), y: _minY.toFixed(1)};
+        const p2 = {x: _maxX.toFixed(1), y: _minY.toFixed(1)};
+        const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
+        const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
+        const gcodeArr = [];
+        gcodeArr.push("G0 F800");
+        gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
+        // gcodeArr.push("M3 S255");
+        gcodeArr.push(`G0 X${p2.x} Y${p2.y}`);
+        gcodeArr.push(`G0 X${p3.x} Y${p3.y}`);
+        gcodeArr.push(`G0 X${p4.x} Y${p4.y}`);
+        gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
+        // gcodeArr.push("M5");
+        const gcode = gcodeArr.join("\n") + "\n";
+        return gcode;
     }
 }
 
