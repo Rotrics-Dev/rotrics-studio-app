@@ -53,7 +53,7 @@ class Index extends React.Component {
         },
         //work
         runBoundary: () => {
-            console.log("runBoundary")
+            this.props.runBoundary();
         },
         setWorkOrigin: () => {
             this.props.sendGcode("G92 X0 Y0 Z0")
