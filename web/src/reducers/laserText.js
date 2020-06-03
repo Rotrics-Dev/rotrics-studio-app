@@ -4,24 +4,15 @@ import {uploadImage, generateSvg} from "../api";
 
 const SET_MODEL = 'laserText/SET_MODEL';
 const SET_CONFIG_TEXT = 'laserText/SET_CONFIG_TEXT';
-const UPDATE_CONFIG_TEXT = 'laserText/UPDATE_CONFIG_TEXT';
 
 const INITIAL_STATE = {
-    config_text: null,
-    model: null,
+    config_text: null
 };
 
 export const actions = {
     init: () => (dispatch) => {
-        laserManager.on("onChangeModel", (model2d) => {
-            if (model2d && model2d.fileType === "text") {
-                const config_text = _.cloneDeep(model2d.userData.config_text);
-                dispatch(actions._setConfigText(config_text));
-                dispatch(actions._setModel(model2d));
-            } else {
-                dispatch(actions._setConfigText(null));
-                dispatch(actions._setModel(null));
-            }
+        laserManager.on("onChangeModel", (model) => {
+            dispatch(actions._setModel(model));
         });
     },
     _setModel: (model) => {
@@ -30,14 +21,8 @@ export const actions = {
             value: model
         };
     },
-    _setConfigText: (config_text) => {
-        return {
-            type: SET_CONFIG_TEXT,
-            value: config_text
-        };
-    },
     updateConfigText: (key, value) => async (dispatch, getState) => {
-        const {model} = getState().laserText;
+        const {model} = getState().laser;
         if (!model || model.fileType !== "text") {
             return {type: null};
         }
@@ -59,12 +44,12 @@ export const actions = {
         //TODO: emit不应该放在laserManager之外调用
         laserManager.emit('onChangeTransformation', model.settings.transformation);
 
-        dispatch(actions._updateConfigText(key, value));
+        dispatch(actions._setConfigText(config_text));
     },
-    _updateConfigText: (key, value) => {
+    _setConfigText: (config_text) => {
         return {
-            type: UPDATE_CONFIG_TEXT,
-            value: {key, value}
+            type: SET_CONFIG_TEXT,
+            value: config_text
         };
     }
 };
@@ -72,14 +57,15 @@ export const actions = {
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case SET_MODEL:
-            return Object.assign({}, state, {model: action.value});
+            const model = action.value;
+            if (model && model.fileType === "text") {
+                const config_text = model.userData.config_text; //laserManager "onChangeModel": 选中的模型有变化，因此不需要deepClone
+                return Object.assign({}, state, {config_text});
+            } else {
+                return Object.assign({}, state, {config_text: null});
+            }
         case SET_CONFIG_TEXT:
             return Object.assign({}, state, {config_text: action.value});
-        case UPDATE_CONFIG_TEXT:
-            const {key, value} = action.value;
-            laserManager._selected.userData.config_text.children[key].default_value = value;
-            const config_text = _.cloneDeep(laserManager._selected.userData.config_text);
-            return Object.assign({}, state, {config_text});
         default:
             return state;
     }
