@@ -10,7 +10,7 @@ class Index extends PureComponent {
 
         return (
             <div className={styles.div_root}>
-                <Space direction={"vertical"}>
+                <Space direction={"vertical"} size={0}>
                     <button
                         onClick={undo}
                         className={styles.btn_undo}

@@ -54,13 +54,13 @@ class Index extends React.Component {
         return (
             <div>
                 <DeviceControl runBoundary={actions.runBoundary}/>
-                <div style={{marginTop: "8px"}}>
-                    <Line/>
+                <Line/>
+                <div style={{ padding: "5px"}}>
                     <span>Laser</span>
-                    <Switch style={{position: "absolute", right: 0}} checked={state.isLaserOn}
+                    <Switch style={{position: "absolute", right: "5px"}} checked={state.isLaserOn}
                             onChange={actions.switchLaser}/>
                     <Slider
-                        style={{width: "90%"}}
+                        style={{width: "95%"}}
                         min={0}
                         max={100}
                         step={1}

@@ -169,7 +169,7 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%"
             }}>
-                <Space direction={"vertical"} style={{width: "100%", padding: "5px"}}>
+                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
                     <Button
                         block
                         onClick={actions.generateGcode}
@@ -196,7 +196,7 @@ class Index extends React.Component {
                     </Button>
                 </Space>
                 <Line/>
-                <h4>{"current image type: " + fileTypeSelected}</h4>
+                <h4 style={{paddingLeft: "10px", color: "grey"}}> {" selected image type: " + fileTypeSelected}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -205,23 +205,31 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "6px"}} size={5}>
+                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "7px"}} size={7}>
                     <button
                         className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}
-                    />
+                    >
+                        <h6 className={styles.h_file_type}>B&W</h6>
+                    </button>
                     <button
                         className={styles.btn_greyscale}
                         onClick={() => actions.onClickToUpload('greyscale')}
-                    />
+                    >
+                        <h6 className={styles.h_file_type}>GREYSCALE</h6>
+                    </button>
                     <button
                         className={styles.btn_svg}
                         onClick={() => actions.onClickToUpload('svg')}
-                    />
+                    >
+                        <h6 className={styles.h_file_type}>SVG</h6>
+                    </button>
                     <button
                         className={styles.btn_text}
                         onClick={() => actions.onClickToUpload('text')}
-                    />
+                    >
+                        <h6 className={styles.h_file_type}>TEXT</h6>
+                    </button>
                 </Space>
                 <Transformation/>
                 <ConfigGreyscale/>
@@ -238,7 +246,6 @@ const mapStateToProps = (state) => {
     const {status} = state.serialPort;
     const {gcode, model, modelCount, isAllPreviewed} = state.laser;
     let fileTypeSelected = model ? model.fileType : "";
-    console.log("gcode len: " + gcode.length)
     return {
         serialPortStatus: status,
         gcode,

@@ -74,7 +74,7 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         return (
-            <div style={{paddingLeft: "8px"}}>
+            <div>
                 <BaseDeviceControl actions={actions} step={state.step}/>
             </div>
         )

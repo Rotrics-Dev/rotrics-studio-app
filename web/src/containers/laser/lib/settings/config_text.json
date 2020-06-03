@@ -14,7 +14,7 @@
       "font": {
         "label": "Font",
         "description": "Font description",
-        "default_value": "Arial Black.woff",
+        "default_value": "Comic Sans MS.woff",
         "type": "enum",
         "options": {
           "Arial Black": "Arial Black.woff",

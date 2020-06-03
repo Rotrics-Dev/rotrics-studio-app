@@ -53,86 +53,85 @@ class ConfigGreyscale extends PureComponent {
         });
 
         return (
-            <React.Fragment>
+            <div>
                 <Line/>
-                <h4>{config.label}</h4>
-
-                <Row>
-                    <Col span={11}>
-                        <span>{invert.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col span={11}>
-                        <span>{contrast.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={contrast.minimum_value} max={contrast.maximum_value}
-                                     value={toFixed(contrast.default_value, 0)}
-                                     onChange={actions.setContrast}/>
-                    </Col>
-                </Row>
-
-
-                <Row>
-                    <Col span={11}>
-                        <span>{brightness.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={brightness.minimum_value} max={brightness.maximum_value}
-                                     value={toFixed(brightness.default_value, 0)}
-                                     onChange={actions.setBrightness}/>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col span={11}>
-                        <span>{white_clip.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={white_clip.minimum_value} max={white_clip.maximum_value}
-                                     value={toFixed(white_clip.default_value, 0)}
-                                     onChange={actions.setWhiteClip}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{algorithm.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Select value={algorithm.default_value} style={{width: 180}}
-                                onChange={actions.setAlgorithm}>
-                            {algorithmOptions}
-                        </Select>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{movement_mode.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Select value={movement_mode.default_value} style={{width: 180}}
-                                onChange={actions.setMovementMode}>
-                            {movementModeOptions}
-                        </Select>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{density.label}</span>
-                        <span>{"(" + density.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={density.minimum_value} max={density.maximum_value}
-                                     value={toFixed(density.default_value, 0)}
-                                     onChange={actions.setDensity}/>
-                    </Col>
-                </Row>
-            </React.Fragment>
+                <div style={{
+                    padding: "5px",
+                }}>
+                    <h4>{config.label}</h4>
+                    <Row>
+                        <Col span={15}>
+                            <span>{invert.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{contrast.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={contrast.minimum_value} max={contrast.maximum_value}
+                                         value={toFixed(contrast.default_value, 0)}
+                                         onChange={actions.setContrast}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{brightness.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={brightness.minimum_value} max={brightness.maximum_value}
+                                         value={toFixed(brightness.default_value, 0)}
+                                         onChange={actions.setBrightness}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{white_clip.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={white_clip.minimum_value} max={white_clip.maximum_value}
+                                         value={toFixed(white_clip.default_value, 0)}
+                                         onChange={actions.setWhiteClip}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{density.label}</span>
+                            <span>{"(" + density.unit + ")"}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={density.minimum_value} max={density.maximum_value}
+                                         value={toFixed(density.default_value, 0)}
+                                         onChange={actions.setDensity}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={7}>
+                            <span>{algorithm.label}</span>
+                        </Col>
+                        <Col span={17}>
+                            <Select value={algorithm.default_value} style={{width: "100%"}}
+                                    onChange={actions.setAlgorithm}>
+                                {algorithmOptions}
+                            </Select>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={7}>
+                            <span>{movement_mode.label}</span>
+                        </Col>
+                        <Col span={17}>
+                            <Select value={movement_mode.default_value} style={{width: "100%"}}
+                                    onChange={actions.setMovementMode}>
+                                {movementModeOptions}
+                            </Select>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         );
     }
 }

@@ -36,49 +36,53 @@ class ConfigBW extends PureComponent {
             directionOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
         });
         return (
-            <React.Fragment>
+            <div>
                 <Line/>
-                <h4>{config.label}</h4>
-                <Row>
-                    <Col span={11}>
-                        <span>{invert.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{bw.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={bw.minimum_value} max={bw.maximum_value}
-                                     value={toFixed(bw.default_value, 0)}
-                                     onChange={actions.setBW}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{line_direction.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Select value={line_direction.default_value} style={{width: 110}}
-                                onChange={actions.setLineDirection}>
-                            {directionOptions}></Select>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{density.label}</span>
-                        <span>{"(" + density.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={density.minimum_value} max={density.maximum_value}
-                                     value={toFixed(density.default_value, 0)}
-                                     onChange={actions.setDensity}/>
-                    </Col>
-                </Row>
-            </React.Fragment>
+                <div style={{
+                    padding: "5px",
+                }}>
+                    <h4>{config.label}</h4>
+                    <Row>
+                        <Col span={15}>
+                            <span>{invert.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{bw.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={bw.minimum_value} max={bw.maximum_value}
+                                         value={toFixed(bw.default_value, 0)}
+                                         onChange={actions.setBW}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{density.label}</span>
+                            <span>{"(" + density.unit + ")"}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={density.minimum_value} max={density.maximum_value}
+                                         value={toFixed(density.default_value, 0)}
+                                         onChange={actions.setDensity}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={13}>
+                            <span>{line_direction.label}</span>
+                        </Col>
+                        <Col span={11}>
+                            <Select value={line_direction.default_value} style={{width: "100%"}}
+                                    onChange={actions.setLineDirection}>
+                                {directionOptions}></Select>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         );
     }
 }
