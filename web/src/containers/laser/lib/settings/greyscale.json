@@ -73,7 +73,7 @@
   "config": {
     "icon": "base64xxx",
     "label": "Greyscale",
-    "type": "greyscale",
+    "type": "category",
     "description": "Config of Greyscale",
     "children": {
       "invert": {

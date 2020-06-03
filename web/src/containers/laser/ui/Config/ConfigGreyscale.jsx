@@ -34,7 +34,7 @@ class ConfigGreyscale extends PureComponent {
 
     render() {
         const {model, config} = this.props;
-        if (!model || model.fileType !== "greyscale" || !config || config.type !== "greyscale") {
+        if (!model || model.fileType !== "greyscale" || !config) {
             return null;
         }
         const actions = this.actions;

@@ -22,7 +22,7 @@ class ConfigSvg extends PureComponent {
 
     render() {
         const {model, config} = this.props;
-        if (!model || model.fileType !== "svg" || !config || config.type !== "svg") {
+        if (!model || model.fileType !== "svg" || !config) {
             return null;
         }
 

@@ -73,7 +73,7 @@
   "config": {
     "icon": "base64xxx",
     "label": "Svg",
-    "type": "svg",
+    "type": "category",
     "description": "Config of Vector",
     "children": {
       "optimize_path": {

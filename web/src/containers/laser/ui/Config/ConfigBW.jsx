@@ -25,7 +25,7 @@ class ConfigBW extends PureComponent {
 
     render() {
         const {model, config} = this.props;
-        if (!model || model.fileType !== "bw" || !config || config.type !== "bw") {
+        if (!model || model.fileType !== "bw" || !config) {
             return null;
         }
         const actions = this.actions;

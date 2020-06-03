@@ -10,6 +10,8 @@ const SET_ALL_PREVIEWED = 'laser/SET_ALL_PREVIEWED';
 const SET_GCODE = 'laser/SET_GCODE';
 const SET_MODEL_COUNT = 'laser/SET_MODEL_COUNT';
 
+const SELECT_MODEL = 'laser/SELECT_MODEL';
+
 const INITIAL_STATE = {
     modelCount: 0,
     isAllPreviewed: false, //是否所有model全部previewed
@@ -24,13 +26,7 @@ export const actions = {
     init: () => (dispatch) => {
         laserManager.on("onChangeModel", (model2d) => {
             dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
-            dispatch(actions._setModel(model2d));
-            if (model2d) {
-                const {transformation, config, working_parameters} = model2d.settings;
-                dispatch(actions._setTransformation(_.cloneDeep(transformation)));
-                dispatch(actions._setConfig(_.cloneDeep(config)));
-                dispatch(actions._setWorkingParameters(_.cloneDeep(working_parameters)));
-            }
+            dispatch(actions._selectModel(model2d));
         });
         laserManager.on("onChangeTransformation", (transformation) => {
             dispatch(actions._setTransformation(_.cloneDeep(transformation)));
@@ -130,6 +126,12 @@ export const actions = {
             value: isAllPreviewed
         };
     },
+    _selectModel: (model) => {
+        return {
+            type: SELECT_MODEL,
+            value: model
+        };
+    },
     //g-code
     generateGcode: () => {
         const gcode = laserManager.generateGcode();
@@ -156,6 +158,19 @@ export default function reducer(state = INITIAL_STATE, action) {
             return Object.assign({}, state, {gcode: action.value});
         case SET_MODEL_COUNT:
             return Object.assign({}, state, {modelCount: action.value, gcode: ""});
+        case SELECT_MODEL:
+            const model = action.value;
+            if (model) {
+                const {transformation, config, working_parameters} = model.settings;
+                return Object.assign({}, state, {model, transformation, config, working_parameters});
+            } else {
+                return Object.assign({}, state, {
+                    model: null,
+                    transformation: null,
+                    config: null,
+                    working_parameters: null
+                });
+            }
         default:
             return state;
     }

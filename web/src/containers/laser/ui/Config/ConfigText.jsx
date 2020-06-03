@@ -37,7 +37,7 @@ class ConfigText extends PureComponent {
 
     render() {
         const {model, config_text, config} = this.props;
-        if (!model || model.fileType !== "text" || !config_text || !config || config.type !== "svg") {
+        if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
         }
         const actions = this.actions;
