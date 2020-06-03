@@ -88,8 +88,6 @@ class Model2D extends THREE.Group {
 
         this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
 
-        this.gcode = null;
-
         this.isPreviewed = false;
 
         //需要deep clone
@@ -295,7 +293,7 @@ class Model2D extends THREE.Group {
     }
 
     generateGcode() {
-        this.gcode = toolPathLines2gcode(this.toolPathLines, this.settings);
+        return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
 
     // clone() {

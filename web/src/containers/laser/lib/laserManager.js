@@ -88,6 +88,15 @@ class LaserManager extends events.EventEmitter {
         this._selected.updateWorkingParameters(key, value);
         this.emit('onChangeWorkingParameters', this._selected.settings.working_parameters);
     }
+
+    generateGcode() {
+        const gcodeArr = [];
+        for (let i = 0; i < this.modelsParent.children.length; i++) {
+            const model = this.modelsParent.children[i];
+            gcodeArr.push(model.generateGcode());
+        }
+        return gcodeArr.join("\n");
+    }
 }
 
 const laserManager = new LaserManager();

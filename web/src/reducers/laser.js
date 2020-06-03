@@ -7,8 +7,11 @@ const SET_CONFIG = 'laser/SET_CONFIG';
 const SET_WORKING_PARAMETERS = 'laser/SET_WORKING_PARAMETERS';
 
 const SET_ALL_PREVIEWED = 'laser/SET_ALL_PREVIEWED';
+const SET_GCODE = 'laser/SET_GCODE';
+const SET_MODEL_COUNT = 'laser/SET_MODEL_COUNT';
 
 const INITIAL_STATE = {
+    modelCount: 0,
     isAllPreviewed: false, //是否所有model全部previewed
     gcode: "",
     model: null,
@@ -20,6 +23,7 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         laserManager.on("onChangeModel", (model2d) => {
+            dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
             dispatch(actions._setModel(model2d));
             if (model2d) {
                 const {transformation, config, working_parameters} = model2d.settings;
@@ -89,6 +93,12 @@ export const actions = {
         laserManager.updateWorkingParameters(key, value);
         return {type: null};
     },
+    _setModelCount: (count) => {
+        return {
+            type: SET_MODEL_COUNT,
+            value: count
+        };
+    },
     //set settings/model
     _setModel: (model) => {
         return {
@@ -122,23 +132,30 @@ export const actions = {
     },
     //g-code
     generateGcode: () => {
-        console.log("generateGcode")
-        return {type: null};
+        const gcode = laserManager.generateGcode();
+        return {
+            type: SET_GCODE,
+            value: gcode
+        };
     },
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case SET_MODEL:
-            return Object.assign({}, state, {model: action.value});
+            return Object.assign({}, state, {model: action.value, gcode: ""});
         case SET_TRANSFORMATION:
-            return Object.assign({}, state, {transformation: action.value});
+            return Object.assign({}, state, {transformation: action.value, gcode: ""});
         case SET_CONFIG:
-            return Object.assign({}, state, {config: action.value});
+            return Object.assign({}, state, {config: action.value, gcode: ""});
         case SET_WORKING_PARAMETERS:
-            return Object.assign({}, state, {working_parameters: action.value});
+            return Object.assign({}, state, {working_parameters: action.value, gcode: ""});
         case SET_ALL_PREVIEWED:
-            return Object.assign({}, state, {isAllPreviewed: action.value});
+            return Object.assign({}, state, {isAllPreviewed: action.value, gcode: ""});
+        case SET_GCODE:
+            return Object.assign({}, state, {gcode: action.value});
+        case SET_MODEL_COUNT:
+            return Object.assign({}, state, {modelCount: action.value, gcode: ""});
         default:
             return state;
     }

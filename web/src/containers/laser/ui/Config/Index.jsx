@@ -4,7 +4,7 @@ import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
-import {Button, Input, Space, Divider} from 'antd';
+import {Button, Input, Space, message} from 'antd';
 
 import "antd/dist/antd.css";
 
@@ -98,20 +98,65 @@ class Index extends React.Component {
             });
         },
         generateGcode: () => {
-            this.props.generateGcode();
+            if (this.actions._checkStatus4gcode("generateGcode")) {
+                this.props.generateGcode();
+                message.success('Generate G-code success', 1);
+            }
         },
         exportGcode: () => {
-            const gcode = this.props.gcode;
-            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
-            const fileName = "be.gcode";
-            FileSaver.saveAs(blob, fileName, true);
+            if (this.actions._checkStatus4gcode("exportGcode")) {
+                const date = new Date();
+                //https://blog.csdn.net/xu511739113/article/details/72764321
+                const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+                const fileName = arr.join("") + ".gcode";
+                const gcode = this.props.gcode;
+                const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
+                FileSaver.saveAs(blob, fileName, true);
+            }
         },
         startSendGcode: () => {
+            //todo：serialport状态
             const gcode = this.props.gcode;
             this.props.startSendGcode(gcode);
         },
         stopSendGcode: () => {
+            //todo：serialport状态
             this.props.stopSendGcode();
+        },
+        _checkStatus4gcode: (type) => {
+            switch (type) {
+                case "generateGcode": {
+                    if (this.props.modelCount === 0) {
+                        message.warning('Load model first', 1);
+                        return false;
+                    }
+                    if (!this.props.isAllPreviewed) {
+                        message.warning('Previewing', 1);
+                        return false;
+                    }
+                    break;
+                }
+                case "exportGcode": {
+                    if (this.props.modelCount === 0) {
+                        message.warning('Load model first', 1);
+                        return false;
+                    }
+                    if (!this.props.isAllPreviewed) {
+                        message.warning('Previewing', 1);
+                        return false;
+                    }
+                    if (this.props.gcode.length === 0) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
+                    break;
+                }
+                case "startSendGcode":
+                    break;
+                case "stopSendGcode":
+                    break;
+            }
+            return true;
         },
     };
 
@@ -191,13 +236,15 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {status} = state.serialPort;
-    const {gcode, model, isAllPreviewed} = state.laser;
+    const {gcode, model, modelCount, isAllPreviewed} = state.laser;
     let fileTypeSelected = model ? model.fileType : "";
+    console.log("gcode len: " + gcode.length)
     return {
         serialPortStatus: status,
         gcode,
         fileTypeSelected,
-        isAllPreviewed
+        isAllPreviewed,
+        modelCount
     };
 };
 
