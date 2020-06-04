@@ -1,63 +1,47 @@
 import React, {PureComponent} from 'react';
-import {Select, Space, Row, Col, Divider} from 'antd';
-import writeDrawManager from "../../lib/WriteAndDrawManager.js";
+import {Select, Row, Col} from 'antd';
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
-import _ from 'lodash';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
+import {connect} from 'react-redux';
 
 class Transformation extends PureComponent {
-    state = {
-        model2d: null,
-        transformation: null
-    };
-
-    componentDidMount() {
-        writeDrawManager.on("onChange", (model2d) => {
-            let transformation = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
-            this.setState({
-                model2d,
-                transformation
-            })
-        });
-    }
-
     actions = {
         setWidth: (value) => {
-            writeDrawManager.updateTransformation("width", value)
+            this.props.updateTransformation("width", value, true)
         },
         setHeight: (value) => {
-            writeDrawManager.updateTransformation("height", value)
+            this.props.updateTransformation("height", value, true)
         },
         setRotationDegree: (value) => {
-            writeDrawManager.updateTransformation("rotation", value)
+            this.props.updateTransformation("rotation", value, true)
         },
         setX: (value) => {
-            writeDrawManager.updateTransformation("x", value)
+            this.props.updateTransformation("x", value, true)
         },
         setY: (value) => {
-            writeDrawManager.updateTransformation("y", value)
+            this.props.updateTransformation("y", value, true)
         },
         setFlipModel: (value) => {
-            writeDrawManager.updateTransformation("flip_model", value)
+            this.props.updateTransformation("flip_model", value, true)
         },
     };
 
     render() {
-        if (!this.state.model2d) {
+        const {model, transformation} = this.props;
+        if (!model || !transformation) {
             return null;
         }
         const actions = this.actions;
-        const {transformation} = this.state;
         const {width, height, rotation, x, y, flip_model} = transformation.children;
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
             flipModelOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
         });
-
         return (
             <React.Fragment>
                 <Line/>
@@ -131,5 +115,21 @@ class Transformation extends PureComponent {
     }
 }
 
-export default Transformation;
+const mapStateToProps = (state) => {
+    const {model, transformation} = state.writeAndDraw;
+    return {
+        model,
+        transformation
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateTransformation: (key, value, preview) => dispatch(writeAndDrawActions.updateTransformation(key, value, preview)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transformation);
+
+
 

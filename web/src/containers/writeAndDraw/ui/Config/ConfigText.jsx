@@ -1,43 +1,21 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input, Row, Col} from 'antd';
-import {connect} from 'react-redux';
-import writeDrawManager from "../../lib/WriteAndDrawManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
-import {actions as laserTextActions} from '../../../../reducers/laserText';
+import {actions as writeAndDrawTextActions} from '../../../../reducers/writeAndDrawText';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import _ from 'lodash';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
+import {connect} from 'react-redux';
 
 class ConfigText extends PureComponent {
-    state = {
-        model2d: null,
-        config: null,
-        //config_text
-        text: "",
-        font: "",
-        font_size: 72
-    };
-
-    componentDidMount() {
-        writeDrawManager.on("onChange", (model2d) => {
-            let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-            let config_text = model2d ? _.cloneDeep(model2d.userData.config_text) : null;
-
-            // console.log("change: " + JSON.stringify(config, null, 2))
-            this.setState({
-                model2d,
-                config,
-                config_text
-            })
-        });
-    }
-
     actions = {
         //config text
         setText: (e) => {
-            console.log(e.target.value)
-            this.props.updateConfigText("text", e.target.value.trim())
+            if (e.target.value.trim().length > 0) {
+                this.props.updateConfigText("text", e.target.value.trim())
+            }
         },
         setFont: (value) => {
             this.props.updateConfigText("font", value)
@@ -47,23 +25,29 @@ class ConfigText extends PureComponent {
         },
         //config
         setOptimizePath: (e) => {
-            writeDrawManager.updateConfig("optimize_path", e.target.checked)
+            this.props.updateConfig("optimize_path", e.target.checked)
         },
         setFill: (e) => {
-            writeDrawManager.updateConfig("fill", e.target.checked)
+            this.props.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            writeDrawManager.updateConfig("fill.fill_density", value)
+            this.props.updateConfig("fill.fill_density", value)
         },
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "text") {
+        const {model, config_text, config} = this.props;
+        console.log("write render" + (model));
+        console.log("write render" + (!model));
+        console.log("write render" + (!model || model.fileType !== "text"));
+        console.log("write render" + (!model || model.fileType !== "text" || !config_text));
+        console.log("write render" + (!model || model.fileType !== "text" || !config_text || !config));
+
+        if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
         }
+
         const actions = this.actions;
-        const {config_text} = this.props;
-        const {config} = this.state;
 
         const {text, font, font_size} = config_text.children;
 
@@ -145,18 +129,29 @@ class ConfigText extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {config_text} = state.laserText;
+    console.log("chenmapStateToProps1" + JSON.stringify(state.writeAndDraw.config))
+    console.log("chenmapStateToProps2" + JSON.stringify(state.writeAndDrawText))
+    const {model, config} = state.writeAndDraw;
+    const {config_text} = state.writeAndDrawText;
     return {
+        model,
+        config,
         config_text
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateConfigText: (key, value) => dispatch(laserTextActions.updateConfigText(key, value)),
+        updateConfigText: (key, value) => {
+            console.log("updateConfigText key:" + JSON.stringify(key) + "key:" + JSON.stringify(value))
+            dispatch(writeAndDrawTextActions.updateConfigText(key, value))
+        },
+        updateConfig: (key, value) => {
+            console.log("updateConfig key:" + JSON.stringify(key) + "key:" + JSON.stringify(value))
+            dispatch(writeAndDrawActions.updateConfig(key, value))
+        },
     };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigText);
 

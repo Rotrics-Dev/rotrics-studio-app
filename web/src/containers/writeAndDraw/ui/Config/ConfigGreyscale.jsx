@@ -1,57 +1,43 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Row, Col, Divider} from 'antd';
-import writeDrawManager from "../../lib/WriteAndDrawManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
+import {connect} from 'react-redux';
 
 class ConfigGreyscale extends PureComponent {
-    state = {
-        model2d: null,
-        config: null
-    };
-
-    componentDidMount() {
-        writeDrawManager.on("onChange", (model2d) => {
-            let config = model2d ? _.cloneDeep(model2d.settings.config) : null;
-              this.setState({
-                model2d,
-                config
-            })
-        });
-    }
-
     actions = {
         setInvert: (e) => {
-            writeDrawManager.updateConfig("invert", e.target.checked)
+            this.props.updateConfig("invert", e.target.checked)
         },
         setContrast: (value) => {
-            writeDrawManager.updateConfig("contrast", value)
+            this.props.updateConfig("contrast", value)
         },
         setBrightness: (value) => {
-            writeDrawManager.updateConfig("brightness", value)
+            this.props.updateConfig("brightness", value)
         },
         setWhiteClip: (value) => {
-            writeDrawManager.updateConfig("white_clip", value)
+            this.props.updateConfig("white_clip", value)
         },
         setAlgorithm: (value) => {
-            writeDrawManager.updateConfig("algorithm", value)
+            this.props.updateConfig("algorithm", value)
         },
         setMovementMode: (value) => {
-            writeDrawManager.updateConfig("movement_mode", value)
+            this.props.updateConfig("movement_mode", value)
         },
         setDensity: (value) => {
-            writeDrawManager.updateConfig("density", value)
+            this.props.updateConfig("density", value)
         },
     };
 
     render() {
-        if (!this.state.model2d || this.state.model2d.fileType !== "greyscale") {
+        const {model, config} = this.props;
+        if (!model || model.fileType !== "greyscale" || !config) {
             return null;
         }
         const actions = this.actions;
-        const {config} = this.state;
         const {invert, contrast, brightness, white_clip, algorithm, movement_mode, density} = config.children;
 
         const algorithmOptions = [];
@@ -151,5 +137,19 @@ class ConfigGreyscale extends PureComponent {
     }
 }
 
-export default ConfigGreyscale;
+const mapStateToProps = (state) => {
+    const {model, config} = state.writeAndDraw;
+    return {
+        model,
+        config
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateConfig: (key, value) => dispatch(writeAndDrawActions.updateConfig(key, value)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigGreyscale);
 

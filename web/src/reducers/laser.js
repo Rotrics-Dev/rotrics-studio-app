@@ -25,6 +25,8 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         laserManager.on("onChangeModel", (model2d) => {
+            console.log("laserText_onChangeModel_on"+JSON.stringify(model2d))
+
             dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
             dispatch(actions._selectModel(model2d));
         });

@@ -9,33 +9,32 @@ import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
 
 import styles from './styles.css';
-import writeAndDrawManager from "./lib/WriteAndDrawManager";
+import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
+import {connect} from 'react-redux';
 
 const {TabPane} = Tabs;
 
 class Index extends React.Component {
     operations = {
         undo: () => {
-            console.log("undo")
+            this.props.undo();
         },
         redo: () => {
-            console.log("redo")
+            this.props.redo();
         },
         duplicate: () => {
-            console.log("duplicate")
-            writeAndDrawManager.duplicateSelected();
+            this.props.duplicateSelected();
         },
         del: () => {
-            writeAndDrawManager.removeSelected();
+            this.props.removeSelected();
         },
         clear: () => {
-            writeAndDrawManager.removeAll();
+            this.props.removeAll();
         }
     };
 
     render() {
         const operations = this.operations;
-
         const actions = this.actions;
         return (
             <div style={{
@@ -92,4 +91,21 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeSelected: () => dispatch(writeAndDrawActions.removeSelected()),
+        removeAll: () => dispatch(writeAndDrawActions.removeAll()),
+        duplicateSelected: () => dispatch(writeAndDrawActions.duplicateSelected()),
+        undo: () => dispatch(writeAndDrawActions.undo()),
+        redo: () => dispatch(writeAndDrawActions.redo()),
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Index);
+
+
+
+
+
+
+

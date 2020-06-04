@@ -1,5 +1,6 @@
 import hotKeys from 'hotkeys-js';
 import laserManager from "../containers/laser/lib/laserManager.js";
+import writeAndDrawManager from "../containers/writeAndDraw/lib/writeAndDrawManager";
 
 //放在redux中是为了方便管理，
 //根据当前的tap，执行不同的操作
@@ -9,6 +10,7 @@ export const actions = {
         hotKeys('backspace,del', (event, handler) => {
             event.preventDefault();
             laserManager.removeSelected();
+            writeAndDrawManager.removeSelected();
         });
         return {type: null};
     }

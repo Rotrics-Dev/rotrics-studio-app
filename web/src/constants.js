@@ -34,4 +34,5 @@ export const GCODE_APPEND_SEND = 'GCODE_APPEND_SEND'; //将指定的gcode追加�
 
 // tool path
 export const TOOL_PATH_GENERATE_LASER = 'TOOL_PATH_GENERATE_LASER';
+export const TOOL_PATH_GENERATE_WRITE_AND_DRAW = 'TOOL_PATH_GENERATE_WRITE_AND_DRAW';
 

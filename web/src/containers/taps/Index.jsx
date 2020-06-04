@@ -18,10 +18,12 @@ import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserActions} from "../../reducers/laser";
 import {actions as laserTextActions} from "../../reducers/laserText";
 import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
+import {actions as writeAndDrawTextActions} from "../../reducers/writeAndDrawText";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
+
 
 class Index extends React.Component {
     constructor(props) {
@@ -68,7 +70,7 @@ class Index extends React.Component {
                 break;
             case TAB_WRITE_AND_DRAW:
                 this.refWriteAndDraw.current.style.display = 'block';
-                break
+                break;
             case TAP_CODE:
                 this.refCode.current.style.display = 'block';
                 break;
@@ -145,7 +147,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    console.log("chen:"+JSON.stringify(dispatch))
     return {
         setTap: (value) => dispatch(tapActions.setTap(value)),
         init: () => {
@@ -153,8 +154,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(hotKeysActions.init());
             dispatch(laserActions.init());
             dispatch(laserTextActions.init());
-            dispatch(serialPortActions.init());
             dispatch(writeAndDrawActions.init());
+            dispatch(writeAndDrawTextActions.init());
+            dispatch(serialPortActions.init());
             dispatch(socketActions.init());
             dispatch(vmActions.init());
         }

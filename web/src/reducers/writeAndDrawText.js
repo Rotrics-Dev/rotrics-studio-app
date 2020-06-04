@@ -1,10 +1,10 @@
-import laserManager from "../containers/laser/lib/laserManager.js";
+import writeAndDrawManager from "../containers/writeAndDraw/lib/writeAndDrawManager.js";
 import _ from 'lodash';
 import {uploadImage, generateSvg} from "../api";
 
-const SET_MODEL = 'laserText/SET_MODEL';
-const SET_CONFIG_TEXT = 'laserText/SET_CONFIG_TEXT';
-const UPDATE_CONFIG_TEXT = 'laserText/UPDATE_CONFIG_TEXT';
+const SET_MODEL = 'writeAndDraw/SET_MODEL';
+const SET_CONFIG_TEXT = 'writeAndDraw/SET_CONFIG_TEXT';
+const UPDATE_CONFIG_TEXT = 'writeAndDraw/UPDATE_CONFIG_TEXT';
 
 const INITIAL_STATE = {
     config_text: null,
@@ -13,9 +13,8 @@ const INITIAL_STATE = {
 
 export const actions = {
     init: () => (dispatch) => {
-        laserManager.on("onChangeModel", (model2d) => {
-            console.log("laserText_onChangeModel_on"+JSON.stringify(model2d))
-
+        writeAndDrawManager.on("onChangeModel", (model2d) => {
+            console.log("writeAndDrawText_onChangeModel_ON"+JSON.stringify(model2d));
             if (model2d && model2d.fileType === "text") {
                 const config_text = _.cloneDeep(model2d.userData.config_text);
                 dispatch(actions._setConfigText(config_text));
@@ -39,7 +38,7 @@ export const actions = {
         };
     },
     updateConfigText: (key, value) => async (dispatch, getState) => {
-        const {model} = getState().laserText;
+        const {model} = getState().writeAndDrawText;
         if (!model || model.fileType !== "text") {
             return {type: null};
         }
@@ -58,8 +57,8 @@ export const actions = {
 
         model.loadImg(url, width, height);
 
-        //TODO: emit不应该放在laserManager之外调用
-        laserManager.emit('onChangeTransformation', model.settings.transformation);
+        //TODO: emit不应该放在writeAndDrawManager之外调用
+        writeAndDrawManager.emit('onChangeTransformation', model.settings.transformation);
 
         dispatch(actions._updateConfigText(key, value));
     },
@@ -77,11 +76,12 @@ export default function reducer(state = INITIAL_STATE, action) {
         case SET_MODEL:
             return Object.assign({}, state, {model: action.value});
         case SET_CONFIG_TEXT:
+            console.log("writeAndDrawText setConfigText "+JSON.stringify(action));
             return Object.assign({}, state, {config_text: action.value});
         case UPDATE_CONFIG_TEXT:
             const {key, value} = action.value;
-            laserManager._selected.userData.config_text.children[key].default_value = value;
-            const config_text = _.cloneDeep(laserManager._selected.userData.config_text);
+            writeAndDrawManager._selected.userData.config_text.children[key].default_value = value;
+            const config_text = _.cloneDeep(writeAndDrawManager._selected.userData.config_text);
             return Object.assign({}, state, {config_text});
         default:
             return state;

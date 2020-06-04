@@ -12,7 +12,8 @@ import {
     GCODE_START_SEND,
     GCODE_APPEND_SEND,
     GCODE_STOP_SEND,
-    TOOL_PATH_GENERATE_LASER
+    TOOL_PATH_GENERATE_LASER,
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW
 } from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
@@ -56,6 +57,9 @@ class SocketClientManager extends EventEmitter {
         //tool path
         this.socketClient.on(TOOL_PATH_GENERATE_LASER, (data) => {
             this.emit(TOOL_PATH_GENERATE_LASER, data);
+        });
+        this.socketClient.on(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
+            this.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, data);
         });
 
         //gcode
@@ -113,6 +117,14 @@ class SocketClientManager extends EventEmitter {
      */
     generateGcodeLaser(url, settings, toolPathId, fileType) {
         this.socketClient.emit(TOOL_PATH_GENERATE_LASER, {url, settings, toolPathId, fileType});
+    }
+    /**
+     * @param url         model2d的图片url
+     * @param settings    model2d.settings
+     * @param toolPathId  (uuid)，settings有变化则id也随着变化
+     */
+    generateGcodeWriteAndDraw(url, settings, toolPathId, fileType) {
+        this.socketClient.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {url, settings, toolPathId, fileType});
     }
 }
 

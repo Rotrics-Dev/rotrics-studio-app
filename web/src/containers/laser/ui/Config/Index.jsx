@@ -238,7 +238,7 @@ const mapStateToProps = (state) => {
     const {status} = state.serialPort;
     const {gcode, model, modelCount, isAllPreviewed} = state.laser;
     let fileTypeSelected = model ? model.fileType : "";
-    console.log("gcode len: " + gcode.length)
+    console.log("gcode len: " + gcode.length);
     return {
         serialPortStatus: status,
         gcode,

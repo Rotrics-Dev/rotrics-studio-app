@@ -3,6 +3,8 @@ import gcodeSend from "./gcodeSend";
 import hotKeys from "./hotKeys";
 import laser from "./laser";
 import laserText from "./laserText";
+import writeAndDraw from "./writeAndDraw";
+import writeAndDrawText from "./writeAndDrawText"
 import p3d from "./p3d";
 import serialPort from "./serialPort";
 import socket from "./socket";
@@ -14,6 +16,8 @@ export default combineReducers({
     hotKeys,
     laser,
     laserText,
+    writeAndDraw,
+    writeAndDrawText,
     p3d,
     serialPort,
     socket,

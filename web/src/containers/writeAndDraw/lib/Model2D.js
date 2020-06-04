@@ -12,7 +12,7 @@ import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {
-    TOOL_PATH_GENERATE_LASER
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW
 } from "../../../constants.js"
 
 /**
@@ -88,7 +88,7 @@ class Model2D extends THREE.Group {
 
         this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
 
-        this.gcode = null;
+        this.isPreviewed = false;
 
         //需要deep clone
         switch (this.fileType) {
@@ -105,10 +105,12 @@ class Model2D extends THREE.Group {
         }
 
         //data: {toolPathLines, toolPathId}
-        socketClientManager.on(TOOL_PATH_GENERATE_LASER, (data) => {
+        socketClientManager.on(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
             console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
-                this.loadToolPath(data.toolPathLines)
+                this.loadToolPath(data.toolPathLines);
+                this.isPreviewed = true;
+                this.dispatchEvent({type: 'preview'});
             }
         });
     }
@@ -283,12 +285,15 @@ class Model2D extends THREE.Group {
     _preview() {
         console.log("preview")
         this.toolPathId = getUuid();
-        socketClientManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
-        console.time(this.toolPathId)
+        socketClientManager.generateGcodeWriteAndDraw(this.url, this.settings, this.toolPathId, this.fileType)
+        console.time(this.toolPathId);
+
+        this.isPreviewed = false;
+        this.dispatchEvent({type: 'preview'});
     }
 
     generateGcode() {
-        this.gcode = toolPathLines2gcode(this.toolPathLines, this.settings);
+        return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
 
     // clone() {

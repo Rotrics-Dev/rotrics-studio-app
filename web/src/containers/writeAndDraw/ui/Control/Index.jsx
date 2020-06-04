@@ -5,6 +5,7 @@ import styles from './styles.css';
 import DeviceControl from "../../../_deviceControl/Index.jsx"
 import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import writeAndDrawManager from "../../lib/writeAndDrawManager";
 
 const INIT_LASER_POWER = 1;
 
@@ -40,7 +41,11 @@ class Index extends React.Component {
                 gcode = "M5"
             }
             this.props.sendGcode(gcode);
-        }
+        },
+        runBoundary: () => {
+            const gcode = writeAndDraw.getGcode4runBoundary();
+            this.props.sendGcode(gcode)
+        },
     };
 
     render() {
@@ -48,10 +53,10 @@ class Index extends React.Component {
         const state = this.state;
         return (
             <div>
-                <DeviceControl/>
+                <DeviceControl runBoundary={actions.runBoundary}/>
                 <div style={{marginTop: "8px"}}>
                     <Line/>
-                    <span>Laser</span>
+                    <span>WriteAndDraw</span>
                     <Switch style={{position: "absolute", right: 0}} checked={state.isLaserOn}
                             onChange={actions.switchLaser}/>
                     <Slider

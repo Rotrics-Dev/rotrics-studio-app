@@ -1,10 +1,11 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
-import writeDrawManager from "../../lib/WriteAndDrawManager.js";
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
+import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
+import {connect} from 'react-redux';
 
 //hiddenStr: "config.movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", settings) => {
@@ -47,61 +48,44 @@ const getHiddenValue = (hiddenStr = "", settings) => {
 };
 
 class WorkingParameters extends PureComponent {
-    state = {
-        model2d: null,
-        working_parameters: null
-    };
-
-    componentDidMount() {
-        writeDrawManager.on("onChange", (model2d) => {
-            let working_parameters = model2d ? _.cloneDeep(model2d.settings.working_parameters) : null;
-            // console.log("working_parameters: " + JSON.stringify(model2d.settings.working_parameters, null, 2))
-            this.setState({
-                model2d,
-                working_parameters
-            })
-        });
-    }
-
     actions = {
         setPrintOrder: (value) => {
-            writeDrawManager.updateWorkingParameters("print_order", value)
+            this.props.updateWorkingParameters("print_order", value)
         },
         setJogSpeed: (value) => {
-            writeDrawManager.updateWorkingParameters("jog_speed", value)
+            this.props.updateWorkingParameters("jog_speed", value)
         },
         setWorkSpeed: (value) => {
-            writeDrawManager.updateWorkingParameters("work_speed", value)
+            this.props.updateWorkingParameters("work_speed", value)
         },
         setDwellTime: (value) => {
-            writeDrawManager.updateWorkingParameters("dwell_time", value)
+            this.props.updateWorkingParameters("dwell_time", value)
         },
         //multi pass
         setMultiPass: (e) => {
-            writeDrawManager.updateWorkingParameters("multi_pass", e.target.checked)
+            this.props.updateWorkingParameters("multi_pass", e.target.checked)
         },
         setMultiPassPasses: (value) => {
-            writeDrawManager.updateWorkingParameters("multi_pass.passes", value)
+            this.props.updateWorkingParameters("multi_pass.passes", value)
         },
         setMultiPassPassDepth: (value) => {
-            writeDrawManager.updateWorkingParameters("multi_pass.pass_depth", value)
+            this.props.updateWorkingParameters("multi_pass.pass_depth", value)
         },
         //fixed power
         setFixedPower: (e) => {
-            writeDrawManager.updateWorkingParameters("fixed_power", e.target.checked)
+            this.props.updateWorkingParameters("fixed_power", e.target.checked)
         },
         setFixedPowerPower: (value) => {
-            writeDrawManager.updateWorkingParameters("fixed_power.power", value)
+            this.props.updateWorkingParameters("fixed_power.power", value)
         }
     };
 
     render() {
-        if (!this.state.model2d) {
+        const {model, working_parameters} = this.props;
+        if (!model || !working_parameters) {
             return null;
         }
         const actions = this.actions;
-        const {working_parameters} = this.state;
-
         const {print_order, multi_pass, fixed_power} = working_parameters.children;
 
         //bw/svg: {work_speed, jog_speed}
@@ -113,10 +97,17 @@ class WorkingParameters extends PureComponent {
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
 
-        let jogSpeedHidden = getHiddenValue(jog_speed.hidden, this.state.model2d.settings);
+
+        let jogSpeedHidden = false;
+        if (jog_speed) {
+            getHiddenValue(jog_speed.hidden, model.settings);
+        } else {
+            jogSpeedHidden = true;
+        }
+
         let dwellTimeHidden = false;
         if (dwell_time) {
-            dwellTimeHidden = getHiddenValue(dwell_time.hidden, this.state.model2d.settings);
+            dwellTimeHidden = getHiddenValue(dwell_time.hidden, model.settings);
         } else {
             dwellTimeHidden = true;
         }
@@ -127,14 +118,14 @@ class WorkingParameters extends PureComponent {
                 <h4>{working_parameters.label}</h4>
 
                 {/*<Row>*/}
-                    {/*<Col span={11}>*/}
-                        {/*<span>{print_order.label}</span>*/}
-                    {/*</Col>*/}
-                    {/*<Col span={8} push={5}>*/}
-                        {/*<NumberInput min={print_order.minimum_value} max={print_order.maximum_value}*/}
-                                     {/*value={toFixed(print_order.default_value, 0)}*/}
-                                     {/*onChange={actions.setPrintOrder}/>*/}
-                    {/*</Col>*/}
+                {/*<Col span={11}>*/}
+                {/*<span>{print_order.label}</span>*/}
+                {/*</Col>*/}
+                {/*<Col span={8} push={5}>*/}
+                {/*<NumberInput min={print_order.minimum_value} max={print_order.maximum_value}*/}
+                {/*value={toFixed(print_order.default_value, 0)}*/}
+                {/*onChange={actions.setPrintOrder}/>*/}
+                {/*</Col>*/}
                 {/*</Row>*/}
 
                 <Row>
@@ -232,5 +223,20 @@ class WorkingParameters extends PureComponent {
     }
 }
 
-export default WorkingParameters;
+const mapStateToProps = (state) => {
+    const {model, working_parameters} = state.writeAndDraw;
+    return {
+        model,
+        working_parameters
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateWorkingParameters: (key, value) => dispatch(writeAndDrawActions.updateWorkingParameters(key, value)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(WorkingParameters);
+
 

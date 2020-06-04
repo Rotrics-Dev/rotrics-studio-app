@@ -4,8 +4,7 @@ import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
-import writeDrawManager from "../../lib/WriteAndDrawManager.js";
-import {Button, Input, Space, Divider} from 'antd';
+import {Button, Input, Space, message} from 'antd';
 
 import "antd/dist/antd.css";
 
@@ -23,6 +22,7 @@ import {uploadImage, generateSvg} from '../../../../api/index.js';
 import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -49,23 +49,7 @@ class Index extends React.Component {
     state = {
         fileType: '', // bw, greyscale, vector
         accept: '',
-        fileTypeSelected: ""
     };
-
-    componentDidMount() {
-        writeDrawManager.on("onChange", (model2d) => {
-            let obj = model2d ? _.cloneDeep(model2d.settings.transformation) : null;
-            // console.log(JSON.stringify(obj, null, 2))
-
-            let fileTypeSelected = ""
-            if (model2d) {
-                fileTypeSelected = model2d.fileType;
-            }
-            this.setState({
-                fileTypeSelected
-            })
-        });
-    }
 
     actions = {
         onChangeFile: async (event) => {
@@ -76,17 +60,17 @@ class Index extends React.Component {
             const {url, width, height} = response;
             console.log("response: " + JSON.stringify(response))
 
-            const model2D = new Model2D(fileType);
-            model2D.loadImg(url, width, height);
+            const model = new Model2D(fileType);
+            model.loadImg(url, width, height);
 
-            writeDrawManager.addModel2D(model2D);
+            this.props.addModel(model);
         },
         onClickToUpload: async (fileType) => {
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
                 const svg = await generateSvg(config.config_text);
 
-                const filename = "test.svg";
+                const filename = "text.svg";
                 const blob = new Blob([svg], {type: 'text/plain'});
                 const file = new File([blob], filename);
 
@@ -95,12 +79,12 @@ class Index extends React.Component {
                 const {url, width, height} = response;
                 console.log("response: " + JSON.stringify(response))
 
-                const model2D = new Model2D(fileType);
-                model2D.loadImg(url, width, height);
+                const model = new Model2D(fileType);
+                model.loadImg(url, width, height);
 
                 //增加数据config_text
-                model2D.userData = {config_text: config.config_text};
-                writeDrawManager.addModel2D(model2D);
+                model.userData = {config_text: config.config_text};
+                this.props.addModel(model);
                 return;
             }
 
@@ -113,27 +97,71 @@ class Index extends React.Component {
             });
         },
         generateGcode: () => {
-            writeDrawManager._selected.generateGcode();
+            if (this.actions._checkStatus4gcode("generateGcode")) {
+                this.props.generateGcode();
+                message.success('Generate G-code success', 1);
+            }
         },
         exportGcode: () => {
-            const gcode = writeDrawManager._selected.gcode;
-            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
-            const fileName = "be.gcode";
-            FileSaver.saveAs(blob, fileName, true);
+            if (this.actions._checkStatus4gcode("exportGcode")) {
+                const date = new Date();
+                //https://blog.csdn.net/xu511739113/article/details/72764321
+                const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+                const fileName = arr.join("") + ".gcode";
+                const gcode = this.props.gcode;
+                const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
+                FileSaver.saveAs(blob, fileName, true);
+            }
         },
         startSendGcode: () => {
-            const gcode = writeDrawManager._selected.gcode;
+            //todo：serialport状态
+            const gcode = this.props.gcode;
             this.props.startSendGcode(gcode);
-
         },
         stopSendGcode: () => {
+            //todo：serialport状态
             this.props.stopSendGcode();
+        },
+        _checkStatus4gcode: (type) => {
+            switch (type) {
+                case "generateGcode": {
+                    if (this.props.modelCount === 0) {
+                        message.warning('Load model first', 1);
+                        return false;
+                    }
+                    if (!this.props.isAllPreviewed) {
+                        message.warning('Previewing', 1);
+                        return false;
+                    }
+                    break;
+                }
+                case "exportGcode": {
+                    if (this.props.modelCount === 0) {
+                        message.warning('Load model first', 1);
+                        return false;
+                    }
+                    if (!this.props.isAllPreviewed) {
+                        message.warning('Previewing', 1);
+                        return false;
+                    }
+                    if (this.props.gcode.length === 0) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
+                    break;
+                }
+                case "startSendGcode":
+                    break;
+                case "stopSendGcode":
+                    break;
+            }
+            return true;
         },
     };
 
     render() {
         const {accept} = this.state;
-        const {fileTypeSelected} = this.state;
+        const {fileTypeSelected} = this.props;
         const actions = this.actions;
         return (
             <div style={{
@@ -151,7 +179,7 @@ class Index extends React.Component {
                         block
                         onClick={actions.exportGcode}
                     >
-                        {"Export =G-code"}
+                        {"Export G-code"}
                     </Button>
                     <Button
                         block
@@ -177,14 +205,14 @@ class Index extends React.Component {
                     onChange={actions.onChangeFile}
                 />
                 <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "6px"}} size={5}>
-                    <button
-                        className={styles.btn_bw}
-                        onClick={() => actions.onClickToUpload('bw')}
-                    />
-                    <button
-                        className={styles.btn_greyscale}
-                        onClick={() => actions.onClickToUpload('greyscale')}
-                    />
+                    {/*<button*/}
+                    {/*    className={styles.btn_bw}*/}
+                    {/*    onClick={() => actions.onClickToUpload('bw')}*/}
+                    {/*/>*/}
+                    {/*<button*/}
+                    {/*    className={styles.btn_greyscale}*/}
+                    {/*    onClick={() => actions.onClickToUpload('greyscale')}*/}
+                    {/*/>*/}
                     <button
                         className={styles.btn_svg}
                         onClick={() => actions.onClickToUpload('svg')}
@@ -195,8 +223,8 @@ class Index extends React.Component {
                     />
                 </Space>
                 <Transformation/>
-                <ConfigGreyscale/>
-                <ConfigBW/>
+                {/*<ConfigGreyscale/>*/}
+                {/*<ConfigBW/>*/}
                 <ConfigSvg/>
                 <ConfigText/>
                 <WorkingParameters/>
@@ -207,8 +235,15 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {status} = state.serialPort;
+    const {gcode, model, modelCount, isAllPreviewed} = state.writeAndDraw;
+    let fileTypeSelected = model ? model.fileType : "";
+    console.log("gcode len: " + gcode.length);
     return {
-        serialPortStatus: status
+        serialPortStatus: status,
+        gcode,
+        fileTypeSelected,
+        isAllPreviewed,
+        modelCount
     };
 };
 
@@ -216,6 +251,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+        //model
+        addModel: (model) => dispatch(writeAndDrawActions.addModel(model)),
+        generateGcode: () => dispatch(writeAndDrawActions.generateGcode()),
     };
 };
 
