@@ -40,6 +40,12 @@ class Index extends React.Component {
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.tap !== nextProps.tap) {
+            this.resizeWindow();
+        }
+    }
+
     setupIntersectDetector() {
         // only detect 'this.modelGroup.children'
         this.intersectDetector = new IntersectDetector(
@@ -170,6 +176,13 @@ class Index extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    const {tap} = state.tap;
+    return {
+        tap
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         setModelsParent: (modelsParent) => dispatch(laserActions.setModelsParent(modelsParent)),
@@ -178,5 +191,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
 
