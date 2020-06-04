@@ -44,14 +44,15 @@
     height: 40px;
     margin: 7px;
     background-image: url(./images/laser.svg);
+    background-color: transparent;
     outline: none;
     border: none;
-    background-size: 28px 28px;
+    background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.btn_laser:active {
+.btn_laser:hover {
     opacity: 0.4;
 }
 
@@ -60,6 +61,7 @@
     height: 40px;
     margin: 7px;
     background-image: url(./images/3d.svg);
+    background-color: transparent;
     outline: none;
     border: none;
     background-size: 30px 30px;
@@ -76,9 +78,10 @@
     height: 40px;
     margin: 7px;
     background-image: url(./images/code2.svg);
+    background-color: transparent;
     outline: none;
     border: none;
-    background-size: 28px 28px;
+    background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -92,9 +95,10 @@
     height: 40px;
     margin: 7px;
     background-image: url(./images/settings.svg);
+    background-color: transparent;
     outline: none;
     border: none;
-    background-size: 28px 28px;
+    background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
 
@@ -105,4 +109,60 @@
 
 .btn_settings:active {
     opacity: 0.4;
+}
+
+.btn_laser_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/laser.svg);
+}
+
+.btn_3d_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/3d.svg);
+}
+
+.btn_code_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/code2.svg);
+}
+
+.btn_settings_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/settings.svg);
 }
