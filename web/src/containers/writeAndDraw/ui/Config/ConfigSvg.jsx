@@ -22,8 +22,7 @@ class ConfigSvg extends PureComponent {
 
     render() {
         const {model, config} = this.props;
-        console.log("ConfigSvg model===="+JSON.stringify(model)+"    config===="+JSON.stringify(config))
-        
+        // console.log("ConfigSvg model===="+JSON.stringify(model)+"    config===="+JSON.stringify(config))
         if (!model || model.fileType !== "svg" || !config) {
             return null;
         }
@@ -32,38 +31,42 @@ class ConfigSvg extends PureComponent {
         const {optimize_path, fill} = config.children;
         const {fill_density} = fill.children;
         return (
-            <React.Fragment>
+            <div>
                 <Line/>
-                <h4>{config.label}</h4>
-                <Row>
-                    <Col span={11}>
-                        <span>{optimize_path.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{fill.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
-                    </Col>
-                </Row>
-                {fill.default_value &&
-                <Row>
-                    <Col span={11} push={2}>
-                        <span>{fill_density.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
-                                     value={toFixed(fill_density.default_value, 0)}
-                                     onChange={actions.setFillDensity}/>
-                    </Col>
-                </Row>
-                }
-            </React.Fragment>
+                <div style={{
+                    padding: "5px",
+                }}>
+                    <h4>{config.label}</h4>
+                    <Row>
+                        <Col span={15}>
+                            <span>{optimize_path.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{fill.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
+                        </Col>
+                    </Row>
+                    {fill.default_value &&
+                    <Row>
+                        <Col span={13} push={2}>
+                            <span>{fill_density.label}</span>
+                        </Col>
+                        <Col span={9} push={2}>
+                            <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
+                                         value={toFixed(fill_density.default_value, 0)}
+                                         onChange={actions.setFillDensity}/>
+                        </Col>
+                    </Row>
+                    }
+                </div>
+            </div>
         );
     }
 }

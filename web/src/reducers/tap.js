@@ -1,13 +1,19 @@
 import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../constants.js";
 
-const SET_TAP = "SET_TAP";
+const SET_TAP = "taps/SET_TAP";
 
 const INITIAL_STATE = {
     tap: TAP_LASER
 };
 
 export const actions = {
-    setTap: (value) => {
+    //切换tap会触发多个canvas的resize，因此尽量少切换
+    setTap: (value) => (dispatch, getState) => {
+        if (getState().tap.tap !== value) {
+            dispatch(actions._setTap(value));
+        }
+    },
+    _setTap: (value) => {
         return {
             type: SET_TAP,
             value

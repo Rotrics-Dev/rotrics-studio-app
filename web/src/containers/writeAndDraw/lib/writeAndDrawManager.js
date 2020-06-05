@@ -18,7 +18,7 @@ class WriteAndDrawManager extends events.EventEmitter {
         this.modelsParent.add(model2d);
         this.selectModel(model2d);
         this.emit('onChangeModel', this._selected);
-        console.log("writeAndDrawText_onChangeModel_emit"+JSON.stringify(model2d))
+        // console.log("writeAndDrawText_onChangeModel_emit"+JSON.stringify(model2d))
         model2d.addEventListener('preview', () => {
             this._onPreviewStatusChange();
         });
@@ -51,9 +51,8 @@ class WriteAndDrawManager extends events.EventEmitter {
         if (this._selected) {
             this.modelsParent.remove(this._selected);
             this._selected = null;
-            this._emmitChangeEvent();
+            this.emit('onChangeModel', this._selected);
         }
-        this.emit('onChangeModel', this._selected);
     }
 
     removeAll() {

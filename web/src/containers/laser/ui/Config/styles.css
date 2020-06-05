@@ -1,7 +1,12 @@
+.h_file_type {
+    margin-top: 65px;
+    color: #999999;
+}
+
 .btn_bw {
-    width: 50px;
-    height: 50px;
-    background-size: 50px 50px;
+    width: 58px;
+    height: 58px;
+    background-size: 58px 58px;
     background-color: transparent;
     background-image: url(../../images/bw.png);
     outline: none;
@@ -9,9 +14,9 @@
 }
 
 .btn_greyscale {
-    width: 50px;
-    height: 50px;
-    background-size: 50px 50px;
+    width: 58px;
+    height: 58px;
+    background-size: 58px 58px;
     background-color: transparent;
     background-image: url(../../images/greyscale.png);
     outline: none;
@@ -19,9 +24,9 @@
 }
 
 .btn_svg {
-    width: 50px;
-    height: 50px;
-    background-size: 50px 50px;
+    width: 58px;
+    height: 58px;
+    background-size: 58px 58px;
     background-color: transparent;
     background-image: url(../../images/svg.png);
     outline: none;
@@ -29,9 +34,9 @@
 }
 
 .btn_text {
-    width: 50px;
-    height: 50px;
-    background-size: 50px 50px;
+    width: 58px;
+    height: 58px;
+    background-size: 58px 58px;
     background-color: transparent;
     background-image: url(../../images/text.png);
     outline: none;
@@ -55,6 +60,6 @@
 }
 
 /*.number_input {*/
-    /*width: 80px;*/
+/*width: 80px;*/
 /*}*/
 

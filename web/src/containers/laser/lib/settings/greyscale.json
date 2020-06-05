@@ -112,7 +112,7 @@
       "algorithm": {
         "label": "Algorithm",
         "description": "algorithm description",
-        "default_value": "FloydSteinburg",
+        "default_value": "JarvisJudiceNinke",
         "type": "enum",
         "options": {
           "Floyd-Steinburg": "FloydSteinburg",

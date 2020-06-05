@@ -37,11 +37,11 @@ class ConfigText extends PureComponent {
 
     render() {
         const {model, config_text, config} = this.props;
-        console.log("write render" + (model));
-        console.log("write render" + (!model));
-        console.log("write render" + (!model || model.fileType !== "text"));
-        console.log("write render" + (!model || model.fileType !== "text" || !config_text));
-        console.log("write render" + (!model || model.fileType !== "text" || !config_text || !config));
+        // console.log("write render" + (model));
+        // console.log("write render" + (!model));
+        // console.log("write render" + (!model || model.fileType !== "text"));
+        // console.log("write render" + (!model || model.fileType !== "text" || !config_text));
+        // console.log("write render" + (!model || model.fileType !== "text" || !config_text || !config));
 
         if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
@@ -61,76 +61,80 @@ class ConfigText extends PureComponent {
         const {fill_density} = fill.children;
 
         return (
-            <React.Fragment>
+            <div>
                 <Line/>
-                <h4>{config.label}</h4>
-                <Row>
-                    <Col span={11}>
-                        <span>{text.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
-                                        onChange={actions.setText}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{font.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Select value={font.default_value} style={{width: 150}}
-                                onChange={actions.setFont}>
-                            {fontOptions}
-                        </Select>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{font_size.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={font_size.minimum_value} max={font_size.maximum_value}
-                                     value={toFixed(font_size.default_value, 0)}
-                                     onChange={actions.setFontSize}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{optimize_path.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={11}>
-                        <span>{fill.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
-                    </Col>
-                </Row>
-                {fill.default_value &&
-                <Row>
-                    <Col span={11} push={2}>
-                        <span>{fill_density.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
-                                     value={toFixed(fill_density.default_value, 0)}
-                                     onChange={actions.setFillDensity}/>
-                    </Col>
-                </Row>
-                }
-            </React.Fragment>
+                <div style={{
+                    padding: "5px",
+                }}>
+                    <h4>{config_text.label}</h4>
+                    <Row>
+                    {/*    <Col span={10}>*/}
+                    {/*        <span>{text.label}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={14}>*/}
+                            <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
+                                            onChange={actions.setText}
+                            />
+                    {/*    </Col>*/}
+                    </Row>
+                    <Row>
+                        <Col span={10}>
+                            <span>{font.label}</span>
+                        </Col>
+                        <Col span={14}>
+                            <Select value={font.default_value} style={{width: "100%"}}
+                                    onChange={actions.setFont}>
+                                {fontOptions}
+                            </Select>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{font_size.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={font_size.minimum_value} max={font_size.maximum_value}
+                                         value={toFixed(font_size.default_value, 0)}
+                                         onChange={actions.setFontSize}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{optimize_path.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={15}>
+                            <span>{fill.label}</span>
+                        </Col>
+                        <Col span={9}>
+                            <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
+                        </Col>
+                    </Row>
+                    {fill.default_value &&
+                    <Row>
+                        <Col span={13} push={2}>
+                            <span>{fill_density.label}</span>
+                        </Col>
+                        <Col span={9} push={2}>
+                            <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
+                                         value={toFixed(fill_density.default_value, 0)}
+                                         onChange={actions.setFillDensity}/>
+                        </Col>
+                    </Row>
+                    }
+                </div>
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state) => {
-    console.log("chenmapStateToProps1" + JSON.stringify(state.writeAndDraw.config))
-    console.log("chenmapStateToProps2" + JSON.stringify(state.writeAndDrawText))
+    // console.log("chenmapStateToProps1" + JSON.stringify(state.writeAndDraw.config))
+    // console.log("chenmapStateToProps2" + JSON.stringify(state.writeAndDrawText))
     const {model, config} = state.writeAndDraw;
     const {config_text} = state.writeAndDrawText;
     return {
@@ -142,14 +146,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateConfigText: (key, value) => {
-            console.log("updateConfigText key:" + JSON.stringify(key) + "key:" + JSON.stringify(value))
-            dispatch(writeAndDrawTextActions.updateConfigText(key, value))
-        },
-        updateConfig: (key, value) => {
-            console.log("updateConfig key:" + JSON.stringify(key) + "key:" + JSON.stringify(value))
-            dispatch(writeAndDrawActions.updateConfig(key, value))
-        },
+        updateConfigText: (key, value) => dispatch(writeAndDrawTextActions.updateConfigText(key, value)),
+        updateConfig: (key, value) => dispatch(writeAndDrawActions.updateConfig(key, value)),
     };
 };
 

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import MSRControls from '../../../../three-extensions/MSRControls';
 import PrintableCube from './PrintableCube.jsx';
 import p3dModelManager from "../../lib/p3dModelManager";
+import {connect} from 'react-redux';
 
 //暂时只支持一个模型吧
 class Index extends React.Component {
@@ -39,6 +40,12 @@ class Index extends React.Component {
         this.group.add(this.printableArea);
 
         window.addEventListener('resize', this.resizeWindow, false);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.tap !== nextProps.tap) {
+            this.resizeWindow();
+        }
     }
 
     setupMSRControls() {
@@ -153,4 +160,11 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+    const {tap} = state.tap;
+    return {
+        tap
+    };
+};
+
+export default connect(mapStateToProps)(Index);

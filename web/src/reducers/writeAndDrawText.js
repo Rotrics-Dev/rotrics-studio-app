@@ -4,25 +4,15 @@ import {uploadImage, generateSvg} from "../api";
 
 const SET_MODEL = 'writeAndDraw/SET_MODEL';
 const SET_CONFIG_TEXT = 'writeAndDraw/SET_CONFIG_TEXT';
-const UPDATE_CONFIG_TEXT = 'writeAndDraw/UPDATE_CONFIG_TEXT';
 
 const INITIAL_STATE = {
-    config_text: null,
-    model: null,
+    config_text: null
 };
 
 export const actions = {
     init: () => (dispatch) => {
-        writeAndDrawManager.on("onChangeModel", (model2d) => {
-            console.log("writeAndDrawText_onChangeModel_ON"+JSON.stringify(model2d));
-            if (model2d && model2d.fileType === "text") {
-                const config_text = _.cloneDeep(model2d.userData.config_text);
-                dispatch(actions._setConfigText(config_text));
-                dispatch(actions._setModel(model2d));
-            } else {
-                dispatch(actions._setConfigText(null));
-                dispatch(actions._setModel(null));
-            }
+        writeAndDrawManager.on("onChangeModel", (model) => {
+            dispatch(actions._setModel(model));
         });
     },
     _setModel: (model) => {
@@ -31,14 +21,8 @@ export const actions = {
             value: model
         };
     },
-    _setConfigText: (config_text) => {
-        return {
-            type: SET_CONFIG_TEXT,
-            value: config_text
-        };
-    },
     updateConfigText: (key, value) => async (dispatch, getState) => {
-        const {model} = getState().writeAndDrawText;
+        const {model} = getState().writeAndDraw;
         if (!model || model.fileType !== "text") {
             return {type: null};
         }
@@ -60,12 +44,12 @@ export const actions = {
         //TODO: emit不应该放在writeAndDrawManager之外调用
         writeAndDrawManager.emit('onChangeTransformation', model.settings.transformation);
 
-        dispatch(actions._updateConfigText(key, value));
+        dispatch(actions._setConfigText(config_text));
     },
-    _updateConfigText: (key, value) => {
+    _setConfigText: (config_text) => {
         return {
-            type: UPDATE_CONFIG_TEXT,
-            value: {key, value}
+            type: SET_CONFIG_TEXT,
+            value: config_text
         };
     }
 };
@@ -74,15 +58,15 @@ export default function reducer(state = INITIAL_STATE, action) {
 
     switch (action.type) {
         case SET_MODEL:
-            return Object.assign({}, state, {model: action.value});
+            const model = action.value;
+            if (model && model.fileType === "text") {
+                const config_text = model.userData.config_text; //laserManager "onChangeModel": 选中的模型有变化，因此不需要deepClone
+                return Object.assign({}, state, {config_text});
+            } else {
+                return Object.assign({}, state, {config_text: null});
+            }
         case SET_CONFIG_TEXT:
-            console.log("writeAndDrawText setConfigText "+JSON.stringify(action));
             return Object.assign({}, state, {config_text: action.value});
-        case UPDATE_CONFIG_TEXT:
-            const {key, value} = action.value;
-            writeAndDrawManager._selected.userData.config_text.children[key].default_value = value;
-            const config_text = _.cloneDeep(writeAndDrawManager._selected.userData.config_text);
-            return Object.assign({}, state, {config_text});
         default:
             return state;
     }

@@ -1,4 +1,7 @@
 const toolPathLines2gcode = (toolPathLines, settings) => {
+    console.log(JSON.stringify(settings, null, 2));
+    console.log(JSON.stringify(toolPathLines, null, 2));
+
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
@@ -10,6 +13,12 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     const translateY = y.default_value;
 
     const gcodeLines = [];
+    const header = [
+        '; Write And Draw',
+        'M888 P0',
+        'G0 Z10',
+        'G1 Z10',
+    ];
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -50,6 +59,13 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
                     }
                     cmds.push(key + value);
                     break;
+                case 'M':
+                    if (value === 3) {
+                        cmds.push('G1 Z0.00')
+                    } else if (value === 5) {
+                        cmds.push('G0 Z10.00')
+                    }
+                    break;
                 default:
                     cmds.push(key + value);
                     break
@@ -69,52 +85,6 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
         gcodeLines.push(line);
     }
 
-    let gcodeStr = gcodeLines.join('\n') + '\n';
-
-    // process "multi-pass, fix-power"
-    gcodeStr = processGcodeMultiPass(gcodeStr, settings);
-    gcodeStr = processGcodeForFixedPower(gcodeStr, settings);
-
-    return gcodeStr;
+    return header.join('\n') + '\n' + gcodeLines.join('\n') + '\n';
 };
-
-const processGcodeMultiPass = (gcodeStr, settings) => {
-    const {multi_pass} = settings.working_parameters.children;
-    const {passes, pass_depth} = multi_pass.children;
-    if (multi_pass.default_value) {
-        let result = '';
-        for (let i = 0; i < passes.default_value; i++) {
-            result += `; Laser multi-pass, pass ${i + 1} with Z = ${-i * pass_depth.default_value}\n`;
-            // dropping z
-            if (i !== 0) {
-                result += '; Laser multi-pass: dropping z\n';
-                result += 'G91\n'; // relative positioning
-                result += `G0 Z-${pass_depth.default_value} F150\n`;
-                result += 'G90\n'; // absolute positioning
-            }
-            result += gcodeStr + '\n';
-        }
-        // move back to work origin
-        result += 'G0 Z0\n';
-        gcodeStr = result;
-    }
-    return gcodeStr;
-};
-
-const processGcodeForFixedPower = (gcodeStr, settings) => {
-    const {fixed_power} = settings.working_parameters.children;
-    const {power} = fixed_power.children;
-    if (fixed_power.default_value) {
-        const powerStrength = Math.floor(power.default_value * 255 / 100);
-        const fixedPowerGcode = [
-            '; Laser: setting power',
-            `M3 S${powerStrength}`,
-            'G4 P1',
-            'M5'
-        ].join('\n') + '\n\n';
-        gcodeStr = fixedPowerGcode + gcodeStr;
-    }
-    return gcodeStr;
-};
-
 export default toolPathLines2gcode;

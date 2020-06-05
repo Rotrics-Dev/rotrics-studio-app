@@ -48,11 +48,11 @@ function parseCoordinate(value) {
 
             // Not supported
             case 'em':
-                log.warn('No supported unit em');
+                // log.warn('No supported unit em');
                 // fontSize needed
                 return num;
             case 'ex':
-                log.warn('No supported unit ex');
+                // log.warn('No supported unit ex');
                 // fontSize needed
                 return num;
             case '%':
@@ -105,7 +105,7 @@ function parseColor(value) {
         return cssColor;
     }
 
-    log.warn('Unsupported color: ', value);
+    // log.warn('Unsupported color: ', value);
     // TODO: rgba?, hsl?, url?
     return null;
 }
@@ -194,7 +194,7 @@ function parseTransform(value) {
                 break;
             }
             default: {
-                log.warn(`Unknown transform function ${func}`);
+                // log.warn(`Unknown transform function ${func}`);
                 break;
             }
         }

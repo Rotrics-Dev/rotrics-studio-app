@@ -6,16 +6,15 @@
 }
 
 .btn_undo {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    background-image: url(./images/undo.svg);
-    background-color: transparent;
+    width: 40px;
+    height: 40px;
     outline: none;
     border: none;
+    background-color: transparent;
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    background-image: url(./images/undo.svg);
 }
 
 .btn_undo:active {
@@ -23,16 +22,15 @@
 }
 
 .btn_redo {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    background-image: url(./images/redo.svg);
-    background-color: transparent;
+    width: 40px;
+    height: 40px;
     outline: none;
     border: none;
+    background-color: transparent;
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    background-image: url(./images/redo.svg);
 }
 
 .btn_redo:active {
@@ -40,16 +38,15 @@
 }
 
 .btn_duplicate {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    background-image: url(./images/duplicate.svg);
-    background-color: transparent;
+    width: 40px;
+    height: 40px;
     outline: none;
     border: none;
+    background-color: transparent;
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    background-image: url(./images/duplicate.svg);
 }
 
 .btn_duplicate:active {
@@ -57,16 +54,15 @@
 }
 
 .btn_delete {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    background-image: url(./images/delete.svg);
-    background-color: transparent;
+    width: 40px;
+    height: 40px;
     outline: none;
     border: none;
+    background-color: transparent;
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    background-image: url(./images/delete.svg);
 }
 
 .btn_delete:active {
@@ -74,16 +70,15 @@
 }
 
 .btn_clear {
-    width: 30px;
-    height: 30px;
-    margin: 2px;
-    background-image: url(./images/clear.svg);
-    background-color: transparent;
+    width: 40px;
+    height: 40px;
     outline: none;
     border: none;
+    background-color: transparent;
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    background-image: url(./images/clear.svg);
 }
 
 .btn_clear:active {

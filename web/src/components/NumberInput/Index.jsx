@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react';
+import styles from './styles.css';
 
+//封装，将antd的number input封装进来，和整体ui保持一致
 class Index extends PureComponent {
     onChange = (event) => {
         this.setState({
@@ -101,6 +103,8 @@ class Index extends PureComponent {
         return (
             <input
                 {...rest}
+                className={styles.number_input}
+                style={{width: "100%", borderWidth: "0.5px"}}
                 type="number"
                 value={this.state.displayValue}
                 onChange={this.onChange}

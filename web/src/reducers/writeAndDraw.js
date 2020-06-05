@@ -25,7 +25,7 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         writeAndDrawManager.on("onChangeModel", (model2d) => {
-            console.log("writeAndDrawText_onChangeModel_ON"+JSON.stringify(model2d))
+            // console.log("writeAndDrawText_onChangeModel_ON"+JSON.stringify(model2d))
 
             dispatch(actions._setModelCount(writeAndDrawManager.modelsParent.children.length));
             dispatch(actions._selectModel(model2d));
@@ -137,6 +137,7 @@ export const actions = {
     //g-code
     generateGcode: () => {
         const gcode = writeAndDrawManager.generateGcode();
+        console.log(gcode);
         return {
             type: SET_GCODE,
             value: gcode

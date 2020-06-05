@@ -113,112 +113,116 @@ class WorkingParameters extends PureComponent {
         }
 
         return (
-            <React.Fragment>
+            <div>
                 <Line/>
-                <h4>{working_parameters.label}</h4>
+                <div style={{
+                    padding: "5px",
+                }}>
+                    <h4>{working_parameters.label}</h4>
 
-                {/*<Row>*/}
-                {/*<Col span={11}>*/}
-                {/*<span>{print_order.label}</span>*/}
-                {/*</Col>*/}
-                {/*<Col span={8} push={5}>*/}
-                {/*<NumberInput min={print_order.minimum_value} max={print_order.maximum_value}*/}
-                {/*value={toFixed(print_order.default_value, 0)}*/}
-                {/*onChange={actions.setPrintOrder}/>*/}
-                {/*</Col>*/}
-                {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*<Col span={11}>*/}
+                    {/*<span>{print_order.label}</span>*/}
+                    {/*</Col>*/}
+                    {/*<Col span={8} push={5}>*/}
+                    {/*<NumberInput min={print_order.minimum_value} max={print_order.maximum_value}*/}
+                    {/*value={toFixed(print_order.default_value, 0)}*/}
+                    {/*onChange={actions.setPrintOrder}/>*/}
+                    {/*</Col>*/}
+                    {/*</Row>*/}
 
-                <Row>
-                    <Col span={15}>
-                        <span>{work_speed.label}</span>
-                        <span>{"(" + work_speed.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={1}>
-                        <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
-                                     value={toFixed(work_speed.default_value, 0)}
-                                     onChange={actions.setWorkSpeed}/>
-                    </Col>
-                </Row>
-                {!jogSpeedHidden &&
-                <Row>
-                    <Col span={15}>
-                        <span>{jog_speed.label}</span>
-                        <span>{"(" + jog_speed.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={1}>
-                        <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
-                                     value={toFixed(jog_speed.default_value, 0)}
-                                     onChange={actions.setJogSpeed}/>
-                    </Col>
-                </Row>
-                }
-                {!dwellTimeHidden &&
-                <Row>
-                    <Col span={15}>
-                        <span>{dwell_time.label}</span>
-                        <span>{"(" + dwell_time.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={1}>
-                        <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
-                                     value={toFixed(dwell_time.default_value, 0)}
-                                     onChange={actions.setDwellTime}/>
-                    </Col>
-                </Row>
-                }
-                <Row>
-                    <Col span={15}>
-                        <span>{multi_pass.label}</span>
-                    </Col>
-                    <Col span={8} push={1}>
-                        <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
-                    </Col>
-                </Row>
-                {multi_pass.default_value &&
-                <Row>
-                    <Col span={11} push={2}>
-                        <span>{passes.label}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={passes.minimum_value} max={passes.maximum_value}
-                                     value={toFixed(passes.default_value, 0)}
-                                     onChange={actions.setMultiPassPasses}/>
-                    </Col>
-                </Row>
-                }
-                {multi_pass.default_value &&
-                <Row>
-                    <Col span={11} push={2}>
-                        <span>{pass_depth.label}</span>
-                        <span>{"(" + pass_depth.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={pass_depth.minimum_value} max={pass_depth.maximum_value}
-                                     value={toFixed(pass_depth.default_value, 0)}
-                                     onChange={actions.setMultiPassPassDepth}/>
-                    </Col>
-                </Row>
-                }
-                <Row>
-                    <Col span={15}>
-                        <span>{fixed_power.label}</span>
-                    </Col>
-                    <Col span={8} push={1}>
-                        <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>
-                    </Col>
-                </Row>
-                {fixed_power.default_value &&
-                <Row>
-                    <Col span={11} push={2}>
-                        <span>{power.label}</span>
-                        <span>{"(" + power.unit + ")"}</span>
-                    </Col>
-                    <Col span={8} push={5}>
-                        <NumberInput min={power.minimum_value} max={power.maximum_value}
-                                     value={toFixed(power.default_value, 0)}
-                                     onChange={actions.setFixedPowerPower}/> </Col>
-                </Row>
-                }
-            </React.Fragment>
+                    <Row>
+                        <Col span={15}>
+                            <span>{work_speed.label}</span>
+                            <span>{"(" + work_speed.unit + ")"}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
+                                         value={toFixed(work_speed.default_value, 0)}
+                                         onChange={actions.setWorkSpeed}/>
+                        </Col>
+                    </Row>
+                    {!jogSpeedHidden &&
+                    <Row>
+                        <Col span={15}>
+                            <span>{jog_speed.label}</span>
+                            <span>{"(" + jog_speed.unit + ")"}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
+                                         value={toFixed(jog_speed.default_value, 0)}
+                                         onChange={actions.setJogSpeed}/>
+                        </Col>
+                    </Row>
+                    }
+                    {!dwellTimeHidden &&
+                    <Row>
+                        <Col span={15}>
+                            <span>{dwell_time.label}</span>
+                            <span>{"(" + dwell_time.unit + ")"}</span>
+                        </Col>
+                        <Col span={9}>
+                            <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
+                                         value={toFixed(dwell_time.default_value, 0)}
+                                         onChange={actions.setDwellTime}/>
+                        </Col>
+                    </Row>
+                    }
+                    {/*<Row>*/}
+                    {/*    <Col span={15}>*/}
+                    {/*        <span>{multi_pass.label}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9}>*/}
+                    {/*        <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*{multi_pass.default_value &&*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={13} push={2}>*/}
+                    {/*        <span>{passes.label}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9} push={2}>*/}
+                    {/*        <NumberInput min={passes.minimum_value} max={passes.maximum_value}*/}
+                    {/*                     value={toFixed(passes.default_value, 0)}*/}
+                    {/*                     onChange={actions.setMultiPassPasses}/>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*}*/}
+                    {/*{multi_pass.default_value &&*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={13} push={2}>*/}
+                    {/*        <span>{pass_depth.label}</span>*/}
+                    {/*        <span>{"(" + pass_depth.unit + ")"}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9} push={2}>*/}
+                    {/*        <NumberInput min={pass_depth.minimum_value} max={pass_depth.maximum_value}*/}
+                    {/*                     value={toFixed(pass_depth.default_value, 0)}*/}
+                    {/*                     onChange={actions.setMultiPassPassDepth}/>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*}*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={15}>*/}
+                    {/*        <span>{fixed_power.label}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9}>*/}
+                    {/*        <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*{fixed_power.default_value &&*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={13} push={2}>*/}
+                    {/*        <span>{power.label}</span>*/}
+                    {/*        <span>{"(" + power.unit + ")"}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9} push={2}>*/}
+                    {/*        <NumberInput min={power.minimum_value} max={power.maximum_value}*/}
+                    {/*                     value={toFixed(power.default_value, 0)}*/}
+                    {/*                     onChange={actions.setFixedPowerPower}/> </Col>*/}
+                    {/*</Row>*/}
+                    {/*}*/}
+                </div>
+            </div>
         );
     }
 }

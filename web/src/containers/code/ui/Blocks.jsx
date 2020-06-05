@@ -52,6 +52,12 @@ class Blocks extends React.Component {
         this.attachVM();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.tap !== nextProps.tap) {
+            ScratchBlocks.svgResize(this.workspace)
+        }
+    }
+
     componentWillUnmount() {
         this.detachVM();
         this.workspace.dispose();
@@ -129,8 +135,10 @@ class Blocks extends React.Component {
 
 const mapStateToProps = (state) => {
     const {vm} = state.vm;
+    const {tap} = state.tap;
     return {
-        vm
+        vm,
+        tap
     };
 };
 
