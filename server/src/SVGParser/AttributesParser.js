@@ -1,10 +1,12 @@
-import { parseFloats, cssColor2Hex, xformMultiply } from './Utils.js';
+import {parseFloats, cssColor2Hex, xformMultiply} from './Utils.js';
 
-const log = console.log;
+const log = {
+    log: console.log,
+    warn: console.warn
+};
 
 function parseDAttribute(value) {
     const items = [];
-
     const re = /([A-Za-z]|(-?\.?[0-9]+\.?[0-9]*(e-?[0-9]*)?))/g;
     let m = re.exec(value);
     while (m) {
@@ -18,7 +20,6 @@ function parseDAttribute(value) {
         }
         m = re.exec(value);
     }
-
     return items;
 }
 
