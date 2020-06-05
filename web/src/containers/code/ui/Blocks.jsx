@@ -50,6 +50,25 @@ class Blocks extends React.Component {
 
         this.workspace = ScratchBlocks.inject(this.blocks.current, workspaceConfig);
         this.attachVM();
+
+        this.updateCss();
+    }
+
+    updateCss() {
+        //参考：rotrics-scratch-blocks/core/css.js
+        const injectionDiv = document.getElementsByClassName('injectionDiv')[0];
+        injectionDiv.style.borderTopRightRadius = '5px';
+        injectionDiv.style.borderBottomRightRadius = '5px';
+        injectionDiv.style.borderBottom = 'solid 1px rgba(0,0,0,.15)';
+
+        const blocklyFlyout = document.getElementsByClassName('blocklyFlyout')[0];
+        blocklyFlyout.style.borderRight = 'solid 1px rgba(0,0,0,.15)';
+
+        const blocklyToolboxDiv = document.getElementsByClassName('blocklyToolboxDiv')[0];
+        blocklyToolboxDiv.style.borderRight = 'solid 1px rgba(0,0,0,.15)';
+
+        //注意顺序，必须先设置css，后resize
+        ScratchBlocks.svgResize(this.workspace)
     }
 
     componentWillReceiveProps(nextProps) {

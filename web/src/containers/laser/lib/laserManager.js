@@ -17,23 +17,9 @@ class LaserManager extends events.EventEmitter {
     addModel(model2d) {
         this.modelsParent.add(model2d);
         this.selectModel(model2d);
-        this.emit('onChangeModel', this._selected);
-
         model2d.addEventListener('preview', () => {
             this._onPreviewStatusChange();
         });
-    }
-
-    _onPreviewStatusChange() {
-        this.isAllPreviewed = true;
-        for (let i = 0; i < this.modelsParent.children.length; i++) {
-            const model = this.modelsParent.children[i];
-            if (!model.isPreviewed) {
-                this.isAllPreviewed = false;
-                break;
-            }
-        }
-        this.emit('onPreviewStatusChange', this.isAllPreviewed);
     }
 
     selectModel(model) {
@@ -51,9 +37,8 @@ class LaserManager extends events.EventEmitter {
         if (this._selected) {
             this.modelsParent.remove(this._selected);
             this._selected = null;
-            this._emmitChangeEvent();
+            this.emit('onChangeModel', this._selected);
         }
-        this.emit('onChangeModel', this._selected);
     }
 
     removeAll() {
@@ -133,6 +118,18 @@ class LaserManager extends events.EventEmitter {
         // gcodeArr.push("M5");
         const gcode = gcodeArr.join("\n") + "\n";
         return gcode;
+    }
+
+    _onPreviewStatusChange() {
+        this.isAllPreviewed = true;
+        for (let i = 0; i < this.modelsParent.children.length; i++) {
+            const model = this.modelsParent.children[i];
+            if (!model.isPreviewed) {
+                this.isAllPreviewed = false;
+                break;
+            }
+        }
+        this.emit('onPreviewStatusChange', this.isAllPreviewed);
     }
 }
 
