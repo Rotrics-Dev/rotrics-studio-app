@@ -23,7 +23,7 @@ class Index extends React.Component {
         //controls
         this.msrControls = null; // pan/scale/rotate print area
 
-        this.size = new THREE.Vector3(100, 100, 100)
+        this.size = new THREE.Vector3(150, 150, 150)
         this.printableArea = new PrintableCube(this.size);
     }
 

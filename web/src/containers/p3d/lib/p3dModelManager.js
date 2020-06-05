@@ -12,50 +12,58 @@ class P3DModelManager extends events.EventEmitter {
         this.modelsParent = object3d;
     }
 
-    //暂时只支持加载一个，只显示一个
-    addModel(model2D) {
-        this.modelsParent.remove(...this.modelsParent.children)
-        this.modelsParent.add(model2D);
-        this._selected = model2D;
+    addModel(model3d) {
+        this.modelsParent.add(model3d);
+        this.selectModel(model3d);
     }
 
-    undo() {
+    selectModel(model3d) {
+        if (this._selected === model3d) {
+            return;
+        }
+        this._selected = model3d;
+        for (const child of this.modelsParent.children) {
+            child.setSelected(this._selected === child);
+        }
+        this.emit('onChangeModel', this._selected);
     }
 
-    redo() {
-    }
-
-    //selected model的状态有改变: x, y, rotation, width, height; 切换selected model
-    //应该分4种event：transform change，model change，config change，working parameters change
-    _emmitChangeEvent() {
-        this.emit('onChange', this._selected);
-    }
-
-    remove() {
+    removeSelected() {
         if (this._selected) {
             this.modelsParent.remove(this._selected);
             this._selected = null;
-            this._emmitChangeEvent();
+            this.emit('onChangeModel', null);
         }
     }
 
-    /**
-     *
-     * @param key
-     * @param value
-     * @param preview 是否触发model2d preview
-     */
-    updateTransformation(key, value, preview = true) {
-        this._selected.updateTransformation(key, value, preview);
-        this._emmitChangeEvent();
+    removeAll() {
+        this.modelsParent.remove(...this.modelsParent.children);
+        this._selected = null;
+        this.emit('onChangeModel', null);
     }
 
-    layFlat() {
+    duplicateSelected() {
+        if (this._selected) {
+            const model3d = this._selected.clone();
+            this.addModel(model3d)
+        }
     }
 
+    updateTransformation(key, value) {
+        //todo: 根据updateTransformation返回值，来确定是否需要emmit
+        this._selected.updateTransformation(key, value);
+        this.emit('onChangeTransformation', this._selected.transformation);
+    }
 
+    afterUpdateTransformation(key, value) {
+        //todo: 根据updateTransformation返回值，来确定是否需要emmit
+        this._selected.updateTransformation(key, value);
+        this._selected.stickToPlate();
+        this.emit('onChangeTransformation', this._selected.transformation);
+    }
 }
 
 const p3dModelManager = new P3DModelManager();
 
 export default p3dModelManager;
+

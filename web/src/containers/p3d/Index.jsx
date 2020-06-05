@@ -4,7 +4,8 @@ import "antd/dist/antd.css";
 
 import ToolBar from '../../components/ToolBar/Index.jsx'
 
-import LeftPanel from "./ui/LeftPanel/Index.jsx";
+import Upload from "./ui/Upload/Index.jsx";
+import Transformation from "./ui/Transformation/Index.jsx";
 import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
 import Info from "./ui/Info/Index.jsx";
@@ -55,12 +56,15 @@ class Index extends React.Component {
                 </div>
                 <div style={{
                     position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    width: "100px"
+                    top: "8px",
+                    left: "8px",
+                    height: "50px",
+                    width: "100px",
                 }}>
-                    <LeftPanel/>
+                    <Upload/>
+                </div>
+                <div className={styles.div_transformation}>
+                    <Transformation/>
                 </div>
                 <div style={{
                     position: "absolute",
@@ -87,7 +91,7 @@ class Index extends React.Component {
                     top: 0,
                     bottom: 0,
                     right: "240px",
-                    width: "36px",
+                    width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
                     <ToolBar operations={operations}/>

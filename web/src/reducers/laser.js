@@ -1,25 +1,24 @@
 import _ from 'lodash';
 import laserManager from "../containers/laser/lib/laserManager.js";
 
-const SET_MODEL = 'laser/SET_MODEL';
+const SELECT_MODEL = 'laser/SELECT_MODEL';
+const SET_MODEL_COUNT = 'laser/SET_MODEL_COUNT';
+
 const SET_TRANSFORMATION = 'laser/SET_TRANSFORMATION';
 const SET_CONFIG = 'laser/SET_CONFIG';
 const SET_WORKING_PARAMETERS = 'laser/SET_WORKING_PARAMETERS';
 
 const SET_ALL_PREVIEWED = 'laser/SET_ALL_PREVIEWED';
 const SET_GCODE = 'laser/SET_GCODE';
-const SET_MODEL_COUNT = 'laser/SET_MODEL_COUNT';
-
-const SELECT_MODEL = 'laser/SELECT_MODEL';
 
 const INITIAL_STATE = {
-    modelCount: 0,
-    isAllPreviewed: false, //是否所有model全部previewed
-    gcode: "",
     model: null,
+    modelCount: 0,
     transformation: null,
     config: null,
-    working_parameters: null
+    working_parameters: null,
+    isAllPreviewed: false, //是否所有model全部previewed
+    gcode: "",
 };
 
 export const actions = {
@@ -95,13 +94,6 @@ export const actions = {
             value: count
         };
     },
-    //set settings/model
-    _setModel: (model) => {
-        return {
-            type: SET_MODEL,
-            value: model
-        };
-    },
     _setTransformation: (transformatione) => {
         return {
             type: SET_TRANSFORMATION,
@@ -144,20 +136,6 @@ export const actions = {
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case SET_MODEL:
-            return Object.assign({}, state, {model: action.value, gcode: ""});
-        case SET_TRANSFORMATION:
-            return Object.assign({}, state, {transformation: action.value, gcode: ""});
-        case SET_CONFIG:
-            return Object.assign({}, state, {config: action.value, gcode: ""});
-        case SET_WORKING_PARAMETERS:
-            return Object.assign({}, state, {working_parameters: action.value, gcode: ""});
-        case SET_ALL_PREVIEWED:
-            return Object.assign({}, state, {isAllPreviewed: action.value, gcode: ""});
-        case SET_GCODE:
-            return Object.assign({}, state, {gcode: action.value});
-        case SET_MODEL_COUNT:
-            return Object.assign({}, state, {modelCount: action.value, gcode: ""});
         case SELECT_MODEL:
             const model = action.value;
             if (model) {
@@ -171,6 +149,18 @@ export default function reducer(state = INITIAL_STATE, action) {
                     working_parameters: null
                 });
             }
+        case SET_MODEL_COUNT:
+            return Object.assign({}, state, {modelCount: action.value, gcode: ""});
+        case SET_TRANSFORMATION:
+            return Object.assign({}, state, {transformation: action.value, gcode: ""});
+        case SET_CONFIG:
+            return Object.assign({}, state, {config: action.value, gcode: ""});
+        case SET_WORKING_PARAMETERS:
+            return Object.assign({}, state, {working_parameters: action.value, gcode: ""});
+        case SET_ALL_PREVIEWED:
+            return Object.assign({}, state, {isAllPreviewed: action.value, gcode: ""});
+        case SET_GCODE:
+            return Object.assign({}, state, {gcode: action.value});
         default:
             return state;
     }

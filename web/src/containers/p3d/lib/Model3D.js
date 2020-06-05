@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-const materialSelected = new THREE.MeshPhongMaterial({ color: 0xf0f0f0, specular: 0xb0b0b0, shininess: 30 });
-const materialNormal = new THREE.MeshPhongMaterial({ color: 0xa0a0a0, specular: 0xb0b0b0, shininess: 30 });
+const materialSelected = new THREE.MeshPhongMaterial({color: 0xf0f0f0, specular: 0xb0b0b0, shininess: 30});
+const materialNormal = new THREE.MeshPhongMaterial({color: 0xa0a0a0, specular: 0xb0b0b0, shininess: 30});
 const materialOverstepped = new THREE.MeshPhongMaterial({
     color: 0xff0000,
     shininess: 30,
@@ -23,6 +23,7 @@ class Model3D extends THREE.Mesh {
         this.modelName = modelName;
         this.modelPath = modelPath;
 
+
         /**
          * this.convexBufferGeometry is from BufferGeometry.fromGeometry()
          * source code: https://github.com/mrdoob/three.js/blob/master/src/core/BufferGeometry.js
@@ -34,6 +35,15 @@ class Model3D extends THREE.Mesh {
         this.convexGeometry = new THREE.Geometry();
         this.convexGeometry.fromBufferGeometry(convexBufferGeometry);
         this.convexGeometry.mergeVertices();
+
+        this.transformation = {
+            x: 0,
+            y: 0,
+            rx: 0,
+            ry: 0,
+            rz: 0,
+            scale: 1,
+        };
     }
 
     stickToPlate() {
@@ -239,16 +249,18 @@ class Model3D extends THREE.Mesh {
         return matrix4;
     }
 
-    updateTransformation(transformation) {
-        const { positionX, positionZ, rotationX, rotationY, rotationZ, scale } = transformation;
-        positionX !== undefined && (this.position.x = positionX);
-        positionZ !== undefined && (this.position.z = positionZ);
+    updateTransformation(key, value) {
+        //TODO：增加判断
+        this.transformation[key] = value;
+        const {x, y, rx, ry, rz, scale} = this.transformation;
+        this.position.x = x;
+        this.position.z = y; //坐标轴不同
 
-        rotationX !== undefined && (this.rotation.x = rotationX);
-        rotationY !== undefined && (this.rotation.y = rotationY);
-        rotationZ !== undefined && (this.rotation.z = rotationZ);
+        this.rotation.x = rx;
+        this.rotation.y = ry;
+        this.rotation.z = rz;
 
-        scale !== undefined && (this.scale.copy(new THREE.Vector3(scale, scale, scale)));
+        this.scale.copy(new THREE.Vector3(scale, scale, scale));
     }
 }
 
