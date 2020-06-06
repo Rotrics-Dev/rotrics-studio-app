@@ -1,28 +1,23 @@
 import * as THREE from 'three';
 
-const materialSelected = new THREE.MeshPhongMaterial({color: 0xf0f0f0, specular: 0xb0b0b0, shininess: 30});
 const materialNormal = new THREE.MeshPhongMaterial({color: 0xa0a0a0, specular: 0xb0b0b0, shininess: 30});
-const materialOverstepped = new THREE.MeshPhongMaterial({
-    color: 0xff0000,
+const materialSelected = new THREE.MeshPhongMaterial({
+    color: 0xb0b0b0,
     shininess: 30,
     transparent: true,
-    opacity: 0.6
+    opacity: 0.7
 });
 
 class Model3D extends THREE.Mesh {
     constructor(bufferGeometry, convexBufferGeometry, modelName, modelPath) {
         super(bufferGeometry, materialNormal);
 
-        this.isModel = true;
         this.boundingBox = null; // the boundingBox is aligned parent axis
-        this.selected = false;
-        this.overstepped = false;
 
         this.bufferGeometry = bufferGeometry;
         this.convexBufferGeometry = convexBufferGeometry;
         this.modelName = modelName;
         this.modelPath = modelPath;
-
 
         /**
          * this.convexBufferGeometry is from BufferGeometry.fromGeometry()
@@ -44,6 +39,12 @@ class Model3D extends THREE.Mesh {
             rz: 0,
             scale: 1,
         };
+
+        let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 1);
+        let edgesMtl = new THREE.LineBasicMaterial({color: 0xff0000});
+        this.edgesLineObj3d = new THREE.LineSegments(cubeEdges, edgesMtl);
+        this.edgesLineObj3d.visible = false;
+        this.add(this.edgesLineObj3d);
     }
 
     stickToPlate() {
@@ -64,19 +65,8 @@ class Model3D extends THREE.Mesh {
     }
 
     setSelected(selected) {
-        if (this.selected === selected) {
-            return;
-        }
-        this.selected = selected;
-        if (this.overstepped) {
-            this.material = materialOverstepped;
-        } else {
-            this.material = (this.selected ? materialSelected : materialNormal);
-        }
-    }
-
-    isSelected() {
-        return this.selected;
+        this.edgesLineObj3d.visible = selected;
+        this.material = (selected ? materialSelected : materialNormal);
     }
 
     setMatrix(matrix) {
@@ -93,18 +83,6 @@ class Model3D extends THREE.Mesh {
         // this.position.copy(position);
         // this.quaternion.copy(quaternion);
         // this.scale.copy(scale);
-    }
-
-    setOverstepped(overstepped) {
-        if (this.overstepped === overstepped) {
-            return;
-        }
-        this.overstepped = overstepped;
-        if (this.overstepped) {
-            this.material = materialOverstepped;
-        } else {
-            this.material = (this.selected ? materialSelected : materialNormal);
-        }
     }
 
     clone() {
