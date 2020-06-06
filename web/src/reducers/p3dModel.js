@@ -28,6 +28,10 @@ export const actions = {
             dispatch(actions._setTransformation(_.cloneDeep(transformation)));
         });
     },
+    setModelsParent: (modelsParent) => {
+        p3dModelManager.setModelsParent(modelsParent);
+        return {type: null};
+    },
     loadModel: (url) => (dispatch, getState) => {
         const worker = new File3dToBufferGeometryWorker();
         worker.postMessage({url});
@@ -75,12 +79,28 @@ export const actions = {
         };
     },
     //modelsParent: three.Object3D
-    setModelsParent: (modelsParent) => {
-        p3dModelManager.setModelsParent(modelsParent);
-        return {type: null};
-    },
     selectModel: (model) => {
         p3dModelManager.selectModel(model);
+        return {type: null};
+    },
+    removeSelected: () => {
+        p3dModelManager.removeSelected();
+        return {type: null};
+    },
+    removeAll: () => {
+        p3dModelManager.removeAll();
+        return {type: null};
+    },
+    duplicateSelected: () => {
+        p3dModelManager.duplicateSelected();
+        return {type: null};
+    },
+    undo: () => {
+        console.log("undo")
+        return {type: null};
+    },
+    redo: () => {
+        console.log("redo")
         return {type: null};
     },
     updateTransformation: (key, value) => {
