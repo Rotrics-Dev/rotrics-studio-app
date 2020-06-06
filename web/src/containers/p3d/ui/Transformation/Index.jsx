@@ -163,7 +163,7 @@ class Index extends React.Component {
         );
 
         return (
-            <div style={{width: "100%", height: "100%"}}>
+            <div>
                 <Space direction={"vertical"} size={0}>
                     <Popover placement="right" content={content4move} trigger="click">
                         <button

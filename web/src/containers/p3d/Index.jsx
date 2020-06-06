@@ -57,9 +57,7 @@ class Index extends React.Component {
                 <div style={{
                     position: "absolute",
                     top: "8px",
-                    left: "8px",
-                    height: "50px",
-                    width: "100px",
+                    left: "8px"
                 }}>
                     <Upload/>
                 </div>
