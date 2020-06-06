@@ -41,7 +41,7 @@ class Model3D extends THREE.Mesh {
         };
 
         let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 1);
-        let edgesMtl = new THREE.LineBasicMaterial({color: 0xff0000});
+        let edgesMtl = new THREE.LineBasicMaterial({color: 0x4169E1});
         this.edgesLineObj3d = new THREE.LineSegments(cubeEdges, edgesMtl);
         this.edgesLineObj3d.visible = false;
         this.add(this.edgesLineObj3d);
