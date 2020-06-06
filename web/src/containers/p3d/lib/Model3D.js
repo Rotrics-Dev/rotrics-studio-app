@@ -69,21 +69,21 @@ class Model3D extends THREE.Mesh {
         this.material = (selected ? materialSelected : materialNormal);
     }
 
-    setMatrix(matrix) {
-        this.updateMatrix();
-        this.applyMatrix(new THREE.Matrix4().getInverse(this.matrix));
-        this.applyMatrix(matrix);
-        // attention: do not use Object3D.applyMatrix(matrix : Matrix4)
-        // because applyMatrix is accumulated
-        // anther way: decompose Matrix and reset position/rotation/scale
-        // let position = new THREE.Vector3();
-        // let quaternion = new THREE.Quaternion();
-        // let scale = new THREE.Vector3();
-        // matrix.decompose(position, quaternion, scale);
-        // this.position.copy(position);
-        // this.quaternion.copy(quaternion);
-        // this.scale.copy(scale);
-    }
+    // setMatrix(matrix) {
+    //     this.updateMatrix();
+    //     this.applyMatrix(new THREE.Matrix4().getInverse(this.matrix));
+    //     this.applyMatrix(matrix);
+    //     // attention: do not use Object3D.applyMatrix(matrix : Matrix4)
+    //     // because applyMatrix is accumulated
+    //     // anther way: decompose Matrix and reset position/rotation/scale
+    //     // let position = new THREE.Vector3();
+    //     // let quaternion = new THREE.Quaternion();
+    //     // let scale = new THREE.Vector3();
+    //     // matrix.decompose(position, quaternion, scale);
+    //     // this.position.copy(position);
+    //     // this.quaternion.copy(quaternion);
+    //     // this.scale.copy(scale);
+    // }
 
     clone() {
         const clone = new Model3D(
@@ -92,8 +92,19 @@ class Model3D extends THREE.Mesh {
             this.modelName,
             this.modelPath
         );
-        this.updateMatrix();
-        clone.setMatrix(this.matrix);
+
+        //TODO：setMatrix居然不符合预期
+        const {x, y, rx, ry, rz, scale} = this.transformation;
+        clone.transformation = this.transformation;
+        clone.position.x = x;
+        clone.position.z = y; //坐标轴不同
+
+        clone.rotation.x = rx;
+        clone.rotation.y = ry;
+        clone.rotation.z = rz;
+
+        clone.scale.copy(new THREE.Vector3(scale, scale, scale));
+        clone.stickToPlate();
         return clone;
     }
 

@@ -45,6 +45,9 @@ class P3DModelManager extends events.EventEmitter {
     duplicateSelected() {
         if (this._selected) {
             const model3d = this._selected.clone();
+            const {x, y} = this._selected.transformation;
+            model3d.updateTransformation("x", x + 20)
+            model3d.updateTransformation("y", x + 20)
             this.addModel(model3d)
         }
     }
@@ -68,8 +71,6 @@ class P3DModelManager extends events.EventEmitter {
         this._selected.stickToPlate();
         this.emit('onChangeTransformation', this._selected.transformation);
     }
-
-
 }
 
 const p3dModelManager = new P3DModelManager();
