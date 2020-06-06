@@ -2,7 +2,6 @@ import File3dToBufferGeometryWorker from '../containers/p3d/lib/File3dToBufferGe
 import * as THREE from 'three';
 import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
 import Model3D from "../containers/p3d/lib/Model3D";
-import laserManager from "../containers/laser/lib/laserManager";
 
 const SELECT_MODEL = 'p3dModel/SELECT_MODEL';
 const SET_MODEL_COUNT = 'p3dModel/SET_MODEL_COUNT';
@@ -22,7 +21,7 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         p3dModelManager.on("onChangeModel", (model) => {
-            dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
+            dispatch(actions._setModelCount(p3dModelManager.modelsParent.children.length));
             dispatch(actions._selectModel(model));
         });
         p3dModelManager.on("onChangeTransformation", (transformation) => {
