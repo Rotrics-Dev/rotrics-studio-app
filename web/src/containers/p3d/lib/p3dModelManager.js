@@ -49,6 +49,13 @@ class P3DModelManager extends events.EventEmitter {
         }
     }
 
+    layFlat(){
+        if (this._selected) {
+            this._selected.layFlat();
+            this.emit('onChangeTransformation', this._selected.transformation);
+        }
+    }
+
     updateTransformation(key, value) {
         //todo: 根据updateTransformation返回值，来确定是否需要emmit
         this._selected.updateTransformation(key, value);
@@ -61,6 +68,8 @@ class P3DModelManager extends events.EventEmitter {
         this._selected.stickToPlate();
         this.emit('onChangeTransformation', this._selected.transformation);
     }
+
+
 }
 
 const p3dModelManager = new P3DModelManager();

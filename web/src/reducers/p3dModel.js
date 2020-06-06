@@ -103,6 +103,10 @@ export const actions = {
         console.log("redo")
         return {type: null};
     },
+    layFlat: () => {
+        p3dModelManager.layFlat();
+        return {type: null};
+    },
     updateTransformation: (key, value) => {
         p3dModelManager.updateTransformation(key, value);
         return {type: null};

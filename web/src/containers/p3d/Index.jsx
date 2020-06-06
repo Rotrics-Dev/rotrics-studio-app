@@ -27,6 +27,9 @@ class Index extends React.Component {
         redo: () => {
             this.props.redo();
         },
+        layFlat: () => {
+            this.props.layFlat();
+        },
         duplicate: () => {
             this.props.duplicateSelected();
         },
@@ -41,7 +44,8 @@ class Index extends React.Component {
     render() {
         const {model, modelCount} = this.props;
         const operations = this.operations;
-        const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount > 0)};
+        const enabledInfo = {layFlat: !!model, duplicate: !!model, del: !!model, clear: (modelCount > 0)};
+        const visibleInfo = {undo: false, redo: false, layFlat: true, duplicate: true, del: true, clear: true};
         const actions = this.actions;
         return (
             <div style={{
@@ -96,7 +100,7 @@ class Index extends React.Component {
                     width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
-                    <ToolBar operations={operations} enabledInfo={enabledInfo}/>
+                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",
@@ -129,7 +133,6 @@ class Index extends React.Component {
     }
 }
 
-
 const mapStateToProps = (state) => {
     const {model, modelCount} = state.p3dModel;
     return {
@@ -145,6 +148,7 @@ const mapDispatchToProps = (dispatch) => {
         duplicateSelected: () => dispatch(p3dModelActions.duplicateSelected()),
         undo: () => dispatch(p3dModelActions.undo()),
         redo: () => dispatch(p3dModelActions.redo()),
+        layFlat: () => dispatch(p3dModelActions.layFlat()),
     };
 };
 

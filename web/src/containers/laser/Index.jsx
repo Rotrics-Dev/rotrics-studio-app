@@ -36,7 +36,8 @@ class Index extends React.Component {
     render() {
         const {model, modelCount} = this.props;
         const operations = this.operations;
-        const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount>0)};
+        const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount > 0)};
+        const visibleInfo = {undo: false, redo: false, layFlat: false, duplicate: false, del: true, clear: true};
         const actions = this.actions;
         return (
             <div style={{
@@ -60,7 +61,7 @@ class Index extends React.Component {
                     width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
-                    <ToolBar operations={operations} enabledInfo={enabledInfo}/>
+                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",
