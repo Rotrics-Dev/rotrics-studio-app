@@ -10,7 +10,7 @@ export const actions = {
     init: () => (dispatch, getState) => {
         hotKeys('backspace,del', (event, handler) => {
             event.preventDefault();
-            switch (getState().tap.tap) {
+            switch (getState().taps.tap) {
                 case TAP_P3D:
                     p3dModelManager.removeSelected();
                     break;

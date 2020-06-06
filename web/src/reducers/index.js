@@ -9,7 +9,7 @@ import p3dMaterial from "./p3dMaterial";
 import p3dModel from "./p3dModel";
 import serialPort from "./serialPort";
 import socket from "./socket";
-import tap from "./tap";
+import taps from "./taps";
 import vm from "./vm";
 
 export default combineReducers({
@@ -23,6 +23,6 @@ export default combineReducers({
     p3dModel,
     serialPort,
     socket,
-    tap,
+    taps,
     vm,
 });

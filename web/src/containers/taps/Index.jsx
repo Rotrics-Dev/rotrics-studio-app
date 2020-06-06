@@ -11,7 +11,7 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
 import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
-import {actions as tapActions} from "../../reducers/tap";
+import {actions as tapsActions} from "../../reducers/taps";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserActions} from "../../reducers/laser";
@@ -128,7 +128,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {tap} = state.tap;
+    const {tap} = state.taps;
     return {
         tap
     };
@@ -136,7 +136,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setTap: (value) => dispatch(tapActions.setTap(value)),
+        setTap: (value) => dispatch(tapsActions.setTap(value)),
         init: () => {
             dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());

@@ -154,7 +154,7 @@ class Blocks extends React.Component {
 
 const mapStateToProps = (state) => {
     const {vm} = state.vm;
-    const {tap} = state.tap;
+    const {tap} = state.taps;
     return {
         vm,
         tap
