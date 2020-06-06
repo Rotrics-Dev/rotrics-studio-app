@@ -24,6 +24,7 @@ const uploadFile = async (file) => {
 const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
+    console.log("chenhuilong  "+JSON.stringify(file));
     const response = await fetch(window.serverIp+'/uploadImage', {
         method: 'POST',
         body: formData

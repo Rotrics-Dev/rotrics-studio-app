@@ -239,7 +239,8 @@ class Model2D extends THREE.Group {
         }
 
 
-        this._display("img");
+        // this._display("img");
+        this._display("toolPath");
         this._display("edge");
 
         //todo: setting是否变化，决定preview

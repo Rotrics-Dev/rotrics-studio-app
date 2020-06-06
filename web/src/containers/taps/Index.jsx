@@ -25,9 +25,9 @@ import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 
 
-import {actions as p3dConfigActions} from "../../reducers/p3dConfig";
-import {actions as p3dGcodeActions} from "../../reducers/p3dGcode";
-import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
+// import {actions as p3dConfigActions} from "../../reducers/p3dConfig";
+// import {actions as p3dGcodeActions} from "../../reducers/p3dGcode";
+// import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as p3dModelActions} from "../../reducers/p3dModel";
 
 class Index extends React.Component {

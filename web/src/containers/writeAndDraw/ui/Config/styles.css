@@ -59,6 +59,13 @@
     opacity: 0.7;
 }
 
+
+.img_list_item{
+    width: 58px;
+    height: 58px;
+}
+
+
 /*.number_input {*/
 /*width: 80px;*/
 /*}*/

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
-import {Button, Input, Space, message} from 'antd';
+import {Button, Space, message, List} from 'antd';
 
 import "antd/dist/antd.css";
 
@@ -23,7 +23,7 @@ import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
-
+import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
     let accept = '';
@@ -44,14 +44,26 @@ const getAccept = (fileType) => {
     return accept;
 };
 
+
 class Index extends React.Component {
     fileInput = React.createRef();
+    buildInSvgList = React.createRef();
     state = {
         fileType: '', // bw, greyscale, vector
         accept: '',
     };
 
     actions = {
+        onChooseBuildInSvg: async (event) => {
+            this.buildInSvgList.current.style.display="none";
+            const response = await uploadImage(base64ToBlob(event.target.src.toString()));
+            const {url, width, height} = response;
+            const model = new Model2D('svg');
+            model.loadImg(url, width, height);
+            this.props.addModel(model);
+        },
+
+
         onChangeFile: async (event) => {
             //bw, greyscale, svg
             const file = event.target.files[0];
@@ -159,6 +171,7 @@ class Index extends React.Component {
         },
     };
 
+
     render() {
         const {accept} = this.state;
         const {fileTypeSelected} = this.props;
@@ -204,6 +217,7 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
+
                 <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "7px"}} size={7}>
                     {/*<button*/}
                     {/*    className={styles.btn_bw}*/}
@@ -229,7 +243,37 @@ class Index extends React.Component {
                     >
                         <h6 className={styles.h_file_type}>TEXT</h6>
                     </button>
+                    <button
+                        className={styles.btn_text}
+                        onClick={() => {
+
+                            console.log("fff1" + this.fileInput);
+                            console.log("fff1" + this.fileInput.current);
+                            console.log("fff1" + this.fileInput.current.style);
+                            console.log("fff1" + this.fileInput.current.style.display);
+                            console.log("fff1" + this.buildInSvgList);
+                            console.log("fff1" + this.buildInSvgList.current);
+                            console.log("fff1" + this.buildInSvgList.current.style);
+                            console.log("fff1" + this.buildInSvgList.current.style.display);
+                            this.buildInSvgList.current.style.display = 'block'
+                        }}
+                    >
+                        <h6 className={styles.h_file_type}>SELECT</h6>
+                    </button>
                 </Space>
+                <div
+                    ref={this.buildInSvgList}
+                    style={{width: "100%", padding: "5px 5px 5px 5px", display: "none"}}>
+                    <List
+                        grid={{gutter: 4, column: 4}}
+                        dataSource={getBuildInSvgArray()}
+                        renderItem={(item, index) => (
+                            <List.Item>
+                                <img className={styles.img_list_item} src={item} onClick={actions.onChooseBuildInSvg}/>
+                            </List.Item>
+                            )}
+                    />
+                </div>
                 <Transformation/>
                 {/*<ConfigGreyscale/>*/}
                 {/*<ConfigBW/>*/}
