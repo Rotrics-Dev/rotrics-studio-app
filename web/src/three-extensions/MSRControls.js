@@ -22,7 +22,7 @@ const MSRControls = function (object, camera, domElement, size) {
     let lastScrollDate = 0;
 
     var cameraMinZ = -30;
-    var cameraMaxZ = Math.max(size.x, size.y, size.z) * 2;
+    var cameraMaxZ = Math.max(size.x, size.y, size.z) * 6;
 
     var panStart = new THREE.Vector2();
     var panEnd = new THREE.Vector2();
@@ -170,12 +170,12 @@ const MSRControls = function (object, camera, domElement, size) {
             if (scope.camera.position.z <= cameraMinZ) {
                 return;
             }
-            scope.camera.position.z -= 10;
+            scope.camera.position.z -= 20;
         } else if (event.deltaY > 0) {
             if (scope.camera.position.z >= cameraMaxZ) {
                 return;
             }
-            scope.camera.position.z += 10;
+            scope.camera.position.z += 20;
         }
     }
 
