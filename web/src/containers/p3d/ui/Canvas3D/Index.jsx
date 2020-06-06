@@ -5,6 +5,9 @@ import MSRControls from '../../../../three-extensions/MSRControls';
 import PrintableCube from './PrintableCube.jsx';
 import p3dModelManager from "../../lib/p3dModelManager";
 import {connect} from 'react-redux';
+import IntersectDetector from "../../../../three-extensions/IntersectDetector";
+import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
+import {actions as laserActions} from "../../../../reducers/laser";
 
 //暂时只支持一个模型吧
 class Index extends React.Component {
@@ -31,14 +34,11 @@ class Index extends React.Component {
 
     componentDidMount() {
         this.setupThree();
+        this.setupIntersectDetector();
         this.setupMSRControls();
-
-        p3dModelManager.setModelsParent(this.modelGroup);
-
+        this.props.setModelsParent(this.modelGroup);
         this.animate();
-
         this.group.add(this.printableArea);
-
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -48,13 +48,33 @@ class Index extends React.Component {
         }
     }
 
+    setupIntersectDetector() {
+        // only detect 'this.modelGroup.children'
+        this.intersectDetector = new IntersectDetector(
+            this.modelGroup.children,
+            this.camera,
+            this.renderer.domElement
+        );
+        // triggered when "left mouse down on model"
+        this.intersectDetector.addEventListener(
+            'detected',
+            (event) => {
+                //detect到的是model2d的children
+                const model = event.object;
+                console.log("detected: " + model)
+                this.props.selectModel(model);
+                // this.panControls.select(model);
+            }
+        );
+    }
+
     setupMSRControls() {
         this.msrControls = new MSRControls(this.group, this.camera, this.renderer.domElement, this.size);
         // triggered first, when "mouse down on canvas"
         this.msrControls.addEventListener(
             'mouseDown',
             () => {
-                console.log("mouseDown")
+                // console.log("mouseDown")
                 // this.controlMode = 'none';
             }
         );
@@ -62,14 +82,14 @@ class Index extends React.Component {
         this.msrControls.addEventListener(
             'moveStart',
             () => {
-                console.log("moveStart")
+                // console.log("moveStart")
                 // this.controlMode = 'msr';
             }
         );
         this.msrControls.addEventListener(
             'move',
             () => {
-                console.log("move")
+                // console.log("move")
                 // this.updateTransformControl2D();
             }
         );
@@ -77,7 +97,7 @@ class Index extends React.Component {
         this.msrControls.addEventListener(
             'mouseUp',
             (eventWrapper) => {
-                console.log("mouseUp")
+                // console.log("mouseUp")
                 // switch (eventWrapper.event.button) {
                 //     case THREE.MOUSE.LEFT:
                 //         if (this.controlMode === 'none') {
@@ -167,4 +187,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(Index);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setModelsParent: (modelsParent) => dispatch(p3dModelActions.setModelsParent(modelsParent)),
+        selectModel: (model) => dispatch(p3dModelActions.selectModel(model)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

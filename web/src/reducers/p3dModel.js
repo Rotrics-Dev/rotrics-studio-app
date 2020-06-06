@@ -76,6 +76,15 @@ export const actions = {
             }
         };
     },
+    //modelsParent: three.Object3D
+    setModelsParent: (modelsParent) => {
+        p3dModelManager.setModelsParent(modelsParent);
+        return {type: null};
+    },
+    selectModel: (model) => {
+        p3dModelManager.selectModel(model);
+        return {type: null};
+    },
     updateTransformation: (key, value) => {
         p3dModelManager.updateTransformation(key, value);
         return {type: null};
