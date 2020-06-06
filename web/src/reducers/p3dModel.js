@@ -50,7 +50,6 @@ export const actions = {
                     bufferGeometry.computeVertexNormals();
                     convexBufferGeometry.addAttribute('position', modelConvexPositionAttribute);
 
-                    console.log("bufferGeometry: " + JSON.stringify(bufferGeometry));
                     const model = new Model3D(bufferGeometry, convexBufferGeometry, url, url);
                     p3dModelManager.addModel(model);
                     // dispatch(actions.displayModel());

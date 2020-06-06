@@ -47,19 +47,19 @@ class Index extends React.Component {
     }
 
     setupIntersectDetector() {
-        // only detect 'this.modelGroup.children'
+        // recursive detect 'this.modelGroup.children'
         this.intersectDetector = new IntersectDetector(
-            this.modelGroup.children,
             this.camera,
-            this.renderer.domElement
+            this.renderer.domElement,
+            this.modelGroup.children,
+            true
         );
-        // triggered when "left mouse down on model"
+        // triggered when "left mouse down on modelw"
         this.intersectDetector.addEventListener(
             'detected',
             (event) => {
                 //detect到的是model2d的children
                 const model = event.object.parent;
-                console.log("detected: " + model.fileType)
                 this.props.selectModel(model);
                 this.panControls.select(model);
             }

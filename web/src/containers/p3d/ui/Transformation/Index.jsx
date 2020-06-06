@@ -194,8 +194,6 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {model, transformation} = state.p3dModel;
-    console.log("model: " + model);
-    console.log("transformation: " + JSON.stringify(transformation));
     return {
         model,
         transformation
