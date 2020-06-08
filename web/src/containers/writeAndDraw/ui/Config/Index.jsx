@@ -55,7 +55,7 @@ class Index extends React.Component {
 
     actions = {
         onChooseBuildInSvg: async (event) => {
-            this.buildInSvgList.current.style.display="none";
+            this.buildInSvgList.current.style.display="none";//关闭点选 buildinSvg List
             const response = await uploadImage(base64ToBlob(event.target.src.toString()));
             const {url, width, height} = response;
             const model = new Model2D('svg');
@@ -78,6 +78,7 @@ class Index extends React.Component {
             this.props.addModel(model);
         },
         onClickToUpload: async (fileType) => {
+            this.buildInSvgList.current.style.display="none";//关闭点选 buildinSvg List
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
                 const svg = await generateSvg(config.config_text);
@@ -232,19 +233,7 @@ class Index extends React.Component {
                     {/*    <h6 className={styles.h_file_type}>GREYSCALE</h6>*/}
                     {/*</button>*/}
                     <button
-                        className={styles.btn_svg}
-                        onClick={() => actions.onClickToUpload('svg')}
-                    >
-                        <h6 className={styles.h_file_type}>SVG</h6>
-                    </button>
-                    <button
-                        className={styles.btn_text}
-                        onClick={() => actions.onClickToUpload('text')}
-                    >
-                        <h6 className={styles.h_file_type}>TEXT</h6>
-                    </button>
-                    <button
-                        className={styles.btn_text}
+                        className={styles.btn_select}
                         onClick={() => {
 
                             console.log("fff1" + this.fileInput);
@@ -259,6 +248,18 @@ class Index extends React.Component {
                         }}
                     >
                         <h6 className={styles.h_file_type}>SELECT</h6>
+                    </button>
+                    <button
+                        className={styles.btn_svg}
+                        onClick={() => actions.onClickToUpload('svg')}
+                    >
+                        <h6 className={styles.h_file_type}>SVG</h6>
+                    </button>
+                    <button
+                        className={styles.btn_text}
+                        onClick={() => actions.onClickToUpload('text')}
+                    >
+                        <h6 className={styles.h_file_type}>TEXT</h6>
                     </button>
                 </Space>
                 <div

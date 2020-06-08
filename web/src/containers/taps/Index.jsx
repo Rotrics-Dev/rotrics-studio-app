@@ -109,7 +109,7 @@ class Index extends React.Component {
                     <button
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
-                        className={styles.btn_laser}
+                        className={tap===TAB_WRITE_AND_DRAW?styles.btn_btn_write_and_draw_selected:styles.btn_write_and_draw}
                     />
                     <button
                         data-tip="Code"

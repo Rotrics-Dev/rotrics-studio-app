@@ -118,7 +118,7 @@
         "label": "Work Speed",
         "description": "Work Speed description ",
         "placeholder": "#work_speed#",
-        "default_value": 300,
+        "default_value": 120,
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 100,

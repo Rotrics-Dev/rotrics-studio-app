@@ -85,6 +85,6 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
         gcodeLines.push(line);
     }
 
-    return header.join('\n') + '\n' + gcodeLines.join('\n') + '\n';
+    return header.join('\n') + '\n' + '\n' +'\n' + gcodeLines.join('\n') + '\n';
 };
 export default toolPathLines2gcode;
