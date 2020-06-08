@@ -14,30 +14,38 @@ import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
 
 import styles from './styles.css';
+import {actions as p3dModelActions} from "../../reducers/p3dModel";
+import {connect} from 'react-redux';
 
 const {TabPane} = Tabs;
 
 class Index extends React.Component {
     operations = {
         undo: () => {
-            console.log("undo")
+            this.props.undo();
         },
         redo: () => {
-            console.log("redo")
+            this.props.redo();
+        },
+        layFlat: () => {
+            this.props.layFlat();
         },
         duplicate: () => {
-            console.log("duplicate")
+            this.props.duplicateSelected();
         },
         del: () => {
-            console.log("del")
+            this.props.removeSelected();
         },
         clear: () => {
-            console.log("clear")
+            this.props.removeAll();
         }
     };
 
     render() {
+        const {model, modelCount} = this.props;
         const operations = this.operations;
+        const enabledInfo = {layFlat: !!model, duplicate: !!model, del: !!model, clear: (modelCount > 0)};
+        const visibleInfo = {undo: false, redo: false, layFlat: true, duplicate: true, del: true, clear: true};
         const actions = this.actions;
         return (
             <div style={{
@@ -57,9 +65,7 @@ class Index extends React.Component {
                 <div style={{
                     position: "absolute",
                     top: "8px",
-                    left: "8px",
-                    height: "50px",
-                    width: "100px",
+                    left: "8px"
                 }}>
                     <Upload/>
                 </div>
@@ -94,7 +100,7 @@ class Index extends React.Component {
                     width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
-                    <ToolBar operations={operations}/>
+                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",
@@ -127,4 +133,23 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapStateToProps = (state) => {
+    const {model, modelCount} = state.p3dModel;
+    return {
+        model,
+        modelCount
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeSelected: () => dispatch(p3dModelActions.removeSelected()),
+        removeAll: () => dispatch(p3dModelActions.removeAll()),
+        duplicateSelected: () => dispatch(p3dModelActions.duplicateSelected()),
+        undo: () => dispatch(p3dModelActions.undo()),
+        redo: () => dispatch(p3dModelActions.redo()),
+        layFlat: () => dispatch(p3dModelActions.layFlat()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

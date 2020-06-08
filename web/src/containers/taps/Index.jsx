@@ -12,7 +12,7 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
-import {actions as tapActions} from "../../reducers/tap";
+import {actions as tapActions} from "../../reducers/taps";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserActions} from "../../reducers/laser";
@@ -109,7 +109,7 @@ class Index extends React.Component {
                     <button
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
-                        className={tap===TAB_WRITE_AND_DRAW?styles.btn_btn_write_and_draw_selected:styles.btn_write_and_draw}
+                        className={styles.btn_laser}
                     />
                     <button
                         data-tip="Code"
@@ -145,7 +145,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {tap} = state.tap;
+    const {tap} = state.taps;
     return {
         tap
     };
@@ -153,7 +153,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setTap: (value) => dispatch(tapActions.setTap(value)),
+        setTap: (value) => dispatch(tapsActions.setTap(value)),
         init: () => {
             dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());

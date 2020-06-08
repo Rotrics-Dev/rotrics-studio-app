@@ -3,7 +3,5 @@
     position: absolute;
     top: 50%;
     left: 8px;
-    width: 200px;
-    height: 200px;
     -webkit-transform: translateY(-50%);
 }

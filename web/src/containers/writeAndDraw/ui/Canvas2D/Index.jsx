@@ -177,7 +177,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {tap} = state.tap;
+    const {tap} = state.taps;
     return {
         tap
     };

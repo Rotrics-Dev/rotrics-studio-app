@@ -34,7 +34,10 @@ class Index extends React.Component {
     };
 
     render() {
+        const {model, modelCount} = this.props;
         const operations = this.operations;
+        const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount > 0)};
+        const visibleInfo = {undo: false, redo: false, layFlat: false, duplicate: false, del: true, clear: true};
         const actions = this.actions;
         return (
             <div style={{
@@ -58,7 +61,7 @@ class Index extends React.Component {
                     width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
-                    <ToolBar operations={operations}/>
+                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",
@@ -91,6 +94,14 @@ class Index extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    const {model, modelCount} = state.laser;
+    return {
+        model,
+        modelCount
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         removeSelected: () => dispatch(laserActions.removeSelected()),
@@ -101,7 +112,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
 
 
 

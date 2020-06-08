@@ -55,7 +55,7 @@ class Index extends React.Component {
 
     actions = {
         onChooseBuildInSvg: async (event) => {
-            this.buildInSvgList.current.style.display="none";//关闭点选 buildinSvg List
+            this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
             const response = await uploadImage(base64ToBlob(event.target.src.toString()));
             const {url, width, height} = response;
             const model = new Model2D('svg');
@@ -78,7 +78,7 @@ class Index extends React.Component {
             this.props.addModel(model);
         },
         onClickToUpload: async (fileType) => {
-            this.buildInSvgList.current.style.display="none";//关闭点选 buildinSvg List
+            this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
             if (fileType === "text") {
                 const config = _.cloneDeep(config_text);
                 const svg = await generateSvg(config.config_text);
@@ -235,15 +235,6 @@ class Index extends React.Component {
                     <button
                         className={styles.btn_select}
                         onClick={() => {
-
-                            console.log("fff1" + this.fileInput);
-                            console.log("fff1" + this.fileInput.current);
-                            console.log("fff1" + this.fileInput.current.style);
-                            console.log("fff1" + this.fileInput.current.style.display);
-                            console.log("fff1" + this.buildInSvgList);
-                            console.log("fff1" + this.buildInSvgList.current);
-                            console.log("fff1" + this.buildInSvgList.current.style);
-                            console.log("fff1" + this.buildInSvgList.current.style.display);
                             this.buildInSvgList.current.style.display = 'block'
                         }}
                     >
@@ -272,7 +263,7 @@ class Index extends React.Component {
                             <List.Item>
                                 <img className={styles.img_list_item} src={item} onClick={actions.onChooseBuildInSvg}/>
                             </List.Item>
-                            )}
+                        )}
                     />
                 </div>
                 <Transformation/>

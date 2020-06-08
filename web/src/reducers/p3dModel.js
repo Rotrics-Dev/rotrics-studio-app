@@ -2,7 +2,6 @@ import File3dToBufferGeometryWorker from '../containers/p3d/lib/File3dToBufferGe
 import * as THREE from 'three';
 import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
 import Model3D from "../containers/p3d/lib/Model3D";
-import laserManager from "../containers/laser/lib/laserManager";
 
 const SELECT_MODEL = 'p3dModel/SELECT_MODEL';
 const SET_MODEL_COUNT = 'p3dModel/SET_MODEL_COUNT';
@@ -22,12 +21,16 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         p3dModelManager.on("onChangeModel", (model) => {
-            dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
+            dispatch(actions._setModelCount(p3dModelManager.modelsParent.children.length));
             dispatch(actions._selectModel(model));
         });
         p3dModelManager.on("onChangeTransformation", (transformation) => {
             dispatch(actions._setTransformation(_.cloneDeep(transformation)));
         });
+    },
+    setModelsParent: (modelsParent) => {
+        p3dModelManager.setModelsParent(modelsParent);
+        return {type: null};
     },
     loadModel: (url) => (dispatch, getState) => {
         const worker = new File3dToBufferGeometryWorker();
@@ -50,7 +53,6 @@ export const actions = {
                     bufferGeometry.computeVertexNormals();
                     convexBufferGeometry.addAttribute('position', modelConvexPositionAttribute);
 
-                    console.log("bufferGeometry: " + JSON.stringify(bufferGeometry));
                     const model = new Model3D(bufferGeometry, convexBufferGeometry, url, url);
                     p3dModelManager.addModel(model);
                     // dispatch(actions.displayModel());
@@ -75,6 +77,35 @@ export const actions = {
                     break;
             }
         };
+    },
+    //modelsParent: three.Object3D
+    selectModel: (model) => {
+        p3dModelManager.selectModel(model);
+        return {type: null};
+    },
+    removeSelected: () => {
+        p3dModelManager.removeSelected();
+        return {type: null};
+    },
+    removeAll: () => {
+        p3dModelManager.removeAll();
+        return {type: null};
+    },
+    duplicateSelected: () => {
+        p3dModelManager.duplicateSelected();
+        return {type: null};
+    },
+    undo: () => {
+        console.log("undo")
+        return {type: null};
+    },
+    redo: () => {
+        console.log("redo")
+        return {type: null};
+    },
+    layFlat: () => {
+        p3dModelManager.layFlat();
+        return {type: null};
     },
     updateTransformation: (key, value) => {
         p3dModelManager.updateTransformation(key, value);

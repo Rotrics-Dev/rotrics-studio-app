@@ -2,18 +2,24 @@
 
 /**
  * @author walker https://github.com/liumingzw
- * TODO: 用ES6重写
  */
 
 import * as THREE from 'three';
 
-
 class IntersectDetector extends THREE.EventDispatcher {
-    constructor(objects, camera, domElement) {
+    /**
+     *
+     * @param camera
+     * @param domElement
+     * @param objects
+     * @param recursiveDetector 是否递归检测objects中元素的children
+     */
+    constructor(camera, domElement, objects, recursiveDetect = false) {
         super();
-        this.objects = objects;
         this.camera = camera;
         this.domElement = domElement;
+        this.objects = objects;
+        this.recursiveDetect = recursiveDetect;
         this.enabled = true;
         this.raycaster = new THREE.Raycaster();
 
@@ -34,7 +40,7 @@ class IntersectDetector extends THREE.EventDispatcher {
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
             this.raycaster.setFromCamera(this.getMousePosition(event), this.camera);
-            const intersects = this.raycaster.intersectObjects(this.objects, true);
+            const intersects = this.raycaster.intersectObjects(this.objects, this.recursiveDetect);
             if (intersects.length > 0) {
                 const detectedObject = intersects[0].object;
                 this.dispatchEvent({type: 'detected', object: detectedObject});

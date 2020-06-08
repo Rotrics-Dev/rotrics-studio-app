@@ -1,28 +1,23 @@
 import * as THREE from 'three';
 
-const materialSelected = new THREE.MeshPhongMaterial({color: 0xf0f0f0, specular: 0xb0b0b0, shininess: 30});
 const materialNormal = new THREE.MeshPhongMaterial({color: 0xa0a0a0, specular: 0xb0b0b0, shininess: 30});
-const materialOverstepped = new THREE.MeshPhongMaterial({
-    color: 0xff0000,
+const materialSelected = new THREE.MeshPhongMaterial({
+    color: 0xb0b0b0,
     shininess: 30,
     transparent: true,
-    opacity: 0.6
+    opacity: 0.7
 });
 
 class Model3D extends THREE.Mesh {
     constructor(bufferGeometry, convexBufferGeometry, modelName, modelPath) {
         super(bufferGeometry, materialNormal);
 
-        this.isModel = true;
         this.boundingBox = null; // the boundingBox is aligned parent axis
-        this.selected = false;
-        this.overstepped = false;
 
         this.bufferGeometry = bufferGeometry;
         this.convexBufferGeometry = convexBufferGeometry;
         this.modelName = modelName;
         this.modelPath = modelPath;
-
 
         /**
          * this.convexBufferGeometry is from BufferGeometry.fromGeometry()
@@ -44,6 +39,12 @@ class Model3D extends THREE.Mesh {
             rz: 0,
             scale: 1,
         };
+
+        let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 1);
+        let edgesMtl = new THREE.LineBasicMaterial({color: 0x4169E1});
+        this.edgesLineObj3d = new THREE.LineSegments(cubeEdges, edgesMtl);
+        this.edgesLineObj3d.visible = false;
+        this.add(this.edgesLineObj3d);
     }
 
     stickToPlate() {
@@ -64,48 +65,25 @@ class Model3D extends THREE.Mesh {
     }
 
     setSelected(selected) {
-        if (this.selected === selected) {
-            return;
-        }
-        this.selected = selected;
-        if (this.overstepped) {
-            this.material = materialOverstepped;
-        } else {
-            this.material = (this.selected ? materialSelected : materialNormal);
-        }
+        this.edgesLineObj3d.visible = selected;
+        this.material = (selected ? materialSelected : materialNormal);
     }
 
-    isSelected() {
-        return this.selected;
-    }
-
-    setMatrix(matrix) {
-        this.updateMatrix();
-        this.applyMatrix(new THREE.Matrix4().getInverse(this.matrix));
-        this.applyMatrix(matrix);
-        // attention: do not use Object3D.applyMatrix(matrix : Matrix4)
-        // because applyMatrix is accumulated
-        // anther way: decompose Matrix and reset position/rotation/scale
-        // let position = new THREE.Vector3();
-        // let quaternion = new THREE.Quaternion();
-        // let scale = new THREE.Vector3();
-        // matrix.decompose(position, quaternion, scale);
-        // this.position.copy(position);
-        // this.quaternion.copy(quaternion);
-        // this.scale.copy(scale);
-    }
-
-    setOverstepped(overstepped) {
-        if (this.overstepped === overstepped) {
-            return;
-        }
-        this.overstepped = overstepped;
-        if (this.overstepped) {
-            this.material = materialOverstepped;
-        } else {
-            this.material = (this.selected ? materialSelected : materialNormal);
-        }
-    }
+    // setMatrix(matrix) {
+    //     this.updateMatrix();
+    //     this.applyMatrix(new THREE.Matrix4().getInverse(this.matrix));
+    //     this.applyMatrix(matrix);
+    //     // attention: do not use Object3D.applyMatrix(matrix : Matrix4)
+    //     // because applyMatrix is accumulated
+    //     // anther way: decompose Matrix and reset position/rotation/scale
+    //     // let position = new THREE.Vector3();
+    //     // let quaternion = new THREE.Quaternion();
+    //     // let scale = new THREE.Vector3();
+    //     // matrix.decompose(position, quaternion, scale);
+    //     // this.position.copy(position);
+    //     // this.quaternion.copy(quaternion);
+    //     // this.scale.copy(scale);
+    // }
 
     clone() {
         const clone = new Model3D(
@@ -114,8 +92,19 @@ class Model3D extends THREE.Mesh {
             this.modelName,
             this.modelPath
         );
-        this.updateMatrix();
-        clone.setMatrix(this.matrix);
+
+        //TODO：setMatrix居然不符合预期
+        const {x, y, rx, ry, rz, scale} = this.transformation;
+        clone.transformation = this.transformation;
+        clone.position.x = x;
+        clone.position.z = y; //坐标轴不同
+
+        clone.rotation.x = rx;
+        clone.rotation.y = ry;
+        clone.rotation.z = rz;
+
+        clone.scale.copy(new THREE.Vector3(scale, scale, scale));
+        clone.stickToPlate();
         return clone;
     }
 

@@ -24,7 +24,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         return (
-            <div style={{width: "100%", height: "100%"}}>
+            <div>
                 <input
                     ref={this.fileInput}
                     type="file"
