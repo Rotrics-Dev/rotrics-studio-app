@@ -43,7 +43,7 @@ class Index extends React.Component {
             this.props.sendGcode(gcode);
         },
         runBoundary: () => {
-            const gcode = writeAndDraw.getGcode4runBoundary();
+            const gcode = writeAndDrawManager.getGcode4runBoundary();
             this.props.sendGcode(gcode)
         },
     };

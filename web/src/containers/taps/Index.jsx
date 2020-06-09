@@ -23,7 +23,7 @@ import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
-
+import {actions as tapsActions} from "../../reducers/taps"
 
 // import {actions as p3dConfigActions} from "../../reducers/p3dConfig";
 // import {actions as p3dGcodeActions} from "../../reducers/p3dGcode";
@@ -109,7 +109,7 @@ class Index extends React.Component {
                     <button
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
-                        className={styles.btn_laser}
+                        className={tap===TAB_WRITE_AND_DRAW?styles.btn_write_and_draw_selected:styles.btn_write_and_draw}
                     />
                     <button
                         data-tip="Code"

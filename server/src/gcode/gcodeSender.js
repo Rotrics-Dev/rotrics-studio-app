@@ -50,8 +50,9 @@ class GcodeSender extends EventEmitter {
         }
 
         const line = this.lines.shift();
-
+        ++this.lineCountSend;
         console.log("line: " + this.lineCountSend + "/" + this.lineCountTotal + "/" + okCount + " -> " + line)
+
         //注释
         if (line.trim().indexOf(";") === 0) {
             this._sendNextCmd();
@@ -63,7 +64,6 @@ class GcodeSender extends EventEmitter {
             return;
         }
 
-        ++this.lineCountSend;
         serialPortManager.write(line + "\n");
     }
 

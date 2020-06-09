@@ -13,9 +13,11 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     const header = [
         '; Write And Draw',
         'M888 P0',
-        'G0 Z10',
-        'G1 Z10',
+        'M2000',
+        'G0 Z10 F' + jog_speed_value,
     ];
+
+    // console.log(Json)
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -82,6 +84,6 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
         gcodeLines.push(line);
     }
 
-    return header.join('\n') + '\n' + '\n' +'\n' + gcodeLines.join('\n') + '\n';
+    return header.join('\n') + '\n' + '\n' + '\n' + gcodeLines.join('\n') + 'M1112\n';
 };
 export default toolPathLines2gcode;

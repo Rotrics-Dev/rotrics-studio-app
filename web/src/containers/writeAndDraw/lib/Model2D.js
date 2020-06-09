@@ -294,6 +294,7 @@ class Model2D extends THREE.Group {
     }
 
     generateGcode() {
+        console.log(JSON.stringify(this.toolPathLines,null,2))
         return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
 
