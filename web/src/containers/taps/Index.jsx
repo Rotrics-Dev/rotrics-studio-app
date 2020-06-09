@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(vmActions.init());
             //3dp
             dispatch(p3dModelActions.init());
-
+            dispatch(p3dMaterialActions.init());
         }
     };
 };

@@ -1,0 +1,78 @@
+{
+  "id": "material_pla",
+  "version": 1,
+  "name": "ABS",
+  "inherits": "",
+  "metadata": {
+    "visible": true,
+    "author": "walker",
+    "manufacturer": "Rotrics",
+    "category": "Other",
+    "file_formats": "text/x-gcode"
+  },
+  "overrides": {
+    "material_diameter": {
+      "label": "Diameter",
+      "description": "Adjusts the diameter of the filament used. Match this value with the diameter of the used filament.",
+      "unit": "mm",
+      "type": "float",
+      "default_value": 1.75,
+      "minimum_value": "0.0001",
+      "minimum_value_warning": "0.4",
+      "maximum_value_warning": "3.5",
+      "settable_per_mesh": false,
+      "settable_per_extruder": true
+    },
+    "material_flow": {
+      "label": "Flow",
+      "description": "Flow compensation: the amount of material extruded is multiplied by this value.",
+      "unit": "%",
+      "default_value": 100,
+      "type": "float",
+      "minimum_value": "5",
+      "minimum_value_warning": "50",
+      "maximum_value_warning": "150",
+      "settable_per_mesh": true
+    },
+    "material_print_temperature": {
+      "label": "Printing Temperature",
+      "description": "The temperature used for printing.",
+      "unit": "°C",
+      "type": "float",
+      "default_value": 198,
+      "value": "default_material_print_temperature",
+      "minimum_value": "-273.15",
+      "minimum_value_warning": "0",
+      "maximum_value_warning": "285",
+      "settable_per_mesh": false,
+      "settable_per_extruder": true
+    },
+    "material_print_temperature_layer_0": {
+      "label": "Printing Temperature Initial Layer",
+      "description": "The temperature used for printing the first layer. Set at 0 to disable special handling of the initial layer.",
+      "unit": "°C",
+      "type": "float",
+      "default_value": 200,
+      "value": "material_print_temperature",
+      "minimum_value": "-273.15",
+      "minimum_value_warning": "0",
+      "maximum_value_warning": "285",
+      "enabled": "machine_nozzle_temp_enabled",
+      "settable_per_mesh": false,
+      "settable_per_extruder": true
+    },
+    "material_final_print_temperature": {
+      "label": "Final Printing Temperature",
+      "description": "The temperature to which to already start cooling down just before the end of printing.",
+      "unit": "°C",
+      "type": "float",
+      "default_value": 198,
+      "value": "max(-273.15, material_print_temperature - 15)",
+      "minimum_value": "-273.15",
+      "minimum_value_warning": "material_standby_temperature",
+      "maximum_value_warning": "material_print_temperature",
+      "settable_per_mesh": false,
+      "settable_per_extruder": true
+    }
+  }
+}

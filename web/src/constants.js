@@ -34,3 +34,8 @@ export const GCODE_APPEND_SEND = 'GCODE_APPEND_SEND'; //将指定的gcode追加�
 // tool path
 export const TOOL_PATH_GENERATE_LASER = 'TOOL_PATH_GENERATE_LASER';
 
+// p3d material
+export const P3D_MATERIAL_FETCH_ALL = 'P3D_MATERIAL_FETCH_ALL';
+export const P3D_MATERIAL_UPDATE = 'P3D_MATERIAL_UPDATE';
+export const P3D_MATERIAL_DELETE = 'P3D_MATERIAL_DELETE';
+export const P3D_MATERIAL_CLONE = 'P3D_MATERIAL_CLONE';

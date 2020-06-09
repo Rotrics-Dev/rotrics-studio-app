@@ -12,7 +12,11 @@ import {
     GCODE_START_SEND,
     GCODE_APPEND_SEND,
     GCODE_STOP_SEND,
-    TOOL_PATH_GENERATE_LASER
+    TOOL_PATH_GENERATE_LASER,
+    P3D_MATERIAL_FETCH_ALL,
+    P3D_MATERIAL_UPDATE,
+    P3D_MATERIAL_DELETE,
+    P3D_MATERIAL_CLONE
 } from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
@@ -61,6 +65,11 @@ class SocketClientManager extends EventEmitter {
         //gcode
         this.socketClient.on(GCODE_UPDATE_SENDER_STATUS, (status) => {
             console.log("status -> " + status)
+        });
+
+        // p3d material
+        this.socketClient.on(P3D_MATERIAL_FETCH_ALL, (data) => {
+            this.emit(P3D_MATERIAL_FETCH_ALL, data);
         });
     }
 
@@ -113,6 +122,26 @@ class SocketClientManager extends EventEmitter {
      */
     generateGcodeLaser(url, settings, toolPathId, fileType) {
         this.socketClient.emit(TOOL_PATH_GENERATE_LASER, {url, settings, toolPathId, fileType});
+    }
+
+    // p3d material
+    p3dMaterialFetchAll() {
+        this.socketClient.emit(P3D_MATERIAL_FETCH_ALL);
+    }
+
+    p3dMaterialUpdate(name, key, value) {
+        const data = {name, key, value};
+        this.socketClient.emit(P3D_MATERIAL_UPDATE, data);
+    }
+
+    p3dMaterialDelete(name) {
+        const data = {name};
+        this.socketClient.emit(P3D_MATERIAL_DELETE, data);
+    }
+
+    p3dMaterialClone(sourceName, targetName) {
+        const data = {sourceName, targetName}
+        this.socketClient.emit(P3D_MATERIAL_CLONE, data);
     }
 }
 

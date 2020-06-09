@@ -23,7 +23,11 @@ import {
     GCODE_UPDATE_SENDER_STATUS,
     GCODE_START_SEND,
     GCODE_STOP_SEND,
-    GCODE_APPEND_SEND
+    GCODE_APPEND_SEND,
+    P3D_MATERIAL_FETCH_ALL,
+    P3D_MATERIAL_UPDATE,
+    P3D_MATERIAL_DELETE,
+    P3D_MATERIAL_CLONE
 } from "./constants.js"
 
 /**
@@ -95,6 +99,25 @@ const setupHttpServer = () => {
     app.use(router.allowedMethods());
 };
 
+const readP3dMaterialsSync = () => {
+    const dir = "./src/CuraEngine/Config/";
+    const materials = [];
+    const fileNames = fs.readdirSync(dir);
+    fileNames.forEach((filename, index) => {
+        if (filename.indexOf("material") !== -1) {
+            const filePath = dir + filename;
+            const material = fs.readFileSync(filePath, 'utf8');
+            materials.push(JSON.parse(material))
+        }
+    });
+    return materials;
+};
+
+const getP3dMaterialPath = (name) => {
+    return `./src/CuraEngine/Config/material_${name}.def.json`;
+};
+
+
 const setupSocket = () => {
     socketIoServer.on(
         'connection',
@@ -135,6 +158,34 @@ const setupSocket = () => {
                     socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
                 }
             );
+
+            // p3d material
+            socket.on(P3D_MATERIAL_FETCH_ALL, () => {
+                console.log("P3D_MATERIAL_FETCH_ALL")
+                const materials = readP3dMaterialsSync();
+                socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
+            });
+            socket.on(P3D_MATERIAL_UPDATE, (data) => {
+                //为了方便，文件名和name对应
+                const {name, key, value} = data;
+                //读出来
+                const filePath = getP3dMaterialPath(name);
+                const material = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                const keys = key.split('.');
+                switch (keys.length) {
+                    case 1:
+                        material[keys[0]] = value;
+                        break;
+                    case 3:
+                        material[keys[0]][keys[1]][keys[2]] = value;
+                        break;
+                }
+                //写回去
+                fs.writeFileSync(filePath, JSON.stringify(material, null, 2));
+                //全部读出来
+                const materials = readP3dMaterialsSync();
+                socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
+            });
 
             serialPortManager.on(SERIAL_PORT_GET_PATH, (paths) => {
                 socket.emit(SERIAL_PORT_GET_PATH, paths);

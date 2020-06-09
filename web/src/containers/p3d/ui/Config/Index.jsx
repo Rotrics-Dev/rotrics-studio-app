@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './styles.css';
+import Material from './Material.jsx';
 
 class Index extends React.Component {
     state = {};
@@ -7,7 +8,7 @@ class Index extends React.Component {
     render() {
         return (
             <div>
-                <h1>{"config"}</h1>
+                <Material/>
             </div>
         )
     }
