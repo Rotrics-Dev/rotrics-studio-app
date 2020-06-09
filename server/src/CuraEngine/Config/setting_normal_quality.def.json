@@ -308,8 +308,10 @@
   },
   "id": "normal_quality",
   "version": 1,
-  "name": "Normal Quality",
+  "name": "normal_quality",
+  "label": "Normal Quality",
   "inherits": "",
+  "isOfficial": true,
   "metadata": {
     "visible": true,
     "author": "walker",

@@ -27,7 +27,9 @@ import {
     P3D_MATERIAL_FETCH_ALL,
     P3D_MATERIAL_UPDATE,
     P3D_MATERIAL_DELETE,
-    P3D_MATERIAL_CLONE
+    P3D_MATERIAL_CLONE,
+    P3D_SETTING_FETCH_ALL,
+    P3D_SETTING_UPDATE
 } from "./constants.js"
 
 /**
@@ -99,22 +101,42 @@ const setupHttpServer = () => {
     app.use(router.allowedMethods());
 };
 
+// p3d material
 const readP3dMaterialsSync = () => {
     const dir = "./src/CuraEngine/Config/";
-    const materials = [];
+    const contents = [];
     const fileNames = fs.readdirSync(dir);
     fileNames.forEach((filename, index) => {
-        if (filename.indexOf("material") !== -1) {
+        if (filename.indexOf("material_") !== -1) {
             const filePath = dir + filename;
-            const material = fs.readFileSync(filePath, 'utf8');
-            materials.push(JSON.parse(material))
+            const content = fs.readFileSync(filePath, 'utf8');
+            contents.push(JSON.parse(content))
         }
     });
-    return materials;
+    return contents;
 };
 
 const getP3dMaterialPath = (name) => {
     return `./src/CuraEngine/Config/material_${name}.def.json`;
+};
+
+// p3d setting
+const readP3dSettingSync = () => {
+    const dir = "./src/CuraEngine/Config/";
+    const contents = [];
+    const fileNames = fs.readdirSync(dir);
+    fileNames.forEach((filename, index) => {
+        if (filename.indexOf("setting_") !== -1) {
+            const filePath = dir + filename;
+            const content = fs.readFileSync(filePath, 'utf8');
+            contents.push(JSON.parse(content))
+        }
+    });
+    return contents;
+};
+
+const getP3dSettingPath = (name) => {
+    return `./src/CuraEngine/Config/setting_${name}.def.json`;
 };
 
 
@@ -161,7 +183,6 @@ const setupSocket = () => {
 
             // p3d material
             socket.on(P3D_MATERIAL_FETCH_ALL, () => {
-                console.log("P3D_MATERIAL_FETCH_ALL")
                 const materials = readP3dMaterialsSync();
                 socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
             });
@@ -185,6 +206,33 @@ const setupSocket = () => {
                 //全部读出来
                 const materials = readP3dMaterialsSync();
                 socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
+            });
+
+            // p3d setting
+            socket.on(P3D_SETTING_FETCH_ALL, () => {
+                const settings = readP3dSettingSync();
+                socket.emit(P3D_SETTING_FETCH_ALL, settings);
+            });
+            socket.on(P3D_SETTING_UPDATE, (data) => {
+                //为了方便，文件名和name对应
+                const {name, key, value} = data;
+                //读出来
+                const filePath = getP3dSettingPath(name);
+                const setting = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                const keys = key.split('.');
+                switch (keys.length) {
+                    case 1:
+                        setting[keys[0]] = value;
+                        break;
+                    case 3:
+                        setting[keys[0]][keys[1]][keys[2]] = value;
+                        break;
+                }
+                //写回去
+                fs.writeFileSync(filePath, JSON.stringify(setting, null, 2));
+                //全部读出来
+                const settings = readP3dSettingSync();
+                socket.emit(P3D_SETTING_FETCH_ALL, settings);
             });
 
             serialPortManager.on(SERIAL_PORT_GET_PATH, (paths) => {

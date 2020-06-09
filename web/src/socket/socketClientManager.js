@@ -16,7 +16,11 @@ import {
     P3D_MATERIAL_FETCH_ALL,
     P3D_MATERIAL_UPDATE,
     P3D_MATERIAL_DELETE,
-    P3D_MATERIAL_CLONE
+    P3D_MATERIAL_CLONE,
+    P3D_SETTING_FETCH_ALL,
+    P3D_SETTING_UPDATE,
+    P3D_SETTING_DELETE,
+    P3D_SETTING_CLONE
 } from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
@@ -70,6 +74,11 @@ class SocketClientManager extends EventEmitter {
         // p3d material
         this.socketClient.on(P3D_MATERIAL_FETCH_ALL, (data) => {
             this.emit(P3D_MATERIAL_FETCH_ALL, data);
+        });
+
+        // p3d setting
+        this.socketClient.on(P3D_SETTING_FETCH_ALL, (data) => {
+            this.emit(P3D_SETTING_FETCH_ALL, data);
         });
     }
 
@@ -142,6 +151,26 @@ class SocketClientManager extends EventEmitter {
     p3dMaterialClone(sourceName, targetName) {
         const data = {sourceName, targetName}
         this.socketClient.emit(P3D_MATERIAL_CLONE, data);
+    }
+
+    // p3d setting
+    p3dSettingFetchAll() {
+        this.socketClient.emit(P3D_SETTING_FETCH_ALL);
+    }
+
+    p3dSettingUpdate(name, key, value) {
+        const data = {name, key, value};
+        this.socketClient.emit(P3D_SETTING_UPDATE, data);
+    }
+
+    p3dSettingDelete(name) {
+        // const data = {name};
+        // this.socketClient.emit(P3D_SETTING_DELETE, data);
+    }
+
+    p3dSettingClone(sourceName, targetName) {
+        // const data = {sourceName, targetName}
+        // this.socketClient.emit(P3D_SETTING_CLONE, data);
     }
 }
 
