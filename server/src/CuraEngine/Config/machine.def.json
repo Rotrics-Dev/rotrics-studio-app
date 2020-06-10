@@ -97,7 +97,7 @@
       "settable_per_meshgroup": false
     },
     "machine_name": {
-      "default_value": "snapmaker_125x125x125"
+      "default_value": "Rotrics"
     },
     "machine_width": {
       "default_value": 125

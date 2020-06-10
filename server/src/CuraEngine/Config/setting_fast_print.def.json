@@ -306,11 +306,11 @@
       "settable_per_mesh": true
     }
   },
-  "id": "fast_print",
+  "id": "activated_setting",
   "version": 1,
   "name": "fast_print",
   "label": "Fast Print",
-  "inherits": "",
+  "inherits": "activated_material",
   "isOfficial": true,
   "metadata": {
     "visible": true,

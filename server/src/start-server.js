@@ -11,6 +11,7 @@ import {getImageSize, getUniqueFilename} from './utils/index.js';
 import serialPortManager from './serialPortManager.js';
 import generateToolPathLines from './toolPath/generateToolPathLines.js';
 import gcodeSender from './gcode/gcodeSender.js';
+import p3dStartSlice from './p3dStartSlice.js';
 import {
     SERIAL_PORT_GET_PATH,
     SERIAL_PORT_GET_OPENED,
@@ -29,7 +30,9 @@ import {
     P3D_MATERIAL_DELETE,
     P3D_MATERIAL_CLONE,
     P3D_SETTING_FETCH_ALL,
-    P3D_SETTING_UPDATE
+    P3D_SETTING_UPDATE,
+    P3D_SLICE_ADD_TASK,
+    P3D_SLICE_STATUS
 } from "./constants.js"
 
 /**
@@ -102,12 +105,13 @@ const setupHttpServer = () => {
 };
 
 // p3d material
+// 以material_开头的文件
 const readP3dMaterialsSync = () => {
     const dir = "./src/CuraEngine/Config/";
     const contents = [];
     const fileNames = fs.readdirSync(dir);
     fileNames.forEach((filename, index) => {
-        if (filename.indexOf("material_") !== -1) {
+        if (filename.indexOf("material_") === 0) {
             const filePath = dir + filename;
             const content = fs.readFileSync(filePath, 'utf8');
             contents.push(JSON.parse(content))
@@ -121,6 +125,7 @@ const getP3dMaterialPath = (name) => {
 };
 
 // p3d setting
+// 以setting_开头的文件
 const readP3dSettingSync = () => {
     const dir = "./src/CuraEngine/Config/";
     const contents = [];
@@ -138,7 +143,6 @@ const readP3dSettingSync = () => {
 const getP3dSettingPath = (name) => {
     return `./src/CuraEngine/Config/setting_${name}.def.json`;
 };
-
 
 const setupSocket = () => {
     socketIoServer.on(
@@ -233,6 +237,24 @@ const setupSocket = () => {
                 //全部读出来
                 const settings = readP3dSettingSync();
                 socket.emit(P3D_SETTING_FETCH_ALL, settings);
+            });
+
+            // p3d slice
+            socket.on(P3D_SLICE_ADD_TASK, (data) => {
+                //data: {stlUrl, materialName, settingName, taskId}
+                const {taskId} = data;
+                p3dStartSlice(
+                    data,
+                    (progress) => {
+                        socket.emit(P3D_SLICE_STATUS, {progress, taskId});
+                    },
+                    (result) => {
+                        socket.emit(P3D_SLICE_STATUS, {result, taskId});
+                    },
+                    (err) => {
+                        socket.emit(P3D_SLICE_STATUS, {err, taskId});
+                    }
+                );
             });
 
             serialPortManager.on(SERIAL_PORT_GET_PATH, (paths) => {

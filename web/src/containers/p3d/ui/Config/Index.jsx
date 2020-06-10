@@ -1,14 +1,83 @@
 import React from 'react';
 import styles from './styles.css';
+import {Tabs, Space, Button} from 'antd';
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
+import p3dModelManager from "../../lib/p3dModelManager";
+import FileSaver from 'file-saver';
+import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
+import {connect} from 'react-redux';
 
 class Index extends React.Component {
     state = {};
 
+    actions = {
+        exportModel: () => {
+            const blob = p3dModelManager.exportModelsToBlob()
+            const date = new Date();
+            const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+            const fileName = arr.join("") + ".stl";
+            FileSaver.saveAs(blob, fileName, true);
+        },
+        generateGcode: () => {
+            this.props.startSlice();
+        },
+        exportGcode: () => {
+            const date = new Date();
+            //https://blog.csdn.net/xu511739113/article/details/72764321
+            const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+            const fileName = arr.join("") + ".gcode";
+            const gcode = this.props.gcode;
+            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
+            FileSaver.saveAs(blob, fileName, true);
+        },
+        startSendGcode: () => {
+            //todo：serialport状态
+            const gcode = this.props.gcode;
+            this.props.startSendGcode(gcode);
+        },
+        stopSendGcode: () => {
+            //todo：serialport状态
+            this.props.stopSendGcode();
+        },
+    };
+
     render() {
+        const actions = this.actions;
         return (
             <div>
+                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                    <Button
+                        block
+                        onClick={actions.exportModel}
+                    >
+                        {"Export Model"}
+                    </Button>
+                    <Button
+                        block
+                        onClick={actions.generateGcode}
+                    >
+                        {"Generate G-code"}
+                    </Button>
+                    <Button
+                        block
+                        onClick={actions.exportGcode}
+                    >
+                        {"Export G-code"}
+                    </Button>
+                    <Button
+                        block
+                        onClick={actions.startSendGcode}
+                    >
+                        {"Start Send"}
+                    </Button>
+                    <Button
+                        block
+                        onClick={actions.stopSendGcode}
+                    >
+                        {"Stop Send"}
+                    </Button>
+                </Space>
                 <Material/>
                 <Setting/>
             </div>
@@ -16,4 +85,10 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        startSlice: () => dispatch(p3dGcodeActions.startSlice()),
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Index);

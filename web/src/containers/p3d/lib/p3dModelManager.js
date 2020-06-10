@@ -1,5 +1,6 @@
 import events from "events";
 import * as THREE from 'three';
+import ModelExporter from './ModelExporter';
 
 class P3DModelManager extends events.EventEmitter {
     constructor() {
@@ -54,7 +55,7 @@ class P3DModelManager extends events.EventEmitter {
         }
     }
 
-    layFlat(){
+    layFlat() {
         if (this._selected) {
             this._selected.layFlat();
             this.emit('onChangeTransformation', this._selected.transformation);
@@ -76,7 +77,7 @@ class P3DModelManager extends events.EventEmitter {
 
     _computeAvailableXZ(model) {
         if (this.modelsParent.children === 0) {
-            return { x: 0, z: 0 };
+            return {x: 0, z: 0};
         }
         model.computeBoundingBox();
         const modelBox3 = model.boundingBox;
@@ -132,11 +133,11 @@ class P3DModelManager extends events.EventEmitter {
                 //     continue;
                 // }
                 if (!this._isBox3IntersectOthers(modelBox3Clone, box3Arr)) {
-                    return { x: position.x, z: position.z };
+                    return {x: position.x, z: position.z};
                 }
             }
         }
-        return { x: 0, z: 0 };
+        return {x: 0, z: 0};
     }
 
     _getPositionBetween(p1, p2, step) {
@@ -175,6 +176,19 @@ class P3DModelManager extends events.EventEmitter {
             }
         }
         return false;
+    }
+
+    exportModelsToFile() {
+        const blob = this.exportModelsToBlob();
+        const fileName = "output.stl";
+        const file = new File([blob], fileName);
+        return file;
+    }
+
+    exportModelsToBlob() {
+        const output = new ModelExporter().parseToBinaryStl(this.modelsParent);
+        const blob = new Blob([output], {type: 'text/plain'});
+        return blob;
     }
 }
 

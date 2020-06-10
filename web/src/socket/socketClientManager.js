@@ -20,7 +20,9 @@ import {
     P3D_SETTING_FETCH_ALL,
     P3D_SETTING_UPDATE,
     P3D_SETTING_DELETE,
-    P3D_SETTING_CLONE
+    P3D_SETTING_CLONE,
+    P3D_SLICE_ADD_TASK,
+    P3D_SLICE_STATUS
 } from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
@@ -80,6 +82,12 @@ class SocketClientManager extends EventEmitter {
         this.socketClient.on(P3D_SETTING_FETCH_ALL, (data) => {
             this.emit(P3D_SETTING_FETCH_ALL, data);
         });
+
+        // p3d slice
+        this.socketClient.on(P3D_SLICE_STATUS, (data) => {
+            this.emit(P3D_SLICE_STATUS, data);
+        });
+
     }
 
     //serial port
@@ -171,6 +179,12 @@ class SocketClientManager extends EventEmitter {
     p3dSettingClone(sourceName, targetName) {
         // const data = {sourceName, targetName}
         // this.socketClient.emit(P3D_SETTING_CLONE, data);
+    }
+
+    // p3d slice
+    p3dSliceAddTask(stlUrl, materialName, settingName, taskId) {
+        const data = {stlUrl, materialName, settingName, taskId};
+        this.socketClient.emit(P3D_SLICE_ADD_TASK, data);
     }
 }
 

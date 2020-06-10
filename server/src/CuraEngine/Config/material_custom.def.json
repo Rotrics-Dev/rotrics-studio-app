@@ -1,8 +1,8 @@
 {
-  "id": "material_custom",
+  "id": "activated_material",
   "version": 1,
   "name": "Custom",
-  "inherits": "",
+  "inherits": "machine",
   "isOfficial": false,
   "metadata": {
     "visible": true,

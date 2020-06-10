@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs} from 'antd';
+import {Tabs, Space, Button} from 'antd';
 import "antd/dist/antd.css";
 
 import ToolBar from '../../components/ToolBar/Index.jsx'
@@ -57,7 +57,7 @@ class Index extends React.Component {
                     top: 0,
                     left: 0,
                     bottom: 0,
-                    right: "276px",
+                    right: "320px",
                     backgroundColor: "#e0e0e0"
                 }}>
                     <Canvas3D/>
@@ -75,20 +75,18 @@ class Index extends React.Component {
                 <div style={{
                     position: "absolute",
                     left: 0,
-                    right: 0,
+                    right: "320px",
                     bottom: 0,
-                    height: "5px",
-                    backgroundColor: "#ff0000"
+                    height: "40px",
                 }}>
                     <Progress/>
                 </div>
                 <div style={{
                     position: "absolute",
-                    bottom: 0,
-                    right: "276px",
-                    height: "50px",
-                    width: "50px",
-                    backgroundColor: "#000000"
+                    bottom: "15px",
+                    right: "320px",
+                    height: "45px",
+                    width: "100px",
                 }}>
                     <Info/>
                 </div>
@@ -96,7 +94,7 @@ class Index extends React.Component {
                     position: "absolute",
                     top: 0,
                     bottom: 0,
-                    right: "240px",
+                    right: "280px",
                     width: "40px",
                     backgroundColor: "#ff0000"
                 }}>
@@ -107,20 +105,20 @@ class Index extends React.Component {
                     top: 0,
                     right: 0,
                     bottom: 0,
-                    width: "240px",
+                    width: "280px",
                     backgroundColor: "#f0f0f0",
                     overflowY: "scroll"
                 }}>
-                    <Tabs type="card" tabBarGutter={0} tabBarStyle={{width: "240px"}}>
+                    <Tabs type="card" tabBarGutter={0} tabBarStyle={{width: "260px"}}>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "86px", height: "100%"}}>
+                            <div style={{textAlign: "center", width: "95px", height: "100%"}}>
                                 G-code
                             </div>
                         } key="1">
                             <Config/>
                         </TabPane>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "86px", height: "100%"}}>
+                            <div style={{textAlign: "center", width: "95px", height: "100%"}}>
                                 Control
                             </div>
                         } key="2">

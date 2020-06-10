@@ -1,8 +1,8 @@
 {
-  "id": "material_pla",
+  "id": "activated_material",
   "version": 1,
   "name": "PLA",
-  "inherits": "",
+  "inherits": "machine",
   "isOfficial": true,
   "metadata": {
     "visible": true,

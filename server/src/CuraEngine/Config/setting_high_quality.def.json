@@ -306,11 +306,11 @@
       "settable_per_mesh": true
     }
   },
-  "id": "high_quality",
+  "id": "activated_setting",
   "version": 1,
   "name": "high_quality",
   "label": "High Quality",
-  "inherits": "",
+  "inherits": "activated_material",
   "isOfficial": true,
   "metadata": {
     "visible": true,

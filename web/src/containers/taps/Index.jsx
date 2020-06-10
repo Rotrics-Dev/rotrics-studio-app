@@ -149,6 +149,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(p3dModelActions.init());
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());
+            dispatch(p3dGcodeActions.init());
         }
     };
 };

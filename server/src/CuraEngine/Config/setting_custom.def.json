@@ -306,11 +306,11 @@
       "settable_per_mesh": true
     }
   },
-  "id": "custom_print",
+  "id": "activated_setting",
   "version": 1,
   "name": "custom",
   "label": "Custom",
-  "inherits": "",
+  "inherits": "activated_material",
   "isOfficial": false,
   "metadata": {
     "visible": true,
