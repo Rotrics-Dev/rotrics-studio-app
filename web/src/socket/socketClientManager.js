@@ -21,7 +21,7 @@ import {
     P3D_SETTING_UPDATE,
     P3D_SETTING_DELETE,
     P3D_SETTING_CLONE,
-    P3D_SLICE_ADD_TASK,
+    P3D_SLICE_START,
     P3D_SLICE_STATUS
 } from "../constants.js"
 
@@ -29,6 +29,7 @@ class SocketClientManager extends EventEmitter {
     constructor() {
         super();
         this.socketClient = null;
+        this.isSocketConnected = false;
     }
 
     setup(serverIp) {
@@ -36,10 +37,12 @@ class SocketClientManager extends EventEmitter {
 
         //socket
         this.socketClient.on('connect', () => {
+            this.isSocketConnected = true;
             this.emit('socket', 'connect');
         });
 
         this.socketClient.on('disconnect', () => {
+            this.isSocketConnected = false;
             this.emit('socket', 'disconnect');
         });
 
@@ -181,10 +184,18 @@ class SocketClientManager extends EventEmitter {
         // this.socketClient.emit(P3D_SETTING_CLONE, data);
     }
 
-    // p3d slice
-    p3dSliceAddTask(stlUrl, materialName, settingName, taskId) {
-        const data = {stlUrl, materialName, settingName, taskId};
-        this.socketClient.emit(P3D_SLICE_ADD_TASK, data);
+    /**
+     * emit event to server
+     * @param event
+     * @param data
+     * @returns {boolean} 是否成功
+     */
+    emitToServer(event, data) {
+        if (this.isSocketConnected){
+            this.socketClient.emit(event, data);
+            return true;
+        }
+        return false;
     }
 }
 

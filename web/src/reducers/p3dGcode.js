@@ -27,29 +27,14 @@ const gcodeRenderingWorker = new GcodeToBufferGeometryWorker();
 
 export const actions = {
     init: () => (dispatch) => {
-        p3dGcodeManager.on(P3D_SLICE_STATUS, (data) => {
-            const {progress, error, result} = data;
-            // console.log(P3D_SLICE_STATUS + " => " + JSON.stringify(data));
-            if (error) {
-                dispatch(actions._setProgressInfo({progressTitle: "slicing error"}));
-            } else if (progress && progress > 0) {
-                dispatch(actions._setProgressInfo({progress, progressTitle: "slicing"}));
-            } else if (result) {
-                dispatch(actions._setResult(result));
-                dispatch(actions._setProgressInfo({progress: 1, progressTitle: "slicing completed"}));
-                const gcodeFileUrl = "http://localhost:9000/cache/" + result.gcodeFileName;
-                dispatch(actions._renderGcode(gcodeFileUrl))
-            }
-        });
-
         gcodeRenderingWorker.onmessage = (e) => {
             const data = e.data;
             // console.log("onmessage: " + JSON.stringify(data))
             // return;
-            const { status, value } = data;
+            const {status, value} = data;
             switch (status) {
                 case 'succeed': {
-                    const { positions, colors, layerIndices, typeCodes, layerCount, bounds } = value;
+                    const {positions, colors, layerIndices, typeCodes, layerCount, bounds} = value;
 
                     const bufferGeometry = new THREE.BufferGeometry();
                     const positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
@@ -92,7 +77,7 @@ export const actions = {
                         dispatch(actions.setGcodeVisibilityByType(type, value));
                     });
 
-                    const { minX, minY, minZ, maxX, maxY, maxZ } = bounds;
+                    const {minX, minY, minZ, maxX, maxY, maxZ} = bounds;
                     dispatch(actions.checkGcodeBoundary(minX, minY, minZ, maxX, maxY, maxZ));
                     dispatch(actions.showGcodeLayers(layerCount - 1));
                     dispatch(actions.displayGcode());
@@ -105,7 +90,7 @@ export const actions = {
                 case 'progress': {
                     const state = getState().printing;
                     if (value - state.progress > 0.01 || value > 1 - EPSILON) {
-                        dispatch(actions.updateState({ progress: value }));
+                        dispatch(actions.updateState({progress: value}));
                     }
                     break;
                 }
@@ -127,16 +112,35 @@ export const actions = {
         return {type: null};
     },
     startSlice: () => async (dispatch, getState) => {
+        //导出数据并上传到server
         const file = p3dModelManager.exportModelsToFile();
         const response = await uploadFile(file);
         const {url} = response;
-        console.log("url: " + url);
 
+        //获取materialName，settingName
         const materialName = getState().p3dMaterial.name;
         const settingName = getState().p3dSetting.name;
 
-        p3dGcodeManager.scheduleSliceTask(url, materialName, settingName);
+        //异步切片
+        p3dGcodeManager.startSlice(
+            url,
+            materialName,
+            settingName,
+            (result) => {
+                dispatch(actions._setProgressInfo({progress: 1, progressTitle: "slicing completed"}));
+                dispatch(actions._setResult(result));
+                const gcodeFileUrl = "http://localhost:9000/cache/" + result.gcodeFileName;
+                // dispatch(actions._renderGcode(gcodeFileUrl))
+            },
+            (progress) => {
+                dispatch(actions._setProgressInfo({progress, progressTitle: "slicing"}));
+            },
+            (error) => {
+                dispatch(actions._setProgressInfo({progressTitle: "slicing error"}));
+            }
+        );
 
+        //初始状态
         dispatch(actions._setProgressInfo({progress: 0, progressTitle: "slicing"}));
         dispatch(actions._setResult(null));
     },
@@ -154,7 +158,7 @@ export const actions = {
     },
     _renderGcode: (gcodeFileUrl) => (dispatch) => {
         console.log("_renderGcode: " + gcodeFileUrl)
-        gcodeRenderingWorker.postMessage({ fileUrl: gcodeFileUrl });
+        gcodeRenderingWorker.postMessage({fileUrl: gcodeFileUrl});
         dispatch(actions._setProgressInfo({progress: 0, progressTitle: "rendering gcode"}));
     }
 };

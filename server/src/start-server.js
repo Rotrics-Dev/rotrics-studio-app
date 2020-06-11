@@ -31,7 +31,7 @@ import {
     P3D_MATERIAL_CLONE,
     P3D_SETTING_FETCH_ALL,
     P3D_SETTING_UPDATE,
-    P3D_SLICE_ADD_TASK,
+    P3D_SLICE_START,
     P3D_SLICE_STATUS
 } from "./constants.js"
 
@@ -240,19 +240,19 @@ const setupSocket = () => {
             });
 
             // p3d slice
-            socket.on(P3D_SLICE_ADD_TASK, (data) => {
-                //data: {stlUrl, materialName, settingName, taskId}
-                const {taskId} = data;
+            socket.on(P3D_SLICE_START, (data) => {
+                //data: {stlUrl, materialName, settingName, id}
+                const {id} = data;
                 p3dStartSlice(
                     data,
                     (progress) => {
-                        socket.emit(P3D_SLICE_STATUS, {progress, taskId});
+                        socket.emit(P3D_SLICE_STATUS, {progress, id});
                     },
                     (result) => {
-                        socket.emit(P3D_SLICE_STATUS, {result, taskId});
+                        socket.emit(P3D_SLICE_STATUS, {result, id});
                     },
                     (err) => {
-                        socket.emit(P3D_SLICE_STATUS, {err, taskId});
+                        socket.emit(P3D_SLICE_STATUS, {err, id});
                     }
                 );
             });
