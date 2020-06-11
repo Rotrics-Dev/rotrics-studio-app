@@ -6,7 +6,7 @@ import PrintableCube from './PrintableCube.jsx';
 import {connect} from 'react-redux';
 import IntersectDetector from "../../../../three-extensions/IntersectDetector";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
-
+import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
 const SIZ = 150;
 
 class Index extends React.Component {
@@ -20,7 +20,9 @@ class Index extends React.Component {
         this.renderer = null;
         this.scene = null;
         this.group = null;
-        this.modelGroup = null;
+
+        this.modelGroup = null; // 所有Model3D的parent
+        this.gcodeGroup = null; // gcode obj3d的parent
 
         //controls
         this.msrControls = null; // pan/scale/rotate print area
@@ -37,6 +39,8 @@ class Index extends React.Component {
         this.setupMSRControls();
 
         this.props.setModelsParent(this.modelGroup);
+        this.props.setRendererParent(this.gcodeGroup);
+
         this.animate();
         this.group.add(this.printableArea);
         window.addEventListener('resize', this.resizeWindow, false);
@@ -156,10 +160,12 @@ class Index extends React.Component {
         this.group.position.copy(new THREE.Vector3(0, 0, 0));
 
         this.modelGroup = new THREE.Group();
+        this.gcodeGroup = new THREE.Group();
 
         //结构：scene--group--modelGroup--models
         //因为需要IntersectDetector去检测modelGroup.children
         this.group.add(this.modelGroup);
+        this.group.add(this.gcodeGroup);
         this.scene.add(this.group);
 
         this.node.current.appendChild(this.renderer.domElement);
@@ -196,7 +202,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setModelsParent: (modelsParent) => dispatch(p3dModelActions.setModelsParent(modelsParent)),
+        setModelsParent: (parent) => dispatch(p3dModelActions.setModelsParent(parent)),
+        setRendererParent: (parent) => dispatch(p3dGcodeActions.setRendererParent(parent)),
         selectModel: (model) => dispatch(p3dModelActions.selectModel(model)),
     };
 };

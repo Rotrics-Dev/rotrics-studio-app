@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import {Progress} from 'antd';
-import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
 
 class Index extends React.Component {
     state = {};

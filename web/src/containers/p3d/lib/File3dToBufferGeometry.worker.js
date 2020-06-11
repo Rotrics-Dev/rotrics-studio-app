@@ -27,12 +27,6 @@ onmessage = (e) => {
             let z = -(box3.max.z + box3.min.z) / 2;
             bufferGeometry.translate(x, y, z);
             // bufferGeometry.translate(0, 17, 0);
-
-            {
-                const box3 = bufferGeometry.boundingBox;
-                console.log("box3 222: " + JSON.stringify(box3))
-            }
-
             // for more effective: ConvexGeometry called mergeVertices to reduce vertices
             // example: 12M binary stl, vertices count 12w -> 2w
             const tempGeometry = new THREE.Geometry().fromBufferGeometry(bufferGeometry);
