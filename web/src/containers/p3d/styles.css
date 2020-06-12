@@ -1,7 +1,17 @@
-/*垂直居中*/
+/*左侧垂直居中*/
 .div_transformation {
     position: absolute;
     top: 50%;
     left: 8px;
+    -webkit-transform: translateY(-50%);
+}
+
+/*右侧垂直居中*/
+.div_gcode_preview_control {
+    position: absolute;
+    top: 50%;
+    right: 320px;
+    width: 30px;
+    height: 300px;
     -webkit-transform: translateY(-50%);
 }

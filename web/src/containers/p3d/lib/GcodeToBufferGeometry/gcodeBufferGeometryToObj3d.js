@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
 const PRINT3D_UNIFORMS = {
-    u_visible_layer_count: { value: 0.0 },
-    u_wall_inner_visible: { value: 1 },
-    u_wall_outer_visible: { value: 1 },
-    u_skin_visible: { value: 1 },
-    u_skirt_visible: { value: 1 },
-    u_support_visible: { value: 1 },
-    u_fill_visible: { value: 1 },
-    u_travel_visible: { value: 0 },
-    u_unknown_visible: { value: 1 }
+    u_visible_layer_count: {value: 0.0},
+    u_wall_inner_visible: {value: 1},
+    u_wall_outer_visible: {value: 1},
+    u_skin_visible: {value: 1},
+    u_skirt_visible: {value: 1},
+    u_support_visible: {value: 1},
+    u_fill_visible: {value: 1},
+    u_travel_visible: {value: 0},
+    u_unknown_visible: {value: 1}
 };
 const PRINT3D_VERT_SHADER = [
     'const float c_wall_inner_code = 1.0;',
@@ -113,48 +113,17 @@ const PRINT3D_FRAG_SHADER = [
     '}'
 ].join('');
 
-// const CNC_LASER_UNIFORMS = {
-//     // rgba
-//     u_g1_color: new THREE.Uniform(new THREE.Vector4(0, 0, 0, 1))
-// };
-// const CNC_LASER_VERT_SHADER = [
-//     'varying float v_g_code;',
-//     'attribute float a_g_code;',
-//     'void main(){',
-//     '    v_g_code = a_g_code;',
-//     '    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-//     '}'
-// ].join('');
-// const CNC_LASER_FRAG_SHADER = [
-//     'uniform vec4 u_g1_color;',
-//     'varying float v_g_code;',
-//     'void main(){',
-//     '    if(v_g_code == 0.0){',
-//     '        discard;',
-//     '    }',
-//     '    gl_FragColor = u_g1_color;',
-//     '}'
-// ].join('');
-
-const gcodeBufferGeometryToObj3d = (func, bufferGeometry) => {
-    let obj3d = null;
-    switch (func) {
-        case '3DP':
-            obj3d = new THREE.Line(
-                bufferGeometry,
-                new THREE.ShaderMaterial({
-                    uniforms: PRINT3D_UNIFORMS,
-                    vertexShader: PRINT3D_VERT_SHADER,
-                    fragmentShader: PRINT3D_FRAG_SHADER,
-                    side: THREE.DoubleSide,
-                    transparent: true
-                })
-            );
-            break;
-        default:
-            break;
-    }
-    return obj3d;
+const gcodeBufferGeometryToObj3d = (bufferGeometry) => {
+    return new THREE.Line(
+        bufferGeometry,
+        new THREE.ShaderMaterial({
+            uniforms: PRINT3D_UNIFORMS,
+            vertexShader: PRINT3D_VERT_SHADER,
+            fragmentShader: PRINT3D_FRAG_SHADER,
+            side: THREE.DoubleSide,
+            transparent: true
+        })
+    );
 };
 
 export default gcodeBufferGeometryToObj3d;

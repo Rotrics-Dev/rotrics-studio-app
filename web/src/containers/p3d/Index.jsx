@@ -9,6 +9,7 @@ import Transformation from "./ui/Transformation/Index.jsx";
 import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
 import Info from "./ui/Info/Index.jsx";
+import GcodePreviewControl from "./ui/GcodePreviewControl/Index.jsx";
 
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
@@ -71,6 +72,9 @@ class Index extends React.Component {
                 </div>
                 <div className={styles.div_transformation}>
                     <Transformation/>
+                </div>
+                <div className={styles.div_gcode_preview_control}>
+                    <GcodePreviewControl/>
                 </div>
                 <div style={{
                     position: "absolute",

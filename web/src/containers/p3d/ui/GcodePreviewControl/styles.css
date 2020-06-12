@@ -1,0 +1,19 @@
+.div_line_type_container {
+    position: absolute;
+    padding: 5px;
+    width: 160px;
+    bottom: 0;
+    right: 30px;
+    background-color: rgba(200, 200, 200, 0.2);
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+}
+
+.span_type_block {
+    float: right;
+    width: 15px;
+    height: 15px;
+    margin: 3px;
+    border: 1px solid #C0C0C0;
+    border-radius: 2px;
+}

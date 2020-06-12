@@ -1,110 +1,61 @@
-import File3dToBufferGeometryWorker from '../containers/p3d/lib/File3dToBufferGeometry.worker';
-import * as THREE from 'three';
+import _ from 'lodash';
 import p3dGcodeManager from "../containers/p3d/lib/p3dGcodeManager";
 import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
-
-import Model3D from "../containers/p3d/lib/Model3D";
 import {uploadFile} from "../api";
-import {P3D_SLICE_STATUS} from "../constants";
 
-import GcodeToBufferGeometryWorker from '../containers/p3d/lib/GcodeToBufferGeometry.worker';
+const ACTION_UPDATE_STATE = 'p3dGcode/ACTION_UPDATE_STATE';
 
-const SELECT_MODEL = 'p3dGcode/SELECT_MODEL';
-const SET_MODEL_COUNT = 'p3dGcode/SET_MODEL_COUNT';
-
-const SET_TRANSFORMATION = 'p3dGcode/SET_TRANSFORMATION';
-
-const SET_PROGRESS_INFO = 'p3dGcode/SET_PROGRESS_INFO';
-const SET_RESULT = 'p3dGcode/SET_RESULT';
-
+// lineTypeVisibility: {
+//     'WALL-INNER': {
+//         rgb: [0, 255, 0],
+//             visible: true
+//     },
+//     'WALL-OUTER': {
+//         rgb: [255, 33, 33],
+//             visible: true
+//     },
+//     'SKIN': {
+//         rgb: [255, 255, 0],
+//             visible: true
+//     },
+//     'SKIRT': {
+//         rgb: [250, 140, 53],
+//             visible: true
+//     },
+//     'SUPPORT': {
+//         rgb: [75, 0, 130],
+//             visible: true
+//     },
+//     'FILL': {
+//         rgb: [141, 75, 187],
+//             visible: true
+//     },
+//     'TRAVEL': {
+//         rgb: [68, 206, 246],
+//             visible: false
+//     },
+//     'UNKNOWN': {
+//         rgb: [75, 0, 130],
+//             visible: true
+//     }
+// }
 const INITIAL_STATE = {
     progress: 0,
     progressTitle: "",
     result: null, //切片结果：{gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
+    layerCount: 0, //gcode渲染后，一共多少层
+    layerCountVisible: 0, //当前显示的多少层gcode line
+    lineTypeVisibility: null, //gcode渲染后，不同type的visibility
+    bounds: null
 };
-
-const gcodeRenderingWorker = new GcodeToBufferGeometryWorker();
 
 export const actions = {
     init: () => (dispatch) => {
-        gcodeRenderingWorker.onmessage = (e) => {
-            const data = e.data;
-            // console.log("onmessage: " + JSON.stringify(data))
-            // return;
-            const {status, value} = data;
-            switch (status) {
-                case 'succeed': {
-                    const {positions, colors, layerIndices, typeCodes, layerCount, bounds} = value;
-
-                    const bufferGeometry = new THREE.BufferGeometry();
-                    const positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
-                    const colorAttribute = new THREE.Uint8BufferAttribute(colors, 3);
-                    // this will map the buffer values to 0.0f - +1.0f in the shader
-                    colorAttribute.normalized = true;
-                    const layerIndexAttribute = new THREE.Float32BufferAttribute(layerIndices, 1);
-                    const typeCodeAttribute = new THREE.Float32BufferAttribute(typeCodes, 1);
-
-                    bufferGeometry.addAttribute('position', positionAttribute);
-                    bufferGeometry.addAttribute('a_color', colorAttribute);
-                    bufferGeometry.addAttribute('a_layer_index', layerIndexAttribute);
-                    bufferGeometry.addAttribute('a_type_code', typeCodeAttribute);
-
-                    const object3D = gcodeBufferGeometryToObj3d('3DP', bufferGeometry);
-
-                    dispatch(actions.destroyGcodeLine());
-                    gcodeLineGroup.add(object3D);
-                    object3D.position.copy(new THREE.Vector3());
-                    const gcodeTypeInitialVisibility = {
-                        'WALL-INNER': true,
-                        'WALL-OUTER': true,
-                        SKIN: true,
-                        SKIRT: true,
-                        SUPPORT: true,
-                        FILL: true,
-                        TRAVEL: false,
-                        UNKNOWN: true
-                    };
-                    dispatch(actions.updateState({
-                        layerCount,
-                        layerCountDisplayed: layerCount - 1,
-                        gcodeTypeInitialVisibility,
-                        gcodeLine: object3D
-                    }));
-
-                    Object.keys(gcodeTypeInitialVisibility).forEach((type) => {
-                        const visible = gcodeTypeInitialVisibility[type];
-                        const value = visible ? 1 : 0;
-                        dispatch(actions.setGcodeVisibilityByType(type, value));
-                    });
-
-                    const {minX, minY, minZ, maxX, maxY, maxZ} = bounds;
-                    dispatch(actions.checkGcodeBoundary(minX, minY, minZ, maxX, maxY, maxZ));
-                    dispatch(actions.showGcodeLayers(layerCount - 1));
-                    dispatch(actions.displayGcode());
-
-                    dispatch(actions.updateState({
-                        stage: PRINTING_STAGE.PREVIEW_SUCCEED
-                    }));
-                    break;
-                }
-                case 'progress': {
-                    const state = getState().printing;
-                    if (value - state.progress > 0.01 || value > 1 - EPSILON) {
-                        dispatch(actions.updateState({progress: value}));
-                    }
-                    break;
-                }
-                case 'err': {
-                    console.error(value);
-                    dispatch(actions.updateState({
-                        stage: PRINTING_STAGE.PREVIEW_FAILED,
-                        progress: 0
-                    }));
-                    break;
-                }
-                default:
-                    break;
-            }
+    },
+    _updateState: (state) => {
+        return {
+            type: ACTION_UPDATE_STATE,
+            state
         };
     },
     setRendererParent: (object3d) => {
@@ -117,70 +68,68 @@ export const actions = {
         const response = await uploadFile(file);
         const {url} = response;
 
-        //获取materialName，settingName
-        const materialName = getState().p3dMaterial.name;
-        const settingName = getState().p3dSetting.name;
+        //设置初始状态
+        dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
 
         //异步切片
+        const materialName = getState().p3dMaterial.name;
+        const settingName = getState().p3dSetting.name;
         p3dGcodeManager.startSlice(
             url,
             materialName,
             settingName,
             (result) => {
-                dispatch(actions._setProgressInfo({progress: 1, progressTitle: "slicing completed"}));
-                dispatch(actions._setResult(result));
-                const gcodeFileUrl = "http://localhost:9000/cache/" + result.gcodeFileName;
-                // dispatch(actions._renderGcode(gcodeFileUrl))
+                const gcodeUrl = "http://localhost:9000/cache/" + result.gcodeFileName;
+                dispatch(actions._updateState({progress: 1, progressTitle: "slicing completed", result}));
+                dispatch(actions._renderGcode(gcodeUrl));
             },
             (progress) => {
-                dispatch(actions._setProgressInfo({progress, progressTitle: "slicing"}));
+                dispatch(actions._updateState({progress, progressTitle: "slicing"}));
             },
             (error) => {
-                dispatch(actions._setProgressInfo({progressTitle: "slicing error"}));
+                dispatch(actions._updateState({progress: 0, progressTitle: "slicing error"}));
             }
         );
-
-        //初始状态
-        dispatch(actions._setProgressInfo({progress: 0, progressTitle: "slicing"}));
-        dispatch(actions._setResult(null));
     },
-    _setProgressInfo: (data) => {
-        return {
-            type: SET_PROGRESS_INFO,
-            data
-        };
+    _renderGcode: (gcodeUrl) => (dispatch) => {
+        dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));
+        p3dGcodeManager.rendererGcode(
+            gcodeUrl,
+            (data) => {
+                const {layerCount, layerCountVisible, bounds, lineTypeVisibility} = data;
+                dispatch(actions._updateState({
+                    progress: 1,
+                    progressTitle: "renderer g-code completed",
+                    layerCount,
+                    layerCountVisible,
+                    bounds,
+                    lineTypeVisibility
+                }));
+            },
+            (progress) => {
+                dispatch(actions._updateState({progress, progressTitle: "rendering g-code"}));
+            },
+            (error) => {
+                dispatch(actions._updateState({progress: 0, progressTitle: "renderer g-code error"}));
+            });
     },
-    _setResult: (data) => {
-        return {
-            type: SET_RESULT,
-            data
-        };
+    setLayerCountVisible: (value) => (dispatch) => {
+        p3dGcodeManager.setLayerCountVisible(value);
+        dispatch(actions._updateState({layerCountVisible: value}));
     },
-    _renderGcode: (gcodeFileUrl) => (dispatch) => {
-        console.log("_renderGcode: " + gcodeFileUrl)
-        gcodeRenderingWorker.postMessage({fileUrl: gcodeFileUrl});
-        dispatch(actions._setProgressInfo({progress: 0, progressTitle: "rendering gcode"}));
-    }
+    updateLineTypeVisibility: (key, value) => (dispatch, getState) => {
+        const lineTypeVisibility = _.cloneDeep(getState().p3dGcode.lineTypeVisibility);
+        lineTypeVisibility[key].visible = value;
+        p3dGcodeManager.setLineTypeVisibility(lineTypeVisibility);
+        dispatch(actions._updateState({lineTypeVisibility}));
+    },
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case SELECT_MODEL:
-            const model3d = action.value;
-            if (model3d) {
-                const {transformation} = model3d.settings;
-                return Object.assign({}, state, {model3d, transformation, config, working_parameters});
-            } else {
-                return Object.assign({}, state, {
-                    model3d: null,
-                    transformation: null,
-                });
-            }
-        case SET_PROGRESS_INFO:
-            const {progress, progressTitle} = action.data;
-            return Object.assign({}, state, {progress, progressTitle});
-        case SET_RESULT:
-            return Object.assign({}, state, {result: action.data});
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }

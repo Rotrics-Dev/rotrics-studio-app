@@ -2,7 +2,6 @@ import isEmpty from 'lodash/isEmpty';
 import {gcodeToBufferGeometry} from './GcodeToBufferGeometry';
 
 onmessage = (e) => {
-    console.log("## : " + JSON.stringify(e.data))
     if (isEmpty(e.data) || isEmpty(e.data.fileUrl)) {
         postMessage({status: 'err', value: 'Data is empty'});
         return;

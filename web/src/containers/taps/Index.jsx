@@ -22,7 +22,6 @@ import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
-import {actions as p3dGcodeActions} from "../../reducers/p3dGcode";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as p3dModelActions} from "../../reducers/p3dModel";
 
@@ -149,7 +148,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(p3dModelActions.init());
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());
-            dispatch(p3dGcodeActions.init());
         }
     };
 };
