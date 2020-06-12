@@ -3,12 +3,7 @@ import * as THREE from 'three';
 import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
 import Model3D from "../containers/p3d/lib/Model3D";
 
-const SELECT_MODEL = 'p3dModel/SELECT_MODEL';
-const SET_MODEL_COUNT = 'p3dModel/SET_MODEL_COUNT';
-
-const SET_TRANSFORMATION = 'p3dModel/SET_TRANSFORMATION';
-
-const SET_PROGRESS_INFO = 'p3dModel/SET_PROGRESS_INFO';
+const ACTION_UPDATE_STATE = 'p3dModel/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     modelCount: 0,
@@ -21,15 +16,22 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         p3dModelManager.on("onChangeModel", (model) => {
-            dispatch(actions._setModelCount(p3dModelManager.modelsParent.children.length));
-            dispatch(actions._selectModel(model));
+            const transformation = model ? model.transformation : null;
+            const modelCount = p3dModelManager.rendererParent.children.length;
+            dispatch(actions._updateState({model, transformation, modelCount}));
         });
         p3dModelManager.on("onChangeTransformation", (transformation) => {
-            dispatch(actions._setTransformation(_.cloneDeep(transformation)));
+            dispatch(actions._updateState({transformation}));
         });
     },
-    setModelsParent: (modelsParent) => {
-        p3dModelManager.setModelsParent(modelsParent);
+    _updateState: (state) => {
+        return {
+            type: ACTION_UPDATE_STATE,
+            state
+        };
+    },
+    setRendererParent: (object3d) => {
+        p3dModelManager.setRendererParent(object3d);
         return {type: null};
     },
     loadModel: (url) => (dispatch, getState) => {
@@ -60,25 +62,18 @@ export const actions = {
                     break;
                 }
                 case 'progress':
-                    dispatch(actions.setProgressInfo({
-                        progress: value * 100,
-                        progressTitle: 'Loading model...'
-                    }));
+                    dispatch(actions._updateState({progress: value * 100, progressTitle: 'Loading model'}));
                     break;
                 case 'err':
                     worker.terminate();
                     console.error(value);
-                    dispatch(actions.setProgressInfo({
-                        progress: 0,
-                        progressTitle: 'Failed to load model.'
-                    }));
+                    dispatch(actions._updateState({progress: 0, progressTitle: 'Failed to load model'}));
                     break;
                 default:
                     break;
             }
         };
     },
-    //modelsParent: three.Object3D
     selectModel: (model) => {
         p3dModelManager.selectModel(model);
         return {type: null};
@@ -96,11 +91,11 @@ export const actions = {
         return {type: null};
     },
     undo: () => {
-        console.log("undo")
+        console.log("undo");
         return {type: null};
     },
     redo: () => {
-        console.log("redo")
+        console.log("redo");
         return {type: null};
     },
     layFlat: () => {
@@ -115,53 +110,13 @@ export const actions = {
         p3dModelManager.afterUpdateTransformation(key, value);
         return {type: null};
     },
-    _setModelCount: (count) => {
-        return {
-            type: SET_MODEL_COUNT,
-            value: count
-        };
-    },
-    _selectModel: (model) => {
-        return {
-            type: SELECT_MODEL,
-            value: model
-        };
-    },
-    _setTransformation: (transformatione) => {
-        return {
-            type: SET_TRANSFORMATION,
-            value: transformatione
-        };
-    },
-    setProgressInfo: (data) => {
-        return {
-            type: SET_PROGRESS_INFO,
-            data
-        };
-    },
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case SELECT_MODEL:
-            const model = action.value;
-            if (model) {
-                const transformation = model.transformation;
-                return Object.assign({}, state, {model, transformation});
-            } else {
-                return Object.assign({}, state, {
-                    model: null,
-                    transformation: null,
-                });
-            }
-        case SET_MODEL_COUNT:
-            return Object.assign({}, state, {modelCount: action.value});
-        case SET_TRANSFORMATION:
-            return Object.assign({}, state, {transformation: action.value});
-        case SET_PROGRESS_INFO:
-            const {progress, progressTitle} = action.data;
-            return Object.assign({}, state, {progress, progressTitle});
-
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }

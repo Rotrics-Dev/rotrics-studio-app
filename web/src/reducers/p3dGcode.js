@@ -50,8 +50,6 @@ const INITIAL_STATE = {
 };
 
 export const actions = {
-    init: () => (dispatch) => {
-    },
     _updateState: (state) => {
         return {
             type: ACTION_UPDATE_STATE,

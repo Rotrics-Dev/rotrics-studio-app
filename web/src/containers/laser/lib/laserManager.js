@@ -4,18 +4,18 @@ import {computeBoundary} from "./toolPathUtils";
 class LaserManager extends events.EventEmitter {
     constructor() {
         super();
-        this.modelsParent = null;
+        this.rendererParent = null;
         this._selected = null;
         this.isAllPreviewed = false;
     }
 
     //设置模型要展示在哪个object3d上
-    setModelsParent(object3d) {
-        this.modelsParent = object3d;
+    setRendererParent(object3d) {
+        this.rendererParent = object3d;
     }
 
     addModel(model2d) {
-        this.modelsParent.add(model2d);
+        this.rendererParent.add(model2d);
         this.selectModel(model2d);
         model2d.addEventListener('preview', () => {
             this._onPreviewStatusChange();
@@ -27,7 +27,7 @@ class LaserManager extends events.EventEmitter {
             return;
         }
         this._selected = model;
-        for (const child of this.modelsParent.children) {
+        for (const child of this.rendererParent.children) {
             child.setSelected(this._selected === child);
         }
         this.emit('onChangeModel', this._selected);
@@ -35,14 +35,14 @@ class LaserManager extends events.EventEmitter {
 
     removeSelected() {
         if (this._selected) {
-            this.modelsParent.remove(this._selected);
+            this.rendererParent.remove(this._selected);
             this._selected = null;
             this.emit('onChangeModel', this._selected);
         }
     }
 
     removeAll() {
-        this.modelsParent.remove(...this.modelsParent.children);
+        this.rendererParent.remove(...this.rendererParent.children);
         this._selected = null;
         this.emit('onChangeModel', this._selected);
     }
@@ -77,8 +77,8 @@ class LaserManager extends events.EventEmitter {
 
     generateGcode() {
         const gcodeArr = [];
-        for (let i = 0; i < this.modelsParent.children.length; i++) {
-            const model = this.modelsParent.children[i];
+        for (let i = 0; i < this.rendererParent.children.length; i++) {
+            const model = this.rendererParent.children[i];
             gcodeArr.push(model.generateGcode());
         }
         return gcodeArr.join("\n");
@@ -93,8 +93,8 @@ class LaserManager extends events.EventEmitter {
         const max = Number.MAX_VALUE;
         let _minX = max, _minY = max;
         let _maxX = min, _maxY = min;
-        for (let i = 0; i < this.modelsParent.children.length; i++) {
-            const model = this.modelsParent.children[i];
+        for (let i = 0; i < this.rendererParent.children.length; i++) {
+            const model = this.rendererParent.children[i];
             const {toolPathLines, settings} = model;
             const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
             _minX = Math.min(minX, _minX);
@@ -122,8 +122,8 @@ class LaserManager extends events.EventEmitter {
 
     _onPreviewStatusChange() {
         this.isAllPreviewed = true;
-        for (let i = 0; i < this.modelsParent.children.length; i++) {
-            const model = this.modelsParent.children[i];
+        for (let i = 0; i < this.rendererParent.children.length; i++) {
+            const model = this.rendererParent.children[i];
             if (!model.isPreviewed) {
                 this.isAllPreviewed = false;
                 break;

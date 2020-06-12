@@ -38,8 +38,8 @@ class Index extends React.Component {
         this.setupIntersectDetector();
         this.setupMSRControls();
 
-        this.props.setModelsParent(this.modelGroup);
-        this.props.setRendererParent(this.gcodeGroup);
+        this.props.setRendererParent4model(this.modelGroup);
+        this.props.setRendererParent4gcode(this.gcodeGroup);
 
         this.animate();
         this.group.add(this.printableArea);
@@ -202,8 +202,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setModelsParent: (parent) => dispatch(p3dModelActions.setModelsParent(parent)),
-        setRendererParent: (parent) => dispatch(p3dGcodeActions.setRendererParent(parent)),
+        setRendererParent4model: (parent) => dispatch(p3dModelActions.setRendererParent(parent)),
+        setRendererParent4gcode: (parent) => dispatch(p3dGcodeActions.setRendererParent(parent)),
         selectModel: (model) => dispatch(p3dModelActions.selectModel(model)),
     };
 };

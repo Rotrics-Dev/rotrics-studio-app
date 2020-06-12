@@ -34,7 +34,7 @@ class Index extends React.Component {
         this.setupZoom();
         this.setupIntersectDetector();
         this.setupPanControls();
-        this.props.setModelsParent(this.modelGroup);
+        this.props.setRendererParent(this.modelGroup);
         this.animate();
         this.group.add(new PrintablePlate(new THREE.Vector2(100, 100)));
         window.addEventListener('resize', this.resizeWindow, false);
@@ -185,7 +185,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setModelsParent: (modelsParent) => dispatch(laserActions.setModelsParent(modelsParent)),
+        setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
         selectModel: (model) => dispatch(laserActions.selectModel(model)),
         updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
     };

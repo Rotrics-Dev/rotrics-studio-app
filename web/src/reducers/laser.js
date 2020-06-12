@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         laserManager.on("onChangeModel", (model2d) => {
-            dispatch(actions._setModelCount(laserManager.modelsParent.children.length));
+            dispatch(actions._setModelCount(laserManager.rendererParent.children.length));
             dispatch(actions._selectModel(model2d));
         });
         laserManager.on("onChangeTransformation", (transformation) => {
@@ -41,9 +41,8 @@ export const actions = {
             dispatch(actions._setAllPreviewed(isAllPreviewed));
         });
     },
-    //modelsParent: three.Object3D
-    setModelsParent: (modelsParent) => {
-        laserManager.setModelsParent(modelsParent);
+    setRendererParent: (object3d) => {
+        laserManager.setRendererParent(object3d);
         return {type: null};
     },
     //model

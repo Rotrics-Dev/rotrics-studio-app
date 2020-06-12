@@ -5,13 +5,13 @@ import ModelExporter from './ModelExporter';
 class P3DModelManager extends events.EventEmitter {
     constructor() {
         super();
-        this.modelsParent = null;
+        this.rendererParent = null;
         this._selected = null;
     }
 
     //设置模型要展示在哪个object3d上
-    setModelsParent(object3d) {
-        this.modelsParent = object3d;
+    setRendererParent(object3d) {
+        this.rendererParent = object3d;
     }
 
     addModel(model) {
@@ -19,7 +19,7 @@ class P3DModelManager extends events.EventEmitter {
         model.position.x = xz.x;
         model.position.z = xz.z;
 
-        this.modelsParent.add(model);
+        this.rendererParent.add(model);
         this.selectModel(model);
     }
 
@@ -28,7 +28,7 @@ class P3DModelManager extends events.EventEmitter {
             return;
         }
         this._selected = model3d;
-        for (const child of this.modelsParent.children) {
+        for (const child of this.rendererParent.children) {
             child.setSelected(this._selected === child);
         }
         this.emit('onChangeModel', this._selected);
@@ -36,14 +36,14 @@ class P3DModelManager extends events.EventEmitter {
 
     removeSelected() {
         if (this._selected) {
-            this.modelsParent.remove(this._selected);
+            this.rendererParent.remove(this._selected);
             this._selected = null;
             this.emit('onChangeModel', null);
         }
     }
 
     removeAll() {
-        this.modelsParent.remove(...this.modelsParent.children);
+        this.rendererParent.remove(...this.rendererParent.children);
         this._selected = null;
         this.emit('onChangeModel', null);
     }
@@ -76,13 +76,13 @@ class P3DModelManager extends events.EventEmitter {
     }
 
     _computeAvailableXZ(model) {
-        if (this.modelsParent.children === 0) {
+        if (this.rendererParent.children === 0) {
             return {x: 0, z: 0};
         }
         model.computeBoundingBox();
         const modelBox3 = model.boundingBox;
         const box3Arr = [];
-        for (const model of this.modelsParent.children) {
+        for (const model of this.rendererParent.children) {
             model.computeBoundingBox();
             box3Arr.push(model.boundingBox);
         }
@@ -186,7 +186,7 @@ class P3DModelManager extends events.EventEmitter {
     }
 
     exportModelsToBlob() {
-        const output = new ModelExporter().parseToBinaryStl(this.modelsParent);
+        const output = new ModelExporter().parseToBinaryStl(this.rendererParent);
         const blob = new Blob([output], {type: 'text/plain'});
         return blob;
     }
