@@ -55,6 +55,9 @@ class WorkingParameters extends PureComponent {
         setJogSpeed: (value) => {
             this.props.updateWorkingParameters("jog_speed", value)
         },
+        setJogPenOffset: (value) => {
+            this.props.updateWorkingParameters("jog_pen_offset", value)
+        },
         setWorkSpeed: (value) => {
             this.props.updateWorkingParameters("work_speed", value)
         },
@@ -92,7 +95,7 @@ class WorkingParameters extends PureComponent {
         //greyscale:
         //config.movement_mode === greyscale-dot => {work_speed, jog_speed(不可见), dwell_time}
         //config.movement_mode === greyscale-line => {work_speed, jog_speed, dwell_time(不可见)}
-        const {work_speed, jog_speed, dwell_time} = working_parameters.children;
+        const {work_speed, jog_speed, jog_pen_offset, dwell_time} = working_parameters.children;
 
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
@@ -155,19 +158,30 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    {!dwellTimeHidden &&
                     <Row>
                         <Col span={15}>
-                            <span>{dwell_time.label}</span>
-                            <span>{"(" + dwell_time.unit + ")"}</span>
+                            <span>{jog_pen_offset.label}</span>
+                            <span>{"(" + jog_pen_offset.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
-                                         value={toFixed(dwell_time.default_value, 0)}
-                                         onChange={actions.setDwellTime}/>
+                            <NumberInput min={jog_pen_offset.minimum_value} max={jog_pen_offset.maximum_value}
+                                         value={toFixed(jog_pen_offset.default_value, 0)}
+                                         onChange={actions.setJogPenOffset}/>
                         </Col>
                     </Row>
-                    }
+                    {/*{!dwellTimeHidden &&*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={15}>*/}
+                    {/*        <span>{dwell_time.label}</span>*/}
+                    {/*        <span>{"(" + dwell_time.unit + ")"}</span>*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={9}>*/}
+                    {/*        <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}*/}
+                    {/*                     value={toFixed(dwell_time.default_value, 0)}*/}
+                    {/*                     onChange={actions.setDwellTime}/>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*}*/}
                     {/*<Row>*/}
                     {/*    <Col span={15}>*/}
                     {/*        <span>{multi_pass.label}</span>*/}

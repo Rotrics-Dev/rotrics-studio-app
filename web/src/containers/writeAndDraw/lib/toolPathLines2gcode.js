@@ -4,6 +4,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
 
     const work_speed_value = settings.working_parameters.children.work_speed.default_value;
     const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
+    const jog_pen_offset = settings.working_parameters.children.jog_pen_offset.default_value;//空闲抬笔高度
 
     const {x, y} = settings.transformation.children;
     const translateX = x.default_value;
@@ -14,7 +15,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
         '; Write And Draw',
         'M888 P0',
         'M2000',
-        'G0 Z10 F' + jog_speed_value,
+        'G0 Z' + jog_pen_offset + ' F' + jog_speed_value,
     ];
 
     // console.log(Json)
@@ -62,7 +63,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
                     if (value === 3) {
                         cmds.push('G1 Z0.00')
                     } else if (value === 5) {
-                        cmds.push('G0 Z10.00')
+                        cmds.push(`G0 Z${jog_pen_offset}`)
                     }
                     break;
                 default:
