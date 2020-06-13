@@ -22,7 +22,8 @@ import {
     P3D_SETTING_DELETE,
     P3D_SETTING_CLONE,
     P3D_SLICE_START,
-    P3D_SLICE_STATUS
+    P3D_SLICE_STATUS,
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW
 } from "../constants.js"
 
 class SocketClientManager extends EventEmitter {
@@ -69,6 +70,9 @@ class SocketClientManager extends EventEmitter {
         //tool path
         this.socketClient.on(TOOL_PATH_GENERATE_LASER, (data) => {
             this.emit(TOOL_PATH_GENERATE_LASER, data);
+        });
+        this.socketClient.on(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
+            this.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, data);
         });
 
         //gcode
@@ -191,11 +195,19 @@ class SocketClientManager extends EventEmitter {
      * @returns {boolean} 是否成功
      */
     emitToServer(event, data) {
-        if (this.isSocketConnected){
+        if (this.isSocketConnected) {
             this.socketClient.emit(event, data);
             return true;
         }
         return false;
+    }
+    /**
+     * @param url         model2d的图片url
+     * @param settings    model2d.settings
+     * @param toolPathId  (uuid)，settings有变化则id也随着变化
+     */
+    generateGcodeWriteAndDraw(url, settings, toolPathId, fileType) {
+        this.socketClient.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {url, settings, toolPathId, fileType});
     }
 }
 

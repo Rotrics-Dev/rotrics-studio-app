@@ -1,6 +1,7 @@
 // 左侧tap
 export const TAP_LASER = "TAP_LASER";
 export const TAP_P3D = "TAP_P3D";
+export const TAB_WRITE_AND_DRAW = "TAB_WRITE_AND_DRAW";
 export const TAP_CODE = "TAP_CODE";
 export const TAP_SETTINGS = "TAP_SETTINGS";
 
@@ -31,6 +32,7 @@ export const GCODE_APPEND_SEND = 'GCODE_APPEND_SEND'; //将指定的gcode追加�
 
 // tool path
 export const TOOL_PATH_GENERATE_LASER = 'TOOL_PATH_GENERATE_LASER';
+export const TOOL_PATH_GENERATE_WRITE_AND_DRAW = 'TOOL_PATH_GENERATE_WRITE_AND_DRAW';
 
 // p3d material
 export const P3D_MATERIAL_FETCH_ALL = 'P3D_MATERIAL_FETCH_ALL';

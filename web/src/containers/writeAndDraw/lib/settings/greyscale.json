@@ -1,0 +1,251 @@
+{
+  "transformation": {
+    "icon": "base64xxx",
+    "label": "Transformation",
+    "type": "category",
+    "description": "Transformation B&W description",
+    "children": {
+      "img_width": {
+        "default_value": 0
+      },
+      "img_height": {
+        "default_value": 0
+      },
+      "width": {
+        "label": "Width",
+        "description": "Width description",
+        "default_value": 5,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": 5,
+        "maximum_value": 200
+      },
+      "height": {
+        "label": "Height",
+        "description": "Height description",
+        "default_value": 5,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": 5,
+        "maximum_value": 200
+      },
+      "rotation": {
+        "label": "rotation",
+        "description": "Rotation description",
+        "default_value": 0,
+        "type": "int",
+        "unit": "degree",
+        "minimum_value": -180,
+        "maximum_value": 180
+      },
+      "x": {
+        "label": "Move X",
+        "description": "Move X description",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": -100,
+        "maximum_value": 100
+      },
+      "y": {
+        "label": "Move Y",
+        "description": "Move Y description",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": -100,
+        "maximum_value": 100
+      },
+      "flip_model": {
+        "label": "Flip Model",
+        "description": "Flip Model description",
+        "default_value": "None",
+        "type": "enum",
+        "options": {
+          "None": "None",
+          "Vertical": "Vertical",
+          "Horizontal": "Horizontal",
+          "Both": "Both"
+        }
+      }
+    }
+  },
+  "config": {
+    "icon": "base64xxx",
+    "label": "Greyscale",
+    "type": "category",
+    "description": "Config of Greyscale",
+    "children": {
+      "invert": {
+        "label": "Invert",
+        "description": "Invert description",
+        "default_value": false,
+        "type": "bool"
+      },
+      "contrast": {
+        "label": "Contrast",
+        "description": "contrast description",
+        "default_value": 50,
+        "type": "int",
+        "minimum_value": 1,
+        "maximum_value": 100
+      },
+      "brightness": {
+        "label": "Brightness",
+        "description": "brightness description",
+        "default_value": 50,
+        "type": "int",
+        "minimum_value": 0,
+        "maximum_value": 100
+      },
+      "white_clip": {
+        "label": "White Clip",
+        "description": "White Clip description",
+        "default_value": 100,
+        "type": "int",
+        "minimum_value": 0,
+        "maximum_value": 255
+      },
+      "bw": {
+        "default_value": 168
+      },
+      "algorithm": {
+        "label": "Algorithm",
+        "description": "algorithm description",
+        "default_value": "JarvisJudiceNinke",
+        "type": "enum",
+        "options": {
+          "Floyd-Steinburg": "FloydSteinburg",
+          "Jarvis-Judice-Ninke": "JarvisJudiceNinke",
+          "Stucki": "Stucki",
+          "Atkinson": "Atkinson",
+          "Burkes": "Burkes",
+          "Sierra-2": "Sierra2",
+          "Sierra-3": "Sierra3",
+          "Sierra Lite": "SierraLite"
+        }
+      },
+      "movement_mode": {
+        "label": "Movement Mode",
+        "description": "Movement Mode description",
+        "default_value": "greyscale-line",
+        "type": "enum",
+        "options": {
+          "Line (Normal Quality)": "greyscale-line",
+          "Dot (High Quality)": "greyscale-dot"
+        }
+      },
+      "density": {
+        "label": "Density",
+        "description": "Density description",
+        "default_value": 4,
+        "type": "int",
+        "unit": "dot/mm",
+        "minimum_value": 1,
+        "maximum_value": 20
+      },
+      "line_direction": {
+        "label": "Line Direction",
+        "description": "Line Direction description",
+        "default_value": "Horizontal",
+        "type": "enum",
+        "options": {
+          "Horizontal": "Horizontal",
+          "Vertical": "Vertical",
+          "Diagonal": "Diagonal",
+          "Diagonal2": "Diagonal2"
+        }
+      }
+    }
+  },
+  "working_parameters": {
+    "icon": "base64xxx",
+    "label": "Working Parameters",
+    "type": "category",
+    "description": "Working Parameters description",
+    "children": {
+      "print_order": {
+        "label": "Print Order",
+        "description": "Print Order description",
+        "default_value": 1,
+        "type": "int",
+        "minimum_value": 1,
+        "maximum_value": 10
+      },
+      "work_speed": {
+        "label": "Work Speed",
+        "description": "Work Speed description ",
+        "placeholder": "#work_speed#",
+        "default_value": 800,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 100,
+        "maximum_value": 4000
+      },
+      "jog_speed": {
+        "label": "Jog Speed",
+        "description": "Jog Speed description",
+        "placeholder": "#jog_speed#",
+        "default_value": 3000,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 100,
+        "maximum_value": 4000,
+        "hidden": "config.movement_mode === greyscale-dot"
+      },
+      "dwell_time": {
+        "label": "Dwell Time",
+        "description": "Dwell Time description ",
+        "placeholder": "#dwell_time#",
+        "default_value": 5,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 1,
+        "maximum_value": 10,
+        "hidden": "config.movement_mode === greyscale-line"
+      },
+      "multi_pass": {
+        "label": "Multi-Pass",
+        "description": "Multi-Pass description",
+        "default_value": false,
+        "type": "bool",
+        "children": {
+          "passes": {
+            "label": "Passes",
+            "description": "Passes description",
+            "default_value": 2,
+            "type": "int",
+            "minimum_value": 1,
+            "maximum_value": 10
+          },
+          "pass_depth": {
+            "label": "Pass Depth",
+            "description": "Pass Depth description",
+            "default_value": 1,
+            "type": "float",
+            "unit": "mm",
+            "minimum_value": 0.1,
+            "maximum_value": 10
+          }
+        }
+      },
+      "fixed_power": {
+        "default_value": false,
+        "label": "Fixed Power",
+        "type": "bool",
+        "description": "Fixed Power description",
+        "children": {
+          "power": {
+            "label": "Power",
+            "description": "Power description",
+            "default_value": 50,
+            "type": "int",
+            "unit": "%",
+            "minimum_value": 0,
+            "maximum_value": 100
+          }
+        }
+      }
+    }
+  }
+}

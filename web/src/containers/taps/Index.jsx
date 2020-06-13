@@ -7,19 +7,23 @@ import Header from '../header/Index.jsx';
 
 import Laser from '../laser/Index.jsx';
 import P3D from '../p3d/Index.jsx';
+import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
-import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
-import {actions as tapsActions} from "../../reducers/taps";
+import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
+import {actions as tapActions} from "../../reducers/taps";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserActions} from "../../reducers/laser";
 import {actions as laserTextActions} from "../../reducers/laserText";
+import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
+import {actions as writeAndDrawTextActions} from "../../reducers/writeAndDrawText";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
+import {actions as tapsActions} from "../../reducers/taps"
 
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
@@ -32,6 +36,7 @@ class Index extends React.Component {
 
         this.refLaser = React.createRef();
         this.refP3D = React.createRef();
+        this.refWriteAndDraw = React.createRef();
         this.refCode = React.createRef();
         this.refSettings = React.createRef();
     }
@@ -57,6 +62,7 @@ class Index extends React.Component {
     displayTap = (tap) => {
         this.refLaser.current.style.display = 'none';
         this.refP3D.current.style.display = 'none';
+        this.refWriteAndDraw.current.style.display = 'none';
         this.refCode.current.style.display = 'none';
         this.refSettings.current.style.display = 'none';
         switch (tap) {
@@ -65,6 +71,9 @@ class Index extends React.Component {
                 break;
             case TAP_P3D:
                 this.refP3D.current.style.display = 'block';
+                break;
+            case TAB_WRITE_AND_DRAW:
+                this.refWriteAndDraw.current.style.display = 'block';
                 break;
             case TAP_CODE:
                 this.refCode.current.style.display = 'block';
@@ -97,6 +106,11 @@ class Index extends React.Component {
                         className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
+                        data-tip="Write&Draw"
+                        onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
+                        className={tap===TAB_WRITE_AND_DRAW?styles.btn_write_and_draw_selected:styles.btn_write_and_draw}
+                    />
+                    <button
                         data-tip="Code"
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
@@ -113,6 +127,9 @@ class Index extends React.Component {
                     </div>
                     <div ref={this.refP3D}>
                         <P3D/>
+                    </div>
+                    <div ref={this.refWriteAndDraw}>
+                        <WriteAndDraw/>
                     </div>
                     <div ref={this.refCode}>
                         <Code/>
@@ -141,6 +158,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(hotKeysActions.init());
             dispatch(laserActions.init());
             dispatch(laserTextActions.init());
+            dispatch(writeAndDrawActions.init());
+            dispatch(writeAndDrawTextActions.init());
             dispatch(serialPortActions.init());
             dispatch(socketActions.init());
             dispatch(vmActions.init());

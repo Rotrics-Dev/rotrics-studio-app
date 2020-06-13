@@ -52,6 +52,19 @@
     background-position: center;
 }
 
+.btn_write_and_draw {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-image: url(./images/write_draw.svg);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .btn_laser:hover {
     opacity: 0.4;
 }
@@ -123,6 +136,20 @@
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/laser.svg);
+}
+
+.btn_write_and_draw_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/write_draw.svg);
 }
 
 .btn_3d_selected {

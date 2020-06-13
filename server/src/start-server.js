@@ -21,6 +21,7 @@ import {
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW,
     GCODE_UPDATE_SENDER_STATUS,
     GCODE_START_SEND,
     GCODE_STOP_SEND,
@@ -180,6 +181,16 @@ const setupSocket = () => {
                     socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
                 }
             );
+            socket.on(
+                TOOL_PATH_GENERATE_WRITE_AND_DRAW,
+                async (data) => {
+                    console.log(TOOL_PATH_GENERATE_WRITE_AND_DRAW)
+                    const {url, settings, toolPathId, fileType} = data;
+                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
+                    socket.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {toolPathLines, toolPathId});
+                }
+            );
+
 
             // p3d material
             socket.on(P3D_MATERIAL_FETCH_ALL, () => {

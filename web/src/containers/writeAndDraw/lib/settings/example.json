@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "visible": false,
+    "name": "Preview settings for laser B&W",
+    "version": 1,
+    "author": "liumingzw",
+    "email": "374406742@qq.com",
+    "github": "https://github.com/liumingzw"
+  },
+  "upload": {
+    "visible": false,
+    "label": "Upload",
+    "icon": "base64xxx",
+    "accept": [
+      ".svg",
+      ".png"
+    ]
+  },
+  "transformation": {
+    "icon": "base64xxx",
+    "label": "Transformation",
+    "type": "category",
+    "description": "Transformation of B&W",
+    "children": {
+      "width": {
+        "label": "Width",
+        "description": "Width#",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": 5,
+        "maximum_value": 200
+      },
+      "height": {
+        "label": "Height",
+        "description": "Height#",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": 5,
+        "maximum_value": 200
+      },
+      "rotate": {
+        "label": "Rotate",
+        "description": "Rotation#",
+        "default_value": 0,
+        "type": "int",
+        "unit": "degree",
+        "minimum_value": -180,
+        "maximum_value": 180
+      },
+      "x": {
+        "label": "Move X",
+        "description": "Move X#",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": -100,
+        "maximum_value": 100
+      },
+      "y": {
+        "label": "Move Y",
+        "description": "Move Y#",
+        "default_value": 0,
+        "type": "float",
+        "unit": "mm",
+        "minimum_value": -100,
+        "maximum_value": 100
+      },
+      "flip_model": {
+        "label": "Move Y",
+        "description": "Move Y#",
+        "default_value": "lines",
+        "type": "enum",
+        "options": {
+          "None": "None",
+          "Vertical": "Vertical",
+          "Horizontal": "Horizontal",
+          "Both": "Both"
+        }
+      }
+    }
+  },
+  "config": {
+    "icon": "base64xxx",
+    "label": "B&W",
+    "type": "category",
+    "description": "Config of B&W",
+    "children": {
+      "invert": {
+        "label": "Invert",
+        "description": "invert#",
+        "default_value": false,
+        "type": "bool"
+      },
+      "bw": {
+        "label": "B&W",
+        "description": "B&W#",
+        "default_value": 0,
+        "type": "int",
+        "minimum_value": 0,
+        "maximum_value": 255
+      },
+      "line_direction": {
+        "label": "Line Direction",
+        "description": "line_direction#",
+        "default_value": "lines",
+        "type": "enum",
+        "options": {
+          "Vertical": "Vertical",
+          "Horizontal": "Horizontal",
+          "Diagonal": "Diagonal",
+          "Diagonal2": "Diagonal2"
+        }
+      },
+      "density": {
+        "label": "Density",
+        "description": "density#",
+        "default_value": 4,
+        "type": "int",
+        "unit": "dot/mm",
+        "minimum_value": 1,
+        "maximum_value": 20
+      }
+    }
+  },
+  "working_parameters": {
+    "icon": "base64xxx",
+    "label": "Working Parameters",
+    "type": "category",
+    "description": "Transformation of B&W",
+    "children": {
+      "print_order": {
+        "label": "Print Order",
+        "description": "Print Order#",
+        "default_value": 1,
+        "type": "int",
+        "minimum_value": 1,
+        "maximum_value": 10
+      },
+      "jog_speed": {
+        "label": "Jog Speed",
+        "description": "jog_speed#",
+        "default_value": 3000,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 100,
+        "maximum_value": 4000
+      },
+      "work_speed": {
+        "label": "Work Speed",
+        "description": "work_speed#",
+        "default_value": 800,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 100,
+        "maximum_value": 4000
+      },
+      "multi_pass": {
+        "default_value": false,
+        "label": "Multi-Pass",
+        "type": "bool",
+        "description": "multi_pass#",
+        "children": {
+          "passes": {
+            "label": "Passes",
+            "description": "passes#",
+            "default_value": 2,
+            "type": "int",
+            "minimum_value": 1,
+            "maximum_value": 10
+          },
+          "pass_depth": {
+            "label": "Pass Depth",
+            "description": "pass_depth#",
+            "default_value": 1,
+            "type": "float",
+            "unit": "mm",
+            "minimum_value": 0.1,
+            "maximum_value": 10
+          }
+        }
+      }
+    }
+  }
+}
