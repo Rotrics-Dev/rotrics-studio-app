@@ -34,6 +34,7 @@ import {
     P3D_SLICE_START,
     P3D_SLICE_STATUS
 } from "./constants.js"
+import getCWD from "./getCWD.js";
 
 /**
  * 保存file到，静态文件夹下的cache
@@ -50,17 +51,18 @@ const saveFileToCacheDir = (file) => {
     return url;
 };
 
-// const saveStringToFile = (str, extension) => {
-//     const filename = getUniqueFilename("x" + extension); //x.svg
-//     let filePath = upload_dir + filename;
-//     fs.writeFileSync(filePath, str);
-//     const url = "http://localhost:" + server_port + "/" + upload_name + "/" + filename;
-//     return url;
-// };
+const cwd = getCWD();
+const static_dir = path.join(cwd, 'static/');
+const cache_dir = path.join(cwd, '/static/cache/');
+const p3d_config_dir = path.join(cwd, '/CuraEngine/Config/');
 
-const __dirname = path.resolve();
-const static_dir = path.join(__dirname) + '/static/';
-const cache_dir = static_dir + "cache/";
+console.log("cwd : " + cwd)
+
+isElectron() && console.log("__dirname : " + __dirname)
+console.log("static_dir : " + static_dir)
+console.log("cache_dir : " + cache_dir)
+console.log("p3d_config_dir : " + p3d_config_dir)
+
 let cache_base_url; //获取端口后，再初始化
 
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
@@ -70,10 +72,6 @@ let httpServer = http.createServer(app.callback());
 let socketIoServer = new SocketIoServer(httpServer);
 
 const setupHttpServer = () => {
-    router.get('/test', (ctx, next) => {
-        ctx.body = "test ok";
-    });
-
     //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
     router.post('/uploadFile', async (ctx) => {
         console.log("uploadFile")
@@ -107,12 +105,11 @@ const setupHttpServer = () => {
 // p3d material
 // 以material_开头的文件
 const readP3dMaterialsSync = () => {
-    const dir = "./src/CuraEngine/Config/";
     const contents = [];
-    const fileNames = fs.readdirSync(dir);
-    fileNames.forEach((filename, index) => {
+    const fileNames = fs.readdirSync(p3d_config_dir);
+    fileNames.forEach((filename) => {
         if (filename.indexOf("material_") === 0) {
-            const filePath = dir + filename;
+            const filePath = p3d_config_dir + filename;
             const content = fs.readFileSync(filePath, 'utf8');
             contents.push(JSON.parse(content))
         }
@@ -121,18 +118,17 @@ const readP3dMaterialsSync = () => {
 };
 
 const getP3dMaterialPath = (name) => {
-    return `./src/CuraEngine/Config/material_${name}.def.json`;
+    return `${p3d_config_dir}material_${name}.def.json`;
 };
 
 // p3d setting
 // 以setting_开头的文件
 const readP3dSettingSync = () => {
-    const dir = "./src/CuraEngine/Config/";
     const contents = [];
-    const fileNames = fs.readdirSync(dir);
-    fileNames.forEach((filename, index) => {
+    const fileNames = fs.readdirSync(p3d_config_dir);
+    fileNames.forEach((filename) => {
         if (filename.indexOf("setting_") !== -1) {
-            const filePath = dir + filename;
+            const filePath = p3d_config_dir + filename;
             const content = fs.readFileSync(filePath, 'utf8');
             contents.push(JSON.parse(content))
         }
@@ -141,7 +137,7 @@ const readP3dSettingSync = () => {
 };
 
 const getP3dSettingPath = (name) => {
-    return `./src/CuraEngine/Config/setting_${name}.def.json`;
+    return `${p3d_config_dir}setting_${name}.def.json`;
 };
 
 const setupSocket = () => {
@@ -174,7 +170,7 @@ const setupSocket = () => {
                 socket.emit(GCODE_UPDATE_SENDER_STATUS, gcodeSender.getStatus());
             });
 
-            //gcode generate
+            //laser
             socket.on(
                 TOOL_PATH_GENERATE_LASER,
                 async (data) => {

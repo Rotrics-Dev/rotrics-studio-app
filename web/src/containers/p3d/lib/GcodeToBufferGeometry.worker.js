@@ -14,7 +14,8 @@ onmessage = (e) => {
             postMessage({status: 'progress', value: progress});
         },
         (err) => {
-            postMessage({status: 'err', value: err});
+            console.error("web work err: " + JSON.stringify(err))
+            postMessage({status: 'err', value: JSON.stringify(err)});
         }
     ).then((result) => {
         const {bufferGeometry, layerCount, bounds} = result;

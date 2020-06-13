@@ -90,3 +90,22 @@ electron和server的package.json中的dependencies需要保持一致
 
 ## TODO:  
 Windows下构建rotrics-scratch-blocks  
+
+## mac上打包
+将文件夹/web/build-web，复制到/electron/下  
+将文件夹/server/src，复制到/electron/build-server/下 
+将文件夹/server/CuraEngine/，复制到/electron/下 
+将文件夹/server/static/，复制到/electron/下  
+
+保持/server/package.json中的运行依赖，和/electron/package.json中的运行依赖一致  
+删除/electron/node_modules，重新安装依赖，必须使用npm而不能用cnpm  
+重新编译serialport模块：/electron/下执行：npm run rebuild  
+将/electron/build-server/src/getCWD.js中isPackagedElectron设置为true
+在/electron/下执行：npm start，检查共功能是否正常  
+在/electron/下执行：npm run build:mac-x64，开始打包  
+
+
+
+
+
+

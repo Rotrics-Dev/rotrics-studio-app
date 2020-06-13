@@ -28,7 +28,7 @@
       "label": "Flow",
       "description": "Flow compensation: the amount of material extruded is multiplied by this value.",
       "unit": "%",
-      "default_value": 12,
+      "default_value": 19,
       "type": "float",
       "minimum_value": "5",
       "minimum_value_warning": "50",
