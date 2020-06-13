@@ -104,6 +104,10 @@ Windows下构建rotrics-scratch-blocks
 在/electron/下执行：npm start，检查共功能是否正常  
 在/electron/下执行：npm run build:mac-x64，开始打包  
 
+### 解决scratch中语句块图片找不到问题 
+将文件夹/rotrics-scratch-blocks/media/，复制到rotrics-studio-app/web/build-web/asset/下，  
+并重命名media为blocks-media  
+
 
 
 
