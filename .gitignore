@@ -14,6 +14,7 @@
 /electron/build-web
 /electron/build-server
 /electron/output
+/electron/static/cache
 /electron/package-lock.json
 
 # Development Env (Jetbrains, Vim, macOS)
