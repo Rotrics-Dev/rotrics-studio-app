@@ -156,7 +156,7 @@ class Model2D extends THREE.Group {
         this.toolPathLines = toolPathLines;
 
         this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-        this.toolPathObj3d.position.set(0, 100, 0);
+        // this.toolPathObj3d.position.set(0, 100, 0);
         this.add(this.toolPathObj3d);
 
         this._display('toolPath');
@@ -167,10 +167,10 @@ class Model2D extends THREE.Group {
         switch (type) {
             case "img":
                 this.imgObj3d && (this.imgObj3d.visible = true);
-                // this.toolPathObj3d && (this.toolPathObj3d.visible = false);
+                this.toolPathObj3d && (this.toolPathObj3d.visible = false);
                 break;
             case "toolPath":
-                // this.imgObj3d && (this.imgObj3d.visible = false);
+                this.imgObj3d && (this.imgObj3d.visible = false);
                 this.toolPathObj3d && (this.toolPathObj3d.visible = true);
                 break;
             case "edge":
@@ -238,11 +238,13 @@ class Model2D extends THREE.Group {
                 break;
         }
 
-        this._display("img");
         this._display("edge");
 
         //todo: setting是否变化，决定preview
-        preview && this._preview();
+        if (preview) {
+            this._display("img");
+            this._preview();
+        }
     }
 
     updateConfig(key, value) {

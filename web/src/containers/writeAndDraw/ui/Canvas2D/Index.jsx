@@ -114,7 +114,6 @@ class Index extends React.Component {
         this.scene.add(this.group);
         this.group.add(this.modelGroup);
 
-
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
         this.camera.position.copy(new THREE.Vector3(0, 0, 165));
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
