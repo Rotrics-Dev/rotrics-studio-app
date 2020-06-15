@@ -1,5 +1,6 @@
 import File3dToBufferGeometryWorker from '../containers/p3d/lib/File3dToBufferGeometry.worker';
 import * as THREE from 'three';
+import _ from 'lodash';
 import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
 import Model3D from "../containers/p3d/lib/Model3D";
 
@@ -21,7 +22,7 @@ export const actions = {
             dispatch(actions._updateState({model, transformation, modelCount}));
         });
         p3dModelManager.on("onChangeTransformation", (transformation) => {
-            dispatch(actions._updateState({transformation}));
+            dispatch(actions._updateState({transformation: _.cloneDeep(transformation)}));
         });
     },
     _updateState: (state) => {
