@@ -12,7 +12,6 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
-import {actions as tapActions} from "../../reducers/taps";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as laserActions} from "../../reducers/laser";
@@ -48,7 +47,12 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
-        this.displayTap(this.props.tap)
+        this.displayTap(this.props.tap);
+
+        // disable select text on document
+        document.onselectstart = () => {
+            return false;
+        };
     }
 
     componentWillReceiveProps(nextProps) {
