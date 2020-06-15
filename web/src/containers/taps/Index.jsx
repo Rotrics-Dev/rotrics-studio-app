@@ -105,25 +105,25 @@ class Index extends React.Component {
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
-                        data-tip="3D Print"
-                        onClick={() => actions.setTap(TAP_P3D)}
-                        className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
-                    />
-                    <button
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
                         className={tap===TAB_WRITE_AND_DRAW?styles.btn_write_and_draw_selected:styles.btn_write_and_draw}
+                    />
+                    <button
+                        data-tip="3D Print"
+                        onClick={() => actions.setTap(TAP_P3D)}
+                        className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
                         data-tip="Code"
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
-                    <button
-                        data-tip="Settings"
-                        onClick={() => actions.setTap(TAP_SETTINGS)}
-                        className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
-                    />
+                    {/*<button*/}
+                        {/*data-tip="Settings"*/}
+                        {/*onClick={() => actions.setTap(TAP_SETTINGS)}*/}
+                        {/*className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}*/}
+                    {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
                     <div ref={this.refLaser}>

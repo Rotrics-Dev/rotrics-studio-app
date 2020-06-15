@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './styles.css';
 import {Button, Modal, Select, Input, Space} from 'antd';
+import {DisconnectOutlined, LinkOutlined} from '@ant-design/icons';
+
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
@@ -69,11 +71,12 @@ class Index extends React.Component {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <button
-                    onClick={actions.emergencyStop}
-                    className={styles.btn_emergency_stop}
-                />
-                <Button type="primary" onClick={actions.openSerialPortModal}>Serial Port</Button>
+                {/*<button*/}
+                {/*onClick={actions.emergencyStop}*/}
+                {/*className={styles.btn_emergency_stop}*/}
+                {/*/>*/}
+                <Button type="primary" ghost icon={path ? <LinkOutlined/> : <DisconnectOutlined/>}
+                        onClick={actions.openSerialPortModal}>Serial Port</Button>
                 <Modal
                     title="Serial Port"
                     visible={state.visible}
@@ -109,7 +112,7 @@ class Index extends React.Component {
                 <a href="https://www.manual.rotrics.com/" target="_blank" rel="noopener noreferrer">
                     {('User Manual')}
                 </a>
-                <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
+                <a href="https://discord.gg/Xd7X8EW" target="_blank" rel="noopener noreferrer">
                     {('Forum')}
                 </a>
             </div>
