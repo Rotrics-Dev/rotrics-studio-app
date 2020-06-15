@@ -1,6 +1,7 @@
 {
   "name": "rotrics-studio-app",
-  "version": "0.0.1",
+  "productName": "Rotrics Stduio",
+  "version": "0.1.1",
   "author": "Rotrics Dev",
   "license": "MIT",
   "main": "main.js",
@@ -12,7 +13,7 @@
     "build": "electron-builder --mac --x64"
   },
   "build": {
-    "appId": "com.rotrics.rotrics-stduio-app",
+    "appId": "com.rotrics.rotrics-studio-app",
     "asar": false,
     "productName": "Rotrics Stduio",
     "directories": {
@@ -53,7 +54,7 @@
       }
     },
     "win": {
-      "icon": "electron-builder/win.ico",
+      "icon": "electron-builder/icon.ico",
       "target": [
         "zip"
       ]
