@@ -18,7 +18,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 100
+        "maximum_value": 200
       },
       "height": {
         "label": "Height",
@@ -27,7 +27,7 @@
         "type": "float",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 100
+        "maximum_value": 200
       },
       "rotation": {
         "label": "rotation",
