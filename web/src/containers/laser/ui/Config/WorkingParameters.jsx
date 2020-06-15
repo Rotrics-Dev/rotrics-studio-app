@@ -8,7 +8,7 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 
 //hiddenStr: "movement_mode === greyscale-dot"
-const getHiddenValue = (hiddenStr, config) => {
+const getHiddenValue = (hiddenStr = "", config) => {
     let hidden = false;
     hiddenStr = hiddenStr.trim();
     if (hiddenStr.length > 0) {
@@ -17,7 +17,7 @@ const getHiddenValue = (hiddenStr, config) => {
 
         const tokens = hiddenStr.split(" ");
 
-        if (tokens.length !== 3){
+        if (tokens.length !== 3) {
             return false;
         }
 
