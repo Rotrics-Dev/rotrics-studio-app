@@ -191,7 +191,7 @@
         "unit": "mm/min",
         "minimum_value": 100,
         "maximum_value": 4000,
-        "hidden": "config.movement_mode === greyscale-dot"
+        "hidden": "movement_mode === greyscale-dot"
       },
       "dwell_time": {
         "label": "Dwell Time",
@@ -202,7 +202,7 @@
         "unit": "mm/min",
         "minimum_value": 1,
         "maximum_value": 10,
-        "hidden": "config.movement_mode === greyscale-line"
+        "hidden": "movement_mode === greyscale-line"
       },
       "multi_pass": {
         "label": "Multi-Pass",

@@ -1,9 +1,11 @@
 const toolPathLines2gcode = (toolPathLines, settings) => {
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
+    const dwell_time_placeholder = settings.working_parameters.children.dwell_time.placeholder;
 
     const work_speed_value = settings.working_parameters.children.work_speed.default_value;
     const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
+    const dwell_time_value = settings.working_parameters.children.dwell_time.default_value;
 
     const {x, y} = settings.transformation.children;
     const translateX = x.default_value;
@@ -49,6 +51,12 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
                         value = jog_speed_value;
                     }
                     cmds.push(key + value);
+                    break;
+                case 'P': // G4 P#dwell_time#
+                    if (value === dwell_time_placeholder) {
+                        value = dwell_time_value;
+                        cmds.push(key + value);
+                    }
                     break;
                 default:
                     cmds.push(key + value);

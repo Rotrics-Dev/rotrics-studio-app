@@ -7,8 +7,8 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 
-//hiddenStr: "config.movement_mode === greyscale-dot"
-const getHiddenValue = (hiddenStr = "", settings) => {
+//hiddenStr: "movement_mode === greyscale-dot"
+const getHiddenValue = (hiddenStr, config) => {
     let hidden = false;
     hiddenStr = hiddenStr.trim();
     if (hiddenStr.length > 0) {
@@ -17,16 +17,15 @@ const getHiddenValue = (hiddenStr = "", settings) => {
 
         const tokens = hiddenStr.split(" ");
 
-        const left = tokens[0];
-        const keys = left.split(".");
-        const parentKey = keys[0];
-        const childKey = keys[1];
-        const leftValue = settings[parentKey].children[childKey].default_value;
+        if (tokens.length !== 3){
+            return false;
+        }
 
+        const left = tokens[0];
+        const opt = tokens[1];
         const rightValue = tokens[2];
 
-        const opt = tokens[1];
-
+        const leftValue = config.children[left].default_value;
         switch (opt) {
             case "==" :
             case "===" :
@@ -81,8 +80,8 @@ class WorkingParameters extends PureComponent {
     };
 
     render() {
-        const {model, working_parameters} = this.props;
-        if (!model || !working_parameters) {
+        const {model, working_parameters, config} = this.props;
+        if (!model || !working_parameters || !config) {
             return null;
         }
         const actions = this.actions;
@@ -100,14 +99,14 @@ class WorkingParameters extends PureComponent {
 
         let jogSpeedHidden = false;
         if (jog_speed) {
-            getHiddenValue(jog_speed.hidden, model.settings);
+            jogSpeedHidden = getHiddenValue(jog_speed.hidden, config);
         } else {
             jogSpeedHidden = true;
         }
 
         let dwellTimeHidden = false;
         if (dwell_time) {
-            dwellTimeHidden = getHiddenValue(dwell_time.hidden, model.settings);
+            dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
         } else {
             dwellTimeHidden = true;
         }
@@ -228,10 +227,11 @@ class WorkingParameters extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {model, working_parameters} = state.laser;
+    const {model, working_parameters, config} = state.laser;
     return {
         model,
-        working_parameters
+        working_parameters,
+        config
     };
 };
 
