@@ -108,8 +108,9 @@ class WriteAndDrawManager extends events.EventEmitter {
         const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
         const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
         const gcodeArr = [];
-        gcodeArr.push(`G0 X${p1.x} Y${p1.y}`+'Z10 F4000');
-        gcodeArr.push(`G1 X${p1.x} Y${p1.y}`+'Z0 F3000');
+        gcodeArr.push('M2000')
+        gcodeArr.push(`G0 X${p1.x} Y${p1.y}` + 'Z10 F4000');
+        gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + 'Z0 F3000');
         gcodeArr.push(`G1 X${p2.x} Y${p2.y}`);
         gcodeArr.push(`G1 X${p3.x} Y${p3.y}`);
         gcodeArr.push(`G1 X${p4.x} Y${p4.y}`);
