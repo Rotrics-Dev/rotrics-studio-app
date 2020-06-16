@@ -67,9 +67,21 @@ class ObjToBufferGeometryPrint3d {
         let height = p0[2];
         let lastTypeCode = typeCode0;
 
+        //TODO: fixme
+        if (!p0[0]) {
+            p0[0] = 0;
+        }
+        if (!p0[2]) {
+            p0[2] = 0;
+        }
+        if (!p0[1]) {
+            p0[1] = 0;
+        }
+
         positions.push(p0[0]);
         positions.push(p0[2]);
         positions.push(-p0[1]);
+
         colors.push(typeSetting0.rgb[0]);
         colors.push(typeSetting0.rgb[1]);
         colors.push(typeSetting0.rgb[2]);
