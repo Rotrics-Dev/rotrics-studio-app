@@ -255,7 +255,7 @@ class Index extends React.Component {
                 </Space>
                 <div
                     ref={this.buildInSvgList}
-                    style={{width: "100%", padding: "5px 5px 5px 5px", display: "none"}}>
+                    style={{width: "100%", padding: "5px 5px 5px 20px", display: "none"}}>
                     <List
                         grid={{gutter: 4, column: 4}}
                         dataSource={getBuildInSvgArray()}
