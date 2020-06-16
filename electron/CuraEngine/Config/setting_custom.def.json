@@ -36,7 +36,7 @@
       "description": "The speed at which travel moves are made.",
       "unit": "mm/s",
       "type": "float",
-      "default_value": 75,
+      "default_value": 99,
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "300",
@@ -103,7 +103,7 @@
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "150",
-      "default_value": 40,
+      "default_value": 70,
       "value": "speed_print",
       "limit_to_extruder": "infill_extruder_nr",
       "settable_per_mesh": true

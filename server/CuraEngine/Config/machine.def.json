@@ -100,19 +100,37 @@
       "default_value": "Rotrics"
     },
     "machine_width": {
-      "default_value": 125
+      "default_value": 220
     },
     "machine_depth": {
-      "default_value": 125
+      "default_value": 220
     },
     "machine_height": {
-      "default_value": 125
+      "default_value": 220
     },
     "machine_heated_bed": {
-      "default_value": true
+      "default_value": false
     },
     "machine_nozzle_size": {
       "default_value": 0.4
+    },
+    "machine_start_gcode": {
+      "label": "Start GCode",
+      "description": "Gcode commands to be executed at the very start - separated by \\n.",
+      "default_value": "\n;----- Start Gcode -----\nM2000 ;Set to line-mode\nG1 Z15.0 F1000 ;Move header up 15mm\nG92 E0\nG1 F200 E3\nG92 E0\n;----- Start Gcode -----\n",
+      "type": "str",
+      "settable_per_mesh": false,
+      "settable_per_extruder": false,
+      "settable_per_meshgroup": false
+    },
+    "machine_end_gcode": {
+      "label": "End GCode",
+      "description": "Gcode commands to be executed at the very end - separated by \\n.",
+      "default_value": "\n;----- End Gcode -----\n;Move header up 10mm\nG91\nG0 Z10\nG90\nM104 S0\n;Retract the filament\nG92 E1\nG1 E-1 F300\n;----- End Gcode -----\n",
+      "type": "str",
+      "settable_per_mesh": false,
+      "settable_per_extruder": false,
+      "settable_per_meshgroup": false
     }
   }
 }

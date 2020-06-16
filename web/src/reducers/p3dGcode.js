@@ -78,6 +78,7 @@ export const actions = {
             settingName,
             (result) => {
                 const gcodeUrl = window.serverIp + "/cache/" + result.gcodeFileName;
+                result.gcodeUrl = gcodeUrl;
                 dispatch(actions._updateState({progress: 1, progressTitle: "slicing completed", result}));
                 dispatch(actions._renderGcode(gcodeUrl));
             },

@@ -4,7 +4,6 @@ export const getBuildInSvgArray = () => {
         for (let i = 1; i <= 48; i++) {
             let url = require(`./${i}.svg`);
             buildInSvgArray.push(url);
-            console.log(url)
         }
     }
     return buildInSvgArray;

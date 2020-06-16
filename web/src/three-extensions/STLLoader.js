@@ -34,15 +34,15 @@ import * as THREE from "three";
  */
 
 
-THREE.STLLoader = function ( manager ) {
+const STLLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.STLLoader.prototype = {
+STLLoader.prototype = {
 
-	constructor: THREE.STLLoader,
+	constructor: STLLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -342,4 +342,4 @@ THREE.STLLoader.prototype = {
 
 };
 
-export default THREE.STLLoader;
+export default STLLoader;

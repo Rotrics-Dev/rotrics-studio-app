@@ -27,9 +27,18 @@ class Index extends React.Component {
             //https://blog.csdn.net/xu511739113/article/details/72764321
             const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
             const fileName = arr.join("") + ".gcode";
-            const gcode = this.props.gcode;
-            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
-            FileSaver.saveAs(blob, fileName, true);
+            const {gcodeUrl} = this.props.result;
+            console.log("gcodeUrl: " + gcodeUrl)
+
+            fetch(gcodeUrl)
+                .then(resp => resp.blob())
+                .then(blob => {
+                    FileSaver.saveAs(blob, fileName, true);
+                    console.log("down load ok")
+                })
+                .catch(() => {
+                    console.error("down load err")
+                });
         },
         startSendGcode: () => {
             //todo：serialport状态
@@ -85,10 +94,17 @@ class Index extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    const {result} = state.p3dGcode;
+    return {
+        result
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         startSlice: () => dispatch(p3dGcodeActions.startSlice()),
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
