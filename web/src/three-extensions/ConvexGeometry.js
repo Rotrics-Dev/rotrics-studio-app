@@ -7,6 +7,8 @@
 import * as THREE from 'three';
 import QuickHull from './QuickHull';
 
+const _export = {};
+
 ( function () {
 
 	// ConvexGeometry
@@ -36,7 +38,7 @@ import QuickHull from './QuickHull';
 
 		// execute QuickHull
 
-		if ( THREE.QuickHull === undefined ) {
+		if ( QuickHull === undefined ) {
 
 			console.error( 'THREE.ConvexBufferGeometry: ConvexBufferGeometry relies on THREE.QuickHull' );
 
@@ -80,9 +82,9 @@ import QuickHull from './QuickHull';
 
 	// export
 
-	THREE.ConvexGeometry = ConvexGeometry;
-	THREE.ConvexBufferGeometry = ConvexBufferGeometry;
+	_export.ConvexGeometry = ConvexGeometry;
+	_export.ConvexBufferGeometry = ConvexBufferGeometry;
 
 } )();
 
-export default THREE.ConvexGeometry;
+export default _export.ConvexGeometry;
