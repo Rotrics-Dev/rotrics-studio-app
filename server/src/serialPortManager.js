@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import SerialPort from 'serialport';
+import ReadLineParser from '@serialport/parser-readline';
 
 import {utf8bytes2string} from './utils/index.js';
 import {
@@ -45,12 +46,11 @@ class SerialPortManager extends EventEmitter {
     _openNew(path) {
         this.serialPort = new SerialPort(path, {baudRate, autoOpen: false});
 
-        const Readline = SerialPort.parsers.Readline
-        const parser = new Readline()
-        this.serialPort.pipe(parser)
-        parser.on('data', (data)=>{
-            console.log("#: " + JSON.stringify(data))
-        })
+        const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
+        readLineParser.on('data', (data) => {
+            console.log("###: " + JSON.stringify(data));
+            this.emit(SERIAL_PORT_DATA, {received: data});
+        });
 
         this.serialPort.on("open", () => {
             console.log("serial port -> open: " + this.serialPort.path);
@@ -71,36 +71,36 @@ class SerialPortManager extends EventEmitter {
 
         //data: 类型是buffer的数组
         //将buffer转为string，发送到前端
-        this.serialPort.on("data", (buffer) => {
-            if (Buffer.isBuffer(buffer)) {
-                const arr = [];
-                for (let i = 0; i < buffer.length; i++) {
-                    arr.push(buffer[i]);
-                }
-
-                const received = utf8bytes2string(arr);
-
-                console.log("received raw: " + received);
-
-                //全部\r\n, \r, 多个\n，都替换为一个\n
-                this.receivedBuffer += received.replace(/(\r\n|\r|\n)/g, '\n');
-                let bufferStr = "";
-                for (let i = 0; i < this.receivedBuffer.length; i++) {
-                    const char = this.receivedBuffer.charAt(i);
-                    if (char !== '\n') {
-                        bufferStr += char;
-                    } else {
-                        console.log("received: " + bufferStr);
-                        this.emit(SERIAL_PORT_DATA, {received: bufferStr});
-                        bufferStr = "";
-                    }
-                }
-                //剩余的buffer不能丢掉
-                this.receivedBuffer = bufferStr;
-            } else {
-                console.log("received data is not buffer: " + JSON.stringify(buffer))
-            }
-        });
+        // this.serialPort.on("data", (buffer) => {
+        //     if (Buffer.isBuffer(buffer)) {
+        //         const arr = [];
+        //         for (let i = 0; i < buffer.length; i++) {
+        //             arr.push(buffer[i]);
+        //         }
+        //
+        //         const received = utf8bytes2string(arr);
+        //
+        //         console.log("received raw: " + received);
+        //
+        //         //全部\r\n, \r, 多个\n，都替换为一个\n
+        //         this.receivedBuffer += received.replace(/(\r\n|\r|\n)/g, '\n');
+        //         let bufferStr = "";
+        //         for (let i = 0; i < this.receivedBuffer.length; i++) {
+        //             const char = this.receivedBuffer.charAt(i);
+        //             if (char !== '\n') {
+        //                 bufferStr += char;
+        //             } else {
+        //                 console.log("received: " + bufferStr);
+        //                 this.emit(SERIAL_PORT_DATA, {received: bufferStr});
+        //                 bufferStr = "";
+        //             }
+        //         }
+        //         //剩余的buffer不能丢掉
+        //         this.receivedBuffer = bufferStr;
+        //     } else {
+        //         console.log("received data is not buffer: " + JSON.stringify(buffer))
+        //     }
+        // });
 
         this.serialPort.open((error) => {
             if (error) {
@@ -175,7 +175,7 @@ class SerialPortManager extends EventEmitter {
                     console.log("write error: " + data);
                     this.emit(SERIAL_PORT_ERROR, error);
                 } else {
-                    console.log("write ok: " + data);
+                    // console.log("write ok: " + data);
                 }
             })
         } else {

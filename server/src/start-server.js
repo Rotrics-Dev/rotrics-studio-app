@@ -191,7 +191,6 @@ const setupSocket = () => {
                 }
             );
 
-
             // p3d material
             socket.on(P3D_MATERIAL_FETCH_ALL, () => {
                 const materials = readP3dMaterialsSync();
@@ -268,7 +267,6 @@ const setupSocket = () => {
                 socket.emit(SERIAL_PORT_GET_PATH, paths);
             });
             serialPortManager.on(SERIAL_PORT_GET_OPENED, (path) => {
-                console.log(SERIAL_PORT_GET_OPENED + " -> " + path)
                 socket.emit(SERIAL_PORT_GET_OPENED, path);
             });
             serialPortManager.on(SERIAL_PORT_OPEN, (path) => {

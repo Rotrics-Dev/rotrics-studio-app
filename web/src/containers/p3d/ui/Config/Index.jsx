@@ -7,6 +7,7 @@ import p3dModelManager from "../../lib/p3dModelManager";
 import FileSaver from 'file-saver';
 import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
 import {connect} from 'react-redux';
+import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 
 class Index extends React.Component {
     state = {};
@@ -42,8 +43,18 @@ class Index extends React.Component {
         },
         startSendGcode: () => {
             //todo：serialport状态
-            const gcode = this.props.gcode;
-            this.props.startSendGcode(gcode);
+            const {gcodeUrl} = this.props.result;
+            fetch(gcodeUrl)
+                .then(resp => resp.text())
+                .then(text => {
+                    console.log(text)
+                    this.props.startSendGcode(text);
+                })
+                .catch(() => {
+                    console.error("down load err")
+                });
+
+            // this.props.startSendGcode(gcode);
         },
         stopSendGcode: () => {
             //todo：serialport状态
@@ -104,6 +115,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startSlice: () => dispatch(p3dGcodeActions.startSlice()),
+        startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
+        stopSendGcode: () => dispatch(gcodeSendActions.stop()),
     };
 };
 

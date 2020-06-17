@@ -25,6 +25,9 @@ const getHiddenValue = (hiddenStr = "", config) => {
         const opt = tokens[1];
         const rightValue = tokens[2];
 
+        if (!config.children[left]) {
+            return false;
+        }
         const leftValue = config.children[left].default_value;
         switch (opt) {
             case "==" :
