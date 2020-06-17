@@ -134,6 +134,28 @@
       "settable_per_mesh": false,
       "settable_per_extruder": false,
       "settable_per_meshgroup": false
+    },
+    "support_enable": {
+      "label": "Generate Support",
+      "description": "Generate structures to support parts of the model which have overhangs. Without these structures, such parts would collapse during printing.",
+      "type": "bool",
+      "default_value": false,
+      "settable_per_mesh": true,
+      "settable_per_extruder": false
+    },
+    "support_type": {
+      "label": "Support Placement",
+      "description": "Adjusts the placement of the support structures. The placement can be set to touching build plate or everywhere. When set to everywhere the support structures will also be printed on the model.",
+      "type": "enum",
+      "options": {
+        "buildplate": "Touching Buildplate",
+        "everywhere": "Everywhere"
+      },
+      "default_value": "everywhere",
+      "resolve": "'everywhere' if 'everywhere' in extruderValues('support_type') else 'buildplate'",
+      "enabled": "support_enable",
+      "settable_per_mesh": false,
+      "settable_per_extruder": false
     }
   }
 }
