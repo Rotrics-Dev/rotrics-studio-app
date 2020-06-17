@@ -94,7 +94,6 @@ class SocketClientManager extends EventEmitter {
         this.socketClient.on(P3D_SLICE_STATUS, (data) => {
             this.emit(P3D_SLICE_STATUS, data);
         });
-
     }
 
     //serial port

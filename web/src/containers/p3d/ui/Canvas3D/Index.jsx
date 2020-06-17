@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import IntersectDetector from "../../../../three-extensions/IntersectDetector";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
-const SIZ = 150;
+const SIZ = 220;
 
 class Index extends React.Component {
     constructor(props) {

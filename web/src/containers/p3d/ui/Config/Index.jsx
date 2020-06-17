@@ -47,14 +47,11 @@ class Index extends React.Component {
             fetch(gcodeUrl)
                 .then(resp => resp.text())
                 .then(text => {
-                    console.log(text)
                     this.props.startSendGcode(text);
                 })
                 .catch(() => {
                     console.error("down load err")
                 });
-
-            // this.props.startSendGcode(gcode);
         },
         stopSendGcode: () => {
             //todo：serialport状态
