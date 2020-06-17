@@ -12,6 +12,11 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     const translateY = y.default_value;
 
     const gcodeLines = [];
+    const header = [
+        '; Laser',
+        'M888 P1',
+        'M2000'
+    ];
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -83,7 +88,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     gcodeStr = processGcodeMultiPass(gcodeStr, settings);
     gcodeStr = processGcodeForFixedPower(gcodeStr, settings);
 
-    return gcodeStr;
+    return header.join('\n') + "\n\n" + gcodeStr;
 };
 
 const processGcodeMultiPass = (gcodeStr, settings) => {
