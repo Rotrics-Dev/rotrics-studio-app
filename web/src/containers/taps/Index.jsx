@@ -27,6 +27,10 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as p3dModelActions} from "../../reducers/p3dModel";
+import socket from "../../reducers/socket";
+import {Button, notification} from 'antd';
+
+const notificationKey = 'notificationKey';
 
 class Index extends React.Component {
     constructor(props) {
@@ -53,12 +57,26 @@ class Index extends React.Component {
         document.onselectstart = () => {
             return false;
         };
+
+        setInterval(() => {
+            if (this.props.socketStatus === "disconnect") {
+                notification.error({
+                    key: notificationKey,
+                    message: 'Internal error occurred',
+                    description: 'Please restart the app',
+                    duration: 0
+                });
+            } else if (this.props.socketStatus === "connect") {
+                notification.close(notificationKey);
+            }
+        }, 2000)
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.tap !== nextProps.tap) {
             this.displayTap(nextProps.tap)
         }
+
     }
 
     // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
@@ -107,7 +125,7 @@ class Index extends React.Component {
                     <button
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
-                        className={tap===TAB_WRITE_AND_DRAW?styles.btn_write_and_draw_selected:styles.btn_write_and_draw}
+                        className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
                     />
                     <button
                         data-tip="3D Print"
@@ -120,9 +138,9 @@ class Index extends React.Component {
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
                     {/*<button*/}
-                        {/*data-tip="Settings"*/}
-                        {/*onClick={() => actions.setTap(TAP_SETTINGS)}*/}
-                        {/*className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}*/}
+                    {/*data-tip="Settings"*/}
+                    {/*onClick={() => actions.setTap(TAP_SETTINGS)}*/}
+                    {/*className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}*/}
                     {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
@@ -149,8 +167,10 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
+    const {status: socketStatus} = state.socket;
     return {
-        tap
+        tap,
+        socketStatus
     };
 };
 
