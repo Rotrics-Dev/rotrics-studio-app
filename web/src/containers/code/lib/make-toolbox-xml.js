@@ -1,9 +1,36 @@
 const categorySeparator = '<sep gap="15"/>';
 
+// const motion = function () {
+//     return `
+//     <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
+//        <block type="motion_reset"/>
+//        <block type="motion_move_home"/>
+//        <block type="motion_move_origin"/>
+//        <block type="motion_move_position">
+//             <value name="X">
+//                 <shadow id="movex" type="math_number">
+//                     <field name="NUM">100</field>
+//                 </shadow>
+//             </value>
+//             <value name="Y">
+//                 <shadow id="movey" type="math_number">
+//                     <field name="NUM">0</field>
+//                 </shadow>
+//             </value>
+//             <value name="Z">
+//                 <shadow id="movez" type="math_number">
+//                     <field name="NUM">0</field>
+//                 </shadow>
+//             </value>
+//        </block>
+//        <block type="motion_set_work_origin"/>
+//     </category>
+//     `;
+// };
+
 const motion = function () {
     return `
     <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
-       <block type="motion_reset"/>
        <block type="motion_move_home"/>
        <block type="motion_move_origin"/>
        <block type="motion_move_position">
