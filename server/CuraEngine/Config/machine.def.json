@@ -74,14 +74,17 @@
     "material_bed_temp_wait": {
       "label": "Wait for Build Plate Heatup",
       "description": "Whether to insert a command to wait until the build plate temperature is reached at the start.",
-      "default_value": true,
+      "default_value": false,
       "type": "bool",
       "settable_per_mesh": false,
       "settable_per_extruder": false,
       "settable_per_meshgroup": false
     },
     "material_print_temp_prepend": {
-      "default_value": false,
+      "label": "Include Material Temperatures",
+      "description": "Whether to include nozzle temperature commands at the start of the gcode. When the start_gcode already contains nozzle temperature commands Cura frontend will automatically disable this setting.",
+      "default_value": true,
+      "type": "bool",
       "enabled": "machine_nozzle_temp_enabled",
       "settable_per_mesh": false,
       "settable_per_extruder": false,
@@ -117,7 +120,7 @@
     "machine_start_gcode": {
       "label": "Start GCode",
       "description": "Gcode commands to be executed at the very start - separated by \\n.",
-      "default_value": "\n;----- Start Gcode -----\nM2000 ;Set to line-mode\nG1 Z15.0 F1000 ;Move header up 15mm\nG92 E0\nG1 F200 E3\nG92 E0\n;----- Start Gcode -----\n",
+      "default_value": "\n;----- Start Gcode -----\nM82 ;absolute extrusion mode\nM2000 ;Custom cmd: set to line-mode\nM888 P3 ;Custom cmd: current is p3d\nG1 Z15.0 F1000 ;Move header up 15mm\nG92 E0\nG1 F200 E3\nG92 E0\n;----- Start Gcode -----\n",
       "type": "str",
       "settable_per_mesh": false,
       "settable_per_extruder": false,
