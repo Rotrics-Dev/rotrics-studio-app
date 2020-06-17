@@ -44,6 +44,9 @@ class Index extends React.Component {
         if (this.props.tap !== nextProps.tap) {
             this.resizeWindow();
         }
+        if (this.props.model && !nextProps.model) {
+            this.panControls.dispose();
+        }
     }
 
     setupIntersectDetector() {
@@ -83,7 +86,6 @@ class Index extends React.Component {
         this.panControls.addEventListener(
             'pan-end',
             (event) => {
-                console.log("pan-end: " + event.object.fileType)
                 const {x, y} = event.object.position;
                 this.props.updateTransformation("x", x, false)
                 this.props.updateTransformation("y", y, false)
@@ -177,8 +179,10 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
+    const {model} = state.laser;
     return {
-        tap
+        tap,
+        model
     };
 };
 

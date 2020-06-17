@@ -53,6 +53,7 @@ class PanControls extends THREE.Object3D {
 
     dispose() {
         this.removeListeners();
+        this.object = null;
     }
 
     //选中要pan的object
