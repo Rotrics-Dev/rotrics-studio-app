@@ -158,7 +158,7 @@
         "machine_center_is_zero": {
           "label": "Is Center Origin",
           "description": "Whether the X/Y coordinates of the zero position of the printer is at the center of the printable area.",
-          "default_value": false,
+          "default_value": true,
           "type": "bool",
           "settable_per_mesh": false,
           "settable_per_extruder": false,
