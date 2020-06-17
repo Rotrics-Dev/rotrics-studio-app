@@ -143,7 +143,7 @@
         "unit": "mm/min",
         "minimum_value": 1,
         "maximum_value": 10,
-        "hidden": "movement_mode === greyscale-line"
+        "hidden": true
       },
       "multi_pass": {
         "label": "Multi-Pass",

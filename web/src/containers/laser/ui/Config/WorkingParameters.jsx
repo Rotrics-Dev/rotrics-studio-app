@@ -99,19 +99,18 @@ class WorkingParameters extends PureComponent {
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
 
-
-        let jogSpeedHidden = false;
-        if (jog_speed) {
+        let jogSpeedHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
+        if (typeof jog_speed.hidden === "boolean"){
+            jogSpeedHidden = jog_speed.hidden;
+        } else if (typeof jog_speed.hidden === "string"){
             jogSpeedHidden = getHiddenValue(jog_speed.hidden, config);
-        } else {
-            jogSpeedHidden = true;
         }
 
-        let dwellTimeHidden = false;
-        if (dwell_time) {
+        let dwellTimeHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
+        if (typeof dwell_time.hidden === "boolean"){
+            dwellTimeHidden = dwell_time.hidden;
+        } else if (typeof dwell_time.hidden === "string"){
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
-        } else {
-            dwellTimeHidden = true;
         }
 
         return (
