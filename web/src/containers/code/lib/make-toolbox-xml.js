@@ -9,7 +9,7 @@ const motion = function () {
        <block type="motion_move_position">
             <value name="X">
                 <shadow id="movex" type="math_number">
-                    <field name="NUM">0</field>
+                    <field name="NUM">100</field>
                 </shadow>
             </value>
             <value name="Y">

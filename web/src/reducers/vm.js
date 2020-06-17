@@ -1,6 +1,6 @@
 import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
-import {actions as serialPortActions} from './serialPort';
+import {actions as gcodeSendActions} from './gcodeSend';
 
 const INIT_VM = 'INIT_VM';
 const SET_RUNNING = "SET_RUNNING";
@@ -72,14 +72,24 @@ export const actions = {
                 const {blockName, args} = data;
                 console.log("blockName: " + JSON.stringify(blockName))
                 console.log("args: " + JSON.stringify(args))
-
-                if (blockName === "motion_move_position") {
-                    const {x, y, z} = args;
-                    const cmd = "G0" + " X" + x + " Y" + y + " Z" + z;
-                    console.log("cmd: " + cmd);
-                    dispatch(serialPortActions.write(cmd));
-
+                let gcode = null;
+                switch (blockName) {
+                    case "motion_move_home":
+                        gcode = 'M1112';
+                        break;
+                    case "motion_move_position":
+                        const {x, y, z} = args;
+                        gcode = `G0 X${x} Y${y} Z${z}`;
+                        break;
+                    case "motion_move_origin":
+                        gcode = "G0 X0 Y0 Z0";
+                        break;
+                    case "motion_set_work_origin":
+                        gcode = "G92 X0 Y0 Z0";
+                        break;
                 }
+                console.log("gcode: " + gcode);
+                gcode && dispatch(gcodeSendActions.start(gcode));
             }
         );
     },
