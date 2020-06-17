@@ -15,6 +15,7 @@
 /electron/build-server
 /electron/output
 /electron/static/cache
+/electron/CuraEngine
 /electron/package-lock.json
 
 # Development Env (Jetbrains, Vim, macOS)
