@@ -1,37 +1,58 @@
 import React from 'react';
+import _ from 'lodash';
 import styles from './styles.css';
-import {Button, Modal, Select, Input, Space} from 'antd';
+import {Button, Modal, Select, Input, Space, notification} from 'antd';
 import {DisconnectOutlined, LinkOutlined} from '@ant-design/icons';
 
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
+import {getUuid} from '../../utils/index.js';
+
+const notificationKey = getUuid();
 
 class Index extends React.Component {
     state = {
-        visible: false, //serialPortModal visible
+        modalVisible: false, //serialPortModal visible
         serialPortPath: null, //当前选中的serial port path
     };
 
     componentDidMount() {
-        this.actions.getSerialPortPaths();
+        setInterval(() => {
+            this.props.getSerialPortPaths();
+        }, 1000)
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.state.serialPortPath && nextProps.paths.length > 0) {
-            this.setState({serialPortPath: nextProps.paths[nextProps.paths.length - 1]})
+        const countDif = nextProps.paths.length - this.props.paths.length;
+        if (countDif === 1) {
+            const dif = _.difference(nextProps.paths, this.props.paths);
+            notification.success({
+                key: notificationKey,
+                message: 'Cable Connected',
+                description: dif[0],
+                duration: 0
+            });
+        } else if (countDif === -1) {
+            const dif = _.difference(this.props.paths, nextProps.paths);
+            notification.error({
+                key: notificationKey,
+                message: 'Cable Disconnected',
+                description: dif[0],
+                duration: 0
+            });
         }
     }
 
     actions = {
         openSerialPortModal: () => {
             this.setState({
-                visible: true,
+                modalVisible: true,
             });
         },
         closeSerialPortModal: () => {
             this.setState({
-                visible: false,
+                modalVisible: false,
             });
         },
         openSerialPort: () => {
@@ -43,9 +64,6 @@ class Index extends React.Component {
         },
         selectPath: (serialPortPath) => {
             this.setState({serialPortPath})
-        },
-        getSerialPortPaths: () => {
-            this.props.getSerialPortPaths();
         },
         sendGcode: (e) => {
             const gcode = e.target.value;
@@ -79,7 +97,7 @@ class Index extends React.Component {
                         onClick={actions.openSerialPortModal}>Serial Port</Button>
                 <Modal
                     title="Serial Port"
-                    visible={state.visible}
+                    visible={state.modalVisible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
                         <Button key="connect" type="primary"
@@ -102,7 +120,6 @@ class Index extends React.Component {
                                     return <Select.Option key={item} value={item}>{item}</Select.Option>
                                 })}
                             </Select>
-                            <Button type="primary" onClick={actions.getSerialPortPaths}>get paths</Button>
                         </Space>
                     </Space>
                 </Modal>
@@ -121,7 +138,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {status, paths, path} = state.serialPort;
+    const {status, paths = [], path} = state.serialPort;
     return {
         serialPortStatus: status,
         paths,

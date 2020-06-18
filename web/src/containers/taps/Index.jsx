@@ -27,10 +27,11 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as p3dModelActions} from "../../reducers/p3dModel";
-import socket from "../../reducers/socket";
 import {Button, notification} from 'antd';
 
-const notificationKey = 'notificationKey';
+import {getUuid} from '../../utils/index.js';
+
+const notificationKey = getUuid();
 
 class Index extends React.Component {
     constructor(props) {
