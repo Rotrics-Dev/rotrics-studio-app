@@ -1,9 +1,7 @@
 import io from 'socket.io-client';
-import {EventEmitter} from "events"; //api和node event一样，但是可以运行在browser环境中，https://github.com/Gozala/events#readme
 
-class SocketClientManager extends EventEmitter {
+class SocketClientManager {
     constructor() {
-        super();
         this.socketClient = null;
         this.isSocketConnected = false;
     }
@@ -20,13 +18,13 @@ class SocketClientManager extends EventEmitter {
 
     /**
      * emit event to server vis this.socketClient
-     * @param event
+     * @param eventName
      * @param data
      * @returns {boolean} 是否成功
      */
-    emitToServer(event, data) {
+    emitToServer(eventName, data) {
         if (this.isSocketConnected) {
-            this.socketClient.emit(event, data);
+            this.socketClient.emit(eventName, data);
             return true;
         }
         return false;

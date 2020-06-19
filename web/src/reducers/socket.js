@@ -28,8 +28,7 @@ export const actions = {
             type: ACTION_UPDATE_STATE,
             state
         };
-    },
-
+    }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {

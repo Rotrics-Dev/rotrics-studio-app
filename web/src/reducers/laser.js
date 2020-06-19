@@ -152,10 +152,10 @@ const actions = {
         rendererParent.remove(selected);
         dispatch(actions._updateState({
             model: null,
-            modelCount: rendererParent.children.length,
             transformation: null,
             config: null,
             working_parameters: null,
+            modelCount: rendererParent.children.length,
             gcode: null,
             config_text: null
         }));
