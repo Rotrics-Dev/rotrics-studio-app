@@ -26,7 +26,7 @@ const toolPathStr2toolPathLines = (toolPathStr) => {
         //空行
         if (strLine.length === 0) {
             objLines.push({[TOKEN_EMPTY_LINE]: ""}); //{N: ""}
-            break;
+            continue;
         }
         const objLine = {}; //{G: 0, X: 0, Y: 0}
         let comment = null;

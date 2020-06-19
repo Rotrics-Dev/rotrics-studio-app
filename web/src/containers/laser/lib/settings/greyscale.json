@@ -1,4 +1,16 @@
 {
+  "start_gcode": {
+    "label": "Start Gcode",
+    "description": "Start Gcode description",
+    "default_value": ";----- Start Gcode Begin -----\nM5\nM2000 ;Custom cmd: line-mode\nM888 P1 ;Custom cmd: header is laser\n;----- Start Gcode Over -----\n\n",
+    "type": "str"
+  },
+  "end_gcode": {
+    "label": "End Gcode",
+    "description": "End Gcode description",
+    "default_value": "\n;----- End Gcode Begin -----\nM5\n;----- End Gcode Over -----\n",
+    "type": "str"
+  },
   "transformation": {
     "icon": "base64xxx",
     "label": "Transformation",

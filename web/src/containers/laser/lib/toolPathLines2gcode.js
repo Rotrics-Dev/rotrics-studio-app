@@ -12,11 +12,6 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     const translateY = y.default_value;
 
     const gcodeLines = [];
-    const header = [
-        '; Laser',
-        'M888 P1',
-        'M2000'
-    ];
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -60,8 +55,8 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
                 case 'P': // G4 P#dwell_time#
                     if (value === dwell_time_placeholder) {
                         value = dwell_time_value;
-                        cmds.push(key + value);
                     }
+                    cmds.push(key + value);
                     break;
                 default:
                     cmds.push(key + value);
@@ -88,7 +83,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
     gcodeStr = processGcodeMultiPass(gcodeStr, settings);
     gcodeStr = processGcodeForFixedPower(gcodeStr, settings);
 
-    return header.join('\n') + "\n\n" + gcodeStr;
+    return gcodeStr;
 };
 
 const processGcodeMultiPass = (gcodeStr, settings) => {

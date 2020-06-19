@@ -2,7 +2,6 @@ import Jimp from 'jimp';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 import {img2toolPathStrBw} from './toolPathStr4bw.js';
-import {TOOL_PATH_RENDER_METHOD_POINT} from "../constants.js"
 
 const algorithms = {
     Atkinson: [
@@ -204,10 +203,7 @@ const toolPathStr4greyscale = async (url, settings) => {
         img.mirror(false, true);
         return img2toolPathStrBw(img, settings);
     } else if (movement_mode === "greyscale-dot") {
-        let toolPathStr = img2toolPathStrGs(img, settings);
-        //渲染模式是point
-        toolPathStr = TOOL_PATH_RENDER_METHOD_POINT + '\n' + toolPathStr;
-        return toolPathStr;
+        return img2toolPathStrGs(img, settings);
     }
     return img2toolPathStrGs(img, settings);
 };
