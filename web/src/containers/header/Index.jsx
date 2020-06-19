@@ -56,8 +56,7 @@ class Index extends React.Component {
             });
         },
         openSerialPort: () => {
-            const {serialPortPath} = this.state;
-            this.props.openSerialPort(serialPortPath)
+            this.props.openSerialPort(this.state.serialPortPath)
         },
         closeSerialPort: () => {
             this.props.closeSerialPort()
@@ -77,7 +76,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const state = this.state;
-        const {serialPortStatus, paths, path} = this.props;
+        const {paths, path} = this.props;
 
         return (
             <div style={{
@@ -111,8 +110,8 @@ class Index extends React.Component {
                     ]}
                 >
                     <Space direction={"vertical"}>
-                        <h4>{"status: " + serialPortStatus}</h4>
-                        <h4>{"port: " + path}</h4>
+                        <h4>{"Status: " + path}</h4>
+                        <h4>{"Port: " + path}</h4>
                         <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
                         <Space direction={"horizontal"}>
                             <Select style={{width: 300}} onChange={actions.selectPath} value={state.serialPortPath}>
@@ -138,9 +137,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {status, paths = [], path} = state.serialPort;
+    const {paths, path} = state.serialPort;
     return {
-        serialPortStatus: status,
         paths,
         path
     };

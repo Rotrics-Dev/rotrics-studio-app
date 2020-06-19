@@ -1,39 +1,37 @@
 {
-  "config_text": {
-    "icon": "base64xxx",
-    "label": "Text",
-    "type": "category",
-    "description": "Config of Text",
-    "children": {
-      "text": {
-        "label": "Text",
-        "description": "text description",
-        "default_value": "R",
-        "type": "string"
-      },
-      "font": {
-        "label": "Font",
-        "description": "Font description",
-        "default_value": "Arial Black.woff",
-        "type": "enum",
-        "options": {
-          "Arial Black": "Arial Black.woff",
-          "Comic Sans MS": "Comic Sans MS.woff",
-          "Courier": "Courier.woff",
-          "Georgia": "Georgia.woff",
-          "Helvetica": "Helvetica.woff",
-          "Impact": "Impact.woff",
-          "Times": "Times.woff",
-          "Verdana": "Verdana.woff",
-          "IPA": "IPA.ttf"
-        }
-      },
-      "font_size": {
-        "label": "Font Size",
-        "description": "Font Size description",
-        "default_value": 50,
-        "type": "int"
+  "icon": "base64xxx",
+  "label": "Text",
+  "type": "category",
+  "description": "Config of Text",
+  "children": {
+    "text": {
+      "label": "Text",
+      "description": "text description",
+      "default_value": "R",
+      "type": "string"
+    },
+    "font": {
+      "label": "Font",
+      "description": "Font description",
+      "default_value": "Arial Black.woff",
+      "type": "enum",
+      "options": {
+        "Arial Black": "Arial Black.woff",
+        "Comic Sans MS": "Comic Sans MS.woff",
+        "Courier": "Courier.woff",
+        "Georgia": "Georgia.woff",
+        "Helvetica": "Helvetica.woff",
+        "Impact": "Impact.woff",
+        "Times": "Times.woff",
+        "Verdana": "Verdana.woff",
+        "IPA": "IPA.ttf"
       }
+    },
+    "font_size": {
+      "label": "Font Size",
+      "description": "Font Size description",
+      "default_value": 50,
+      "type": "int"
     }
   }
 }

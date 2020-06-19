@@ -1,7 +1,7 @@
 import isElectron from 'is-electron';
 import socketClientManager from "../socket/socketClientManager";
 
-const SET_STATUS = 'socket/SET_STATUS';
+const ACTION_UPDATE_STATE = 'socket/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     status: "disconnect" //connect/disconnect
@@ -13,25 +13,30 @@ export const actions = {
             window.serverIp = "http://localhost:9000"
         }
         console.log("serverIp: " + window.serverIp);
-        socketClientManager.setup(window.serverIp);
-
-        socketClientManager.on("socket", (status) => {
-            console.log("socket -> " + status)
-            dispatch(actions._setStatus(status));
+        socketClientManager.initSocketClient(window.serverIp);
+        socketClientManager.addServerListener("connect", () => {
+            console.log("socket connect")
+            dispatch(actions._updateState({status: "connect"}));
+        });
+        socketClientManager.addServerListener("disconnect", () => {
+            console.log("socket disconnect")
+            dispatch(actions._updateState({status: "disconnect"}));
         });
     },
-    _setStatus: (status) => {
+    _updateState: (state) => {
         return {
-            type: SET_STATUS,
-            value: status
+            type: ACTION_UPDATE_STATE,
+            state
         };
-    }
+    },
+
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case SET_STATUS:
-            return Object.assign({}, state, {status: action.value});
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }

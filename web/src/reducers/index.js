@@ -2,7 +2,6 @@ import {combineReducers} from 'redux';
 import gcodeSend from "./gcodeSend";
 import hotKeys from "./hotKeys";
 import laser from "./laser";
-import laserText from "./laserText";
 import writeAndDraw from "./writeAndDraw";
 import writeAndDrawText from "./writeAndDrawText"
 import p3dGcode from "./p3dGcode";
@@ -18,7 +17,6 @@ export default combineReducers({
     gcodeSend,
     hotKeys,
     laser,
-    laserText,
     writeAndDraw,
     writeAndDrawText,
     // p3d,

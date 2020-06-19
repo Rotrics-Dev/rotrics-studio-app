@@ -105,7 +105,7 @@ class Model2D extends THREE.Group {
         }
 
         //data: {toolPathLines, toolPathId}
-        socketClientManager.on(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
+        socketClientManager.addServerListener(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
             console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
@@ -286,7 +286,12 @@ class Model2D extends THREE.Group {
     _preview() {
         console.log("preview")
         this.toolPathId = getUuid();
-        socketClientManager.generateGcodeWriteAndDraw(this.url, this.settings, this.toolPathId, this.fileType)
+        socketClientManager.emitToServer(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {
+            url: this.url,
+            settings: this.settings,
+            toolPathId: this.toolPathId,
+            fileType: this.fileType
+        })
         console.time(this.toolPathId);
 
         this.isPreviewed = false;
@@ -294,7 +299,7 @@ class Model2D extends THREE.Group {
     }
 
     generateGcode() {
-        console.log(JSON.stringify(this.toolPathLines,null,2))
+        console.log(JSON.stringify(this.toolPathLines, null, 2))
         return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
 

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import settingsBw from "./settings/bw.json";
 import settingsGs from "./settings/greyscale.json";
 import settingsSvg from "./settings/svg.json";
+import config_text from "./settings/config_text.json";
 
 import {degree2radian} from '../../../utils/index.js';
 import {getUuid} from '../../../utils/index.js';
@@ -11,9 +12,7 @@ import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
-import {
-    TOOL_PATH_GENERATE_LASER
-} from "../../../constants.js"
+import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
 
 /**
  * 根据限制，重新计算width，height
@@ -104,13 +103,17 @@ class Model2D extends THREE.Group {
                 break;
         }
 
+        if (this.fileType === "text") {
+            this.config_text = _.cloneDeep(config_text);
+        }
+
         //data: {toolPathLines, toolPathId}
-        socketClientManager.on(TOOL_PATH_GENERATE_LASER, (data) => {
-            console.timeEnd(this.toolPathId);
+        socketClientManager.addServerListener(TOOL_PATH_GENERATE_LASER, (data) => {
+            // console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
                 this.isPreviewed = true;
-                this.dispatchEvent({type: 'preview'});
+                this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
     }
@@ -148,7 +151,7 @@ class Model2D extends THREE.Group {
         this._display('img');
         this._display('edge');
 
-        this._preview();
+        // this.preview();
     }
 
     loadToolPath(toolPathLines) {
@@ -243,7 +246,7 @@ class Model2D extends THREE.Group {
         //todo: setting是否变化，决定preview
         if (preview) {
             this._display("img");
-            this._preview();
+            this.preview();
         }
     }
 
@@ -259,7 +262,7 @@ class Model2D extends THREE.Group {
         }
 
         //todo: config是否变化，决定preview
-        this._preview();
+        this.preview();
     }
 
     updateWorkingParameters(key, value) {
@@ -283,14 +286,18 @@ class Model2D extends THREE.Group {
     }
 
     //生成tool path
-    _preview() {
-        console.log("preview")
+    preview() {
         this.toolPathId = getUuid();
-        socketClientManager.generateGcodeLaser(this.url, this.settings, this.toolPathId, this.fileType)
+        socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
+            url: this.url,
+            settings: this.settings,
+            toolPathId: this.toolPathId,
+            fileType: this.fileType
+        });
         console.time(this.toolPathId);
 
         this.isPreviewed = false;
-        this.dispatchEvent({type: 'preview'});
+        this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
     generateGcode() {

@@ -2,9 +2,7 @@ import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input, Row, Col} from 'antd';
 import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
-import {actions as laserTextActions} from '../../../../reducers/laserText';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import _ from 'lodash';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
@@ -125,8 +123,7 @@ class ConfigText extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {model, config} = state.laser;
-    const {config_text} = state.laserText;
+    const {model, config, config_text} = state.laser;
     return {
         model,
         config,
@@ -136,7 +133,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateConfigText: (key, value) => dispatch(laserTextActions.updateConfigText(key, value)),
+        updateConfigText: (key, value) => dispatch(laserActions.updateConfigText(key, value)),
         updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
     };
 };

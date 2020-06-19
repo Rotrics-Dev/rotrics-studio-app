@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
@@ -17,9 +16,6 @@ import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
-import Model2D from "../../lib/Model2D";
-import {uploadImage, generateSvg} from '../../../../api/index.js';
-import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as laserActions} from "../../../../reducers/laser";
@@ -47,55 +43,29 @@ const getAccept = (fileType) => {
 class Index extends React.Component {
     fileInput = React.createRef();
     state = {
-        fileType: '', // bw, greyscale, vector
+        fileType: '', // bw, greyscale, svg, text
         accept: '',
     };
 
     actions = {
-        onChangeFile: async (event) => {
+        onChangeFile: (event) => {
             //bw, greyscale, svg
             const file = event.target.files[0];
             const fileType = this.state.fileType;
-            const response = await uploadImage(file);
-            const {url, width, height} = response;
-            console.log("response: " + JSON.stringify(response))
-
-            const model = new Model2D(fileType);
-            model.loadImg(url, width, height);
-
-            this.props.addModel(model);
+            this.props.addModel(fileType, file);
         },
-        onClickToUpload: async (fileType) => {
+        onClickToUpload: (fileType) => {
             if (fileType === "text") {
-                const config = _.cloneDeep(config_text);
-                const svg = await generateSvg(config.config_text);
-
-                const filename = "text.svg";
-                const blob = new Blob([svg], {type: 'text/plain'});
-                const file = new File([blob], filename);
-
-                const response = await uploadImage(file);
-
-                const {url, width, height} = response;
-                console.log("response: " + JSON.stringify(response))
-
-                const model = new Model2D(fileType);
-                model.loadImg(url, width, height);
-
-                //增加数据config_text
-                model.userData = {config_text: config.config_text};
-
-                this.props.addModel(model);
-                return;
+                this.props.addModel(fileType);
+            } else {
+                this.setState({
+                    fileType,
+                    accept: getAccept(fileType)
+                }, () => {
+                    this.fileInput.current.value = null;
+                    this.fileInput.current.click();
+                });
             }
-
-            this.setState({
-                fileType,
-                accept: getAccept(fileType)
-            }, () => {
-                this.fileInput.current.value = null;
-                this.fileInput.current.click();
-            });
         },
         generateGcode: () => {
             if (this.actions._checkStatus4gcode("generateGcode")) {
@@ -162,7 +132,7 @@ class Index extends React.Component {
 
     render() {
         const {accept} = this.state;
-        const {fileTypeSelected} = this.props;
+        const {model} = this.props;
         const actions = this.actions;
         return (
             <div style={{
@@ -196,7 +166,10 @@ class Index extends React.Component {
                     </Button>
                 </Space>
                 <Line/>
-                <h4 style={{paddingLeft: "10px", color: "grey"}}> {" selected image type: " + fileTypeSelected}</h4>
+                <h4 style={{
+                    paddingLeft: "10px",
+                    color: "grey"
+                }}> {" selected image type: " + (model ? model.fileType : "")}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -245,11 +218,10 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
     const {status} = state.serialPort;
     const {gcode, model, modelCount, isAllPreviewed} = state.laser;
-    let fileTypeSelected = model ? model.fileType : "";
     return {
         serialPortStatus: status,
         gcode,
-        fileTypeSelected,
+        model,
         isAllPreviewed,
         modelCount
     };
@@ -260,7 +232,7 @@ const mapDispatchToProps = (dispatch) => {
         startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
         //model
-        addModel: (model) => dispatch(laserActions.addModel(model)),
+        addModel: (fileType, file) => dispatch(laserActions.addModel(fileType, file)),
         generateGcode: () => dispatch(laserActions.generateGcode()),
     };
 };

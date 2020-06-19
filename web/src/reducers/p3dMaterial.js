@@ -1,14 +1,24 @@
-import p3dMaterialManager from "../containers/p3d/lib/p3dMaterialManager";
+import socketClientManager from "../socket/socketClientManager";
+import {P3D_MATERIAL_FETCH_ALL, P3D_MATERIAL_UPDATE} from "../constants";
 
-const SET_MATERIALS = 'p3dMaterial/SET_MATERIALS';
-const SET_NAME = 'p3dMaterial/SET_NAME';
+const ACTION_UPDATE_STATE = 'p3dMaterial/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     materials: [], //所有material
-    name: null,
+    name: null, //选中的material的name
 };
 
-const getByName = (materials, name) => {
+const _getAvailableOfficialName = (materials) => {
+    for (let i = 0; i < materials.length; i++) {
+        const item = materials[i];
+        if (item.isOfficial) {
+            return item.name;
+        }
+    }
+    return null;
+};
+
+const _getByName = (materials, name) => {
     for (let i = 0; i < materials.length; i++) {
         const item = materials[i];
         if (item.name === name) {
@@ -18,60 +28,108 @@ const getByName = (materials, name) => {
     return null;
 };
 
-export const actions = {
-    init: () => (dispatch) => {
-        p3dMaterialManager.on("onMaterialsChange", (materials) => {
-            dispatch(actions._setMaterials(materials));
+const _containName = (materials, name) => {
+    for (let i = 0; i < materials.length; i++) {
+        const item = materials[i];
+        if (item.name === name) {
+            return true;
+        }
+    }
+    return false;
+};
+
+const actions = {
+    _updateState: (state) => {
+        return {
+            type: ACTION_UPDATE_STATE,
+            state
+        };
+    },
+    init: () => (dispatch, getState) => {
+        socketClientManager.addServerListener("connect", () => {
+            dispatch(actions.fetchAll());
         });
-        p3dMaterialManager.on("onSelectedChange", (name) => {
-            dispatch(actions._setName(name));
+        socketClientManager.addServerListener("disconnect", () => {
+            dispatch(actions._updateState({
+                name: null,
+                materials: []
+            }));
+        });
+        socketClientManager.addServerListener(P3D_MATERIAL_FETCH_ALL, (materials) => {
+            //TODO: 判断是否有变化，有变化才emit
+            if (!_containName(materials, getState().p3dMaterial.name)) {
+                const name = _getAvailableOfficialName(materials);
+                dispatch(actions._updateState({
+                    name,
+                    materials
+                }));
+            }
         });
     },
     fetchAll: () => {
-        p3dMaterialManager.fetchAll();
+        socketClientManager.emitToServer(P3D_MATERIAL_FETCH_ALL);
         return {type: null};
     },
-    update: (key, value) => {
-        p3dMaterialManager.update(key, value);
+    /**
+     * @param key 例子: overrides.material_flow.default_value 或 name
+     * @param value
+     */
+    update: (key, value) => (dispatch, getState) => {
+        const {materials, name} = getState().p3dMaterial;
+
+        const keys = key.split('.');
+        if (keys.length !== 3) {
+            console.error("keys.length !== 3");
+            return {type: null};
+        }
+
+        const material = _getByName(materials, name);
+        if (!material) {
+            console.error("material is null");
+            return {type: null};
+        }
+
+        //更新内存
+        material[keys[0]][keys[1]][keys[2]] = value;
+        //更新server
+        socketClientManager.emitToServer(P3D_MATERIAL_UPDATE, {name, key, value});
+
         return {type: null};
     },
     rename: (newName) => {
-        p3dMaterialManager.rename(newName);
         return {type: null};
     },
     delete: (name) => {
-        p3dMaterialManager.delete(name);
         return {type: null};
     },
     clone: (name) => {
-        p3dMaterialManager.clone(name);
         return {type: null};
     },
-    select: (name) => {
-        p3dMaterialManager.select(name);
-        return {type: null};
-    },
-    _setMaterials: (materials) => {
-        return {
-            type: SET_MATERIALS,
-            value: materials
-        };
-    },
-    _setName: (name) => {
-        return {
-            type: SET_NAME,
-            value: name
-        };
+    select: (newName) => (dispatch, getState) => {
+        const {materials, name} = getState().p3dMaterial;
+
+        if (!_containName(materials, name)) {
+            console.error("name is not contained");
+            return;
+        }
+
+        if (newName !== name) {
+            dispatch(actions._updateState({name: newName}));
+        } else {
+            return {type: null};
+        }
     },
 };
 
-export default function reducer(state = INITIAL_STATE, action) {
+const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case SET_MATERIALS:
-            return Object.assign({}, state, {materials: action.value});
-        case SET_NAME:
-            return Object.assign({}, state, {name: action.value});
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }
-}
+};
+
+export {actions};
+export default reducer;

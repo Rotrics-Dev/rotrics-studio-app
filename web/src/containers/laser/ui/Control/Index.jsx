@@ -5,7 +5,7 @@ import styles from './styles.css';
 import DeviceControl from "../../../_deviceControl/Index.jsx"
 import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
-import laserManager from "../../lib/laserManager";
+import {getGcode4runBoundary} from "../../../../reducers/laser";
 
 const INIT_LASER_POWER = 1;
 
@@ -43,7 +43,8 @@ class Index extends React.Component {
             this.props.sendGcode(gcode);
         },
         runBoundary: () => {
-            const gcode = laserManager.getGcode4runBoundary();
+            const gcode = getGcode4runBoundary();
+            console.log(gcode)
             this.props.sendGcode(gcode)
         },
     };
@@ -55,7 +56,7 @@ class Index extends React.Component {
             <div>
                 <DeviceControl runBoundary={actions.runBoundary}/>
                 <Line/>
-                <div style={{ padding: "5px"}}>
+                <div style={{padding: "5px"}}>
                     <span>Laser</span>
                     <Switch style={{position: "absolute", right: "5px"}} checked={state.isLaserOn}
                             onChange={actions.switchLaser}/>

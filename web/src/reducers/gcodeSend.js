@@ -1,9 +1,7 @@
 import socketClientManager from "../socket/socketClientManager";
-import {
-    GCODE_UPDATE_SENDER_STATUS
-} from "../constants.js"
+import {GCODE_UPDATE_SENDER_STATUS, GCODE_APPEND_SEND, GCODE_START_SEND, GCODE_STOP_SEND} from "../constants";
 
-const SET_STATUS = 'gcodeSend/SET_STATUS';
+const ACTION_UPDATE_STATE = 'gcodeSend/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     status: ""
@@ -11,39 +9,38 @@ const INITIAL_STATE = {
 
 export const actions = {
     init: () => (dispatch) => {
-        socketClientManager.on("socket", (status) => {
-            if (status === "connect") {
-                socketClientManager.updateGcodeSenderStatus();
-            }
+        socketClientManager.addServerListener("connect", () => {
+            socketClientManager.emitToServer(GCODE_UPDATE_SENDER_STATUS);
         });
-        socketClientManager.on(GCODE_UPDATE_SENDER_STATUS, (status) => {
-            dispatch(actions._setStatus(status));
+        socketClientManager.addServerListener(GCODE_UPDATE_SENDER_STATUS, (status) => {
+            dispatch(actions._updateState({status}));
         });
     },
-    _setStatus: (status) => {
+    _updateState: (state) => {
         return {
-            type: SET_STATUS,
-            value: status
+            type: ACTION_UPDATE_STATE,
+            state
         };
     },
     start: (gcode) => {
-        socketClientManager.startSendGcode(gcode + "\n");
+        socketClientManager.emitToServer(GCODE_START_SEND, gcode + "\n");
         return {type: null};
     },
     append: (gcode) => {
-        socketClientManager.appendSendGcode(gcode);
+        socketClientManager.emitToServer(GCODE_APPEND_SEND, gcode);
         return {type: null};
     },
     stop: () => {
-        socketClientManager.stopSendGcode();
+        socketClientManager.emitToServer(GCODE_STOP_SEND);
         return {type: null};
     }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case SET_STATUS:
-            return Object.assign({}, state, {status: action.value});
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }

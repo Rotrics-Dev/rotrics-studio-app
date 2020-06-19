@@ -30,8 +30,6 @@ class Index extends React.Component {
             this.props.sendGcode(gcode);
         },
         runBoundary: () => {
-            // const gcode = laserManager.getGcode4runBoundary();
-            // this.props.sendGcode(gcode)
         },
     };
 
