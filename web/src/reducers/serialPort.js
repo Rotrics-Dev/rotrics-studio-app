@@ -52,10 +52,6 @@ export const actions = {
             state
         };
     },
-    getPaths: () => {
-        socketClientManager.emitToServer(SERIAL_PORT_GET_PATH);
-        return {type: null};
-    },
     open: (path) => () => {
         socketClientManager.emitToServer(SERIAL_PORT_OPEN, path);
         return {type: null};

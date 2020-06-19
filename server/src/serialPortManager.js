@@ -21,20 +21,24 @@ class SerialPortManager extends EventEmitter {
         super();
         this.serialPort = null;
         this.receivedBuffer = "";
-    }
+        setInterval(() => {
+            SerialPort.list().then(
+                (ports) => {
+                    const paths = ports.map(item => {
+                        return item.path;
+                    });
+                    this.emit(SERIAL_PORT_GET_PATH, paths);
 
-    getPaths() {
-        SerialPort.list().then(
-            (ports) => {
-                const paths = ports.map(item => {
-                    return item.path;
-                });
-                this.emit(SERIAL_PORT_GET_PATH, paths);
-            },
-            (error) => {
-                this.emit(SERIAL_PORT_ERROR, error);
-            }
-        )
+                    if (this.serialPort && !paths.includes(this.serialPort.path)) {
+                        this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
+                        this.serialPort = null;
+                    }
+                },
+                (error) => {
+                    this.emit(SERIAL_PORT_ERROR, error);
+                }
+            )
+        }, 300)
     }
 
     getOpened() {

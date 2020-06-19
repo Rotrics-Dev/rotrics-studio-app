@@ -14,33 +14,33 @@ const notificationKey = getUuid();
 class Index extends React.Component {
     state = {
         modalVisible: false, //serialPortModal visible
-        serialPortPath: null, //当前选中的serial port path
+        selectedPath: undefined, //当前选中的serial port path; 使用undefined而不是null，是因为undefined情况下，Select才会显示placeholder
     };
 
-    componentDidMount() {
-        setInterval(() => {
-            this.props.getSerialPortPaths();
-        }, 1000)
-    }
-
     componentWillReceiveProps(nextProps) {
-        const countDif = nextProps.paths.length - this.props.paths.length;
-        if (countDif === 1) {
-            const dif = _.difference(nextProps.paths, this.props.paths);
-            notification.success({
-                key: notificationKey,
-                message: 'Cable Connected',
-                description: dif[0],
-                duration: 0
-            });
-        } else if (countDif === -1) {
-            const dif = _.difference(this.props.paths, nextProps.paths);
-            notification.error({
-                key: notificationKey,
-                message: 'Cable Disconnected',
-                description: dif[0],
-                duration: 0
-            });
+        if (this.props.paths.length > 0) {
+            const countDif = nextProps.paths.length - this.props.paths.length;
+            if (countDif === 1) {
+                const dif = _.difference(nextProps.paths, this.props.paths);
+                notification.success({
+                    key: notificationKey,
+                    message: 'Cable Connected',
+                    description: dif[0],
+                    duration: 0
+                });
+            } else if (countDif === -1) {
+                const dif = _.difference(this.props.paths, nextProps.paths);
+                notification.error({
+                    key: notificationKey,
+                    message: 'Cable Disconnected',
+                    description: dif[0],
+                    duration: 0
+                });
+            }
+        }
+
+        if (this.props.paths.includes(this.state.selectedPath) && !nextProps.paths.includes(this.state.selectedPath)) {
+            this.setState({selectedPath: undefined});
         }
     }
 
@@ -56,13 +56,13 @@ class Index extends React.Component {
             });
         },
         openSerialPort: () => {
-            this.props.openSerialPort(this.state.serialPortPath)
+            this.props.openSerialPort(this.state.selectedPath)
         },
         closeSerialPort: () => {
             this.props.closeSerialPort()
         },
-        selectPath: (serialPortPath) => {
-            this.setState({serialPortPath})
+        selectPath: (selectedPath) => {
+            this.setState({selectedPath})
         },
         sendGcode: (e) => {
             const gcode = e.target.value;
@@ -78,6 +78,32 @@ class Index extends React.Component {
         const state = this.state;
         const {paths, path} = this.props;
 
+        const {selectedPath} = state;
+
+        let statusDes = "";
+        if (selectedPath) {
+            statusDes = (path === selectedPath) ? "opened" : "closed";
+        }
+
+        const options = [];
+        for (let i = 0; i < paths.length; i++) {
+            options.push({label: paths[i], value: paths[i]})
+        }
+
+        let openDisabled = false;
+        let closeDisabled = false;
+        if (!selectedPath) {
+            openDisabled = true;
+            closeDisabled = true;
+        } else {
+            if (selectedPath === path) {
+                openDisabled = true;
+                closeDisabled = false;
+            } else {
+                openDisabled = false;
+                closeDisabled = true;
+            }
+        }
         return (
             <div style={{
                 width: "400px",
@@ -99,27 +125,35 @@ class Index extends React.Component {
                     visible={state.modalVisible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
-                        <Button key="connect" type="primary"
-                                onClick={actions.openSerialPort}>
+                        <Button
+                            ghost
+                            key="connect"
+                            type="primary"
+                            disabled={openDisabled}
+                            onClick={actions.openSerialPort}>
                             Open
                         </Button>,
-                        <Button key="disconnect" type="primary"
-                                onClick={actions.closeSerialPort}>
+                        <Button
+                            ghost
+                            key="disconnect"
+                            type="primary"
+                            disabled={closeDisabled}
+                            onClick={actions.closeSerialPort}>
                             Close
                         </Button>,
                     ]}
                 >
                     <Space direction={"vertical"}>
-                        <h4>{"Status: " + path}</h4>
-                        <h4>{"Port: " + path}</h4>
+                        <h4>{`Status: ${statusDes}`}</h4>
                         <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
-                        <Space direction={"horizontal"}>
-                            <Select style={{width: 300}} onChange={actions.selectPath} value={state.serialPortPath}>
-                                {paths.map((item) => {
-                                    return <Select.Option key={item} value={item}>{item}</Select.Option>
-                                })}
-                            </Select>
-                        </Space>
+                        {
+
+                        }
+                        <Select style={{width: 300}}
+                                value={selectedPath}
+                                onChange={actions.selectPath}
+                                placeholder="Choose a port"
+                                options={options}/>
                     </Space>
                 </Modal>
                 <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
@@ -146,7 +180,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getSerialPortPaths: () => dispatch(serialPortActions.getPaths()),
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
