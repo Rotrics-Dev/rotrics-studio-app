@@ -43,6 +43,7 @@ const getGcode4runBoundary = () => {
     const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
     const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
     const gcodeArr = [];
+    gcodeArr.push("M2000");
     gcodeArr.push("G0 F800");
     gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
     // gcodeArr.push("M3 S255");

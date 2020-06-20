@@ -15,11 +15,11 @@ export const actions = {
         console.log("serverIp: " + window.serverIp);
         socketClientManager.initSocketClient(window.serverIp);
         socketClientManager.addServerListener("connect", () => {
-            console.log("socket connect")
+            console.log("socket -> connect")
             dispatch(actions._updateState({status: "connect"}));
         });
         socketClientManager.addServerListener("disconnect", () => {
-            console.log("socket disconnect")
+            console.log("socket -> disconnect")
             dispatch(actions._updateState({status: "disconnect"}));
         });
     },

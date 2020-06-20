@@ -9,6 +9,8 @@ import {getGcode4runBoundary} from "../../../../reducers/laser";
 
 const INIT_LASER_POWER = 1;
 
+// 目前没有办法：
+// 查询激光头的状态（固件可以添加）。和区分打印头（固件无法添加，看下一个版本的硬件吧）
 class Index extends React.Component {
     state = {
         isLaserOn: false,
@@ -19,16 +21,16 @@ class Index extends React.Component {
     //M5: laser off
     //M3 S${power, 0~255}: set laser power
     actions = {
-        switchLaser: (checked) => {
+        toggleLaser: (checked) => {
             this.setState({isLaserOn: checked, laserPower: INIT_LASER_POWER}, () => {
                 this.actions._sendGcode4laser();
             });
         },
-        changeLaserPower: (laserPower) => {
-            this.setState({laserPower})
+        changeLaserPower: (value) => {
+            this.setState({laserPower: value})
         },
-        afterChangeLaserPower: (laserPower) => {
-            this.setState({laserPower}, () => {
+        afterChangeLaserPower: (value) => {
+            this.setState({laserPower: value}, () => {
                 this.actions._sendGcode4laser();
             });
         },
@@ -44,6 +46,7 @@ class Index extends React.Component {
         },
         runBoundary: () => {
             const gcode = getGcode4runBoundary();
+            console.log("runBoundary：")
             console.log(gcode)
             this.props.sendGcode(gcode)
         },
@@ -59,7 +62,7 @@ class Index extends React.Component {
                 <div style={{padding: "5px"}}>
                     <span>Laser</span>
                     <Switch style={{position: "absolute", right: "5px"}} checked={state.isLaserOn}
-                            onChange={actions.switchLaser}/>
+                            onChange={actions.toggleLaser}/>
                     <Slider
                         style={{width: "95%"}}
                         min={0}
@@ -77,18 +80,11 @@ class Index extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {status} = state.serialPort;
-    return {
-        serialPortStatus: status
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
         sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(Index);
 

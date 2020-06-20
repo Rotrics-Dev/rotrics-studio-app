@@ -45,3 +45,6 @@ export const P3D_SETTING_FETCH_ALL = 'P3D_SETTING_FETCH_ALL';
 export const P3D_SETTING_UPDATE = 'P3D_SETTING_UPDATE';
 export const P3D_SETTING_DELETE = 'P3D_SETTING_DELETE';
 export const P3D_SETTING_CLONE = 'P3D_SETTING_CLONE';
+
+//message
+export const MSG_SERIAL_PORT_CLOSE_TOAST = 'Please open serial port first';

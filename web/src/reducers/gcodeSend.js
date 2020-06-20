@@ -1,5 +1,12 @@
+import {message} from 'antd';
 import socketClientManager from "../socket/socketClientManager";
-import {GCODE_UPDATE_SENDER_STATUS, GCODE_APPEND_SEND, GCODE_START_SEND, GCODE_STOP_SEND} from "../constants";
+import {
+    GCODE_UPDATE_SENDER_STATUS,
+    GCODE_APPEND_SEND,
+    GCODE_START_SEND,
+    GCODE_STOP_SEND,
+    MSG_SERIAL_PORT_CLOSE_TOAST
+} from "../constants";
 
 const ACTION_UPDATE_STATE = 'gcodeSend/ACTION_UPDATE_STATE';
 
@@ -22,16 +29,28 @@ export const actions = {
             state
         };
     },
-    start: (gcode) => {
-        socketClientManager.emitToServer(GCODE_START_SEND, gcode + "\n");
+    start: (gcode) => (dispatch, getState) => {
+        if (getState().serialPort.path) {
+            socketClientManager.emitToServer(GCODE_START_SEND, gcode + "\n");
+        } else {
+            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+        }
         return {type: null};
     },
-    append: (gcode) => {
-        socketClientManager.emitToServer(GCODE_APPEND_SEND, gcode);
+    append: (gcode) => (dispatch, getState) => {
+        if (getState().serialPort.path) {
+            socketClientManager.emitToServer(GCODE_APPEND_SEND, gcode);
+        } else {
+            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+        }
         return {type: null};
     },
-    stop: () => {
-        socketClientManager.emitToServer(GCODE_STOP_SEND);
+    stop: () => (dispatch, getState) => {
+        if (getState().serialPort.path) {
+            socketClientManager.emitToServer(GCODE_STOP_SEND);
+        } else {
+            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+        }
         return {type: null};
     }
 };

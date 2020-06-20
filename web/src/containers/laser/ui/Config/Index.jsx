@@ -216,10 +216,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {status} = state.serialPort;
     const {gcode, model, modelCount, isAllPreviewed} = state.laser;
     return {
-        serialPortStatus: status,
         gcode,
         model,
         isAllPreviewed,

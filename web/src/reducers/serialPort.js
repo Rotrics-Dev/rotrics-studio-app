@@ -1,3 +1,4 @@
+import {message} from 'antd';
 import socketClientManager from "../socket/socketClientManager";
 import {
     SERIAL_PORT_GET_PATH,
@@ -7,13 +8,15 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
     SERIAL_PORT_WRITE,
+    MSG_SERIAL_PORT_CLOSE_TOAST
 } from "../constants.js"
+
 
 const ACTION_UPDATE_STATE = 'serialPort/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     paths: [],
-    path: null //当前已连接的serial port的path
+    path: null //当前已连接的serial port的path; path为空，则表示serial port close；否则open
 };
 
 export const actions = {
@@ -38,7 +41,7 @@ export const actions = {
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ERROR, () => {
-            console.error("err")
+            console.error("serial port -> err");
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
@@ -62,8 +65,12 @@ export const actions = {
         return {type: null};
     },
     //data: string|Buffer|Array<number>
-    write: (data) => {
-        socketClientManager.emitToServer(SERIAL_PORT_WRITE, data);
+    write: (data) => (dispatch, getState) => {
+        if (getState().serialPort.path) {
+            socketClientManager.emitToServer(SERIAL_PORT_WRITE, data);
+        } else {
+            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+        }
         return {type: null};
     },
 };

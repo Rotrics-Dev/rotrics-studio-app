@@ -35,12 +35,12 @@ class Index extends React.Component {
         z0: () => {
             this.props.sendGcode("G0 Z0")
         },
-        leftTop: () => {
-            this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
-        },
         //others
         home: () => {
             this.props.sendGcode("M1112")
+        },
+        leftTop: () => {
+            this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
         },
         leftBottom: () => {
             this.actions._move(`G0 Y${this.state.step} Z${-this.state.step}`)
@@ -81,18 +81,11 @@ class Index extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {status} = state.serialPort;
-    return {
-        serialPortStatus: status
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
         sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(Index);
 
