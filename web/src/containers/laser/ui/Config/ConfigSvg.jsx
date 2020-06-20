@@ -60,7 +60,7 @@ class ConfigSvg extends PureComponent {
                         <Col span={9} push={2}>
                             <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
                                          value={toFixed(fill_density.default_value, 0)}
-                                         onChange={actions.setFillDensity}/>
+                                         onAfterChange={actions.setFillDensity}/>
                         </Col>
                     </Row>
                     }

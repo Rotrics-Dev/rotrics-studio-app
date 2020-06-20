@@ -57,7 +57,7 @@ class ConfigBW extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={bw.minimum_value} max={bw.maximum_value}
                                          value={toFixed(bw.default_value, 0)}
-                                         onChange={actions.setBW}/>
+                                         onAfterChange={actions.setBW}/>
                         </Col>
                     </Row>
                     <Row>
@@ -68,7 +68,7 @@ class ConfigBW extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={density.minimum_value} max={density.maximum_value}
                                          value={toFixed(density.default_value, 0)}
-                                         onChange={actions.setDensity}/>
+                                         onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
                     <Row>

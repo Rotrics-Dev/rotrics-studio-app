@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
-import {Button, Modal, Select, Input, Space, notification} from 'antd';
+import {Button, Modal, Select, Input, Space, notification, InputNumber} from 'antd';
 import {DisconnectOutlined, LinkOutlined} from '@ant-design/icons';
 
 import "antd/dist/antd.css";

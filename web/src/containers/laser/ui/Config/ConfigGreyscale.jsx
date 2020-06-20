@@ -74,7 +74,7 @@ class ConfigGreyscale extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={contrast.minimum_value} max={contrast.maximum_value}
                                          value={toFixed(contrast.default_value, 0)}
-                                         onChange={actions.setContrast}/>
+                                         onAfterChange={actions.setContrast}/>
                         </Col>
                     </Row>
                     <Row>
@@ -84,7 +84,7 @@ class ConfigGreyscale extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={brightness.minimum_value} max={brightness.maximum_value}
                                          value={toFixed(brightness.default_value, 0)}
-                                         onChange={actions.setBrightness}/>
+                                         onAfterChange={actions.setBrightness}/>
                         </Col>
                     </Row>
                     <Row>
@@ -94,7 +94,7 @@ class ConfigGreyscale extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={white_clip.minimum_value} max={white_clip.maximum_value}
                                          value={toFixed(white_clip.default_value, 0)}
-                                         onChange={actions.setWhiteClip}/>
+                                         onAfterChange={actions.setWhiteClip}/>
                         </Col>
                     </Row>
                     <Row>
@@ -105,7 +105,7 @@ class ConfigGreyscale extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={density.minimum_value} max={density.maximum_value}
                                          value={toFixed(density.default_value, 0)}
-                                         onChange={actions.setDensity}/>
+                                         onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
                     <Row>

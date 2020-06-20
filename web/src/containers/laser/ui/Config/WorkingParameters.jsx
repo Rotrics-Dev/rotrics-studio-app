@@ -140,7 +140,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
                                          value={toFixed(work_speed.default_value, 0)}
-                                         onChange={actions.setWorkSpeed}/>
+                                         onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
                     {!jogSpeedHidden &&
@@ -152,7 +152,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
                                          value={toFixed(jog_speed.default_value, 0)}
-                                         onChange={actions.setJogSpeed}/>
+                                         onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
                     }
@@ -165,7 +165,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
                                          value={toFixed(dwell_time.default_value, 0)}
-                                         onChange={actions.setDwellTime}/>
+                                         onAfterChange={actions.setDwellTime}/>
                         </Col>
                     </Row>
                     }
@@ -185,7 +185,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9} push={2}>
                             <NumberInput min={passes.minimum_value} max={passes.maximum_value}
                                          value={toFixed(passes.default_value, 0)}
-                                         onChange={actions.setMultiPassPasses}/>
+                                         onAfterChange={actions.setMultiPassPasses}/>
                         </Col>
                     </Row>
                     }
@@ -198,7 +198,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9} push={2}>
                             <NumberInput min={pass_depth.minimum_value} max={pass_depth.maximum_value}
                                          value={toFixed(pass_depth.default_value, 0)}
-                                         onChange={actions.setMultiPassPassDepth}/>
+                                         onAfterChange={actions.setMultiPassPassDepth}/>
                         </Col>
                     </Row>
                     }
@@ -219,7 +219,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9} push={2}>
                             <NumberInput min={power.minimum_value} max={power.maximum_value}
                                          value={toFixed(power.default_value, 0)}
-                                         onChange={actions.setFixedPowerPower}/> </Col>
+                                         onAfterChange={actions.setFixedPowerPower}/> </Col>
                     </Row>
                     }
                 </div>
