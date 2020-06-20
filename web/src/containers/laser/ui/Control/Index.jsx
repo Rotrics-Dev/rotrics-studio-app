@@ -82,7 +82,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
+        sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode, false)),
     };
 };
 

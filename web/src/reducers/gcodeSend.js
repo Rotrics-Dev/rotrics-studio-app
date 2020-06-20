@@ -4,23 +4,41 @@ import {
     GCODE_UPDATE_SENDER_STATUS,
     GCODE_APPEND_SEND,
     GCODE_START_SEND,
+    GCODE_START_SEND_REQUIRE_STATUS,
     GCODE_STOP_SEND,
-    MSG_SERIAL_PORT_CLOSE_TOAST
+    MSG_SERIAL_PORT_CLOSE_TOAST, SERIAL_PORT_WRITE
 } from "../constants";
 
 const ACTION_UPDATE_STATE = 'gcodeSend/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    status: ""
+    status: "",
+    lineCountTotal: 0,
+    lineCountSend: 0,
+    lineCountSkipped: 0
 };
 
 export const actions = {
-    init: () => (dispatch) => {
+    init: () => (dispatch, getState) => {
         socketClientManager.addServerListener("connect", () => {
             socketClientManager.emitToServer(GCODE_UPDATE_SENDER_STATUS);
         });
-        socketClientManager.addServerListener(GCODE_UPDATE_SENDER_STATUS, (status) => {
-            dispatch(actions._updateState({status}));
+        socketClientManager.addServerListener(GCODE_UPDATE_SENDER_STATUS, (data) => {
+            //见: gcodeSender.js _emitStatus
+            //data: {status, lineCountTotal, lineCountSend, lineCountSkipped};
+            const {status} = data;
+            switch (status) {
+                case "start":
+                    message.success("Sending Start");
+                    break;
+                case "end":
+                    message.success("Sending End");
+                    break;
+                case "stopped":
+                    message.success("Sending Stopped");
+                    break;
+            }
+            dispatch(actions._updateState({...data}));
         });
     },
     _updateState: (state) => {
@@ -29,9 +47,9 @@ export const actions = {
             state
         };
     },
-    start: (gcode) => (dispatch, getState) => {
+    start: (gcode, requireStatus = true) => (dispatch, getState) => {
         if (getState().serialPort.path) {
-            socketClientManager.emitToServer(GCODE_START_SEND, gcode + "\n");
+            socketClientManager.emitToServer(GCODE_START_SEND, {gcode: gcode + "\n", requireStatus});
         } else {
             message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }

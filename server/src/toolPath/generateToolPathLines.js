@@ -36,7 +36,8 @@ const preHandle = (toolPathStr, settings) => {
     }
     const start_gcode = settings.start_gcode.default_value;
     const end_gcode = settings.end_gcode.default_value;
-    return (toolPathRenderMethod + "\n" + start_gcode + toolPathStr + end_gcode);
+
+    return [toolPathRenderMethod, start_gcode, toolPathStr, end_gcode].join("\n")
 };
 
 export default generateToolPathLines;

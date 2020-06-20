@@ -164,7 +164,10 @@ const setupSocket = () => {
             socket.on(SERIAL_PORT_WRITE, data => serialPortManager.write(data));
 
             //gcode send
-            socket.on(GCODE_START_SEND, (gcode) => gcodeSender.start(gcode));
+            socket.on(GCODE_START_SEND, (data) => {
+                const {gcode, requireStatus} = data;
+                gcodeSender.start(gcode, requireStatus)
+            });
             socket.on(GCODE_APPEND_SEND, (gcode) => gcodeSender.append(gcode));
             socket.on(GCODE_STOP_SEND, () => gcodeSender.stop());
             socket.on(GCODE_UPDATE_SENDER_STATUS, () => {
@@ -283,8 +286,8 @@ const setupSocket = () => {
                 gcodeSender.onSerialPortData(data)
             });
 
-            gcodeSender.on(GCODE_UPDATE_SENDER_STATUS, (status) => {
-                socket.emit(GCODE_UPDATE_SENDER_STATUS, status);
+            gcodeSender.on(GCODE_UPDATE_SENDER_STATUS, (data) => {
+                socket.emit(GCODE_UPDATE_SENDER_STATUS, data);
             });
         }
     );
