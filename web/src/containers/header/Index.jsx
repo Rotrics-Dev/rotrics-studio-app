@@ -9,7 +9,8 @@ import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';
 
-const notificationKey = getUuid();
+const notificationKeyConnected = getUuid();
+const notificationKeyDisconnected = getUuid();
 
 class Index extends React.Component {
     state = {
@@ -23,19 +24,21 @@ class Index extends React.Component {
             if (countDif === 1) {
                 const dif = _.difference(nextProps.paths, this.props.paths);
                 notification.success({
-                    key: notificationKey,
+                    key: notificationKeyConnected,
                     message: 'Cable Connected',
                     description: dif[0],
-                    duration: 0
+                    // duration: 3
                 });
+                notification.close(notificationKeyDisconnected);
             } else if (countDif === -1) {
                 const dif = _.difference(this.props.paths, nextProps.paths);
                 notification.error({
-                    key: notificationKey,
+                    key: notificationKeyDisconnected,
                     message: 'Cable Disconnected',
                     description: dif[0],
-                    duration: 0
+                    // duration: 3
                 });
+                notification.close(notificationKeyConnected)
             }
         }
 
