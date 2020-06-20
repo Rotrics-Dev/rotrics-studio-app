@@ -1,8 +1,6 @@
 import EventEmitter from 'events';
 import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
-
-import {utf8bytes2string} from './utils/index.js';
 import {
     SERIAL_PORT_GET_PATH,
     SERIAL_PORT_GET_OPENED,
@@ -10,7 +8,6 @@ import {
     SERIAL_PORT_CLOSE,
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
-    SERIAL_PORT_WRITE
 } from "./constants.js"
 
 const baudRate = 9600;
@@ -20,8 +17,8 @@ class SerialPortManager extends EventEmitter {
     constructor() {
         super();
         this.serialPort = null;
-        this.receivedBuffer = "";
         setInterval(() => {
+            //定期返回paths
             SerialPort.list().then(
                 (ports) => {
                     const paths = ports.map(item => {
@@ -29,7 +26,9 @@ class SerialPortManager extends EventEmitter {
                     });
                     this.emit(SERIAL_PORT_GET_PATH, paths);
 
-                    if (this.serialPort && !paths.includes(this.serialPort.path)) {
+                    //serial port open后，被拔掉
+                    if (this.serialPort && this.serialPort.isOpen && !paths.includes(this.serialPort.path)) {
+                        console.log("serial port -> close: opened port is pulled out: " + this.serialPort.path);
                         this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
                         this.serialPort = null;
                     }
@@ -38,7 +37,7 @@ class SerialPortManager extends EventEmitter {
                     this.emit(SERIAL_PORT_ERROR, error);
                 }
             )
-        }, 300)
+        }, 500)
     }
 
     getOpened() {
@@ -52,7 +51,7 @@ class SerialPortManager extends EventEmitter {
 
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', (data) => {
-            console.log("###: " + JSON.stringify(data));
+            console.log("received line: " + JSON.stringify(data));
             this.emit(SERIAL_PORT_DATA, {received: data});
         });
 
@@ -72,39 +71,6 @@ class SerialPortManager extends EventEmitter {
             this.emit(SERIAL_PORT_ERROR);
             this.serialPort = null;
         });
-
-        //data: 类型是buffer的数组
-        //将buffer转为string，发送到前端
-        // this.serialPort.on("data", (buffer) => {
-        //     if (Buffer.isBuffer(buffer)) {
-        //         const arr = [];
-        //         for (let i = 0; i < buffer.length; i++) {
-        //             arr.push(buffer[i]);
-        //         }
-        //
-        //         const received = utf8bytes2string(arr);
-        //
-        //         console.log("received raw: " + received);
-        //
-        //         //全部\r\n, \r, 多个\n，都替换为一个\n
-        //         this.receivedBuffer += received.replace(/(\r\n|\r|\n)/g, '\n');
-        //         let bufferStr = "";
-        //         for (let i = 0; i < this.receivedBuffer.length; i++) {
-        //             const char = this.receivedBuffer.charAt(i);
-        //             if (char !== '\n') {
-        //                 bufferStr += char;
-        //             } else {
-        //                 console.log("received: " + bufferStr);
-        //                 this.emit(SERIAL_PORT_DATA, {received: bufferStr});
-        //                 bufferStr = "";
-        //             }
-        //         }
-        //         //剩余的buffer不能丢掉
-        //         this.receivedBuffer = bufferStr;
-        //     } else {
-        //         console.log("received data is not buffer: " + JSON.stringify(buffer))
-        //     }
-        // });
 
         this.serialPort.open((error) => {
             if (error) {
@@ -176,14 +142,14 @@ class SerialPortManager extends EventEmitter {
         if (this.serialPort && this.serialPort.isOpen) {
             this.serialPort.write(data, (error) => {
                 if (error) {
-                    console.log("write error: " + data);
+                    console.error("write error: " + data);
                     this.emit(SERIAL_PORT_ERROR, error);
                 } else {
                     // console.log("write ok: " + data);
                 }
             })
         } else {
-            console.log("Port is closed");
+            console.warn("Port is closed");
         }
     }
 }
