@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import _ from 'lodash';
 import FileSaver from 'file-saver';
 
 import styles from './styles.css';
@@ -10,20 +9,17 @@ import "antd/dist/antd.css";
 
 import Transformation from './Transformation.jsx';
 
-import ConfigGreyscale from './ConfigGreyscale.jsx';
-import ConfigBW from './ConfigBW.jsx';
 import ConfigSvg from './ConfigSvg.jsx';
 import ConfigText from './ConfigText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
-import Model2D from "../../lib/Model2D";
-import {uploadImage, generateSvg} from '../../../../api/index.js';
-import config_text from "../../lib/settings/config_text.json";
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
+import {uploadImage} from '../../../../api/';
+import Model2D from "../../lib/Model2D";
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
     let accept = '';
@@ -44,23 +40,21 @@ const getAccept = (fileType) => {
     return accept;
 };
 
-
 class Index extends React.Component {
     fileInput = React.createRef();
     buildInSvgList = React.createRef();
     state = {
-        fileType: '', // bw, greyscale, vector
+        fileType: '', // bw, greyscale, svg, text
         accept: '',
     };
 
     actions = {
         onChooseBuildInSvg: async (event) => {
             this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
-            const response = await uploadImage(base64ToBlob(event.target.src.toString()));
-            const {url, width, height} = response;
-            const model = new Model2D('svg');
-            model.loadImg(url, width, height);
-            this.props.addModel(model);
+            const filename = "select.svg";
+            const blob = base64ToBlob(event.target.src.toString());
+            const file = new File([blob], filename);
+            this.props.addModel('svg', file);
         },
 
 
@@ -68,50 +62,26 @@ class Index extends React.Component {
             //bw, greyscale, svg
             const file = event.target.files[0];
             const fileType = this.state.fileType;
-            const response = await uploadImage(file);
-            const {url, width, height} = response;
-            console.log("response: " + JSON.stringify(response))
-
-            const model = new Model2D(fileType);
-            model.loadImg(url, width, height);
-
-            this.props.addModel(model);
+            this.props.addModel(fileType, file);
         },
         onClickToUpload: async (fileType) => {
             this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
             if (fileType === "text") {
-                const config = _.cloneDeep(config_text);
-                const svg = await generateSvg(config.config_text);
-
-                const filename = "text.svg";
-                const blob = new Blob([svg], {type: 'text/plain'});
-                const file = new File([blob], filename);
-
-                const response = await uploadImage(file);
-
-                const {url, width, height} = response;
-                console.log("response: " + JSON.stringify(response))
-
-                const model = new Model2D(fileType);
-                model.loadImg(url, width, height);
-
-                //增加数据config_text
-                model.userData = {config_text: config.config_text};
-                this.props.addModel(model);
-                return;
+                this.props.addModel(fileType);
+            } else {
+                this.setState({
+                    fileType,
+                    accept: getAccept(fileType)
+                }, () => {
+                    this.fileInput.current.value = null;
+                    this.fileInput.current.click();
+                });
             }
-
-            this.setState({
-                fileType,
-                accept: getAccept(fileType)
-            }, () => {
-                this.fileInput.current.value = null;
-                this.fileInput.current.click();
-            });
         },
         generateGcode: () => {
             if (this.actions._checkStatus4gcode("generateGcode")) {
-                this.props.generateGcode();
+                const {write_and_draw} = this.props;
+                this.props.generateGcode(write_and_draw);
                 message.success('Generate G-code success', 1);
             }
         },
@@ -172,10 +142,9 @@ class Index extends React.Component {
         },
     };
 
-
     render() {
         const {accept} = this.state;
-        const {fileTypeSelected} = this.props;
+        const {model} = this.props;
         const actions = this.actions;
         return (
             <div style={{
@@ -209,7 +178,10 @@ class Index extends React.Component {
                     </Button>
                 </Space>
                 <Line/>
-                <h4 style={{paddingLeft: "10px", color: "grey"}}> {" selected image type: " + fileTypeSelected}</h4>
+                <h4 style={{
+                    paddingLeft: "10px",
+                    color: "grey"
+                }}> {" selected image type: " + (model ? model.fileType : "")}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -218,20 +190,7 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-
                 <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "7px"}} size={7}>
-                    {/*<button*/}
-                    {/*    className={styles.btn_bw}*/}
-                    {/*    onClick={() => actions.onClickToUpload('bw')}*/}
-                    {/*>*/}
-                    {/*    <h6 className={styles.h_file_type}>B&W</h6>*/}
-                    {/*</button>*/}
-                    {/*<button*/}
-                    {/*    className={styles.btn_greyscale}*/}
-                    {/*    onClick={() => actions.onClickToUpload('greyscale')}*/}
-                    {/*>*/}
-                    {/*    <h6 className={styles.h_file_type}>GREYSCALE</h6>*/}
-                    {/*</button>*/}
                     <button
                         className={styles.btn_select}
                         onClick={() => {
@@ -267,8 +226,6 @@ class Index extends React.Component {
                     />
                 </div>
                 <Transformation/>
-                {/*<ConfigGreyscale/>*/}
-                {/*<ConfigBW/>*/}
                 <ConfigSvg/>
                 <ConfigText/>
                 <WorkingParameters/>
@@ -279,16 +236,16 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    // console.log("WriteAndDrawConfigIndexMapStateToProps\n"+JSON.stringify(state,null,2));
     const {status} = state.serialPort;
-    const {gcode, model, modelCount, isAllPreviewed} = state.writeAndDraw;
+    const {gcode, model, modelCount, isAllPreviewed, write_and_draw} = state.writeAndDraw;
     let fileTypeSelected = model ? model.fileType : "";
     return {
         serialPortStatus: status,
         gcode,
-        fileTypeSelected,
+        model,
         isAllPreviewed,
-        modelCount
+        modelCount,
+        write_and_draw
     };
 };
 
@@ -297,8 +254,8 @@ const mapDispatchToProps = (dispatch) => {
         startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
         //model
-        addModel: (model) => dispatch(writeAndDrawActions.addModel(model)),
-        generateGcode: () => dispatch(writeAndDrawActions.generateGcode()),
+        addModel: (fileType, file) => dispatch(writeAndDrawActions.addModel(fileType, file)),
+        generateGcode: (write_and_draw) => dispatch(writeAndDrawActions.generateGcode(write_and_draw)),
     };
 };
 

@@ -1,10 +1,10 @@
-const toolPathLines2gcode = (toolPathLines, settings) => {
+const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
     const work_speed_value = settings.working_parameters.children.work_speed.default_value;
     const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
-    const jog_pen_offset = settings.working_parameters.children.jog_pen_offset.default_value;//空闲抬笔高度
+    const jog_pen_offset = write_and_draw.jog_pen_offset.default_value;//空闲抬笔高度
 
     const {x, y} = settings.transformation.children;
     const translateX = x.default_value;

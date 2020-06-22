@@ -36,20 +36,20 @@ class Index extends React.Component {
             this.props.sendGcode("G0 Z0")
         },
         leftTop: () => {
-            this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
+            this.actions._move(`G0 X${-this.state.step} Y${this.state.step}`)
         },
         //others
         home: () => {
             this.props.sendGcode("M1112")
         },
         leftBottom: () => {
-            this.actions._move(`G0 Y${this.state.step} Z${-this.state.step}`)
+            this.actions._move(`G0 X${-this.state.step} Y${-this.state.step}`)
         },
         rightTop: () => {
-            this.actions._move(`G0 Y${-this.state.step} Z${this.state.step}`)
+            this.actions._move(`G0 X${this.state.step} Y${this.state.step}`)
         },
         rightBottom: () => {
-            this.actions._move(`G0 Y${-this.state.step} Z${-this.state.step}`)
+            this.actions._move(`G0 X${this.state.step} Y${-this.state.step}`)
         },
         //work
         runBoundary: () => {

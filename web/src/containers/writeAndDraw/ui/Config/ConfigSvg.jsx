@@ -22,7 +22,6 @@ class ConfigSvg extends PureComponent {
 
     render() {
         const {model, config} = this.props;
-        // console.log("ConfigSvg model===="+JSON.stringify(model)+"    config===="+JSON.stringify(config))
         if (!model || model.fileType !== "svg" || !config) {
             return null;
         }
