@@ -4,38 +4,21 @@ import _ from 'lodash';
 import settingsSvg from "./settings/svg.json";
 import config_text from "./settings/config_text.json";
 
-import {degree2radian} from '../../../utils';
-import {getUuid} from '../../../utils';
+import {degree2radian, getUuid, getAvailableSize} from '../../../utils/index.js';
 import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_WRITE_AND_DRAW} from "../../../constants.js"
 
-/**
- * 根据限制，重新计算width，height
- * 可以参考jimp的代码
- * todo: 最小值也要限制
- */
-const resize = (width, height, ratio, min_width, max_width, min_height, max_height) => {
-    //在范围内
-    if (width >= min_width && width <= max_width &&
-        height >= min_height && height <= max_height) {
-        return {width, height}
-    }
-    //todo: 找个开源项目，看看别人怎么处理的
-    if (width < min_width || height < min_height) {
-        width = min_width;
-        height = width / ratio;
-    } else if (width > max_width || height < max_height) {
-        width = max_width;
-        height = width / ratio;
-    }
-    return {width, height}
-};
-
 const getSizeRestriction = (fileType) => {
-    let settings = settingsSvg;
+    let settings = null;
+    switch (fileType) {
+        case "svg":
+        case "text":
+            settings = settingsSvg;
+            break;
+    }
     const children = settings.transformation.children;
     const min_width = children.width.minimum_value;
     const max_width = children.width.maximum_value;
@@ -54,15 +37,13 @@ class Model2D extends THREE.Group {
         super();
         this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
-        this._imgRatio = 1; // 图片原始的比例: width/height
+        //图片原始的size
+        this.img_width = 1;
+        this.img_height = 1;
         this._isSelected = false;
         this.settings = null;
 
-        const {min_width, max_width, min_height, max_height} = getSizeRestriction(fileType);
-        this.min_width = min_width;
-        this.max_width = max_width;
-        this.min_height = min_height;
-        this.max_height = max_height;
+        this.sizeRestriction = getSizeRestriction(fileType);
 
         //tool path
         this.toolPathObj3d = null; //tool path渲染的结果，Object3D
@@ -77,12 +58,6 @@ class Model2D extends THREE.Group {
 
         //需要deep clone
         switch (this.fileType) {
-            case "bw":
-                this.settings = _.cloneDeep(settingsBw);
-                break;
-            case "greyscale":
-                this.settings = _.cloneDeep(settingsGs);
-                break;
             case "svg":
             case "text":
                 this.settings = _.cloneDeep(settingsSvg);
@@ -99,6 +74,7 @@ class Model2D extends THREE.Group {
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
                 this.isPreviewed = true;
+                console.log("previewwd")
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
@@ -107,9 +83,12 @@ class Model2D extends THREE.Group {
     //url: 支持svg，raster
     loadImg(url, img_width, img_height) {
         this.url = url;
-        this._imgRatio = img_width / img_height;
-        const {width, height} = resize(img_width, img_height, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+        this.img_width = img_width;
+        this.img_height = img_height;
 
+        const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
+
+        console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(img_width, img_height, this.sizeRestriction)))
         // loader.setCrossOrigin("anonymous");
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
@@ -178,18 +157,14 @@ class Model2D extends THREE.Group {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value, preview) {
-        // console.log(key + " -> " + value)
+        console.log(key + " -> " + value)
         switch (key) {
-            case "img_width":
-                this.settings.transformation.children.img_width.default_value = value;
-                break;
-            case "img_height":
-                this.settings.transformation.children.img_height.default_value = value;
-                break;
             case "width": {
                 const mWidth = value;
-                const mHeight = mWidth / this._imgRatio;
-                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mHeight = this.img_height * (mWidth / this.img_width);
+                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
+
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -198,8 +173,10 @@ class Model2D extends THREE.Group {
             }
             case "height": {
                 const mHeight = value;
-                const mWidth = mHeight * this._imgRatio;
-                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mWidth = this.img_width * (mHeight / this.img_height);
+                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
+
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -273,6 +250,7 @@ class Model2D extends THREE.Group {
 
     //生成tool path
     preview() {
+        console.log("preview")
         this.toolPathId = getUuid();
         socketClientManager.emitToServer(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {
             url: this.url,

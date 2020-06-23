@@ -42,7 +42,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
                                          value={toFixed(work_speed.default_value, 0)}
-                                         onChange={actions.setWorkSpeed}/>
+                                         onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
                     <Row>
@@ -53,7 +53,7 @@ class WorkingParameters extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
                                          value={toFixed(jog_speed.default_value, 0)}
-                                         onChange={actions.setJogSpeed}/>
+                                         onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
                 </div>

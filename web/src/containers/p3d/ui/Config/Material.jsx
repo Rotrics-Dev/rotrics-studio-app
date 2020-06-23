@@ -92,7 +92,7 @@ class Material extends PureComponent {
                             <NumberInput
                                 disabled={isOfficial}
                                 value={toFixed(material_flow.default_value, 0)}
-                                onChange={actions.material_flow}/>
+                                onAfterChange={actions.material_flow}/>
                         </Col>
                     </Row>
                     <Row>
@@ -104,7 +104,7 @@ class Material extends PureComponent {
                             <NumberInput
                                 disabled={isOfficial}
                                 value={toFixed(material_print_temperature.default_value, 0)}
-                                onChange={actions.material_print_temperature}/>
+                                onAfterChange={actions.material_print_temperature}/>
                         </Col>
                     </Row>
                     <Row>
@@ -115,7 +115,7 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(material_print_temperature_layer_0.default_value, 0)}
-                                         onChange={actions.material_print_temperature_layer_0}/>
+                                         onAfterChange={actions.material_print_temperature_layer_0}/>
                         </Col>
                     </Row>
                     <Row>
@@ -126,7 +126,7 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(material_final_print_temperature.default_value, 0)}
-                                         onChange={actions.material_final_print_temperature}/>
+                                         onAfterChange={actions.material_final_print_temperature}/>
                         </Col>
                     </Row>
                 </div>

@@ -12,9 +12,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
 
     const gcodeLines = [];
     const header = [
-        '; Write And Draw',
-        'M888 P0',
-        'M2000',
         'G0 Z' + jog_pen_offset + ' F' + jog_speed_value,
     ];
 

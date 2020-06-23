@@ -17,9 +17,11 @@ const INITIAL_STATE = {
     gcode: null,
     //text独有
     config_text: null,
-    write_and_draw: Object.assign(write_and_draw)
+    write_and_draw: _.cloneDeep(write_and_draw)
 };
+
 let rendererParent = null;
+
 /**
  * 所有模型都preview后才能调用，控制逻辑由ui处理
  * @returns {Array}
@@ -29,8 +31,8 @@ const getGcode4runBoundary = () => {
     const max = Number.MAX_VALUE;
     let _minX = max, _minY = max;
     let _maxX = min, _maxY = min;
-    for (let i = 0; i < this.modelsParent.children.length; i++) {
-        const model = this.modelsParent.children[i];
+    for (let i = 0; i < rendererParent.children.length; i++) {
+        const model = rendererParent.children[i];
         const {toolPathLines, settings} = model;
         const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
         _minX = Math.min(minX, _minX);
@@ -51,12 +53,10 @@ const getGcode4runBoundary = () => {
     gcodeArr.push(`G1 X${p3.x} Y${p3.y}`);
     gcodeArr.push(`G1 X${p4.x} Y${p4.y}`);
     gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);
-    gcodeArr.push('M1112');
     // gcodeArr.push("M5");
     const gcode = gcodeArr.join("\n") + "\n";
     return gcode;
-}
-
+};
 
 const actions = {
     _updateState: (state) => {
@@ -69,9 +69,8 @@ const actions = {
         rendererParent = object3d;
         return {type: null};
     },
-
     addModel: (fileType, file) => async (dispatch, getState) => {
-        if (!["bw", "greyscale", "svg", "text"].includes(fileType)) {
+        if (!["svg", "text"].includes(fileType)) {
             return {type: null};
         }
 
@@ -126,8 +125,6 @@ const actions = {
         });
         model.preview();
     },
-
-
     selectModel: (model) => (dispatch, getState) => {
         const selected = getState().writeAndDraw.model;
         if (model === selected) {
@@ -272,7 +269,6 @@ const actions = {
         }));
     },
 };
-
 
 const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {

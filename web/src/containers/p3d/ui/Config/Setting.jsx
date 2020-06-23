@@ -90,7 +90,7 @@ class Setting extends PureComponent {
                             <NumberInput
                                 disabled={isOfficial}
                                 value={layer_height.default_value}
-                                onChange={actions.layer_height}/>
+                                onAfterChange={actions.layer_height}/>
                         </Col>
                     </Row>
                     <Row>
@@ -102,7 +102,7 @@ class Setting extends PureComponent {
                             <NumberInput
                                 disabled={isOfficial}
                                 value={toFixed(top_thickness.default_value, 2)}
-                                onChange={actions.top_thickness}/>
+                                onAfterChange={actions.top_thickness}/>
                         </Col>
                     </Row>
                     <Row>
@@ -114,7 +114,7 @@ class Setting extends PureComponent {
                             <NumberInput
                                 disabled={isOfficial}
                                 value={toFixed(infill_sparse_density.default_value, 0)}
-                                onChange={actions.infill_sparse_density}/>
+                                onAfterChange={actions.infill_sparse_density}/>
                         </Col>
                     </Row>
                     <Row>
@@ -125,7 +125,7 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(speed_infill.default_value, 0)}
-                                         onChange={actions.speed_infill}/>
+                                         onAfterChange={actions.speed_infill}/>
                         </Col>
                     </Row>
                     <Row>
@@ -136,7 +136,7 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(speed_wall_0.default_value, 0)}
-                                         onChange={actions.speed_wall_0}/>
+                                         onAfterChange={actions.speed_wall_0}/>
                         </Col>
                     </Row>
                     <Row>
@@ -147,7 +147,7 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(speed_wall_x.default_value, 0)}
-                                         onChange={actions.speed_wall_x}/>
+                                         onAfterChange={actions.speed_wall_x}/>
                         </Col>
                     </Row>
                     <Row>
@@ -158,7 +158,7 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput disabled={isOfficial}
                                          value={toFixed(speed_travel.default_value, 0)}
-                                         onChange={actions.speed_travel}/>
+                                         onAfterChange={actions.speed_travel}/>
                         </Col>
                     </Row>
                 </div>

@@ -6,94 +6,12 @@ import settingsGs from "./settings/greyscale.json";
 import settingsSvg from "./settings/svg.json";
 import config_text from "./settings/config_text.json";
 
-import {degree2radian} from '../../../utils/index.js';
-import {getUuid} from '../../../utils/index.js';
+import {degree2radian, getUuid, getAvailableSize} from '../../../utils/index.js';
 import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
-
-/**
- * 根据限制，重新计算width，height
- * @param img_width  图片原始width
- * @param img_height 图片原始height
- * @param sizeRestriction 对size的限制，max/min
- * @returns {*}
- */
-/**
- height
- ^
- |  7  |     6     |    5
- |     |           |
- |----------------------------- max_height
- |     |           |
- |     |           |
- |  8  |     9     |     4
- |     |           |
- |     |           |
- |----------------------------- min_height
- |     |           |
- |  1  |     2     |     3
- |     |           |
- |-----------------------------> width
- min_width      mix_width
- 如上图，分8种情况
- */
-const getAvailableSize = (img_width, img_height, sizeRestriction) => {
-    const {min_width, max_width, min_height, max_height} = sizeRestriction;
-    //case-1 ok
-    if (img_width <= min_width && img_height <= min_height) {
-        const scaleWidth = min_width / img_width;
-        const scaleHeight = min_height / img_height;
-        const scale = Math.max(scaleWidth, scaleHeight);
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-5 ok
-    if (img_width >= max_width && img_height >= max_height) {
-        const scaleWidth = max_width / img_width;
-        const scaleHeight = max_height / img_height;
-        const scale = Math.min(scaleWidth, scaleHeight);
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-2 ok
-    if (img_width >= min_width && img_width <= max_width &&
-        img_height <= min_height) {
-        return {width: img_width, height: img_height}
-    }
-    //case-6 ok
-    if (img_width >= min_width && img_width <= max_width &&
-        img_height >= max_height) {
-        const scale = max_height / img_height;
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-8 ok
-    if (img_width <= min_width &&
-        img_height >= min_height && img_height <= max_height) {
-        return {width: img_width, height: img_height}
-    }
-    //case-4 ok
-    if (img_width >= max_width &&
-        img_height >= min_height && img_height <= max_height) {
-        const scale = max_width / img_width;
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-3 ok
-    if (img_width >= max_width && img_height <= min_height) {
-        const scale = max_width / img_width;
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-7 ok
-    if (img_width <= min_width && img_height >= max_height) {
-        const scale = max_height / img_height;
-        return {width: img_width * scale, height: img_height * scale}
-    }
-    //case-9
-    // if (img_width >= min_width && img_width <= max_width &&
-    //     img_height >= min_height && img_height <= max_height) {
-    // }
-    return {width: img_width, height: img_height}
-};
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -133,7 +51,7 @@ class Model2D extends THREE.Group {
         this._isSelected = false;
         this.settings = null;
 
-        this.sizeRestriction =  getSizeRestriction(fileType);
+        this.sizeRestriction = getSizeRestriction(fileType);
 
         //tool path
         this.toolPathObj3d = null; //tool path渲染的结果，Object3D

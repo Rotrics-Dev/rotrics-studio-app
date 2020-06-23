@@ -56,7 +56,7 @@ class Transformation extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 value={toFixed(width.default_value, 0)}
-                                onChange={actions.setWidth}/>
+                                onAfterChange={actions.setWidth}/>
                         </Col>
                     </Row>
                     <Row>
@@ -67,7 +67,7 @@ class Transformation extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 value={toFixed(height.default_value, 0)}
-                                onChange={actions.setHeight}/>
+                                onAfterChange={actions.setHeight}/>
                         </Col>
                     </Row>
                     <Row>
@@ -78,7 +78,7 @@ class Transformation extends PureComponent {
                         <Col span={9}>
                             <NumberInput min={rotation.minimum_value} max={rotation.maximum_value}
                                          value={toFixed(rotation.default_value, 0)}
-                                         onChange={actions.setRotationDegree}/>
+                                         onAfterChange={actions.setRotationDegree}/>
                         </Col>
                     </Row>
                     <Row>
@@ -88,7 +88,7 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput min={x.minimum_value} max={x.maximum_value} value={toFixed(x.default_value, 0)}
-                                         onChange={actions.setX}/>
+                                         onAfterChange={actions.setX}/>
                         </Col>
                     </Row>
                     <Row>
@@ -98,7 +98,7 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput min={y.minimum_value} max={y.maximum_value} value={toFixed(y.default_value, 0)}
-                                         onChange={actions.setY}/>
+                                         onAfterChange={actions.setY}/>
                         </Col>
                     </Row>
                     <Row>
