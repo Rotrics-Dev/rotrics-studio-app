@@ -119,18 +119,6 @@ class WorkingParameters extends PureComponent {
                     padding: "5px",
                 }}>
                     <h4>{working_parameters.label}</h4>
-
-                    {/*<Row>*/}
-                    {/*<Col span={11}>*/}
-                    {/*<span>{print_order.label}</span>*/}
-                    {/*</Col>*/}
-                    {/*<Col span={8} push={5}>*/}
-                    {/*<NumberInput min={print_order.minimum_value} max={print_order.maximum_value}*/}
-                    {/*value={toFixed(print_order.default_value, 0)}*/}
-                    {/*onChange={actions.setPrintOrder}/>*/}
-                    {/*</Col>*/}
-                    {/*</Row>*/}
-
                     <Row>
                         <Col span={15}>
                             <span>{work_speed.label}</span>

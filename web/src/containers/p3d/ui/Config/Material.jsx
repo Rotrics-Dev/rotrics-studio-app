@@ -77,8 +77,10 @@ class Material extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
-                                disabled={true}
                                 precision={2}
+                                disabled={true}
+                                min={material_diameter.minimum_value}
+                                max={material_diameter.maximum_value}
                                 value={material_diameter.default_value}
                             />
                         </Col>
@@ -91,6 +93,8 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={material_flow.minimum_value}
+                                max={material_flow.maximum_value}
                                 value={material_flow.default_value}
                                 onAfterChange={actions.material_flow}/>
                         </Col>
@@ -103,6 +107,8 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={material_print_temperature.minimum_value}
+                                max={material_print_temperature.maximum_value}
                                 value={material_print_temperature.default_value}
                                 onAfterChange={actions.material_print_temperature}/>
                         </Col>
@@ -115,6 +121,8 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={material_print_temperature_layer_0.minimum_value}
+                                max={material_print_temperature_layer_0.maximum_value}
                                 value={material_print_temperature_layer_0.default_value}
                                 onAfterChange={actions.material_print_temperature_layer_0}/>
                         </Col>
@@ -127,6 +135,8 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={material_final_print_temperature.minimum_value}
+                                max={material_final_print_temperature.maximum_value}
                                 value={material_final_print_temperature.default_value}
                                 onAfterChange={actions.material_final_print_temperature}/>
                         </Col>

@@ -90,6 +90,8 @@ class Setting extends PureComponent {
                             <NumberInput
                                 precision={2}
                                 disabled={isOfficial}
+                                min={layer_height.minimum_value}
+                                max={layer_height.maximum_value}
                                 value={layer_height.default_value}
                                 onAfterChange={actions.layer_height}/>
                         </Col>
@@ -103,6 +105,8 @@ class Setting extends PureComponent {
                             <NumberInput
                                 precision={2}
                                 disabled={isOfficial}
+                                min={top_thickness.minimum_value}
+                                max={top_thickness.maximum_value}
                                 value={top_thickness.default_value}
                                 onAfterChange={actions.top_thickness}/>
                         </Col>
@@ -115,6 +119,8 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={infill_sparse_density.minimum_value}
+                                max={infill_sparse_density.maximum_value}
                                 value={infill_sparse_density.default_value}
                                 onAfterChange={actions.infill_sparse_density}/>
                         </Col>
@@ -127,6 +133,8 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={speed_infill.minimum_value}
+                                max={speed_infill.maximum_value}
                                 value={speed_infill.default_value}
                                 onAfterChange={actions.speed_infill}/>
                         </Col>
@@ -139,6 +147,8 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={speed_wall_0.minimum_value}
+                                max={speed_wall_0.maximum_value}
                                 value={speed_wall_0.default_value}
                                 onAfterChange={actions.speed_wall_0}/>
                         </Col>
@@ -151,6 +161,8 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={speed_wall_x.minimum_value}
+                                max={speed_wall_x.maximum_value}
                                 value={speed_wall_x.default_value}
                                 onAfterChange={actions.speed_wall_x}/>
                         </Col>
@@ -163,6 +175,8 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
+                                min={speed_travel.minimum_value}
+                                max={speed_travel.maximum_value}
                                 value={speed_travel.default_value}
                                 onAfterChange={actions.speed_travel}/>
                         </Col>

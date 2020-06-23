@@ -55,8 +55,8 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
-                                max={200}
-                                min={5}
+                                min={width.minimum_value}
+                                max={width.maximum_value}
                                 value={width.default_value}
                                 onAfterChange={actions.setWidth}/>
                         </Col>
@@ -68,8 +68,8 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
-                                max={200}
-                                min={5}
+                                min={height.minimum_value}
+                                max={height.maximum_value}
                                 value={height.default_value}
                                 onAfterChange={actions.setHeight}/>
                         </Col>
