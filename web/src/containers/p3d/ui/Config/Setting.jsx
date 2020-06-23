@@ -88,6 +88,7 @@ class Setting extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
+                                precision={2}
                                 disabled={isOfficial}
                                 value={layer_height.default_value}
                                 onAfterChange={actions.layer_height}/>
@@ -100,8 +101,9 @@ class Setting extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
+                                precision={2}
                                 disabled={isOfficial}
-                                value={toFixed(top_thickness.default_value, 2)}
+                                value={top_thickness.default_value}
                                 onAfterChange={actions.top_thickness}/>
                         </Col>
                     </Row>
@@ -113,7 +115,7 @@ class Setting extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
-                                value={toFixed(infill_sparse_density.default_value, 0)}
+                                value={infill_sparse_density.default_value}
                                 onAfterChange={actions.infill_sparse_density}/>
                         </Col>
                     </Row>
@@ -123,9 +125,10 @@ class Setting extends PureComponent {
                             <span>{"(" + speed_infill.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(speed_infill.default_value, 0)}
-                                         onAfterChange={actions.speed_infill}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={speed_infill.default_value}
+                                onAfterChange={actions.speed_infill}/>
                         </Col>
                     </Row>
                     <Row>
@@ -134,9 +137,10 @@ class Setting extends PureComponent {
                             <span>{"(" + speed_wall_0.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(speed_wall_0.default_value, 0)}
-                                         onAfterChange={actions.speed_wall_0}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={speed_wall_0.default_value}
+                                onAfterChange={actions.speed_wall_0}/>
                         </Col>
                     </Row>
                     <Row>
@@ -145,9 +149,10 @@ class Setting extends PureComponent {
                             <span>{"(" + speed_wall_x.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(speed_wall_x.default_value, 0)}
-                                         onAfterChange={actions.speed_wall_x}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={speed_wall_x.default_value}
+                                onAfterChange={actions.speed_wall_x}/>
                         </Col>
                     </Row>
                     <Row>
@@ -156,9 +161,10 @@ class Setting extends PureComponent {
                             <span>{"(" + speed_travel.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(speed_travel.default_value, 0)}
-                                         onAfterChange={actions.speed_travel}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={speed_travel.default_value}
+                                onAfterChange={actions.speed_travel}/>
                         </Col>
                     </Row>
                 </div>

@@ -1,7 +1,8 @@
 {
   "id": "activated_material",
   "version": 1,
-  "name": "Custom",
+  "name": "custom",
+  "label": "Custom",
   "inherits": "machine",
   "isOfficial": false,
   "metadata": {
@@ -28,7 +29,7 @@
       "label": "Flow",
       "description": "Flow compensation: the amount of material extruded is multiplied by this value.",
       "unit": "%",
-      "default_value": 19,
+      "default_value": 100,
       "type": "float",
       "minimum_value": "5",
       "minimum_value_warning": "50",
@@ -40,7 +41,7 @@
       "description": "The temperature used for printing.",
       "unit": "°C",
       "type": "float",
-      "default_value": 12,
+      "default_value": 120,
       "value": "default_material_print_temperature",
       "minimum_value": "-273.15",
       "minimum_value_warning": "0",
@@ -75,6 +76,5 @@
       "settable_per_mesh": false,
       "settable_per_extruder": true
     }
-  },
-  "material_flow": 10
+  }
 }

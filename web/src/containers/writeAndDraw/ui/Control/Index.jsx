@@ -5,7 +5,6 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getGcode4runBoundary} from "../../../../reducers/writeAndDraw";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import {toFixed} from "../../../../utils";
 import {Row, Col} from 'antd';
 
 class Index extends React.Component {
@@ -32,9 +31,11 @@ class Index extends React.Component {
                             <span>{"(" + jog_pen_offset.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={jog_pen_offset.minimum_value} max={jog_pen_offset.maximum_value}
-                                         value={toFixed(jog_pen_offset.default_value, 0)}
-                                         onAfterChange={actions.setJogPenOffset}/>
+                            <NumberInput
+                                min={jog_pen_offset.minimum_value}
+                                max={jog_pen_offset.maximum_value}
+                                value={jog_pen_offset.default_value}
+                                onAfterChange={actions.setJogPenOffset}/>
                         </Col>
                     </Row>
                 </div>

@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Space, Row, Col, Divider} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
@@ -55,9 +54,11 @@ class ConfigBW extends PureComponent {
                             <span>{bw.label}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={bw.minimum_value} max={bw.maximum_value}
-                                         value={toFixed(bw.default_value, 0)}
-                                         onAfterChange={actions.setBW}/>
+                            <NumberInput
+                                min={bw.minimum_value}
+                                max={bw.maximum_value}
+                                value={bw.default_value}
+                                onAfterChange={actions.setBW}/>
                         </Col>
                     </Row>
                     <Row>
@@ -66,9 +67,11 @@ class ConfigBW extends PureComponent {
                             <span>{"(" + density.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={density.minimum_value} max={density.maximum_value}
-                                         value={toFixed(density.default_value, 0)}
-                                         onAfterChange={actions.setDensity}/>
+                            <NumberInput
+                                min={density.minimum_value}
+                                max={density.maximum_value}
+                                value={density.default_value}
+                                onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
                     <Row>

@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Row, Col, Divider} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
@@ -72,9 +71,11 @@ class ConfigGreyscale extends PureComponent {
                             <span>{contrast.label}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={contrast.minimum_value} max={contrast.maximum_value}
-                                         value={toFixed(contrast.default_value, 0)}
-                                         onAfterChange={actions.setContrast}/>
+                            <NumberInput
+                                min={contrast.minimum_value}
+                                max={contrast.maximum_value}
+                                value={contrast.default_value}
+                                onAfterChange={actions.setContrast}/>
                         </Col>
                     </Row>
                     <Row>
@@ -82,9 +83,11 @@ class ConfigGreyscale extends PureComponent {
                             <span>{brightness.label}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={brightness.minimum_value} max={brightness.maximum_value}
-                                         value={toFixed(brightness.default_value, 0)}
-                                         onAfterChange={actions.setBrightness}/>
+                            <NumberInput
+                                min={brightness.minimum_value}
+                                max={brightness.maximum_value}
+                                value={brightness.default_value}
+                                onAfterChange={actions.setBrightness}/>
                         </Col>
                     </Row>
                     <Row>
@@ -92,9 +95,11 @@ class ConfigGreyscale extends PureComponent {
                             <span>{white_clip.label}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={white_clip.minimum_value} max={white_clip.maximum_value}
-                                         value={toFixed(white_clip.default_value, 0)}
-                                         onAfterChange={actions.setWhiteClip}/>
+                            <NumberInput
+                                min={white_clip.minimum_value}
+                                max={white_clip.maximum_value}
+                                value={white_clip.default_value}
+                                onAfterChange={actions.setWhiteClip}/>
                         </Col>
                     </Row>
                     <Row>
@@ -103,9 +108,11 @@ class ConfigGreyscale extends PureComponent {
                             <span>{"(" + density.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={density.minimum_value} max={density.maximum_value}
-                                         value={toFixed(density.default_value, 0)}
-                                         onAfterChange={actions.setDensity}/>
+                            <NumberInput
+                                min={density.minimum_value}
+                                max={density.maximum_value}
+                                value={density.default_value}
+                                onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
                     <Row>

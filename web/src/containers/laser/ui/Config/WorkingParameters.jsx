@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
@@ -100,16 +99,16 @@ class WorkingParameters extends PureComponent {
         const {power} = fixed_power.children;
 
         let jogSpeedHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
-        if (typeof jog_speed.hidden === "boolean"){
+        if (typeof jog_speed.hidden === "boolean") {
             jogSpeedHidden = jog_speed.hidden;
-        } else if (typeof jog_speed.hidden === "string"){
+        } else if (typeof jog_speed.hidden === "string") {
             jogSpeedHidden = getHiddenValue(jog_speed.hidden, config);
         }
 
         let dwellTimeHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
-        if (typeof dwell_time.hidden === "boolean"){
+        if (typeof dwell_time.hidden === "boolean") {
             dwellTimeHidden = dwell_time.hidden;
-        } else if (typeof dwell_time.hidden === "string"){
+        } else if (typeof dwell_time.hidden === "string") {
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
         }
 
@@ -138,9 +137,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + work_speed.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
-                                         value={toFixed(work_speed.default_value, 0)}
-                                         onAfterChange={actions.setWorkSpeed}/>
+                            <NumberInput
+                                min={work_speed.minimum_value}
+                                max={work_speed.maximum_value}
+                                value={work_speed.default_value}
+                                onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
                     {!jogSpeedHidden &&
@@ -150,9 +151,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + jog_speed.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
-                                         value={toFixed(jog_speed.default_value, 0)}
-                                         onAfterChange={actions.setJogSpeed}/>
+                            <NumberInput
+                                min={jog_speed.minimum_value}
+                                max={jog_speed.maximum_value}
+                                value={jog_speed.default_value}
+                                onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
                     }
@@ -163,9 +166,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + dwell_time.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={dwell_time.minimum_value} max={dwell_time.maximum_value}
-                                         value={toFixed(dwell_time.default_value, 0)}
-                                         onAfterChange={actions.setDwellTime}/>
+                            <NumberInput
+                                min={dwell_time.minimum_value}
+                                max={dwell_time.maximum_value}
+                                value={dwell_time.default_value}
+                                onAfterChange={actions.setDwellTime}/>
                         </Col>
                     </Row>
                     }
@@ -183,9 +188,11 @@ class WorkingParameters extends PureComponent {
                             <span>{passes.label}</span>
                         </Col>
                         <Col span={9} push={2}>
-                            <NumberInput min={passes.minimum_value} max={passes.maximum_value}
-                                         value={toFixed(passes.default_value, 0)}
-                                         onAfterChange={actions.setMultiPassPasses}/>
+                            <NumberInput
+                                min={passes.minimum_value}
+                                max={passes.maximum_value}
+                                value={passes.default_value}
+                                onAfterChange={actions.setMultiPassPasses}/>
                         </Col>
                     </Row>
                     }
@@ -196,9 +203,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + pass_depth.unit + ")"}</span>
                         </Col>
                         <Col span={9} push={2}>
-                            <NumberInput min={pass_depth.minimum_value} max={pass_depth.maximum_value}
-                                         value={toFixed(pass_depth.default_value, 0)}
-                                         onAfterChange={actions.setMultiPassPassDepth}/>
+                            <NumberInput
+                                min={pass_depth.minimum_value}
+                                max={pass_depth.maximum_value}
+                                value={pass_depth.default_value}
+                                onAfterChange={actions.setMultiPassPassDepth}/>
                         </Col>
                     </Row>
                     }
@@ -217,9 +226,12 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + power.unit + ")"}</span>
                         </Col>
                         <Col span={9} push={2}>
-                            <NumberInput min={power.minimum_value} max={power.maximum_value}
-                                         value={toFixed(power.default_value, 0)}
-                                         onAfterChange={actions.setFixedPowerPower}/> </Col>
+                            <NumberInput
+                                min={power.minimum_value}
+                                max={power.maximum_value}
+                                value={power.default_value}
+                                onAfterChange={actions.setFixedPowerPower}/>
+                        </Col>
                     </Row>
                     }
                 </div>

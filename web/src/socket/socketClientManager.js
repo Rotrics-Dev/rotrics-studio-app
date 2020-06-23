@@ -35,6 +35,10 @@ class SocketClientManager {
             listener(data);
         });
     }
+
+    removeAllServerListener(eventName) {
+        this.socketClient.removeAllListeners(eventName)
+    }
 }
 
 const socketClientManager = new SocketClientManager();

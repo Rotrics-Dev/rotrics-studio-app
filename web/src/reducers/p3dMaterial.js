@@ -63,6 +63,10 @@ const actions = {
                     name,
                     materials
                 }));
+            } else {
+                dispatch(actions._updateState({
+                    materials
+                }));
             }
         });
     },

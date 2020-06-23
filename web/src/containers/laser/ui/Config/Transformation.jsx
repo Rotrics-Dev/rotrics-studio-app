@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
@@ -20,10 +19,10 @@ class Transformation extends PureComponent {
             this.props.updateTransformation("rotation", value, true)
         },
         setX: (value) => {
-            this.props.updateTransformation("x", value, true)
+            this.props.updateTransformation("x", value, false)
         },
         setY: (value) => {
-            this.props.updateTransformation("y", value, true)
+            this.props.updateTransformation("y", value, false)
         },
         setFlipModel: (value) => {
             this.props.updateTransformation("flip_model", value, true)
@@ -58,7 +57,7 @@ class Transformation extends PureComponent {
                             <NumberInput
                                 max={200}
                                 min={5}
-                                value={toFixed(width.default_value, 0)}
+                                value={width.default_value}
                                 onAfterChange={actions.setWidth}/>
                         </Col>
                     </Row>
@@ -71,7 +70,7 @@ class Transformation extends PureComponent {
                             <NumberInput
                                 max={200}
                                 min={5}
-                                value={toFixed(height.default_value, 0)}
+                                value={height.default_value}
                                 onAfterChange={actions.setHeight}/>
                         </Col>
                     </Row>
@@ -81,9 +80,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + rotation.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={rotation.minimum_value} max={rotation.maximum_value}
-                                         value={toFixed(rotation.default_value, 0)}
-                                         onAfterChange={actions.setRotationDegree}/>
+                            <NumberInput
+                                min={rotation.minimum_value}
+                                max={rotation.maximum_value}
+                                value={rotation.default_value}
+                                onAfterChange={actions.setRotationDegree}/>
                         </Col>
                     </Row>
                     <Row>
@@ -92,8 +93,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + x.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={x.minimum_value} max={x.maximum_value} value={toFixed(x.default_value, 0)}
-                                         onAfterChange={actions.setX}/>
+                            <NumberInput
+                                min={x.minimum_value}
+                                max={x.maximum_value}
+                                value={x.default_value}
+                                onAfterChange={actions.setX}/>
                         </Col>
                     </Row>
                     <Row>
@@ -102,8 +106,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + y.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={y.minimum_value} max={y.maximum_value} value={toFixed(y.default_value, 0)}
-                                         onAfterChange={actions.setY}/>
+                            <NumberInput
+                                min={y.minimum_value}
+                                max={y.maximum_value}
+                                value={y.default_value}
+                                onAfterChange={actions.setY}/>
                         </Col>
                     </Row>
                     <Row>

@@ -27,7 +27,7 @@
         "label": "Width",
         "description": "Width description",
         "default_value": 5,
-        "type": "float",
+        "type": "int",
         "unit": "mm",
         "minimum_value": 5,
         "maximum_value": 200
@@ -36,7 +36,7 @@
         "label": "Height",
         "description": "Height description",
         "default_value": 5,
-        "type": "float",
+        "type": "int",
         "unit": "mm",
         "minimum_value": 5,
         "maximum_value": 200
@@ -54,7 +54,7 @@
         "label": "Move X",
         "description": "Move X description",
         "default_value": 0,
-        "type": "float",
+        "type": "int",
         "unit": "mm",
         "minimum_value": -100,
         "maximum_value": 100
@@ -63,7 +63,7 @@
         "label": "Move Y",
         "description": "Move Y description",
         "default_value": 0,
-        "type": "float",
+        "type": "int",
         "unit": "mm",
         "minimum_value": -100,
         "maximum_value": 100
@@ -175,10 +175,10 @@
             "label": "Pass Depth",
             "description": "Pass Depth description",
             "default_value": 1,
-            "type": "float",
+            "type": "int",
             "unit": "mm",
-            "minimum_value": 0.1,
-            "maximum_value": 10
+            "minimum_value": 1,
+            "maximum_value": 5
           }
         }
       },

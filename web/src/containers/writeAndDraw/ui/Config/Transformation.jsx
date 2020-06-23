@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
@@ -55,7 +54,7 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
-                                value={toFixed(width.default_value, 0)}
+                                value={width.default_value}
                                 onAfterChange={actions.setWidth}/>
                         </Col>
                     </Row>
@@ -66,7 +65,7 @@ class Transformation extends PureComponent {
                         </Col>
                         <Col span={9}>
                             <NumberInput
-                                value={toFixed(height.default_value, 0)}
+                                value={height.default_value}
                                 onAfterChange={actions.setHeight}/>
                         </Col>
                     </Row>
@@ -76,9 +75,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + rotation.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={rotation.minimum_value} max={rotation.maximum_value}
-                                         value={toFixed(rotation.default_value, 0)}
-                                         onAfterChange={actions.setRotationDegree}/>
+                            <NumberInput
+                                min={rotation.minimum_value}
+                                max={rotation.maximum_value}
+                                value={rotation.default_value}
+                                onAfterChange={actions.setRotationDegree}/>
                         </Col>
                     </Row>
                     <Row>
@@ -87,8 +88,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + x.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={x.minimum_value} max={x.maximum_value} value={toFixed(x.default_value, 0)}
-                                         onAfterChange={actions.setX}/>
+                            <NumberInput
+                                min={x.minimum_value}
+                                max={x.maximum_value}
+                                value={x.default_value}
+                                onAfterChange={actions.setX}/>
                         </Col>
                     </Row>
                     <Row>
@@ -97,8 +101,11 @@ class Transformation extends PureComponent {
                             <span>{"(" + y.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={y.minimum_value} max={y.maximum_value} value={toFixed(y.default_value, 0)}
-                                         onAfterChange={actions.setY}/>
+                            <NumberInput
+                                min={y.minimum_value}
+                                max={y.maximum_value}
+                                value={y.default_value}
+                                onAfterChange={actions.setY}/>
                         </Col>
                     </Row>
                     <Row>

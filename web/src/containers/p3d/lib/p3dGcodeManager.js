@@ -22,7 +22,7 @@ class P3DGcodeManager extends events.EventEmitter {
 
     startSlice(stlUrl, materialName, settingName, onSuccess, onProgress, onError) {
         const id = getUuid();
-        socketClientManager.removeAllListeners(P3D_SLICE_STATUS);
+        socketClientManager.removeAllServerListener(P3D_SLICE_STATUS);
         socketClientManager.addServerListener(P3D_SLICE_STATUS, (data) => {
             if (data.id !== id) {
                 return;

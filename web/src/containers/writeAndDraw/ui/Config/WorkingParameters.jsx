@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Row, Col} from 'antd';
-import {toFixed} from '../../../../utils';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
@@ -40,9 +39,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + work_speed.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={work_speed.minimum_value} max={work_speed.maximum_value}
-                                         value={toFixed(work_speed.default_value, 0)}
-                                         onAfterChange={actions.setWorkSpeed}/>
+                            <NumberInput
+                                min={work_speed.minimum_value}
+                                max={work_speed.maximum_value}
+                                value={work_speed.default_value}
+                                onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
                     <Row>
@@ -51,9 +52,11 @@ class WorkingParameters extends PureComponent {
                             <span>{"(" + jog_speed.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={jog_speed.minimum_value} max={jog_speed.maximum_value}
-                                         value={toFixed(jog_speed.default_value, 0)}
-                                         onAfterChange={actions.setJogSpeed}/>
+                            <NumberInput
+                                min={jog_speed.minimum_value}
+                                max={jog_speed.maximum_value}
+                                value={jog_speed.default_value}
+                                onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
                 </div>

@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
@@ -62,7 +61,7 @@ class Material extends PureComponent {
         for (let i = materials.length - 1; i > -1; i--) {
             const item = materials[i];
             materialEles.push(<Button key={i} type={name === item.name ? 'primary' : ''}
-                                      onClick={() => actions.select(item.name)}>{item.name}</Button>)
+                                      onClick={() => actions.select(item.name)}>{item.label}</Button>)
         }
         return (
             <div>
@@ -79,6 +78,7 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={true}
+                                precision={2}
                                 value={material_diameter.default_value}
                             />
                         </Col>
@@ -91,7 +91,7 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
-                                value={toFixed(material_flow.default_value, 0)}
+                                value={material_flow.default_value}
                                 onAfterChange={actions.material_flow}/>
                         </Col>
                     </Row>
@@ -103,7 +103,7 @@ class Material extends PureComponent {
                         <Col span={9}>
                             <NumberInput
                                 disabled={isOfficial}
-                                value={toFixed(material_print_temperature.default_value, 0)}
+                                value={material_print_temperature.default_value}
                                 onAfterChange={actions.material_print_temperature}/>
                         </Col>
                     </Row>
@@ -113,9 +113,10 @@ class Material extends PureComponent {
                             <span>{"(" + material_print_temperature_layer_0.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(material_print_temperature_layer_0.default_value, 0)}
-                                         onAfterChange={actions.material_print_temperature_layer_0}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={material_print_temperature_layer_0.default_value}
+                                onAfterChange={actions.material_print_temperature_layer_0}/>
                         </Col>
                     </Row>
                     <Row>
@@ -124,9 +125,10 @@ class Material extends PureComponent {
                             <span>{"(" + material_final_print_temperature.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput disabled={isOfficial}
-                                         value={toFixed(material_final_print_temperature.default_value, 0)}
-                                         onAfterChange={actions.material_final_print_temperature}/>
+                            <NumberInput
+                                disabled={isOfficial}
+                                value={material_final_print_temperature.default_value}
+                                onAfterChange={actions.material_final_print_temperature}/>
                         </Col>
                     </Row>
                 </div>

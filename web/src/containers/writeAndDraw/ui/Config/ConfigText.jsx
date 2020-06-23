@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
@@ -83,9 +82,11 @@ class ConfigText extends PureComponent {
                             <span>{font_size.label}</span>
                         </Col>
                         <Col span={9}>
-                            <NumberInput min={font_size.minimum_value} max={font_size.maximum_value}
-                                         value={toFixed(font_size.default_value, 0)}
-                                         onAfterChange={actions.setFontSize}/>
+                            <NumberInput
+                                min={font_size.minimum_value}
+                                max={font_size.maximum_value}
+                                value={font_size.default_value}
+                                onAfterChange={actions.setFontSize}/>
                         </Col>
                     </Row>
                     <Row>
@@ -110,9 +111,11 @@ class ConfigText extends PureComponent {
                             <span>{fill_density.label}</span>
                         </Col>
                         <Col span={9} push={2}>
-                            <NumberInput min={fill_density.minimum_value} max={fill_density.maximum_value}
-                                         value={toFixed(fill_density.default_value, 0)}
-                                         onAfterChange={actions.setFillDensity}/>
+                            <NumberInput
+                                min={fill_density.minimum_value}
+                                max={fill_density.maximum_value}
+                                value={fill_density.default_value}
+                                onAfterChange={actions.setFillDensity}/>
                         </Col>
                     </Row>
                     }

@@ -87,8 +87,6 @@ class Model2D extends THREE.Group {
         this.img_height = img_height;
 
         const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
-
-        console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(img_width, img_height, this.sizeRestriction)))
         // loader.setCrossOrigin("anonymous");
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
@@ -163,7 +161,6 @@ class Model2D extends THREE.Group {
                 const mWidth = value;
                 const mHeight = this.img_height * (mWidth / this.img_width);
                 const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
-                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
 
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
@@ -175,7 +172,6 @@ class Model2D extends THREE.Group {
                 const mHeight = value;
                 const mWidth = this.img_width * (mHeight / this.img_height);
                 const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
-                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
 
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;

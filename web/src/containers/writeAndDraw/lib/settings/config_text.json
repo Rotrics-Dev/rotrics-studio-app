@@ -7,7 +7,7 @@
     "text": {
       "label": "Text",
       "description": "text description",
-      "default_value": "R",
+      "default_value": "Rotrics",
       "type": "string"
     },
     "font": {
