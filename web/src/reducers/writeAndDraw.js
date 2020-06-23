@@ -1,180 +1,287 @@
 import _ from 'lodash';
-import writeAndDrawManager from "../containers/writeAndDraw/lib/writeAndDrawManager";
+import {computeBoundary} from "../containers/writeAndDraw/lib/toolPathUtils";
+import {uploadImage, generateSvg} from "../api";
+import Model2D from "../containers/writeAndDraw/lib/Model2D";
+import write_and_draw from '../containers/writeAndDraw/lib/settings/write_and_draw.json'
 
-const SET_MODEL = 'writeAndDraw/SET_MODEL';
-const SET_TRANSFORMATION = 'writeAndDraw/SET_TRANSFORMATION';
-const SET_CONFIG = 'writeAndDraw/SET_CONFIG';
-const SET_WORKING_PARAMETERS = 'writeAndDraw/SET_WORKING_PARAMETERS';
+const ACTION_UPDATE_STATE = 'writeAndDraw/ACTION_UPDATE_STATE';
 
-const SET_ALL_PREVIEWED = 'writeAndDraw/SET_ALL_PREVIEWED';
-const SET_GCODE = 'writeAndDraw/SET_GCODE';
-const SET_MODEL_COUNT = 'writeAndDraw/SET_MODEL_COUNT';
-
-const SELECT_MODEL = 'writeAndDraw/SELECT_MODEL';
 
 const INITIAL_STATE = {
-    modelCount: 0,
-    isAllPreviewed: false, //是否所有model全部previewed
-    gcode: "",
-    model: null,
+    model: null, //选中的model
     transformation: null,
     config: null,
-    working_parameters: null
+    working_parameters: null,
+    modelCount: 0,
+    isAllPreviewed: false, //是否所有model全部previewed
+    gcode: null,
+    //text独有
+    config_text: null,
+    write_and_draw: Object.assign(write_and_draw)
 };
+let rendererParent = null;
+/**
+ * 所有模型都preview后才能调用，控制逻辑由ui处理
+ * @returns {Array}
+ */
+const getGcode4runBoundary = () => {
+    const min = Number.MIN_VALUE;
+    const max = Number.MAX_VALUE;
+    let _minX = max, _minY = max;
+    let _maxX = min, _maxY = min;
+    for (let i = 0; i < this.modelsParent.children.length; i++) {
+        const model = this.modelsParent.children[i];
+        const {toolPathLines, settings} = model;
+        const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
+        _minX = Math.min(minX, _minX);
+        _maxX = Math.max(maxX, _maxX);
+        _minY = Math.min(minY, _minY);
+        _maxY = Math.max(maxY, _maxY);
+    }
 
-export const actions = {
-    init: () => (dispatch) => {
-        writeAndDrawManager.on("onChangeModel", (model2d) => {
-            // console.log("writeAndDrawText_onChangeModel_ON"+JSON.stringify(model2d))
+    const p1 = {x: _minX.toFixed(1), y: _minY.toFixed(1)};
+    const p2 = {x: _maxX.toFixed(1), y: _minY.toFixed(1)};
+    const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
+    const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
+    const gcodeArr = [];
+    gcodeArr.push('M2000')
+    gcodeArr.push(`G0 X${p1.x} Y${p1.y}` + 'Z10 F4000');
+    gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + 'Z0 F3000');
+    gcodeArr.push(`G1 X${p2.x} Y${p2.y}`);
+    gcodeArr.push(`G1 X${p3.x} Y${p3.y}`);
+    gcodeArr.push(`G1 X${p4.x} Y${p4.y}`);
+    gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);
+    gcodeArr.push('M1112');
+    // gcodeArr.push("M5");
+    const gcode = gcodeArr.join("\n") + "\n";
+    return gcode;
+}
 
-            dispatch(actions._setModelCount(writeAndDrawManager.modelsParent.children.length));
-            dispatch(actions._selectModel(model2d));
-        });
-        writeAndDrawManager.on("onChangeTransformation", (transformation) => {
-            dispatch(actions._setTransformation(_.cloneDeep(transformation)));
-        });
-        writeAndDrawManager.on("onChangeConfig", (config) => {
-            dispatch(actions._setConfig(_.cloneDeep(config)));
-        });
-        writeAndDrawManager.on("onChangeWorkingParameters", (working_parameters) => {
-            dispatch(actions._setWorkingParameters(_.cloneDeep(working_parameters)));
-        });
-        writeAndDrawManager.on("onPreviewStatusChange", (isAllPreviewed) => {
-            console.log("onPreviewStatusChange => " + isAllPreviewed)
-            dispatch(actions._setAllPreviewed(isAllPreviewed));
-        });
+
+const actions = {
+    _updateState: (state) => {
+        return {
+            type: ACTION_UPDATE_STATE,
+            state
+        };
     },
-    //modelsParent: three.Object3D
-    setModelsParent: (modelsParent) => {
-        writeAndDrawManager.setModelsParent(modelsParent);
+    setRendererParent: (object3d) => {
+        rendererParent = object3d;
         return {type: null};
     },
-    //model
-    addModel: (model) => {
-        writeAndDrawManager.addModel(model);
-        return {type: null};
+
+    addModel: (fileType, file) => async (dispatch, getState) => {
+        if (!["bw", "greyscale", "svg", "text"].includes(fileType)) {
+            return {type: null};
+        }
+
+        const model = new Model2D(fileType);
+        if (fileType === "text") {
+            const svg = await generateSvg(model.config_text);
+            const filename = "text.svg";
+            const blob = new Blob([svg], {type: 'text/plain'});
+            file = new File([blob], filename);
+        }
+
+        const response = await uploadImage(file);
+        const {url, width, height} = response;
+        console.log("## response: " + JSON.stringify(response))
+        model.loadImg(url, width, height);
+
+        for (const child of rendererParent.children) {
+            child.setSelected(false);
+        }
+        rendererParent.add(model);
+        model.setSelected(true);
+
+        const {transformation, config, working_parameters} = model.settings;
+        const {config_text} = model;
+        dispatch(actions._updateState({
+            model,
+            transformation,
+            config,
+            working_parameters,
+            modelCount: rendererParent.children.length,
+            isAllPreviewed: false,
+            gcode: null,
+            config_text
+        }));
+
+        // preview
+        model.addEventListener('preview', (event) => {
+            const {isPreviewed} = event.data;
+            if (!isPreviewed) {
+                dispatch(actions._updateState({isAllPreviewed: false}));
+            } else {
+                let isAllPreviewed = true;
+                for (let i = 0; i < rendererParent.children.length; i++) {
+                    const model = rendererParent.children[i];
+                    if (!model.isPreviewed) {
+                        isAllPreviewed = false;
+                        break;
+                    }
+                }
+                dispatch(actions._updateState({isAllPreviewed}));
+            }
+        });
+        model.preview();
     },
-    selectModel: (model) => {
-        writeAndDrawManager.selectModel(model);
-        return {type: null};
+
+
+    selectModel: (model) => (dispatch, getState) => {
+        const selected = getState().writeAndDraw.model;
+        if (model === selected) {
+            return {type: null};
+        }
+
+        for (const child of rendererParent.children) {
+            child.setSelected(false);
+        }
+        model.setSelected(true);
+
+        const {transformation, config, working_parameters} = model.settings;
+        const {config_text} = model;
+        dispatch(actions._updateState({
+            model,
+            transformation,
+            config,
+            working_parameters,
+            config_text
+        }));
     },
-    removeSelected: () => {
-        writeAndDrawManager.removeSelected();
-        return {type: null};
+    removeSelected: () => (dispatch, getState) => {
+        const selected = getState().writeAndDraw.model;
+        if (!selected) {
+            return {type: null};
+        }
+
+        rendererParent.remove(selected);
+        dispatch(actions._updateState({
+            model: null,
+            transformation: null,
+            config: null,
+            working_parameters: null,
+            modelCount: rendererParent.children.length,
+            gcode: null,
+            config_text: null
+        }));
     },
-    removeAll: () => {
-        writeAndDrawManager.removeAll();
-        return {type: null};
+    removeAll: () => (dispatch, getState) => {
+        if (rendererParent.children.length === 0) {
+            return {type: null};
+        }
+        rendererParent.remove(...rendererParent.children);
+        dispatch(actions._updateState({
+            model: null,
+            modelCount: rendererParent.children.length,
+            transformation: null,
+            config: null,
+            working_parameters: null,
+            gcode: null,
+            config_text: null
+        }));
     },
     duplicateSelected: () => {
-        writeAndDrawManager.duplicateSelected();
         return {type: null};
     },
     undo: () => {
-        console.log("undo")
         return {type: null};
     },
     redo: () => {
-        console.log("redo")
         return {type: null};
     },
     //update settings
-    updateTransformation: (key, value, preview) => {
-        writeAndDrawManager.updateTransformation(key, value, preview);
-        return {type: null};
+    updateTransformation: (key, value, preview) => (dispatch, getState) => {
+        const selected = getState().writeAndDraw.model;
+        if (!selected) {
+            return {type: null};
+        }
+        //TODO: 是否有更？
+        selected.updateTransformation(key, value, preview);
+        dispatch(actions._updateState({
+            transformation: _.cloneDeep(selected.settings.transformation),
+            gcode: null
+        }));
     },
-    updateConfig: (key, value) => {
-        writeAndDrawManager.updateConfig(key, value);
-        return {type: null};
+    updateConfig: (key, value) => (dispatch, getState) => {
+        const selected = getState().writeAndDraw.model;
+        if (!selected) {
+            return {type: null};
+        }
+        selected.updateConfig(key, value);
+        dispatch(actions._updateState({
+            config: _.cloneDeep(selected.settings.config),
+            gcode: null
+        }));
     },
-    updateWorkingParameters: (key, value) => {
-        writeAndDrawManager.updateWorkingParameters(key, value);
-        return {type: null};
+    updateWorkingParameters: (key, value) => (dispatch, getState) => {
+        const selected = getState().writeAndDraw.model;
+        if (!selected) {
+            return {type: null};
+        }
+        selected.updateWorkingParameters(key, value);
+        dispatch(actions._updateState({
+            working_parameters: _.cloneDeep(selected.settings.working_parameters),
+            gcode: null
+        }));
     },
-    _setModelCount: (count) => {
-        return {
-            type: SET_MODEL_COUNT,
-            value: count
-        };
+    updateWriteAndDrawParameters: (key, value) => (dispatch, getState) => {
+        const write_and_draw = getState().writeAndDraw.write_and_draw;
+        write_and_draw[key].default_value = value;
+        dispatch(actions._updateState({write_and_draw: _.cloneDeep(write_and_draw)}));
     },
-    //set settings/model
-    _setModel: (model) => {
-        return {
-            type: SET_MODEL,
-            value: model
-        };
-    },
-    _setTransformation: (transformatione) => {
-        return {
-            type: SET_TRANSFORMATION,
-            value: transformatione
-        };
-    },
-    _setConfig: (config) => {
-        return {
-            type: SET_CONFIG,
-            value: config
-        };
-    },
-    _setWorkingParameters: (workingParameters) => {
-        return {
-            type: SET_WORKING_PARAMETERS,
-            value: workingParameters
-        };
-    },
-    _setAllPreviewed: (isAllPreviewed) => {
-        return {
-            type: SET_ALL_PREVIEWED,
-            value: isAllPreviewed
-        };
-    },
-    _selectModel: (model) => {
-        return {
-            type: SELECT_MODEL,
-            value: model
-        };
+    //text独有
+    updateConfigText: (key, value) => async (dispatch, getState) => {
+        const {model} = getState().writeAndDraw;
+        if (!model || model.fileType !== "text") {
+            return {type: null};
+        }
+
+        const {config_text} = model;
+        config_text.children[key].default_value = value;
+
+        const svg = await generateSvg(config_text);
+        const filename = "text.svg";
+        const blob = new Blob([svg], {type: 'text/plain'});
+        const file = new File([blob], filename);
+
+        const response = await uploadImage(file);
+
+        const {url, width, height} = response;
+
+        model.loadImg(url, width, height);
+
+        model.preview();
+
+        const {transformation} = model.settings;
+        dispatch(actions._updateState({
+            config_text: _.cloneDeep(config_text),
+            transformation: _.cloneDeep(transformation),
+        }));
     },
     //g-code
-    generateGcode: () => {
-        const gcode = writeAndDrawManager.generateGcode();
-        console.log(gcode);
-        return {
-            type: SET_GCODE,
-            value: gcode
-        };
+    generateGcode: (write_and_draw) => (dispatch, getState) => {
+        const gcodeArr = [];
+        for (let i = 0; i < rendererParent.children.length; i++) {
+            const model = rendererParent.children[i];
+            gcodeArr.push(model.generateGcode(write_and_draw));
+        }
+        const gcode = gcodeArr.join("\n");
+        dispatch(actions._updateState({
+            gcode
+        }));
     },
 };
 
-export default function reducer(state = INITIAL_STATE, action) {
+
+const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case SET_MODEL:
-            return Object.assign({}, state, {model: action.value, gcode: ""});
-        case SET_TRANSFORMATION:
-            return Object.assign({}, state, {transformation: action.value, gcode: ""});
-        case SET_CONFIG:
-            return Object.assign({}, state, {config: action.value, gcode: ""});
-        case SET_WORKING_PARAMETERS:
-            return Object.assign({}, state, {working_parameters: action.value, gcode: ""});
-        case SET_ALL_PREVIEWED:
-            return Object.assign({}, state, {isAllPreviewed: action.value, gcode: ""});
-        case SET_GCODE:
-            return Object.assign({}, state, {gcode: action.value});
-        case SET_MODEL_COUNT:
-            return Object.assign({}, state, {modelCount: action.value, gcode: ""});
-        case SELECT_MODEL:
-            const model = action.value;
-            if (model) {
-                const {transformation, config, working_parameters} = model.settings;
-                return Object.assign({}, state, {model, transformation, config, working_parameters});
-            } else {
-                return Object.assign({}, state, {
-                    model: null,
-                    transformation: null,
-                    config: null,
-                    working_parameters: null
-                });
-            }
+        case ACTION_UPDATE_STATE:
+            return Object.assign({}, state, action.state)
         default:
             return state;
     }
-}
+};
+
+export {actions, getGcode4runBoundary};
+export default reducer;

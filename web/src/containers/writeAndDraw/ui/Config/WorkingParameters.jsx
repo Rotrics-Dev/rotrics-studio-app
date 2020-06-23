@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
-import {Checkbox, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
-import styles from './styles.css';
+import {Row, Col} from 'antd';
+import {toFixed} from '../../../../utils';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
@@ -15,21 +14,19 @@ class WorkingParameters extends PureComponent {
         setJogSpeed: (value) => {
             this.props.updateWorkingParameters("jog_speed", value)
         },
-        setJogPenOffset: (value) => {
-            this.props.updateWorkingParameters("jog_pen_offset", value)
-        },
         setWorkSpeed: (value) => {
             this.props.updateWorkingParameters("work_speed", value)
         }
     };
 
     render() {
-        const {model, working_parameters} = this.props;
-        if (!model || !working_parameters) {
+        const {model, working_parameters, config} = this.props;
+
+        if (!model || !working_parameters || !config) {
             return null;
         }
         const actions = this.actions;
-        const {work_speed, jog_speed, jog_pen_offset} = working_parameters.children;
+        const {work_speed, jog_speed} = working_parameters.children;
         return (
             <div>
                 <Line/>
@@ -59,17 +56,6 @@ class WorkingParameters extends PureComponent {
                                          onChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={15}>
-                            <span>{jog_pen_offset.label}</span>
-                            <span>{"(" + jog_pen_offset.unit + ")"}</span>
-                        </Col>
-                        <Col span={9}>
-                            <NumberInput min={jog_pen_offset.minimum_value} max={jog_pen_offset.maximum_value}
-                                         value={toFixed(jog_pen_offset.default_value, 0)}
-                                         onChange={actions.setJogPenOffset}/>
-                        </Col>
-                    </Row>
                 </div>
             </div>
         );
@@ -77,10 +63,11 @@ class WorkingParameters extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {model, working_parameters} = state.writeAndDraw;
+    const {model, working_parameters, config} = state.writeAndDraw;
     return {
         model,
-        working_parameters
+        working_parameters,
+        config
     };
 };
 

@@ -1,11 +1,14 @@
 let buildInSvgArray = [];
 export const getBuildInSvgArray = () => {
+    console.time("getBuildInSvgArrayCost")
+
     if (buildInSvgArray.length === 0) {
         for (let i = 1; i <= 48; i++) {
             let url = require(`./${i}.svg`);
             buildInSvgArray.push(url);
         }
     }
+    console.timeEnd("getBuildInSvgArrayCost")
     return buildInSvgArray;
 }
 

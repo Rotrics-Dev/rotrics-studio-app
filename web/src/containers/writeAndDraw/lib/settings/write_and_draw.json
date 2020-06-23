@@ -1,0 +1,12 @@
+{
+  "jog_pen_offset": {
+    "label": "Jog Pen Offset",
+    "description": "Jog Pen Offset description",
+    "placeholder": "#jog_pen_offset#",
+    "default_value": 10,
+    "type": "int",
+    "unit": "mm",
+    "minimum_value": 1,
+    "maximum_value": 100
+  }
+}

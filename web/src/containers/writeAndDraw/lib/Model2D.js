@@ -1,19 +1,16 @@
 import * as THREE from 'three';
 import _ from 'lodash';
 
-import settingsBw from "./settings/bw.json";
-import settingsGs from "./settings/greyscale.json";
 import settingsSvg from "./settings/svg.json";
+import config_text from "./settings/config_text.json";
 
-import {degree2radian} from '../../../utils/index.js';
-import {getUuid} from '../../../utils/index.js';
+import {degree2radian} from '../../../utils';
+import {getUuid} from '../../../utils';
 import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
-import {
-    TOOL_PATH_GENERATE_WRITE_AND_DRAW
-} from "../../../constants.js"
+import {TOOL_PATH_GENERATE_WRITE_AND_DRAW} from "../../../constants.js"
 
 /**
  * 根据限制，重新计算width，height
@@ -38,19 +35,7 @@ const resize = (width, height, ratio, min_width, max_width, min_height, max_heig
 };
 
 const getSizeRestriction = (fileType) => {
-    let settings = null;
-    switch (fileType) {
-        case "bw":
-            settings = settingsBw;
-            break;
-        case "greyscale":
-            settings = settingsGs;
-            break;
-        case "svg":
-        case "text":
-            settings = settingsSvg;
-            break;
-    }
+    let settings = settingsSvg;
     const children = settings.transformation.children;
     const min_width = children.width.minimum_value;
     const max_width = children.width.maximum_value;
@@ -104,13 +89,17 @@ class Model2D extends THREE.Group {
                 break;
         }
 
+        if (this.fileType === "text") {
+            this.config_text = _.cloneDeep(config_text);
+        }
+
         //data: {toolPathLines, toolPathId}
         socketClientManager.addServerListener(TOOL_PATH_GENERATE_WRITE_AND_DRAW, (data) => {
-            console.timeEnd(this.toolPathId);
+            // console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
                 this.isPreviewed = true;
-                this.dispatchEvent({type: 'preview'});
+                this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
     }
@@ -148,7 +137,7 @@ class Model2D extends THREE.Group {
         this._display('img');
         this._display('edge');
 
-        this._preview();
+        // this.preview();
     }
 
     loadToolPath(toolPathLines) {
@@ -156,7 +145,7 @@ class Model2D extends THREE.Group {
         this.toolPathLines = toolPathLines;
 
         this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
-        this.toolPathObj3d.position.set(0, 0, 0);
+        // this.toolPathObj3d.position.set(0, 100, 0);
         this.add(this.toolPathObj3d);
 
         this._display('toolPath');
@@ -238,13 +227,13 @@ class Model2D extends THREE.Group {
                 break;
         }
 
-
-        // this._display("img");
-        this._display("toolPath");
         this._display("edge");
 
         //todo: setting是否变化，决定preview
-        preview && this._preview();
+        if (preview) {
+            this._display("img");
+            this.preview();
+        }
     }
 
     updateConfig(key, value) {
@@ -259,7 +248,7 @@ class Model2D extends THREE.Group {
         }
 
         //todo: config是否变化，决定preview
-        this._preview();
+        this.preview();
     }
 
     updateWorkingParameters(key, value) {
@@ -283,49 +272,23 @@ class Model2D extends THREE.Group {
     }
 
     //生成tool path
-    _preview() {
-        console.log("preview")
+    preview() {
         this.toolPathId = getUuid();
         socketClientManager.emitToServer(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {
             url: this.url,
             settings: this.settings,
             toolPathId: this.toolPathId,
             fileType: this.fileType
-        })
+        });
         console.time(this.toolPathId);
 
         this.isPreviewed = false;
-        this.dispatchEvent({type: 'preview'});
+        this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode() {
-        console.log(JSON.stringify(this.toolPathLines, null, 2))
-        return toolPathLines2gcode(this.toolPathLines, this.settings);
+    generateGcode(write_and_draw) {
+        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw);
     }
-
-    // clone() {
-    //     const instance = super.clone();
-    //
-    //
-    //     instance.fileType = this.fileType; // bw, greyscale, svg, text
-    //     instance.url = this.url;
-    //     instance._imgRatio = this._imgRatio; // 图片原始的比例: width/height
-    //     instance._isSelected = false;
-    //     instance.settings = this.settings;
-    //
-    //     instance.min_width = this.min_width;
-    //     instance.max_width = this.max_width;
-    //     instance.min_height = this.min_height;
-    //     instance.max_height = this.max_height;
-    //
-    //     //tool path
-    //     instance.toolPathId = ""; //每次preview的tool path id
-    //
-    //     instance.gcode = null;
-    //
-    //     return instance;
-    //
-    // }
 
     clone() {
         const instance = new Model2D(this.fileType);

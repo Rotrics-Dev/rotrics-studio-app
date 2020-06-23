@@ -1,10 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Select, Input, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
+import {toFixed} from '../../../../utils';
 import styles from './styles.css';
-import {actions as writeAndDrawTextActions} from '../../../../reducers/writeAndDrawText';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import _ from 'lodash';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
@@ -37,16 +35,9 @@ class ConfigText extends PureComponent {
 
     render() {
         const {model, config_text, config} = this.props;
-        // console.log("write render" + (model));
-        // console.log("write render" + (!model));
-        // console.log("write render" + (!model || model.fileType !== "text"));
-        // console.log("write render" + (!model || model.fileType !== "text" || !config_text));
-        // console.log("write render" + (!model || model.fileType !== "text" || !config_text || !config));
-
         if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
         }
-
         const actions = this.actions;
 
         const {text, font, font_size} = config_text.children;
@@ -68,14 +59,13 @@ class ConfigText extends PureComponent {
                 }}>
                     <h4>{config_text.label}</h4>
                     <Row>
-                    {/*    <Col span={10}>*/}
-                    {/*        <span>{text.label}</span>*/}
-                    {/*    </Col>*/}
-                    {/*    <Col span={14}>*/}
-                            <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
-                                            onChange={actions.setText}
-                            />
-                    {/*    </Col>*/}
+                        {/*    <Col span={10}>*/}
+                        {/*        <span>{text.label}</span>*/}
+                        {/*    </Col>*/}
+                        {/*    <Col span={14}>*/}
+                        <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
+                                        onChange={actions.setText}/>
+                        {/*    </Col>*/}
                     </Row>
                     <Row>
                         <Col span={10}>
@@ -133,10 +123,7 @@ class ConfigText extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    // console.log("chenmapStateToProps1" + JSON.stringify(state.writeAndDraw.config))
-    // console.log("chenmapStateToProps2" + JSON.stringify(state.writeAndDrawText))
-    const {model, config} = state.writeAndDraw;
-    const {config_text} = state.writeAndDrawText;
+    const {model, config, config_text} = state.writeAndDraw;
     return {
         model,
         config,
@@ -146,7 +133,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateConfigText: (key, value) => dispatch(writeAndDrawTextActions.updateConfigText(key, value)),
+        updateConfigText: (key, value) => dispatch(writeAndDrawActions.updateConfigText(key, value)),
         updateConfig: (key, value) => dispatch(writeAndDrawActions.updateConfig(key, value)),
     };
 };

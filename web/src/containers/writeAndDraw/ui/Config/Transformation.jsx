@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
-import styles from './styles.css';
+import {toFixed} from '../../../../utils';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
