@@ -1,4 +1,10 @@
 {
+  "id": "activated_setting",
+  "version": 1,
+  "name": "custom",
+  "label": "Custom",
+  "inherits": "activated_material",
+  "isOfficial": false,
   "overrides": {
     "initial_layer_line_width_factor": {
       "label": "Initial Layer Line Width",
@@ -305,18 +311,5 @@
       "maximum_value_warning": "300",
       "settable_per_mesh": true
     }
-  },
-  "id": "activated_setting",
-  "version": 1,
-  "name": "custom",
-  "label": "Custom",
-  "inherits": "activated_material",
-  "isOfficial": false,
-  "metadata": {
-    "visible": true,
-    "author": "walker",
-    "manufacturer": "Rotrics",
-    "category": "Other",
-    "file_formats": "text/x-gcode"
   }
 }

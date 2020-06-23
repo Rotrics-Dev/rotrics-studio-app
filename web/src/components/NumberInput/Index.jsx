@@ -10,6 +10,12 @@ class Index extends PureComponent {
         this.setState({displayedValue: this.props.value});
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            this.setState({displayedValue: nextProps.value});
+        }
+    }
+
     actions = {
         onKeyUp: (e) => {
             // 按下[回车]

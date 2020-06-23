@@ -65,6 +65,10 @@ const actions = {
                     name,
                     settings
                 }));
+            } else {
+                dispatch(actions._updateState({
+                    settings
+                }));
             }
         });
     },

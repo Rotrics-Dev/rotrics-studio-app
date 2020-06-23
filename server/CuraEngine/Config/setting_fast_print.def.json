@@ -1,4 +1,10 @@
 {
+  "id": "activated_setting",
+  "version": 1,
+  "name": "fast_print",
+  "label": "Fast Print",
+  "inherits": "activated_material",
+  "isOfficial": true,
   "overrides": {
     "initial_layer_line_width_factor": {
       "label": "Initial Layer Line Width",
@@ -201,7 +207,7 @@
       "label": "Top Thickness",
       "description": "The thickness of the top layers in the print. This value divided by the layer height defines the number of top layers.",
       "unit": "mm",
-      "default_value": 0.8,
+      "default_value": 1.2,
       "minimum_value": "0",
       "minimum_value_warning": "0.2 + resolveOrValue('layer_height')",
       "maximum_value": "machine_height",
@@ -213,7 +219,7 @@
     "wall_line_count": {
       "label": "Wall Line Count",
       "description": "The number of walls. When calculated by the wall thickness, this value is rounded to a whole number.",
-      "default_value": 2,
+      "default_value": 5,
       "minimum_value": "0",
       "minimum_value_warning": "1",
       "maximum_value_warning": "10",
@@ -305,18 +311,5 @@
       "maximum_value_warning": "300",
       "settable_per_mesh": true
     }
-  },
-  "id": "activated_setting",
-  "version": 1,
-  "name": "fast_print",
-  "label": "Fast Print",
-  "inherits": "activated_material",
-  "isOfficial": true,
-  "metadata": {
-    "visible": true,
-    "author": "walker",
-    "manufacturer": "Rotrics",
-    "category": "Other",
-    "file_formats": "text/x-gcode"
   }
 }

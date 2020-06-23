@@ -231,6 +231,7 @@ const setupSocket = () => {
                 const {name, key, value} = data;
                 //读出来
                 const filePath = getP3dSettingPath(name);
+                console.log("filePAth: " + filePath)
                 const setting = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 const keys = key.split('.');
                 switch (keys.length) {

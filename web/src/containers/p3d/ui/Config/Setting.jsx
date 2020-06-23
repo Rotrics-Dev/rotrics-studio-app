@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
-import {toFixed} from '../../../../utils/index.js';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
@@ -65,7 +64,7 @@ class Setting extends PureComponent {
         }
         const actions = this.actions;
         const selected = getSettingByName(settings, name);
-        const {isOfficial = false, overrides} = selected;
+        let {isOfficial = false, overrides} = selected;
         const {layer_height, top_thickness, infill_sparse_density, speed_infill, speed_wall_0, speed_wall_x, speed_travel} = overrides;
 
         const settingsButtons = [];
