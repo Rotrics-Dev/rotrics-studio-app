@@ -16,24 +16,83 @@ import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
 
 /**
  * 根据限制，重新计算width，height
- * 可以参考jimp的代码
- * todo: 最小值也要限制
+ * @param img_width  图片原始width
+ * @param img_height 图片原始height
+ * @param sizeRestriction 对size的限制，max/min
+ * @returns {*}
  */
-const resize = (width, height, ratio, min_width, max_width, min_height, max_height) => {
-    //在范围内
-    if (width >= min_width && width <= max_width &&
-        height >= min_height && height <= max_height) {
-        return {width, height}
+/**
+ height
+ ^
+ |  7  |     6     |    5
+ |     |           |
+ |----------------------------- max_height
+ |     |           |
+ |     |           |
+ |  8  |     9     |     4
+ |     |           |
+ |     |           |
+ |----------------------------- min_height
+ |     |           |
+ |  1  |     2     |     3
+ |     |           |
+ |-----------------------------> width
+ min_width      mix_width
+ 如上图，分8种情况
+ */
+const getAvailableSize = (img_width, img_height, sizeRestriction) => {
+    const {min_width, max_width, min_height, max_height} = sizeRestriction;
+    //case-1 ok
+    if (img_width <= min_width && img_height <= min_height) {
+        const scaleWidth = min_width / img_width;
+        const scaleHeight = min_height / img_height;
+        const scale = Math.max(scaleWidth, scaleHeight);
+        return {width: img_width * scale, height: img_height * scale}
     }
-    //todo: 找个开源项目，看看别人怎么处理的
-    if (width < min_width || height < min_height) {
-        width = min_width;
-        height = width / ratio;
-    } else if (width > max_width || height < max_height) {
-        width = max_width;
-        height = width / ratio;
+    //case-5 ok
+    if (img_width >= max_width && img_height >= max_height) {
+        const scaleWidth = max_width / img_width;
+        const scaleHeight = max_height / img_height;
+        const scale = Math.min(scaleWidth, scaleHeight);
+        return {width: img_width * scale, height: img_height * scale}
     }
-    return {width, height}
+    //case-2 ok
+    if (img_width >= min_width && img_width <= max_width &&
+        img_height <= min_height) {
+        return {width: img_width, height: img_height}
+    }
+    //case-6 ok
+    if (img_width >= min_width && img_width <= max_width &&
+        img_height >= max_height) {
+        const scale = max_height / img_height;
+        return {width: img_width * scale, height: img_height * scale}
+    }
+    //case-8 ok
+    if (img_width <= min_width &&
+        img_height >= min_height && img_height <= max_height) {
+        return {width: img_width, height: img_height}
+    }
+    //case-4 ok
+    if (img_width >= max_width &&
+        img_height >= min_height && img_height <= max_height) {
+        const scale = max_width / img_width;
+        return {width: img_width * scale, height: img_height * scale}
+    }
+    //case-3 ok
+    if (img_width >= max_width && img_height <= min_height) {
+        const scale = max_width / img_width;
+        return {width: img_width * scale, height: img_height * scale}
+    }
+    //case-7 ok
+    if (img_width <= min_width && img_height >= max_height) {
+        const scale = max_height / img_height;
+        return {width: img_width * scale, height: img_height * scale}
+    }
+    //case-9
+    // if (img_width >= min_width && img_width <= max_width &&
+    //     img_height >= min_height && img_height <= max_height) {
+    // }
+    return {width: img_width, height: img_height}
 };
 
 const getSizeRestriction = (fileType) => {
@@ -68,15 +127,13 @@ class Model2D extends THREE.Group {
         super();
         this.fileType = fileType; // bw, greyscale, svg, text
         this.url = "";
-        this._imgRatio = 1; // 图片原始的比例: width/height
+        //图片原始的size
+        this.img_width = 1;
+        this.img_height = 1;
         this._isSelected = false;
         this.settings = null;
 
-        const {min_width, max_width, min_height, max_height} = getSizeRestriction(fileType);
-        this.min_width = min_width;
-        this.max_width = max_width;
-        this.min_height = min_height;
-        this.max_height = max_height;
+        this.sizeRestriction =  getSizeRestriction(fileType);
 
         //tool path
         this.toolPathObj3d = null; //tool path渲染的结果，Object3D
@@ -121,9 +178,12 @@ class Model2D extends THREE.Group {
     //url: 支持svg，raster
     loadImg(url, img_width, img_height) {
         this.url = url;
-        this._imgRatio = img_width / img_height;
-        const {width, height} = resize(img_width, img_height, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+        this.img_width = img_width;
+        this.img_height = img_height;
 
+        const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
+
+        console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(img_width, img_height, this.sizeRestriction)))
         // loader.setCrossOrigin("anonymous");
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
@@ -192,18 +252,14 @@ class Model2D extends THREE.Group {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value, preview) {
-        // console.log(key + " -> " + value)
+        console.log(key + " -> " + value)
         switch (key) {
-            case "img_width":
-                this.settings.transformation.children.img_width.default_value = value;
-                break;
-            case "img_height":
-                this.settings.transformation.children.img_height.default_value = value;
-                break;
             case "width": {
                 const mWidth = value;
-                const mHeight = mWidth / this._imgRatio;
-                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mHeight = this.img_height * (mWidth / this.img_width);
+                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
+
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -212,8 +268,10 @@ class Model2D extends THREE.Group {
             }
             case "height": {
                 const mHeight = value;
-                const mWidth = mHeight * this._imgRatio;
-                const {width, height} = resize(mWidth, mHeight, this._imgRatio, this.min_width, this.max_width, this.min_height, this.max_height);
+                const mWidth = this.img_width * (mHeight / this.img_height);
+                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+                console.log("getAvailableSize: " + JSON.stringify(getAvailableSize(mWidth, mHeight, this.sizeRestriction)))
+
                 this.settings.transformation.children.width.default_value = width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
@@ -303,30 +361,6 @@ class Model2D extends THREE.Group {
     generateGcode() {
         return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
-
-    // clone() {
-    //     const instance = super.clone();
-    //
-    //
-    //     instance.fileType = this.fileType; // bw, greyscale, svg, text
-    //     instance.url = this.url;
-    //     instance._imgRatio = this._imgRatio; // 图片原始的比例: width/height
-    //     instance._isSelected = false;
-    //     instance.settings = this.settings;
-    //
-    //     instance.min_width = this.min_width;
-    //     instance.max_width = this.max_width;
-    //     instance.min_height = this.min_height;
-    //     instance.max_height = this.max_height;
-    //
-    //     //tool path
-    //     instance.toolPathId = ""; //每次preview的tool path id
-    //
-    //     instance.gcode = null;
-    //
-    //     return instance;
-    //
-    // }
 
     clone() {
         const instance = new Model2D(this.fileType);
