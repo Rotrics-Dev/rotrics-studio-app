@@ -14,7 +14,6 @@ import Settings from '../settings/Index.jsx';
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
-import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as vmActions} from "../../reducers/vm";
 import {actions as socketActions} from "../../reducers/socket";
@@ -29,6 +28,8 @@ import {Button, notification} from 'antd';
 import {getUuid} from '../../utils/index.js';
 
 const notificationKey = getUuid();
+
+const tooltipId = getUuid();
 
 class Index extends React.Component {
     constructor(props) {
@@ -74,7 +75,6 @@ class Index extends React.Component {
         if (this.props.tap !== nextProps.tap) {
             this.displayTap(nextProps.tap)
         }
-
     }
 
     // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
@@ -113,33 +113,44 @@ class Index extends React.Component {
                     <Header/>
                 </div>
                 <div className={styles.div_tap_bar}>
-                    <ReactTooltip place="right" type="info" effect="solid" backgroundColor="#c0c0c0"
-                                  textColor="#292421"/>
+                    <ReactTooltip
+                        id={tooltipId}
+                        place="right"
+                        type="info"
+                        effect="solid"
+                        backgroundColor="#c0c0c0"
+                        textColor="#292421"
+                        delayShow={500}/>
                     <button
+                        data-for={tooltipId}
                         data-tip="Laser"
                         onClick={() => actions.setTap(TAP_LASER)}
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
+                        data-for={tooltipId}
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
                         className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
                     />
                     <button
+                        data-for={tooltipId}
                         data-tip="3D Print"
                         onClick={() => actions.setTap(TAP_P3D)}
                         className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
+                        data-for={tooltipId}
                         data-tip="Code"
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
-                    {/*<button*/}
-                    {/*data-tip="Settings"*/}
-                    {/*onClick={() => actions.setTap(TAP_SETTINGS)}*/}
-                    {/*className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}*/}
-                    {/*/>*/}
+                    <button
+                        data-for={tooltipId}
+                        data-tip="Settings"
+                        onClick={() => actions.setTap(TAP_SETTINGS)}
+                        className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
+                    />
                 </div>
                 <div className={styles.div_workspace}>
                     <div ref={this.refLaser}>
