@@ -300,9 +300,12 @@ const startListen = () => {
     const electron = isElectron();
     console.log("is electron: " + electron);
 
-    if (!fs.existsSync(cache_dir)) {
-        fs.mkdirSync(cache_dir, {recursive: true});
+    //清除缓存
+    if (fs.existsSync(cache_dir)) {
+        fs.rmdirSync(cache_dir, {recursive: true})
     }
+    
+    fs.mkdirSync(cache_dir, {recursive: true});
 
     const cache_dir_exist = fs.existsSync(cache_dir);
     console.log("cache dir exist: " + cache_dir_exist);
