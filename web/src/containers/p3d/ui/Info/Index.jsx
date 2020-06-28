@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import styles from './styles.css';
-import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
 
 //printTime单位是s
 const getPrintTimeDes = (printTime) => {
@@ -31,7 +30,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {result} = state.p3dGcode;
+    const {result} = state.p3dModel;
     return {
         result,
     };

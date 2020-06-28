@@ -5,7 +5,15 @@ const materialSelected = new THREE.MeshPhongMaterial({
     color: 0xb0b0b0,
     shininess: 30,
     transparent: true,
-    opacity: 0.7
+    opacity: 0.6,
+    depthTest: true
+});
+const materialTransparent = new THREE.MeshPhongMaterial({
+    color: 0xb0b0b0,
+    shininess: 30,
+    transparent: true,
+    opacity: 0.1,
+    depthTest: false
 });
 
 class Model3D extends THREE.Mesh {
@@ -18,6 +26,9 @@ class Model3D extends THREE.Mesh {
         this.convexBufferGeometry = convexBufferGeometry;
         this.modelName = modelName;
         this.modelPath = modelPath;
+
+        this.isSelected = false;
+        this.mode = 'prepare';
 
         /**
          * this.convexBufferGeometry is from BufferGeometry.fromGeometry()
@@ -40,7 +51,7 @@ class Model3D extends THREE.Mesh {
             scale: 1,
         };
 
-        let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 1);
+        let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 6);
         let edgesMtl = new THREE.LineBasicMaterial({color: 0x4169E1});
         this.edgesLineObj3d = new THREE.LineSegments(cubeEdges, edgesMtl);
         this.edgesLineObj3d.visible = false;
@@ -64,9 +75,44 @@ class Model3D extends THREE.Mesh {
         this.boundingBox = clone.boundingBox;
     }
 
-    setSelected(selected) {
-        this.edgesLineObj3d.visible = selected;
-        this.material = (selected ? materialSelected : materialNormal);
+    setSelected(value) {
+        this.isSelected = value;
+        if (this.mode === "prepare") {
+            if (this.isSelected) {
+                this.edgesLineObj3d.visible = true;
+                this.material = materialSelected;
+            } else {
+                this.edgesLineObj3d.visible = false;
+                this.material = materialNormal;
+            }
+        } else if (this.mode === "preview") {
+            this.material = materialTransparent;
+        }
+    }
+
+    /**
+     * 参考Cura
+     * prepare模式下：material根据selected切换
+     * preview模式下：切换到materialTransparent
+     * @param mode: prepare/preview
+     * @param isSelected: 是否选中，boolean
+     */
+    setMode(mode) {
+        if (mode) {
+            this.mode = mode
+            if (this.mode === "prepare") {
+                if (this.isSelected) {
+                    this.edgesLineObj3d.visible = true;
+                    this.material = materialSelected;
+                } else {
+                    this.edgesLineObj3d.visible = false;
+                    this.material = materialNormal;
+                }
+            } else if (this.mode === "preview") {
+                this.edgesLineObj3d.visible = true;
+                this.material = materialTransparent;
+            }
+        }
     }
 
     // setMatrix(matrix) {

@@ -40,7 +40,7 @@ class Index extends React.Component {
         this.refP3D = React.createRef();
         this.refWriteAndDraw = React.createRef();
         this.refCode = React.createRef();
-        this.refSettings = React.createRef();
+        this.refSettings =  React.createRef();
     }
 
     actions = {
@@ -193,7 +193,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(serialPortActions.init());
             dispatch(vmActions.init());
             //3dp
-            dispatch(p3dModelActions.init());
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());
         }

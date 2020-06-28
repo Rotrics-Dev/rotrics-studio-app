@@ -3,9 +3,8 @@ import styles from './styles.css';
 import {Tabs, Space, Button} from 'antd';
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
-import p3dModelManager from "../../lib/p3dModelManager";
 import FileSaver from 'file-saver';
-import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
+import {exportModelsToBlob, actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 
@@ -14,7 +13,7 @@ class Index extends React.Component {
 
     actions = {
         exportModel: () => {
-            const blob = p3dModelManager.exportModelsToBlob()
+            const blob = exportModelsToBlob()
             const date = new Date();
             const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
             const fileName = arr.join("") + ".stl";
@@ -103,7 +102,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {result} = state.p3dGcode;
+    const {result} = state.p3dModel
     return {
         result
     };
@@ -111,7 +110,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startSlice: () => dispatch(p3dGcodeActions.startSlice()),
+        startSlice: () => dispatch(p3dModelActions.startSlice()),
         startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
     };

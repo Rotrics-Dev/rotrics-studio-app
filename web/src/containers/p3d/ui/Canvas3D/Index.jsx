@@ -6,7 +6,7 @@ import PrintableCube from './PrintableCube.jsx';
 import {connect} from 'react-redux';
 import IntersectDetector from "../../../../three-extensions/IntersectDetector";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
-import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
+
 const SIZ = 220;
 
 class Index extends React.Component {
@@ -202,8 +202,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setRendererParent4model: (parent) => dispatch(p3dModelActions.setRendererParent(parent)),
-        setRendererParent4gcode: (parent) => dispatch(p3dGcodeActions.setRendererParent(parent)),
+        setRendererParent4model: (parent) => dispatch(p3dModelActions.setRendererParent4model(parent)),
+        setRendererParent4gcode: (parent) => dispatch(p3dModelActions.setRendererParent4gcode(parent)),
         selectModel: (model) => dispatch(p3dModelActions.selectModel(model)),
     };
 };

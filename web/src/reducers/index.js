@@ -3,7 +3,6 @@ import gcodeSend from "./gcodeSend";
 import hotKeys from "./hotKeys";
 import laser from "./laser";
 import writeAndDraw from "./writeAndDraw";
-import p3dGcode from "./p3dGcode";
 import p3dMaterial from "./p3dMaterial";
 import p3dModel from "./p3dModel";
 import p3dSetting from "./p3dSetting";
@@ -18,7 +17,6 @@ export default combineReducers({
     laser,
     writeAndDraw,
     // p3d,
-    p3dGcode,
     p3dMaterial,
     p3dModel,
     p3dSetting,

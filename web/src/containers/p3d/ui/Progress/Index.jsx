@@ -18,7 +18,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {progress, progressTitle} = state.p3dGcode;
+    const {progress, progressTitle} = state.p3dModel;
     return {
         progress,
         progressTitle

@@ -1,8 +1,8 @@
 import hotKeys from 'hotkeys-js';
-import p3dModelManager from "../containers/p3d/lib/p3dModelManager";
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../constants.js";
 
 import {actions as laserActions} from "./laser";
+import {actions as p3dModelActions} from "./p3dModel";
 import {actions as writeAndDrawActions} from "./writeAndDraw";
 
 export const actions = {
@@ -11,7 +11,7 @@ export const actions = {
             event.preventDefault();
             switch (getState().taps.tap) {
                 case TAP_P3D:
-                    p3dModelManager.removeSelected();
+                    p3dModelActions.removeSelected();
                     break;
                 case TAP_LASER:
                     dispatch(laserActions.removeSelected());

@@ -2,11 +2,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import {Slider, Checkbox, Space} from 'antd';
-import {actions as p3dGcodeActions} from "../../../../reducers/p3dGcode";
+import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 
 class Index extends React.Component {
     render() {
-        if (!this.props.result || !this.props.lineTypeVisibility) {
+        if (!this.props.gcodeObj3d || !this.props.lineTypeVisibility) {
             return null;
         }
         const {setLayerCountVisible, updateLineTypeVisibility} = this.props;
@@ -42,8 +42,9 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {result, lineTypeVisibility, layerCount, layerCountVisible} = state.p3dGcode;
+    const {gcodeObj3d, result, lineTypeVisibility, layerCount, layerCountVisible} = state.p3dModel;
     return {
+        gcodeObj3d,
         result,
         lineTypeVisibility,
         layerCount,
@@ -53,8 +54,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setLayerCountVisible: (value) => dispatch(p3dGcodeActions.setLayerCountVisible(value)),
-        updateLineTypeVisibility: (key, value) => dispatch(p3dGcodeActions.updateLineTypeVisibility(key, value)),
+        setLayerCountVisible: (value) => dispatch(p3dModelActions.setLayerCountVisible(value)),
+        updateLineTypeVisibility: (key, value) => dispatch(p3dModelActions.updateLineTypeVisibility(key, value)),
     };
 };
 
