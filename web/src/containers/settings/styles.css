@@ -1,0 +1,56 @@
+.div_container {
+    position: absolute;
+    background-color: #fefefe;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.menu {
+    width: 120px;
+    height: 100%;
+}
+
+.div_content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 120px;
+    padding: 30px 50px 0 50px;
+}
+
+.div_info {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 15px 0 15px 40px;
+}
+
+.div_product_left {
+    display: inline-block;
+    float: left;
+    width: 200px;
+    height: 100%;
+}
+
+.div_product_right {
+    padding-top: 35px;
+    display: inline-block;
+    float: left;
+    width: 350px;
+    height: 100%;
+}
+
+.btn_right_top {
+    width: 174px;
+    height: 163px;
+    background-image: url(./images/product.png);
+    outline: none;
+    background-size: 174px 163px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    vertical-align: middle;
+    background-color: rgba(255, 255, 255, 0);
+}

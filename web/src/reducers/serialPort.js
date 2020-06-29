@@ -47,7 +47,6 @@ export const actions = {
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
             console.log("SERIAL_PORT_DATA： " + data)
         });
-
     },
     _updateState: (state) => {
         return {

@@ -22,7 +22,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
-import {actions as p3dModelActions} from "../../reducers/p3dModel";
+import {actions as settingsActions} from "../../reducers/settings";
 import {Button, notification} from 'antd';
 
 import {getUuid} from '../../utils/index.js';
@@ -192,6 +192,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(hotKeysActions.init());
             dispatch(serialPortActions.init());
             dispatch(vmActions.init());
+            dispatch(settingsActions.init());
             //3dp
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());

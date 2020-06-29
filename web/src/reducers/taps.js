@@ -3,7 +3,7 @@ import {TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS, TAB_WRITE_AND_DRAW} from "..
 const SET_TAP = "taps/SET_TAP";
 
 const INITIAL_STATE = {
-    tap: TAP_P3D
+    tap: TAP_SETTINGS
 };
 
 export const actions = {
