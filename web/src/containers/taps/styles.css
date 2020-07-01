@@ -30,7 +30,7 @@
     background-color: transparent;
     outline: none;
     border: none;
-    background-size: 30px 30px;
+    background-size: 40px 40px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -133,7 +133,7 @@
     outline: none;
     border: 2px solid grey;
     border-radius: 3px;
-    background-size: 30px 30px;
+    background-size: 40px 40px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/basic.png);

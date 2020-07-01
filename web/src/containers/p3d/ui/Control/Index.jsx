@@ -20,7 +20,7 @@ class Index extends React.Component {
         const state = this.state;
         return (
             <div>
-                <DeviceControl runBoundary={actions.runBoundary}/>
+                <DeviceControl runBoundary={actions.runBoundary} hideRunBoundary={true}/>
             </div>
         )
     }
