@@ -10,8 +10,9 @@ import P3D from '../p3d/Index.jsx';
 import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
+import Basic from '../basic/Index.jsx'
 
-import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
+import {TAP_BASIC,TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
@@ -36,6 +37,7 @@ class Index extends React.Component {
         super(props);
         this.props.init();
 
+        this.refBasic = React.createRef();
         this.refLaser = React.createRef();
         this.refP3D = React.createRef();
         this.refWriteAndDraw = React.createRef();
@@ -80,12 +82,16 @@ class Index extends React.Component {
     // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
     // 如此写，可以实现，先计算parent element的size，再显示指定的tap
     displayTap = (tap) => {
+        this.refBasic.current.style.display = 'none';
         this.refLaser.current.style.display = 'none';
         this.refP3D.current.style.display = 'none';
         this.refWriteAndDraw.current.style.display = 'none';
         this.refCode.current.style.display = 'none';
         this.refSettings.current.style.display = 'none';
         switch (tap) {
+            case TAP_BASIC:
+                this.refBasic.current.style.display = 'block';
+                break;
             case TAP_LASER:
                 this.refLaser.current.style.display = 'block';
                 break;
@@ -123,6 +129,12 @@ class Index extends React.Component {
                         delayShow={500}/>
                     <button
                         data-for={tooltipId}
+                        data-tip="Basic"
+                        onClick={() => actions.setTap(TAP_BASIC)}
+                        className={tap === TAP_BASIC ? styles.btn_basic_selected : styles.btn_basic}
+                    />
+                    <button
+                        data-for={tooltipId}
                         data-tip="Laser"
                         onClick={() => actions.setTap(TAP_LASER)}
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
@@ -153,6 +165,9 @@ class Index extends React.Component {
                     />
                 </div>
                 <div className={styles.div_workspace}>
+                    <div ref={this.refBasic}>
+                        <Basic/>
+                    </div>
                     <div ref={this.refLaser}>
                         <Laser/>
                     </div>

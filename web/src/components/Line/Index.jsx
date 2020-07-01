@@ -7,7 +7,8 @@ class Index extends PureComponent {
                 marginTop: "5px",
                 marginBottom: "5px",
                 width: "100%",
-                height: "0.5px",
+                opacity:0.5,
+                height: "1px",
                 backgroundColor: "grey"
             }}/>
         );

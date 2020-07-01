@@ -73,9 +73,14 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const state = this.state;
+        const {...rest} = this.props;
+
         return (
             <div>
-                <BaseDeviceControl actions={actions} step={state.step}/>
+                <BaseDeviceControl
+                    {...rest}
+                    actions={actions} step={state.step}
+                />
             </div>
         )
     }

@@ -18,6 +18,22 @@ const INITIAL_STATE = {
     paths: [],
     path: null //当前已连接的serial port的path; path为空，则表示serial port close；否则open
 };
+let onPositionListener = null;//用于M893位置查询的回调
+
+const processM894 = (data) => {
+    if (!onPositionListener) return;
+    if (!data) return;
+    if (!data.received) return;
+    if (!data.received.startsWith("M894")) return;
+    console.log(data.received);
+    const split = data.received.trim().split(' ');
+    onPositionListener(
+        parseInt(split[1].slice(1, split[1].length)),//X
+        parseInt(split[2].slice(1, split[2].length)),//Y
+        parseInt(split[3].slice(1, split[3].length)),//Z
+    );
+    onPositionListener = null;
+}
 
 export const actions = {
     init: () => (dispatch) => {
@@ -45,7 +61,7 @@ export const actions = {
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            console.log("SERIAL_PORT_DATA： " + data.received)
+            processM894(data);
         });
     },
     _updateState: (state) => {
@@ -73,6 +89,9 @@ export const actions = {
         }
         return {type: null};
     },
+    addPositionListener: (onPosition) => {
+        onPositionListener = onPosition;
+    }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
