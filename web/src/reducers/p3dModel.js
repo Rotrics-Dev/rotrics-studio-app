@@ -263,7 +263,12 @@ const actions = {
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         const newModel = model.clone();
-        rendererParent4model.addModel(newModel);
+
+        const xz = _computeAvailableXZ(rendererParent4model, newModel);
+        newModel.position.x = xz.x;
+        newModel.position.z = xz.z;
+        rendererParent4model.add(newModel);
+
         for (const child of rendererParent4model.children) {
             child.setMode('prepare');
         }
@@ -315,6 +320,7 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
+            result: null,
         }));
     },
     afterUpdateTransformation: (key, value) => (dispatch, getState) => {
@@ -329,12 +335,13 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
+            result: null,
         }));
     },
     //g-code
     startSlice: () => async (dispatch, getState) => {
         destoryGcodeObj3d();
-        
+
         dispatch(actions._updateState({
             gcodeObj3d: null,
         }));

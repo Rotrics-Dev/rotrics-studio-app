@@ -80,8 +80,8 @@ class Index extends React.Component {
                     position: "absolute",
                     left: 0,
                     right: "320px",
-                    bottom: 0,
-                    height: "40px",
+                    bottom: "-3px",
+                    height: "38px",
                 }}>
                     <Progress/>
                 </div>

@@ -18,8 +18,6 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
-import {uploadImage} from '../../../../api/';
-import Model2D from "../../lib/Model2D";
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
     let accept = '';
@@ -56,8 +54,6 @@ class Index extends React.Component {
             const file = new File([blob], filename);
             this.props.addModel('svg', file);
         },
-
-
         onChangeFile: async (event) => {
             //bw, greyscale, svg
             const file = event.target.files[0];
@@ -94,16 +90,19 @@ class Index extends React.Component {
                 const gcode = this.props.gcode;
                 const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(blob, fileName, true);
+                message.success('Export G-code success', 1);
             }
         },
         startSendGcode: () => {
-            //todo：serialport状态
-            const gcode = this.props.gcode;
-            this.props.startSendGcode(gcode);
+            if (this.actions._checkStatus4gcode("startSendGcode")) {
+                const gcode = this.props.gcode;
+                this.props.startSendGcode(gcode);
+            }
         },
         stopSendGcode: () => {
-            //todo：serialport状态
-            this.props.stopSendGcode();
+            if (this.actions._checkStatus4gcode("stopSendGcode")) {
+                this.props.stopSendGcode();
+            }
         },
         _checkStatus4gcode: (type) => {
             switch (type) {
@@ -127,15 +126,23 @@ class Index extends React.Component {
                         message.warning('Previewing', 1);
                         return false;
                     }
-                    if (this.props.gcode.length === 0) {
+                    if (!this.props.gcode) {
                         message.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 }
                 case "startSendGcode":
+                    if (!this.props.gcode) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
                     break;
                 case "stopSendGcode":
+                    if (!this.props.gcode) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
                     break;
             }
             return true;

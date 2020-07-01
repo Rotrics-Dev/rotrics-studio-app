@@ -82,16 +82,19 @@ class Index extends React.Component {
                 const gcode = this.props.gcode;
                 const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(blob, fileName, true);
+                message.success('Export G-code success', 1);
             }
         },
         startSendGcode: () => {
-            //todo：serialport状态
-            const gcode = this.props.gcode;
-            this.props.startSendGcode(gcode);
+            if (this.actions._checkStatus4gcode("startSendGcode")) {
+                const gcode = this.props.gcode;
+                this.props.startSendGcode(gcode);
+            }
         },
         stopSendGcode: () => {
-            //todo：serialport状态
-            this.props.stopSendGcode();
+            if (this.actions._checkStatus4gcode("stopSendGcode")) {
+                this.props.stopSendGcode();
+            }
         },
         _checkStatus4gcode: (type) => {
             switch (type) {
@@ -115,15 +118,23 @@ class Index extends React.Component {
                         message.warning('Previewing', 1);
                         return false;
                     }
-                    if (this.props.gcode.length === 0) {
+                    if (!this.props.gcode) {
                         message.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 }
                 case "startSendGcode":
+                    if (!this.props.gcode) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
                     break;
                 case "stopSendGcode":
+                    if (!this.props.gcode) {
+                        message.warning('Generate G-code first', 1);
+                        return false;
+                    }
                     break;
             }
             return true;
@@ -221,7 +232,7 @@ const mapStateToProps = (state) => {
         gcode,
         model,
         isAllPreviewed,
-        modelCount
+        modelCount,
     };
 };
 

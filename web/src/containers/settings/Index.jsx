@@ -2,7 +2,7 @@ import React from 'react';
 import {Menu} from 'antd';
 import styles from './styles.css';
 import General from "./General.jsx";
-
+import Console from "./Console.jsx";
 
 class Index extends React.Component {
     state = {
@@ -28,11 +28,12 @@ class Index extends React.Component {
                     mode="inline"
                 >
                     <Menu.Item key="General">General</Menu.Item>
-                    <Menu.Item key="Config">Config</Menu.Item>
-                    <Menu.Item key="About">About</Menu.Item>
+                    {/*<Menu.Item key="Config">Config</Menu.Item>*/}
+                    {/*<Menu.Item key="About">About</Menu.Item>*/}
+                    {/*<Menu.Item key="Console">About</Menu.Item>*/}
                 </Menu>
                 {key === 'General' &&
-                    <General/>
+                <General/>
                 }
                 {key === 'Config' &&
                 <div className={styles.div_content}>
@@ -42,6 +43,11 @@ class Index extends React.Component {
                 {key === 'About' &&
                 <div className={styles.div_content}>
                     About
+                </div>
+                }
+                {key === 'Console' &&
+                <div className={styles.div_content}>
+                    <Console/>
                 </div>
                 }
             </div>

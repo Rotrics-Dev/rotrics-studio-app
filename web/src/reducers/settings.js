@@ -30,14 +30,14 @@ export const actions = {
             dispatch(actions._updateState({firmwareVersion: null, hardwareVersion: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            const {line} = data;
-            if (line) {
-                if (line.indexOf("Firmware ") === 0) {
-                    const firmwareVersion = line.replace("Firmware", "").replace("\r", "").trim();
+            const {received} = data;
+            if (received) {
+                if (received.indexOf("Firmware ") === 0) {
+                    const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
                     dispatch(actions._updateState({firmwareVersion}));
                 }
-                if (line.indexOf("Hardware ") === 0) {
-                    const hardwareVersion = line.replace("Hardware", "").replace("\r", "").trim();
+                if (received.indexOf("Hardware ") === 0) {
+                    const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
                     dispatch(actions._updateState({hardwareVersion}));
                 }
             }

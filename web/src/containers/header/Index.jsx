@@ -8,17 +8,20 @@ import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';
+import Console from 'react-console-component';
 
 const notificationKeyConnected = getUuid();
 const notificationKeyDisconnected = getUuid();
 
 class Index extends React.Component {
     state = {
-        modalVisible: false, //serialPortModal visible
+        serialPortModalVisible: false,
         selectedPath: undefined, //当前选中的serial port path; 使用undefined而不是null，是因为undefined情况下，Select才会显示placeholder
+        consoleModalVisible: false,
     };
 
     componentWillReceiveProps(nextProps) {
+        this.refConsole = React.createRef();
         if (this.props.paths.length > 0) {
             const countDif = nextProps.paths.length - this.props.paths.length;
             if (countDif === 1) {
@@ -50,12 +53,12 @@ class Index extends React.Component {
     actions = {
         openSerialPortModal: () => {
             this.setState({
-                modalVisible: true,
+                serialPortModalVisible: true,
             });
         },
         closeSerialPortModal: () => {
             this.setState({
-                modalVisible: false,
+                serialPortModalVisible: false,
             });
         },
         openSerialPort: () => {
@@ -73,6 +76,30 @@ class Index extends React.Component {
         },
         emergencyStop: () => {
             console.log("emergencyStop")
+        },
+        //console
+        openConsolePortModal: () => {
+            this.setState({
+                consoleModalVisible: true,
+            });
+        },
+        closeConsolePortModal: () => {
+            this.setState({
+                consoleModalVisible: false,
+            });
+        },
+        echo: (text) => {
+            console.log(text)
+
+            this.refConsole.current.log(text);
+            this.refConsole.current.return();
+            // this.setState({
+            //     count: this.state.count + 1,
+            // }, this.child.console.return);
+        },
+        promptLabel: () => {
+            return "> "
+            // return this.state.count + "> ";
         }
     };
 
@@ -121,11 +148,13 @@ class Index extends React.Component {
                 {/*onClick={actions.emergencyStop}*/}
                 {/*className={styles.btn_emergency_stop}*/}
                 {/*/>*/}
+                {/*<Button type="primary" ghost icon={path ? <LinkOutlined/> : <DisconnectOutlined/>}*/}
+                        {/*onClick={actions.openConsolePortModal}>Console</Button>*/}
                 <Button type="primary" ghost icon={path ? <LinkOutlined/> : <DisconnectOutlined/>}
                         onClick={actions.openSerialPortModal}>Serial Port</Button>
                 <Modal
                     title="Serial Port"
-                    visible={state.modalVisible}
+                    visible={state.serialPortModalVisible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
                         <Button
@@ -149,15 +178,26 @@ class Index extends React.Component {
                     <Space direction={"vertical"}>
                         <h4>{`Status: ${statusDes}`}</h4>
                         <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
-                        {
-
-                        }
                         <Select style={{width: 300}}
                                 value={selectedPath}
                                 onChange={actions.selectPath}
                                 placeholder="Choose a port"
                                 options={options}/>
                     </Space>
+                </Modal>
+                <Modal
+                    title="Console"
+                    visible={state.consoleModalVisible}
+                    onCancel={actions.closeConsolePortModal}
+                >
+                    <Console
+                        style={{backgroundColor: "#ff0000"}}
+                        ref={this.refConsole}
+                             handler={actions.echo}
+                             promptLabel={actions.promptLabel}
+                             welcomeMessage={"Welcome to the react-console demo!\nThis is an example of a simple echo console."}
+                             autofocus={true}
+                    />
                 </Modal>
                 <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
                     {('Official Site')}

@@ -45,7 +45,7 @@ export const actions = {
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            console.log("SERIAL_PORT_DATA： " + data)
+            console.log("SERIAL_PORT_DATA： " + data.received)
         });
     },
     _updateState: (state) => {
@@ -55,6 +55,7 @@ export const actions = {
         };
     },
     open: (path) => () => {
+        console.log("path: " + path)
         socketClientManager.emitToServer(SERIAL_PORT_OPEN, path);
         return {type: null};
     },

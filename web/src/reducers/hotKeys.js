@@ -11,7 +11,7 @@ export const actions = {
             event.preventDefault();
             switch (getState().taps.tap) {
                 case TAP_P3D:
-                    p3dModelActions.removeSelected();
+                    dispatch(p3dModelActions.removeSelected());
                     break;
                 case TAP_LASER:
                     dispatch(laserActions.removeSelected());
