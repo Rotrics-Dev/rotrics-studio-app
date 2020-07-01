@@ -133,22 +133,16 @@ class Index extends React.Component {
                                 <Col span={22}>
                                     <div className={styles.div_card}>
                                         <Row>
-                                            <Col span={5}>
+                                            <Col span={9}>
                                                 {'X:' + item.x}
-                                            </Col>
-                                            <Col span={4}>
-                                                {'mm'}
                                             </Col>
                                             <Col span={15}>
                                                 {teach_and_play.front_end.options[item.current_front_end].label}{item.current_front_end == "laser" && `(Power ${item.laser_power}%)`}
                                             </Col>
                                         </Row>
                                         <Row>
-                                            <Col span={5}>
+                                            <Col span={9}>
                                                 {'Y:' + item.y}
-                                            </Col>
-                                            <Col span={4}>
-                                                {'mm'}
                                             </Col>
                                             <Col span={13}>
                                                 {teach_and_play.front_end.options[item.current_front_end].state[item.current_front_end_state].label}
@@ -162,11 +156,8 @@ class Index extends React.Component {
                                             </Col>
                                         </Row>
                                         <Row>
-                                            <Col span={5}>
+                                            <Col span={9}>
                                                 {'Z:' + item.z}
-                                            </Col>
-                                            <Col span={4}>
-                                                {'mm'}
                                             </Col>
                                         </Row>
                                     </div>
