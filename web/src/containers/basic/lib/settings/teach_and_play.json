@@ -1,0 +1,97 @@
+{
+  "front_end": {
+    "label": "Front End",
+    "description": "Front End description",
+    "default": "air_pick",
+    "current": "air_pick",
+    "type": "enum",
+    "options": {
+      "air_pick": {
+        "label": "Air Pick",
+        "description": "Air Pick",
+        "gcode": "M888 P2",
+        "default": "release",
+        "current": "release",
+        "type": "bool",
+        "state": {
+          "state_0": {
+            "label": "Drop",
+            "description": "Drop Description",
+            "gcode": "M1002"
+          },
+          "state_1": {
+            "label": "Pick",
+            "description": "Pick Description",
+            "gcode": "M1000"
+          }
+        }
+      },
+      "soft_gripper": {
+        "label": "Soft Gripper",
+        "description": "Soft Gripper",
+        "gcode": "M888 P2",
+        "default": "release",
+        "current": "release",
+        "type": "bool",
+        "state": {
+          "state_0": {
+            "label": "Neutral",
+            "description": "Release Description",
+            "gcode": "M1002"
+          },
+          "state_1": {
+            "label": "Grip",
+            "description": "Pick Description",
+            "gcode": "M1001"
+          },
+          "state_2": {
+            "label": "Release",
+            "description": "Drop Description",
+            "gcode": "M1000"
+          }
+        }
+      },
+      "laser": {
+        "label": "Laser",
+        "description": "Laser",
+        "gcode": "M888 P1",
+        "default": "off",
+        "current": "off",
+        "type": "bool",
+        "state": {
+          "state_0": {
+            "label": "Off",
+            "description": "Laser Off",
+            "gcode": "M5"
+          },
+          "state_1": {
+            "label": "On",
+            "description": "Laser On",
+            "gcode": "M3"
+          }
+        },
+        "power": {
+          "label": "Power",
+          "description": "Power description",
+          "default": 100,
+          "current": 100,
+          "type": "int",
+          "unit": "%",
+          "minimum_value": 0,
+          "maximum_value": 100
+        }
+      }
+    }
+  },
+  "delay": {
+    "label": "Delay",
+    "description": "Delay description ",
+    "default_value": 0,
+    "type": "int",
+    "unit": "ms",
+    "minimum_value": 1,
+    "maximum_value": 100000
+  },
+  "movementMode": {
+  }
+}

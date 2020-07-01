@@ -22,7 +22,22 @@
     bottom: 0;
     background-color: lightgray;
 }
+.btn_basic {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-image: url(./images/basic.png);
+    background-color: transparent;
+    outline: none;
+    border: none;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
+.btn_basic:active {
+    opacity: 0.4;
+}
 .btn_laser {
     width: 40px;
     height: 40px;
@@ -110,7 +125,19 @@
 .btn_settings:active {
     opacity: 0.4;
 }
-
+.btn_basic_selected {
+    width: 40px;
+    height: 40px;
+    margin: 7px;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/basic.png);
+}
 .btn_laser_selected {
     width: 40px;
     height: 40px;

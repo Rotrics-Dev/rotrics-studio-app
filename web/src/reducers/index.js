@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import gcodeSend from "./gcodeSend";
 import hotKeys from "./hotKeys";
+import teachAndPlay from "./teachAndPlay";
 import laser from "./laser";
 import writeAndDraw from "./writeAndDraw";
 import p3dGcode from "./p3dGcode";
@@ -15,6 +16,7 @@ import vm from "./vm";
 export default combineReducers({
     gcodeSend,
     hotKeys,
+    teachAndPlay,
     laser,
     writeAndDraw,
     // p3d,

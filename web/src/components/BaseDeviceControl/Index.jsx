@@ -8,6 +8,7 @@ class Index extends React.Component {
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
         const {setStep, runBoundary, setWorkOrigin, goToWorkOrigin} = this.props.actions;
         const {step} = this.props;
+        const {hideRunBoundary} = this.props;
         return (
             <div style={{padding: "0 6px 0 6px"}}>
                 <Space direction={"vertical"}>
@@ -73,11 +74,12 @@ class Index extends React.Component {
                         >Z-
                         </button>
                     </Space>
+                    {!hideRunBoundary &&
                     <button
                         onClick={runBoundary}
                         className={styles.btn_action_work}
                     >Run Boundary
-                    </button>
+                    </button>}
                     <button
                         onClick={goToWorkOrigin}
                         className={styles.btn_action_work}
