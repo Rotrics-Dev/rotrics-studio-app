@@ -1,11 +1,12 @@
 import {
     Object3D,
     PlaneGeometry, MeshBasicMaterial, Mesh,
-    TextureLoader
+    TextureLoader,
+    Vector2
 } from 'three';
 import RectangleHelper from '../../../../three-extensions/RectangleHelper.jsx';
 // import RectangleGridHelper from '../../components/three-extensions/RectangleGridHelper';
-
+import PrintablePlate from "./PrintablePlate.js"
 
 class PrintableCube extends Object3D {
     constructor(size) {
@@ -22,14 +23,16 @@ class PrintableCube extends Object3D {
     }
 
     update = () => {
-        this.dispatchEvent({ type: 'update' });
+        this.dispatchEvent({type: 'update'});
     };
 
     _setup() {
         // Faces
-        const bottom = new RectangleHelper(this.size.x, this.size.y);
+        const bottom = new PrintablePlate(new Vector2(this.size.x / 2, this.size.y / 2))
+
+        // const bottom = new RectangleHelper(this.size.x, this.size.y);
         bottom.position.set(0, 0, 0);
-        bottom.rotation.x = Math.PI; // flip to show left bottom point as zero
+        bottom.rotation.x = Math.PI / 2; // flip to show left bottom point as zero
         this.add(bottom);
 
         const top = new RectangleHelper(this.size.x, this.size.y);
@@ -58,17 +61,17 @@ class PrintableCube extends Object3D {
 
 
         // Add logo
-        const minSideLength = Math.min(this.size.x, this.size.y);
-
-        const geometry2 = new PlaneGeometry(this.size.x, this.size.y);
-        const material2 = new MeshBasicMaterial({
-            color: '#6495ED',
-            opacity: 0.4,
-            transparent: true
-        });
-        const mesh2 = new Mesh(geometry2, material2);
-        mesh2.rotateX(-Math.PI / 2);
-        this.add(mesh2);
+        // const minSideLength = Math.min(this.size.x, this.size.y);
+        //
+        // const geometry2 = new PlaneGeometry(this.size.x, this.size.y);
+        // const material2 = new MeshBasicMaterial({
+        //     color: '#6495ED',
+        //     opacity: 0.4,
+        //     transparent: true
+        // });
+        // const mesh2 = new Mesh(geometry2, material2);
+        // mesh2.rotateX(-Math.PI / 2);
+        // this.add(mesh2);
 
         // const geometry = new PlaneGeometry(minSideLength / 7, minSideLength / 7);
         // const material = new MeshBasicMaterial({

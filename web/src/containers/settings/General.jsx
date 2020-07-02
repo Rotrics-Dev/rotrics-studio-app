@@ -47,7 +47,7 @@ class General extends React.Component {
                         </Row>
                     </div>
                 </div>
-                <div style={{width: "100%", paddingTop: "30px"}}>
+                <div style={{width: "100%", paddingTop: "30px", marginBottom: "30px"}}>
                     <h2>Rotrics Studio Info</h2>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>

@@ -195,6 +195,7 @@ class WorkingParameters extends PureComponent {
                                 min={pass_depth.minimum_value}
                                 max={pass_depth.maximum_value}
                                 value={pass_depth.default_value}
+                                precision={1}
                                 onAfterChange={actions.setMultiPassPassDepth}/>
                         </Col>
                     </Row>

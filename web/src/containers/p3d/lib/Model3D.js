@@ -6,7 +6,7 @@ const materialSelected = new THREE.MeshPhongMaterial({
     shininess: 30,
     transparent: true,
     opacity: 0.6,
-    depthTest: true
+    depthTest: false
 });
 const materialTransparent = new THREE.MeshPhongMaterial({
     color: 0xb0b0b0,
