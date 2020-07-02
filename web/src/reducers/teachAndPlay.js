@@ -3,6 +3,7 @@ import teach_and_play from '../containers/basic/lib/settings/teach_and_play.json
 import {actions as gcodeSendActions} from "./gcodeSend";
 import {actions as serialPortActions} from "./serialPort";
 import FileSaver from 'file-saver';
+
 const ACTION_UPDATE_STATE = 'teachAndPlay/ACTION_UPDATE_STATE';
 
 
@@ -15,7 +16,8 @@ const INITIAL_STATE = {
     speed: 1000,
     stepArray: [],
     teachAndPlayMode: false,
-    showFrontEndSelect: false
+    showFrontEndSelect: false,
+    repeatCount: 1
 };
 // const step = {
 //     x: 0,
@@ -37,7 +39,6 @@ const actions = {
     updateStep: (step, index) => (dispatch, getState) => {
         const {stepArray} = getState().teachAndPlay;
         stepArray[index] = step;
-        console.log()
         dispatch(actions._updateState({
             stepArray: _.cloneDeep(stepArray)
         }));
@@ -80,11 +81,9 @@ const actions = {
         dispatch(serialPortActions.write("M893\n"))
 
     },
-    startPlayStep: () => (dispatch, getState) => {
-        const {current_front_end, stepArray, laser_power} = getState().teachAndPlay;
-        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power);
-
-        console.log(JSON.stringify(gcode));
+    startPlayStep: (startIndex) => (dispatch, getState) => {
+        const {current_front_end, stepArray, laser_power, repeatCount} = getState().teachAndPlay;
+        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power, startIndex, repeatCount);
         dispatch(gcodeSendActions.start(gcode));
     },
     stopPlayStep: () => (dispatch, getState) => {
@@ -95,7 +94,7 @@ const actions = {
             stepArray: []
         }));
     },
-    stepArray2Gcode: (current_front_end, stepArray, laser_power) => {
+    stepArray2Gcode: (current_front_end, stepArray, laser_power, startIndex, repeatCount) => {
         const gcodeArray = [];
 
         gcodeArray.push(teach_and_play.front_end.options[current_front_end].gcode)//设置前端模块
@@ -104,12 +103,15 @@ const actions = {
             gcodeArray.push('M5')
         }
         const front_end_obj = teach_and_play.front_end.options[current_front_end]
-        for (let i = 0; i < stepArray.length; i++) {
-            const step = stepArray[i];
-            gcodeArray.push(front_end_obj.state[step.current_front_end_state].gcode);
-            gcodeArray.push(`M894 X${step.x} Y${step.y} Z${step.z}`);
-            if (step.delay) {
-                gcodeArray.push(`G4 P${step.delay}`);
+        //当startIndex>0的情况是由用户点击Step触发，这时候不处理repeatCount，否则反之
+        for (let index = 0; index < (startIndex === 0 ? repeatCount : 1); index++) {
+            for (let i = startIndex; i < stepArray.length; i++) {
+                const step = stepArray[i];
+                gcodeArray.push(`M894 X${step.x} Y${step.y} Z${step.z}`);
+                gcodeArray.push(front_end_obj.state[step.current_front_end_state].gcode);
+                if (step.delay) {
+                    gcodeArray.push(`G4 P${step.delay}`);
+                }
             }
         }
         return gcodeArray.join("\n") + "\n";
@@ -130,12 +132,18 @@ const actions = {
     onSelectFrontEnd: (front_end) => (dispatch, getState) => {
         dispatch(actions._updateState({
             current_front_end: front_end,
-            current_front_end_state: 'state_0'
+            current_front_end_state: 'state_0',
+            repeatCount: 1
         }));
     },
     setLaserPower: (power) => (dispatch, getState) => {
         dispatch(actions._updateState({
             laser_power: power,
+        }));
+    },
+    setRepeatCount: (repeatCount) => (dispatch, getState) => {
+        dispatch(actions._updateState({
+            repeatCount
         }));
     },
     setFrontEndState: (current_front_end_state) => (dispatch, getState) => {
@@ -147,8 +155,8 @@ const actions = {
         const date = new Date();
         const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
         const fileName = arr.join("") + ".gcode";
-        const {current_front_end, stepArray, laser_power} = getState().teachAndPlay;
-        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power);
+        const {current_front_end, stepArray, laser_power, repeatCount} = getState().teachAndPlay;
+        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power, 0, repeatCount);
         const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
         FileSaver.saveAs(blob, fileName, true);
     },

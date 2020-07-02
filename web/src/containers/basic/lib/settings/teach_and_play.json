@@ -1,4 +1,14 @@
 {
+  "repeatCount": {
+    "label": "Repeat Count",
+    "description": "Repeat Count Description",
+    "default": 1,
+    "current": 1,
+    "type": "int",
+    "unit": "",
+    "minimum_value": 1,
+    "maximum_value": 9999
+  },
   "front_end": {
     "label": "Front End",
     "description": "Front End description",

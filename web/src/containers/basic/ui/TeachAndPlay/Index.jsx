@@ -35,6 +35,7 @@ class Index extends React.Component {
             laser_power,
             stepArray,
             teachAndPlayMode,
+            repeatCount
         } = this.props;
 
         const frontEndOptions = [];
@@ -82,6 +83,7 @@ class Index extends React.Component {
                             </Radio.Group>
                         </Col>
                     </Row>}
+
                     {teachAndPlayMode && current_front_end === "laser" &&
                     <Row>
                         <Col span={8}>
@@ -95,6 +97,21 @@ class Index extends React.Component {
                                 value={laser_power}
                                 onAfterChange={this.props.setLaserPower}/>
                         </Col>
+                    </Row>}
+
+                    {teachAndPlayMode &&
+                    <Row>
+                        <Col span={8}>
+                            <span> {teach_and_play.repeatCount.label}</span>
+                        </Col>
+                        <Col span={16} align={"right"}>
+                            <NumberInput
+                                min={teach_and_play.repeatCount.minimum_value}
+                                max={teach_and_play.repeatCount.maximum_value}
+                                defaultValue={teach_and_play.repeatCount.default}
+                                value={repeatCount}
+                                onAfterChange={this.props.setRepeatCount}/>
+                        </Col>
                     </Row>
                     }
                 </div>
@@ -104,7 +121,7 @@ class Index extends React.Component {
                             disabled={!(teachAndPlayMode)}> Record
                     </button>
 
-                    <button className={styles.btn} onClick={this.props.startPlayStep}
+                    <button className={styles.btn} onClick={() => this.props.startPlayStep()}
                             disabled={!(stepArray.length > 0)}>Start
                     </button>
 
@@ -121,9 +138,10 @@ class Index extends React.Component {
                     grid={{gutter: 1, column: 1}}
                     dataSource={stepArray}
                     renderItem={(item, index) => (
-                        <List.Item style={{
-                            marginBottom: '0px'
-                        }}>
+                        <List.Item
+                            style={{
+                                marginBottom: '0px'
+                            }}>
                             <Row>
                                 <Col span={2}>
                                     <div className={styles.div_num}>
@@ -131,7 +149,8 @@ class Index extends React.Component {
                                     </div>
                                 </Col>
                                 <Col span={22}>
-                                    <div className={styles.div_card}>
+                                    <div className={styles.div_card}
+                                         onClick={() => this.props.startPlayStep(index)}>
                                         <Row>
                                             <Col span={9}>
                                                 {'X:' + item.x}
@@ -149,7 +168,8 @@ class Index extends React.Component {
                                             </Col>
                                             <Col span={2}>
                                                 <button className={styles.btn_delete}
-                                                        onClick={() => {
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
                                                             this.props.deleteStep(index);
                                                         }}
                                                 />
@@ -220,7 +240,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         recordStep: () => dispatch(teachAndPlayActions.recordStep()),
-        startPlayStep: () => dispatch(teachAndPlayActions.startPlayStep()),
+        startPlayStep: (startIndex = 0) => dispatch(teachAndPlayActions.startPlayStep(startIndex)),
         stopPlayStep: () => dispatch(teachAndPlayActions.stopPlayStep()),
         clearStepArray: () => dispatch(teachAndPlayActions.clearStepArray()),
         sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
@@ -229,6 +249,7 @@ const mapDispatchToProps = (dispatch) => {
         onSelectFrontEnd: (front_end) => dispatch(teachAndPlayActions.onSelectFrontEnd(front_end)),
         setFrontEndState: (event) => dispatch(teachAndPlayActions.setFrontEndState(event.target.value)),
         setLaserPower: (power) => dispatch(teachAndPlayActions.setLaserPower(power)),
+        setRepeatCount: (repeatCount) => dispatch(teachAndPlayActions.setRepeatCount(repeatCount)),
         updateStep: (step, index) => dispatch(teachAndPlayActions.updateStep(step, index)),
         deleteStep: (index) => dispatch(teachAndPlayActions.deleteStep(index)),
         exportGcode: () => dispatch(teachAndPlayActions.exportGcode())
