@@ -29,7 +29,7 @@ class General extends React.Component {
                 firmwareUpgradeModalVisible: false,
             });
         },
-        openFirmwareUpgradeModal: () => {
+        startFirmwareUpgrade: () => {
             this.props.resetFirmwareUpgrade();
             this.props.startFirmwareUpgrade();
             this.setState({
@@ -81,7 +81,7 @@ class General extends React.Component {
                                 <Button
                                     type="link"
                                     size="small"
-                                    onClick={actions.openFirmwareUpgradeModal}
+                                    onClick={actions.startFirmwareUpgrade}
                                 >
                                     {"check update"}
                                 </Button></Col>
@@ -112,7 +112,7 @@ class General extends React.Component {
                     onCancel={actions.closeFirmwareUpgradeModal}
                     footer={null}
                 >
-                    {!isFirmwareUpToDate &&
+                    {!isFirmwareUpToDate && !isFirmwareUpgradeSuccess &&
                     <Steps current={current} direction="vertical" size="small" status={status}>
                         {stepEles}
                     </Steps>

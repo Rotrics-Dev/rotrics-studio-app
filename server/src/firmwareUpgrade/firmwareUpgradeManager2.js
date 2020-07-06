@@ -56,7 +56,7 @@ class FirmwareUpgradeManager {
         const upgradeInfo = await this.fetchFirmwareFromServer();
         //下载固件文件到本地，并准备数据
         let firmwarePath = null;
-        firmwarePath = "/Users/liuming/Desktop/firmware/Firmware_V2.1.3/Firmware_V2.1.3_For_Hardware_V3.2_20200521.bin";
+        // firmwarePath = "/Users/liuming/Desktop/firmware/Firmware_V2.1.3/Firmware_V2.1.3_For_Hardware_V3.2_20200521.bin";
         firmwarePath = "/Users/liuming/Desktop/firmware/Firmware_V2.1.2/Firmware_V2.1.2_For_Hardware_V3.2_20200520.bin";
         const firmwareName = "Firmware_V2.1.3_For_Hardware_V3.2_20200521.bin";
         this.frames = this.prepareData(firmwarePath, firmwareName);
@@ -187,27 +187,6 @@ class FirmwareUpgradeManager {
         return result;
     }
 
-    async onReadLine(line){
-        console.log("##received line: " + JSON.stringify(line));
-        switch (line) {
-            case "Programming Completed Successfully!": //step-6: Load firmware -> finish
-                //step-7: Execute firmware
-                this.onChange(7, 'process');
-                //发完了
-                setTimeout(() => {
-                    console.log("## send: exe")
-                    this.write("2")
-                }, 1000)
-                break;
-            case "Start program execution......": //step-7: Execute firmware -> finish
-                //重新open serial port，获取固件版本号
-                await this.openSerialPort();
-
-                break;
-
-        }
-    }
-
     listenSerialPort() {
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', async (data) => {
@@ -222,12 +201,12 @@ class FirmwareUpgradeManager {
                         this.write("2")
                     }, 1000)
                     break;
-                case "Start program execution......": //step-7: Execute firmware -> finish
+                case "Start program execution......\r": //step-7: Execute firmware -> finish
                     //重新open serial port，获取固件版本号
-                    await this.openSerialPort();
-
+                    console.log("######")
+                    this.onChange(8, 'finish');
+                    // serialPortManager.open(this.path)
                     break;
-
             }
         });
 
@@ -236,7 +215,7 @@ class FirmwareUpgradeManager {
                 const value = buffer.readUInt8(0);
                 switch (value) {
                     case 0x43://C
-                        console.log("-> C");
+                        // console.log("-> C");
                         if (this.cCount === 0) {
                             ++this.cCount;
                             this.curFrame = this.frames.shift();
@@ -250,7 +229,7 @@ class FirmwareUpgradeManager {
                         }
                         break;
                     case 0x06: //ACK
-                        console.log("-> ACK");
+                        // console.log("-> ACK");
                         if (this.ackCount === 0) {
                             ++this.ackCount;
                         } else if (this.ackCount === 1) {
@@ -258,18 +237,16 @@ class FirmwareUpgradeManager {
                             if (this.curFrame) {
                                 this.write(this.curFrame)
                                 this.printInfo();
+                            } else {
+                                console.log("# send finish")
+                                //step-7: Connect DexArm
+                                this.onChange(7, 'process');
+                                //发完了
+                                setTimeout(() => {
+                                    console.log("## send: exe")
+                                    this.write("3")
+                                }, 1000)
                             }
-
-                            // else {
-                            //     console.log("# send finish")
-                            //     //step-7: Connect DexArm
-                            //     this.onChange(7, 'process');
-                            //     //发完了
-                            //     setTimeout(() => {
-                            //         console.log("## send: exe")
-                            //         this.write("3")
-                            //     }, 1000)
-                            // }
                         }
                         break;
                     case 0x15: //Re-Send
@@ -303,7 +280,7 @@ class FirmwareUpgradeManager {
     printInfo() {
         const description = `upgrading ${Math.floor(100 * (1 - this.frames.length / this.frameCount))}%`;
         this.onChange(6, 'process', description);
-        console.log("# send: " + (this.frameCount - this.frames.length))
+        // console.log("# send: " + (this.frameCount - this.frames.length))
     };
 
     prepareData(firmwarePath, firmwareName) {

@@ -38,7 +38,7 @@ import {
     FIRMWARE_UPGRADE_STEP_CHANGE,
 } from "./constants.js"
 import getCWD from "./getCWD.js";
-import firmwareUpgradeManager from "./firmwareUpgrade/firmwareUpgradeManager.js";
+import firmwareUpgradeManager from "./firmwareUpgrade/firmwareUpgradeManager2.js";
 
 /**
  * 保存file到，静态文件夹下的cache
