@@ -8,7 +8,7 @@ import front_end from "../../lib/settings/front_end.json";
 class Index extends React.Component {
     fileInput = React.createRef();
     state = {
-        gcode: null, // bw, greyscale, svg, text
+        gcode: null, //
         fileName: null,
         importLevel: 0// int
     };
@@ -31,7 +31,6 @@ class Index extends React.Component {
             })
         },
         onChangeFile: async (event) => {
-            //bw, greyscale, svg
             const file = event.target.files[0];
             const reader = new FileReader();
             const that = this;
@@ -41,7 +40,6 @@ class Index extends React.Component {
                     fileName: file.name,
                     importLevel: 1
                 });
-                console.log(this.result);
             }
             reader.readAsText(file, "utf8");
         },
@@ -81,7 +79,6 @@ class Index extends React.Component {
                         style={{width: "100%", textAlign: "center"}}
                         onChange={this.actions.onSelectFrontEnd}
                         placeholder="select a front end"
-                        defaultValue={this.props.current_front_end}
                         options={frontEndOptions}/>}
                     {this.state.importLevel > 1 &&
                     <Button
@@ -107,6 +104,12 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={this.actions.onChangeFile}
                 />
+                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                    {this.state.fileName &&
+                    <div>
+                        {this.state.fileName}
+                    </div>}
+                </Space>
             </div>
         )
     }

@@ -8,10 +8,9 @@ const ACTION_UPDATE_STATE = 'teachAndPlay/ACTION_UPDATE_STATE';
 
 
 const INITIAL_STATE = {
-    current_front_end: 'air_pick',
-    // front_end_state: _.cloneDeep(teach_and_play.front_end.options.air_pick.state.off),
-    current_front_end_state: 'state_0',
-    laser_power: 100,
+    currentFrontEnd: teach_and_play.front_end.default_value,
+    currentFrontEndState: teach_and_play.front_end.options[teach_and_play.front_end.default_value].default_value,
+    laserPower: teach_and_play.front_end.options.laser.power.default_value,
     movementMode: 2001,//Fast:M2001,Straight Line:M2000
     speed: 1000,
     stepArray: [],
@@ -19,14 +18,14 @@ const INITIAL_STATE = {
     showFrontEndSelect: false,
     repeatCount: 1
 };
-// const step = {
+// const step = {// REFERENCE DO NOT DELETE
 //     x: 0,
 //     y: 0,
 //     z: 0,
 //     delay: 0,
-//     current_front_end: '',//string
-//     current_front_end_state: '',//on /off
-//     laser_power:100
+//     currentFrontEnd: '',//string
+//     currentFrontEndState: '',//string
+//     laserPower:100
 // };
 
 const actions = {
@@ -62,15 +61,15 @@ const actions = {
     recordStep: () => (dispatch, getState) => {
         serialPortActions.addPositionListener(
             (x, y, z) => {
-                const {current_front_end, laser_power, current_front_end_state, stepArray} = getState().teachAndPlay;
+                const {currentFrontEnd, laserPower, currentFrontEndState, stepArray} = getState().teachAndPlay;
                 stepArray.push({
                     x,
                     y,
                     z,
                     delay: 0,
-                    current_front_end,
-                    current_front_end_state,
-                    laser_power
+                    currentFrontEnd,
+                    currentFrontEndState,
+                    laserPower
                 });
 
                 dispatch(actions._updateState({
@@ -81,9 +80,11 @@ const actions = {
         dispatch(serialPortActions.write("M893\n"))
 
     },
-    startPlayStep: (startIndex) => (dispatch, getState) => {
-        const {current_front_end, stepArray, laser_power, repeatCount} = getState().teachAndPlay;
-        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power, startIndex, repeatCount);
+    startPlayStep: (startIndex, doRepeat) => (dispatch, getState) => {
+        const {currentFrontEnd, stepArray, laserPower, repeatCount} = getState().teachAndPlay;
+        const gcode = actions.stepArray2Gcode(
+            currentFrontEnd, stepArray, laserPower, startIndex, repeatCount, doRepeat
+        );
         dispatch(gcodeSendActions.start(gcode));
     },
     stopPlayStep: () => (dispatch, getState) => {
@@ -94,34 +95,41 @@ const actions = {
             stepArray: []
         }));
     },
-    stepArray2Gcode: (current_front_end, stepArray, laser_power, startIndex, repeatCount) => {
+    stepArray2Gcode: (currentFrontEnd, stepArray, laserPower, startIndex, repeatCount, doRepeat) => {
+        const header = teach_and_play.front_end.options[currentFrontEnd].gcode + '\n';//设置前端模块
         const gcodeArray = [];
+        for (let index = startIndex; index < stepArray.length; index++) {
+            const step = stepArray[index];
+            gcodeArray.push(`M894 X${step.x} Y${step.y} Z${step.z}`);
+            const frontEndObj = teach_and_play.front_end.options[step.currentFrontEnd];
+            if (step.currentFrontEnd === 'laser' && step.currentFrontEndState === 'state_1') {//laser on
+                gcodeArray.push(`${frontEndObj.state[step.currentFrontEndState].gcode} S${Math.round(laserPower * 2.55)}`);
+            } else {
+                gcodeArray.push(frontEndObj.state[step.currentFrontEndState].gcode);
+            }
 
-        gcodeArray.push(teach_and_play.front_end.options[current_front_end].gcode)//设置前端模块
-        if (current_front_end === 'laser') {
-            gcodeArray.push(`M3 S${Math.round(laser_power * 2.55)}`)
-            gcodeArray.push('M5')
-        }
-        const front_end_obj = teach_and_play.front_end.options[current_front_end]
-        //当startIndex>0的情况是由用户点击Step触发，这时候不处理repeatCount，否则反之
-        for (let index = 0; index < (startIndex === 0 ? repeatCount : 1); index++) {
-            for (let i = startIndex; i < stepArray.length; i++) {
-                const step = stepArray[i];
-                gcodeArray.push(`M894 X${step.x} Y${step.y} Z${step.z}`);
-                gcodeArray.push(front_end_obj.state[step.current_front_end_state].gcode);
-                if (step.delay) {
-                    gcodeArray.push(`G4 P${step.delay}`);
-                }
+            if (step.delay) {
+                gcodeArray.push(`G4 P${step.delay}`);
             }
         }
-        return gcodeArray.join("\n") + "\n";
+
+        if (doRepeat) {
+            const gcode = gcodeArray.join("\n") + "\n";
+            let tempGcode = '';
+            for (let index = 0; index < repeatCount; index++) {
+                tempGcode += gcode;
+            }
+            return (header + tempGcode);
+        } else {
+            return header + gcodeArray.join("\n") + "\n";
+        }
     },
     setTeachAndPlay: (isTeachAndPlayMode) => (dispatch, getState) => {
         dispatch(actions._updateState({
             teachAndPlayMode: isTeachAndPlayMode
         }));
         if (isTeachAndPlayMode) {
-            dispatch(serialPortActions.write('M18\n'));
+            dispatch(serialPortActions.write('M18\n'));//shut the power of motor down
         }
     },
     setShowFrontEndSelect: (show) => (dispatch, getState) => {
@@ -129,16 +137,27 @@ const actions = {
             showFrontEndSelect: show
         }));
     },
-    onSelectFrontEnd: (front_end) => (dispatch, getState) => {
+    onSelectFrontEnd: (frontEnd) => (dispatch, getState) => {
+        const currentFrontEnd = teach_and_play.front_end.options[frontEnd];
+        const currentFrontEndState = currentFrontEnd.state[currentFrontEnd['default_value']];
+        const gcodeArr = [currentFrontEnd.gcode, currentFrontEndState.gcode];
+
+        dispatch(serialPortActions.write(gcodeArr.join('\n') + '\n'));
         dispatch(actions._updateState({
-            current_front_end: front_end,
-            current_front_end_state: 'state_0',
-            repeatCount: 1
+            currentFrontEnd: frontEnd,
+            currentFrontEndState: currentFrontEnd['default_value'],
+            repeatCount: 1,
+            laserPower: 1
         }));
+
     },
     setLaserPower: (power) => (dispatch, getState) => {
+        dispatch(serialPortActions.write(
+            `M3 S${Math.round(power * 2.55)}\n`
+        ));
         dispatch(actions._updateState({
-            laser_power: power,
+            laserPower: power,
+            currentFrontEndState: 'state_1'//switch to  laser on
         }));
     },
     setRepeatCount: (repeatCount) => (dispatch, getState) => {
@@ -146,17 +165,22 @@ const actions = {
             repeatCount
         }));
     },
-    setFrontEndState: (current_front_end_state) => (dispatch, getState) => {
+    setFrontEndState: (currentFrontEndState) => (dispatch, getState) => {
+        const {currentFrontEnd} = getState().teachAndPlay;
+        const gcode = teach_and_play.front_end.options[currentFrontEnd].state[currentFrontEndState].gcode
+        dispatch(serialPortActions.write(
+            gcode + '\n'
+        ));
         dispatch(actions._updateState({
-            current_front_end_state
+            currentFrontEndState
         }));
     },
     exportGcode: () => (dispatch, getState) => {
         const date = new Date();
         const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
         const fileName = arr.join("") + ".gcode";
-        const {current_front_end, stepArray, laser_power, repeatCount} = getState().teachAndPlay;
-        const gcode = actions.stepArray2Gcode(current_front_end, stepArray, laser_power, 0, repeatCount);
+        const {currentFrontEnd, stepArray, laserPower, repeatCount} = getState().teachAndPlay;
+        const gcode = actions.stepArray2Gcode(currentFrontEnd, stepArray, laserPower, 0, repeatCount);
         const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
         FileSaver.saveAs(blob, fileName, true);
     },
