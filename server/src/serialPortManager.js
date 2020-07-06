@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
 import {
-    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
@@ -24,7 +24,7 @@ class SerialPortManager extends EventEmitter {
                     const paths = ports.map(item => {
                         return item.path;
                     });
-                    this.emit(SERIAL_PORT_GET_PATH, paths);
+                    this.emit(SERIAL_PORT_PATH_UPDATE, paths);
 
                     //serial port open后，被拔掉
                     if (this.serialPort && this.serialPort.isOpen && !paths.includes(this.serialPort.path)) {
@@ -42,7 +42,9 @@ class SerialPortManager extends EventEmitter {
 
     getOpened() {
         if (this.serialPort && this.serialPort.isOpen) {
-            this.emit(SERIAL_PORT_GET_OPENED, this.serialPort.path);
+            return this.serialPort.path;
+        } else {
+            return null;
         }
     }
 
@@ -53,6 +55,31 @@ class SerialPortManager extends EventEmitter {
         readLineParser.on('data', (data) => {
             console.log("received line: " + JSON.stringify(data));
             this.emit(SERIAL_PORT_DATA, {received: data});
+        });
+
+        this.serialPort.on("data", (buffer) => {
+            if (Buffer.isBuffer(buffer)) {
+                const value = buffer.readUInt8(0);
+                switch (value) {
+                    case 0x43:
+                        console.log("-> C");
+                        break;
+                    case 0x04:
+                        console.log("-> END");
+                        break;
+                    case 0x06:
+                        console.log("-> ACK");
+                        break;
+                    case 0x15:
+                        console.log("-> Re-Send");
+                        break;
+                    default:
+                        console.log("-> Unknown: 0x%s\n", value.toString(16));
+                        break;
+                }
+            } else {
+                console.log("received data is not buffer: " + JSON.stringify(buffer))
+            }
         });
 
         this.serialPort.on("open", () => {
@@ -145,7 +172,7 @@ class SerialPortManager extends EventEmitter {
                     console.error("write error: " + data);
                     this.emit(SERIAL_PORT_ERROR, error);
                 } else {
-                    // console.log("write ok: " + data);
+                    console.log("write ok: " + data);
                 }
             })
         } else {

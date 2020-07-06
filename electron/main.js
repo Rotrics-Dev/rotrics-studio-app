@@ -18,7 +18,7 @@ function createWindow() {
     mainWindow.loadFile('./build-web/index.html')
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 }
 
 //https://github.com/electron/electron/issues/18397

@@ -1,7 +1,7 @@
 import {message} from 'antd';
 import socketClientManager from "../socket/socketClientManager";
 import {
-    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
@@ -44,7 +44,7 @@ export const actions = {
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_GET_PATH, (paths) => {
+        socketClientManager.addServerListener(SERIAL_PORT_PATH_UPDATE, (paths) => {
             dispatch(actions._updateState({paths}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, (path) => {

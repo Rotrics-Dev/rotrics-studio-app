@@ -70,6 +70,7 @@
     "babel-register": "^6.26.0",
     "image-size": "^0.8.3",
     "is-electron": "^2.2.0",
+    "is-online": "^8.4.0",
     "jimp": "^0.10.3",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",

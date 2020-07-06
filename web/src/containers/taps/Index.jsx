@@ -12,7 +12,7 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
 
-import {TAP_BASIC,TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
+import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
@@ -24,6 +24,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as settingsActions} from "../../reducers/settings";
+import {actions as firmwareUpgradeActions} from "../../reducers/firmwareUpgrade";
 import {Button, notification} from 'antd';
 
 import {getUuid} from '../../utils/index.js';
@@ -42,7 +43,7 @@ class Index extends React.Component {
         this.refP3D = React.createRef();
         this.refWriteAndDraw = React.createRef();
         this.refCode = React.createRef();
-        this.refSettings =  React.createRef();
+        this.refSettings = React.createRef();
     }
 
     actions = {
@@ -135,15 +136,15 @@ class Index extends React.Component {
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="Laser"
-                        onClick={() => actions.setTap(TAP_LASER)}
-                        className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
-                    />
-                    <button
-                        data-for={tooltipId}
                         data-tip="Write&Draw"
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
                         className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
+                    />
+                    <button
+                        data-for={tooltipId}
+                        data-tip="Laser"
+                        onClick={() => actions.setTap(TAP_LASER)}
+                        className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
                         data-for={tooltipId}
@@ -208,9 +209,11 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(serialPortActions.init());
             dispatch(vmActions.init());
             dispatch(settingsActions.init());
+            dispatch(firmwareUpgradeActions.init());
             //3dp
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());
+
         }
     };
 };
