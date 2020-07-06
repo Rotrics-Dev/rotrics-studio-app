@@ -12,6 +12,7 @@ import settings from "./settings";
 import socket from "./socket";
 import taps from "./taps";
 import vm from "./vm";
+import firmwareUpgrade from "./firmwareUpgrade";
 
 export default combineReducers({
     gcodeSend,
@@ -28,4 +29,5 @@ export default combineReducers({
     socket,
     taps,
     vm,
+    firmwareUpgrade
 });

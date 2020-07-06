@@ -19,12 +19,13 @@ class SocketClientManager {
     /**
      * emit event to server vis this.socketClient
      * @param eventName
-     * @param data
+     * @param data 数据对象，不使用[, ...args]
+     * @param ack 回调函数。注意：只能回调一次，即使server多次调用
      * @returns {boolean} 是否成功
      */
-    emitToServer(eventName, data) {
+    emitToServer(eventName, data, ack) {
         if (this.isSocketConnected) {
-            this.socketClient.emit(eventName, data);
+            this.socketClient.emit(eventName, data, ack);
             return true;
         }
         return false;

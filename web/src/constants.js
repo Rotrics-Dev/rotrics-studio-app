@@ -1,8 +1,6 @@
 // 左侧tap
-export const TAP_BASIC = "TAP_BASIC";
 export const TAP_LASER = "TAP_LASER";
 export const TAP_P3D = "TAP_P3D";
-export const TAB_WRITE_AND_DRAW = "TAB_WRITE_AND_DRAW";
 export const TAP_CODE = "TAP_CODE";
 export const TAP_SETTINGS = "TAP_SETTINGS";
 
@@ -17,8 +15,8 @@ export const P3D_SLICE_START = 'P3D_SLICE_START';
 export const P3D_SLICE_STATUS = 'P3D_SLICE_STATUS';
 
 // serial port
-export const SERIAL_PORT_GET_PATH = 'SERIAL_PORT_GET_PATH'; //获取串口paths
-export const SERIAL_PORT_GET_OPENED = 'SERIAL_PORT_GET_OPENED'; //获取opened的串口
+export const SERIAL_PORT_PATH_UPDATE = 'SERIAL_PORT_PATH_UPDATE'
+export const SERIAL_PORT_GET_OPENED = 'SERIAL_PORT_GET_OPE';  //获取opened的串口
 export const SERIAL_PORT_OPEN = 'SERIAL_PORT_OPEN';
 export const SERIAL_PORT_CLOSE = 'SERIAL_PORT_CLOSE';
 export const SERIAL_PORT_ERROR = 'SERIAL_PORT_ERROR';
@@ -49,3 +47,7 @@ export const P3D_SETTING_CLONE = 'P3D_SETTING_CLONE';
 
 //message
 export const MSG_SERIAL_PORT_CLOSE_TOAST = 'Please connect DexArm first';
+
+//firmware upgrade
+export const FIRMWARE_UPGRADE_START = 'FIRMWARE_UPGRADE_START';
+export const FIRMWARE_UPGRADE_STEP_CHANGE = 'FIRMWARE_UPGRADE_STEP_CHANGE';

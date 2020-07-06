@@ -13,7 +13,7 @@ import generateToolPathLines from './toolPath/generateToolPathLines.js';
 import gcodeSender from './gcode/gcodeSender.js';
 import p3dStartSlice from './p3dStartSlice.js';
 import {
-    SERIAL_PORT_GET_PATH,
+    SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
@@ -33,9 +33,12 @@ import {
     P3D_SETTING_FETCH_ALL,
     P3D_SETTING_UPDATE,
     P3D_SLICE_START,
-    P3D_SLICE_STATUS
+    P3D_SLICE_STATUS,
+    FIRMWARE_UPGRADE_START,
+    FIRMWARE_UPGRADE_STEP_CHANGE,
 } from "./constants.js"
 import getCWD from "./getCWD.js";
+import firmwareUpgradeManager from "./firmwareUpgrade/firmwareUpgradeManager.js";
 
 /**
  * 保存file到，静态文件夹下的cache
@@ -157,11 +160,32 @@ const setupSocket = () => {
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
             //serial port
-            socket.on(SERIAL_PORT_GET_PATH, () => serialPortManager.getPaths());
-            socket.on(SERIAL_PORT_GET_OPENED, () => serialPortManager.getOpened());
+            serialPortManager.on(SERIAL_PORT_PATH_UPDATE, (paths) => {
+                socket.emit(SERIAL_PORT_PATH_UPDATE, paths);
+            });
+
+            socket.on(SERIAL_PORT_GET_OPENED, () => {
+                const path = serialPortManager.getOpened();
+                socket.emit(SERIAL_PORT_GET_OPENED, path);
+            });
+
             socket.on(SERIAL_PORT_OPEN, path => serialPortManager.open(path));
             socket.on(SERIAL_PORT_CLOSE, () => serialPortManager.close());
             socket.on(SERIAL_PORT_WRITE, data => serialPortManager.write(data));
+
+            serialPortManager.on(SERIAL_PORT_OPEN, (path) => {
+                socket.emit(SERIAL_PORT_OPEN, path);
+            });
+            serialPortManager.on(SERIAL_PORT_CLOSE, (path) => {
+                socket.emit(SERIAL_PORT_CLOSE, path);
+            });
+            serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
+                socket.emit(SERIAL_PORT_ERROR, error);
+            });
+            serialPortManager.on(SERIAL_PORT_DATA, (data) => {
+                socket.emit(SERIAL_PORT_DATA, data);
+                gcodeSender.onSerialPortData(data)
+            });
 
             //gcode send
             socket.on(GCODE_START_SEND, (data) => {
@@ -267,28 +291,15 @@ const setupSocket = () => {
                 );
             });
 
-            serialPortManager.on(SERIAL_PORT_GET_PATH, (paths) => {
-                socket.emit(SERIAL_PORT_GET_PATH, paths);
-            });
-            serialPortManager.on(SERIAL_PORT_GET_OPENED, (path) => {
-                socket.emit(SERIAL_PORT_GET_OPENED, path);
-            });
-            serialPortManager.on(SERIAL_PORT_OPEN, (path) => {
-                socket.emit(SERIAL_PORT_OPEN, path);
-            });
-            serialPortManager.on(SERIAL_PORT_CLOSE, (path) => {
-                socket.emit(SERIAL_PORT_CLOSE, path);
-            });
-            serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
-                socket.emit(SERIAL_PORT_ERROR, error);
-            });
-            serialPortManager.on(SERIAL_PORT_DATA, (data) => {
-                socket.emit(SERIAL_PORT_DATA, data);
-                gcodeSender.onSerialPortData(data)
-            });
-
             gcodeSender.on(GCODE_UPDATE_SENDER_STATUS, (data) => {
                 socket.emit(GCODE_UPDATE_SENDER_STATUS, data);
+            });
+
+            socket.on(FIRMWARE_UPGRADE_START, () => {
+                firmwareUpgradeManager.start((current, status, description, progress) => {
+                    socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description, progress});
+                    console.log("##", current, status, description, progress)
+                })
             });
         }
     );
@@ -304,7 +315,7 @@ const startListen = () => {
     if (fs.existsSync(cache_dir)) {
         fs.rmdirSync(cache_dir, {recursive: true})
     }
-    
+
     fs.mkdirSync(cache_dir, {recursive: true});
 
     const cache_dir_exist = fs.existsSync(cache_dir);

@@ -74,6 +74,10 @@ class Index extends React.Component {
             const gcode = e.target.value;
             this.props.writeSerialPort(gcode + "\n")
         },
+        sendStr: (e) => {
+            const str = e.target.value;
+            this.props.writeSerialPort(str+"")
+        },
         emergencyStop: () => {
             console.log("emergencyStop")
         },
@@ -178,6 +182,7 @@ class Index extends React.Component {
                     <Space direction={"vertical"}>
                         <h4>{`Status: ${statusDes}`}</h4>
                         <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
+                        <Input onPressEnter={actions.sendStr} placeholder="send string" style={{width: 300}}/>
                         <Select style={{width: 300}}
                                 value={selectedPath}
                                 onChange={actions.selectPath}
