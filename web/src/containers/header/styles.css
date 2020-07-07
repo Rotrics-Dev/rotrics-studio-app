@@ -12,3 +12,93 @@
 .btn_emergency_stop:active {
     opacity: 0.4;
 }
+
+.btn_connected {
+    width: 45px;
+    height: 24px;
+    background-image: url(./images/connected.svg);
+    background-color: white;
+    outline: none;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_connected:active {
+    opacity: 0.4;
+}
+
+.btn_disconnected {
+    width: 45px;
+    height: 24px;
+    background-image: url(./images/disconnected.svg);
+    background-color: white;
+    outline: none;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_disconnected:active {
+    opacity: 0.4;
+}
+
+.btn_official_website {
+    width: 45px;
+    height: 24px;
+    background-image: url(./images/official_website.svg);
+    background-color: white;
+    outline: none;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_official_website:active {
+    opacity: 0.4;
+}
+
+.btn_forum {
+    width: 45px;
+    height: 24px;
+    background-image: url(./images/forum.svg);
+    background-color: white;
+    outline: none;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_forum:active {
+    opacity: 0.4;
+}
+
+.btn_manual {
+    width: 45px;
+    height: 24px;
+    background-image: url(./images/manual.svg);
+    background-color: white;
+    outline: none;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_manual:active {
+    opacity: 0.4;
+}

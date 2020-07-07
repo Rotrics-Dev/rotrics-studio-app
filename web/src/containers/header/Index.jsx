@@ -68,14 +68,6 @@ class Index extends React.Component {
         selectPath: (selectedPath) => {
             this.setState({selectedPath})
         },
-        sendGcode: (e) => {
-            const gcode = e.target.value;
-            this.props.writeSerialPort(gcode + "\n")
-        },
-        sendStr: (e) => {
-            const str = e.target.value;
-            this.props.writeSerialPort(str + "")
-        },
         emergencyStop: () => {
             console.log("emergencyStop")
         },
@@ -117,28 +109,35 @@ class Index extends React.Component {
         }
         return (
             <div style={{
-                width: "550px",
+                width: "100%",
                 height: "100%",
-                float: "right",
-                marginRight: "15px",
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                {/*<button*/}
-                {/*onClick={actions.emergencyStop}*/}
-                {/*className={styles.btn_emergency_stop}*/}
-                {/*/>*/}
-                {path &&
-                <text>Serial Port Assistant</text>
-                }
-                {path &&
-                <Switch size="small" onChange={actions.setSerialPortAssistantVisible}/>
-                }
-                <Button type="primary" ghost icon={path ? <LinkOutlined/> : <DisconnectOutlined/>}
-                        onClick={actions.openSerialPortModal}>Serial Port</Button>
+                <Space style={{position: "absolute", right: "15px"}}>
+                    {path &&
+                    <text>Serial Port Assistant</text>
+                    }
+                    {path &&
+                    <Switch size="small" onChange={actions.setSerialPortAssistantVisible}/>
+                    }
+                    <button
+                        className={path ? styles.btn_connected : styles.btn_disconnected}
+                        style={{marginRight: "110px"}}
+                        onClick={actions.openSerialPortModal}/>
+                    <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
+                        <button className={styles.btn_official_website}/>
+                    </a>
+                    <a href="https://www.manual.rotrics.com/" target="_blank" rel="noopener noreferrer">
+                        <button className={styles.btn_manual}/>
+                    </a>
+                    <a href="https://discord.gg/Xd7X8EW" target="_blank" rel="noopener noreferrer">
+                        <button className={styles.btn_forum}/>
+                    </a>
+                </Space>
                 <Modal
-                    title="Serial Port"
+                    title="Connect DexArm"
                     visible={state.serialPortModalVisible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
@@ -162,8 +161,6 @@ class Index extends React.Component {
                 >
                     <Space direction={"vertical"}>
                         <h4>{`Status: ${statusDes}`}</h4>
-                        <Input onPressEnter={actions.sendGcode} placeholder="send gcode" style={{width: 300}}/>
-                        <Input onPressEnter={actions.sendStr} placeholder="send string" style={{width: 300}}/>
                         <Select style={{width: 300}}
                                 value={selectedPath}
                                 onChange={actions.selectPath}
@@ -171,15 +168,7 @@ class Index extends React.Component {
                                 options={options}/>
                     </Space>
                 </Modal>
-                <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
-                    {('Official Site')}
-                </a>
-                <a href="https://www.manual.rotrics.com/" target="_blank" rel="noopener noreferrer">
-                    {('User Manual')}
-                </a>
-                <a href="https://discord.gg/Xd7X8EW" target="_blank" rel="noopener noreferrer">
-                    {('Forum')}
-                </a>
+
             </div>
         )
     }
@@ -197,7 +186,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
-        writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
         setSerialPortAssistantVisible: (value) => dispatch(tapsActions.setSerialPortAssistantVisible(value))
     };
 };
