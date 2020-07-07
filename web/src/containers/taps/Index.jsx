@@ -11,6 +11,7 @@ import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
+import SerialPortAssistant from './serialPortAssistant/Index.jsx'
 
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 
@@ -113,7 +114,7 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
-        const {tap} = this.props;
+        const {tap, serialPortAssistantVisible} = this.props;
         return (
             <div>
                 <div className={styles.div_header}>
@@ -185,16 +186,20 @@ class Index extends React.Component {
                         <Settings/>
                     </div>
                 </div>
+                {serialPortAssistantVisible &&
+                <SerialPortAssistant/>
+                }
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    const {tap} = state.taps;
+    const {tap, serialPortAssistantVisible} = state.taps;
     const {status: socketStatus} = state.socket;
     return {
         tap,
+        serialPortAssistantVisible,
         socketStatus
     };
 };
@@ -213,7 +218,6 @@ const mapDispatchToProps = (dispatch) => {
             //3dp
             dispatch(p3dMaterialActions.init());
             dispatch(p3dSettingActions.init());
-
         }
     };
 };

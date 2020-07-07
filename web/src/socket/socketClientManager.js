@@ -37,6 +37,10 @@ class SocketClientManager {
         });
     }
 
+    removeServerListener(eventName, listener) {
+        this.socketClient.removeListener(eventName, listener);
+    }
+
     removeAllServerListener(eventName) {
         this.socketClient.removeAllListeners(eventName)
     }

@@ -1,0 +1,31 @@
+.div_fix {
+    padding: 10px;
+    position: absolute;
+    left: 56px;
+    top: 44px;
+    z-index: 9999;
+    width: 400px;
+    height: 300px;
+    background-color: lightgrey;
+    opacity: 1;
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+.btn_clear {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+}
+
+.btn_close {
+    position: absolute;
+    right: 100px;
+    bottom: 8px;
+}
+
+.textarea_received {
+    width: 100%;
+    resize: none;
+}
+

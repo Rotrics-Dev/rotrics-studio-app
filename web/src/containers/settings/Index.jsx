@@ -2,7 +2,6 @@ import React from 'react';
 import {Menu} from 'antd';
 import styles from './styles.css';
 import General from "./General.jsx";
-import Console from "./Console.jsx";
 
 class Index extends React.Component {
     state = {
@@ -43,11 +42,6 @@ class Index extends React.Component {
                 {key === 'About' &&
                 <div className={styles.div_content}>
                     About
-                </div>
-                }
-                {key === 'Console' &&
-                <div className={styles.div_content}>
-                    <Console/>
                 </div>
                 }
             </div>
