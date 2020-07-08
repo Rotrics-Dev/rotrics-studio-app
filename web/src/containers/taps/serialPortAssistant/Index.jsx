@@ -11,10 +11,9 @@ import {SERIAL_PORT_DATA} from "../../../constants";
 const MAX_LINE_COUNT = 150; //最多可展示多少条数据
 
 class Index extends React.Component {
-    refTextArea = React.createRef();
     constructor(props) {
         super(props);
-        console.log("#constructor")
+        this.refTextArea = React.createRef();
     }
 
     state = {
@@ -24,27 +23,21 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
-        console.log("#componentDidMount")
-        socketClientManager.addServerListener(SERIAL_PORT_DATA, this.onSerialPortData);
+        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
+            //达到上限则删除部分数据
+            if (this.state.receivedLines.push(data.received) > MAX_LINE_COUNT) {
+                this.state.receivedLines.splice(0, MAX_LINE_COUNT / 3)
+            }
+            const receivedLines = _.cloneDeep(this.state.receivedLines);
+            this.setState({receivedLines})
+            if (this.state.autoScroll) {
+                if (this.refTextArea.current) {
+                    const textArea = this.refTextArea.current.resizableTextArea.textArea;
+                    textArea.scrollTop = textArea.scrollHeight;
+                }
+            }
+        });
     }
-
-    componentWillUnmount() {
-        console.log("#componentWillUnmount")
-        socketClientManager.removeServerListener(SERIAL_PORT_DATA, this.onSerialPortData);
-    }
-
-    onSerialPortData = (data) => {
-        //达到上限则删除部分数据
-        if (this.state.receivedLines.push(data.received) > MAX_LINE_COUNT) {
-            this.state.receivedLines.splice(0, MAX_LINE_COUNT / 3)
-        }
-        const receivedLines = _.cloneDeep(this.state.receivedLines);
-        this.setState({receivedLines})
-        if (this.state.autoScroll) {
-            const textArea = this.refTextArea.current.resizableTextArea.textArea;
-            textArea.scrollTop = textArea.scrollHeight
-        }
-    };
 
     actions = {
         sendGcode: () => {
@@ -67,6 +60,9 @@ class Index extends React.Component {
     };
 
     render() {
+        if (!this.props.serialPortAssistantVisible) {
+            return null;
+        }
         const actions = this.actions;
         const state = this.state;
         return (
@@ -121,6 +117,13 @@ class Index extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    const {serialPortAssistantVisible} = state.taps;
+    return {
+        serialPortAssistantVisible
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
@@ -128,4 +131,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

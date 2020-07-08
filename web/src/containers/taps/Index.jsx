@@ -186,20 +186,17 @@ class Index extends React.Component {
                         <Settings/>
                     </div>
                 </div>
-                {serialPortAssistantVisible &&
                 <SerialPortAssistant/>
-                }
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    const {tap, serialPortAssistantVisible} = state.taps;
+    const {tap} = state.taps;
     const {status: socketStatus} = state.socket;
     return {
         tap,
-        serialPortAssistantVisible,
         socketStatus
     };
 };

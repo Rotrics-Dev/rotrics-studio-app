@@ -81,7 +81,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const state = this.state;
-        const {paths, path} = this.props;
+        const {paths, path, serialPortAssistantVisible} = this.props;
         const {selectedPath} = state;
 
         let statusDes = "";
@@ -123,10 +123,13 @@ class Index extends React.Component {
                 }}>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
-                    <label>DexArm Assistant</label>
+                    <label>Terminal</label>
                     }
                     {path &&
-                    <Switch size="small" onChange={actions.setSerialPortAssistantVisible}/>
+                    <Switch
+                        size="small"
+                        checked={serialPortAssistantVisible}
+                        onChange={actions.setSerialPortAssistantVisible}/>
                     }
                     <button
                         className={path ? styles.btn_connected : styles.btn_disconnected}
@@ -183,9 +186,11 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {paths, path} = state.serialPort;
+    const {serialPortAssistantVisible} = state.taps;
     return {
         paths,
-        path
+        path,
+        serialPortAssistantVisible
     };
 };
 
