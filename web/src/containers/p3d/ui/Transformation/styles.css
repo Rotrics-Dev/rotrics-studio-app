@@ -1,95 +1,54 @@
 .btn_move {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     outline: none;
-    background-size: 40px 40px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     vertical-align: middle;
-    background-image: url(./images/move-normal.png);
+    background-image: url(./images/translate.svg);
 }
 
 .btn_move:active {
-    background-color: dodgerblue;
-    background-image: url(./images/move-hover.png);
-}
-
-.btn_move_activated {
-    width: 48px;
-    height: 48px;
-    outline: none;
-    background-size: 40px 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 5px;
-    vertical-align: middle;
-    background-color: dodgerblue;
-    background-image: url(./images/move-hover.png);
+    background-color: lightskyblue;
 }
 
 .btn_scale {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     outline: none;
-    background-size: 40px 40px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
-    border-radius: 5px;
+    border-top-width: 0;
+    border-bottom-width: 0;
     vertical-align: middle;
-    background-image: url(./images/scale-normal.png);
+    background-image: url(./images/scale.svg);
 }
 
 .btn_scale:active {
-    background-color: dodgerblue;
-    background-image: url(./images/scale-hover.png);
-}
-
-.btn_scale_activated {
-    width: 48px;
-    height: 48px;
-    outline: none;
-    background-size: 40px 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 5px;
-    vertical-align: middle;
-    background-color: dodgerblue;
-    background-image: url(./images/scale-hover.png);
+    background-color: lightskyblue;
+    background-image: url(./images/scale.svg);
 }
 
 .btn_rotate {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     outline: none;
-    background-size: 40px 40px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
-    border-radius: 5px;
+    border-radius: 0 0 5px 5px;
     vertical-align: middle;
-    background-image: url(./images/rotate-normal.png);
+    background-image: url(./images/rotate.svg);
 }
 
 .btn_rotate:active {
-    background-color: dodgerblue;
-    background-image: url(./images/rotate-hover.png);
+    background-color: lightskyblue;
+    background-image: url(./images/rotate.svg);
 }
 
-.btn_rotate_activated {
-    width: 48px;
-    height: 48px;
-    outline: none;
-    background-size: 40px 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 5px;
-    vertical-align: middle;
-    background-color: dodgerblue;
-    background-image: url(./images/rotate-hover.png);
-}

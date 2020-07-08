@@ -48,7 +48,6 @@ class Index extends React.Component {
         },
     };
 
-
     render() {
         const state = this.state;
         const actions = this.actions;
@@ -169,21 +168,21 @@ class Index extends React.Component {
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('move')}
-                            className={state.tap === "move" ? styles.btn_move_activated : styles.btn_move}
+                            className={styles.btn_move}
                         />
                     </Popover>
                     <Popover placement="right" content={content4scale} trigger="click">
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('scale')}
-                            className={state.tap === "scale" ? styles.btn_scale_activated : styles.btn_scale}
+                            className={styles.btn_scale}
                         />
                     </Popover>
                     <Popover placement="right" content={content4rotate} trigger="click">
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('rotate')}
-                            className={state.tap === "rotate" ? styles.btn_rotate_activated : styles.btn_rotate}
+                            className={styles.btn_rotate}
                         />
                     </Popover>
                 </Space>
