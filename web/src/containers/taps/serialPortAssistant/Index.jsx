@@ -11,9 +11,10 @@ import {SERIAL_PORT_DATA} from "../../../constants";
 const MAX_LINE_COUNT = 150; //最多可展示多少条数据
 
 class Index extends React.Component {
+    refTextArea = React.createRef();
     constructor(props) {
         super(props);
-        this.refTextArea = React.createRef();
+        console.log("#constructor")
     }
 
     state = {
@@ -23,10 +24,12 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
+        console.log("#componentDidMount")
         socketClientManager.addServerListener(SERIAL_PORT_DATA, this.onSerialPortData);
     }
 
     componentWillUnmount() {
+        console.log("#componentWillUnmount")
         socketClientManager.removeServerListener(SERIAL_PORT_DATA, this.onSerialPortData);
     }
 

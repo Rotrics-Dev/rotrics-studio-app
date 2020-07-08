@@ -8,9 +8,9 @@ import {actions as firmwareUpgradeActions} from '../../reducers/firmwareUpgrade.
 
 const stepTitles = [
     "Check",
-    "Fetch firmware",
     "Collect DexArm info",
-    "Start upgrade",
+    "Check need upgrade",
+    "Download firmware",
     "Enter boot loader",
     "Connect DexArm",
     "Load firmware",
@@ -140,7 +140,7 @@ class General extends React.Component {
 const mapStateToProps = (state) => {
     const {firmwareVersion, hardwareVersion} = state.settings;
     const {current, status, description} = state.firmwareUpgrade;
-    const isFirmwareUpToDate = (current === 3 && status === "finish");
+    const isFirmwareUpToDate = (current === 2 && status === "finish");
     const isFirmwareUpgradeSuccess = (current === 8 && status === "finish");
 
     return {

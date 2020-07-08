@@ -1,9 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
-import {Button, Modal, Select, Input, Space, notification, Switch} from 'antd';
-import {DisconnectOutlined, LinkOutlined} from '@ant-design/icons';
-
+import {Button, Modal, Select, Space, notification, Switch} from 'antd';
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
@@ -42,7 +40,6 @@ class Index extends React.Component {
                 notification.close(notificationKeyConnected)
             }
         }
-
         if (this.props.paths.includes(this.state.selectedPath) && !nextProps.paths.includes(this.state.selectedPath)) {
             this.setState({selectedPath: undefined});
         }
@@ -50,6 +47,11 @@ class Index extends React.Component {
 
     actions = {
         openSerialPortModal: () => {
+            if (!this.state.selectedPath) {
+                this.setState({
+                    selectedPath: this.props.path,
+                });
+            }
             this.setState({
                 serialPortModalVisible: true,
             });
@@ -80,44 +82,48 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         const {paths, path} = this.props;
-
         const {selectedPath} = state;
 
         let statusDes = "";
         if (selectedPath) {
-            statusDes = (path === selectedPath) ? "opened" : "closed";
+            if (path === selectedPath) {
+                statusDes = "connected"
+            } else {
+                statusDes = "disconnected"
+            }
+        }
+
+        let connectDisabled = false;
+        let disconnectDisabled = false;
+        if (!selectedPath) {
+            connectDisabled = true;
+            disconnectDisabled = true;
+        } else {
+            if (selectedPath === path) {
+                connectDisabled = true;
+                disconnectDisabled = false;
+            } else {
+                connectDisabled = false;
+                disconnectDisabled = true;
+            }
         }
 
         const options = [];
         for (let i = 0; i < paths.length; i++) {
             options.push({label: paths[i], value: paths[i]})
         }
-
-        let openDisabled = false;
-        let closeDisabled = false;
-        if (!selectedPath) {
-            openDisabled = true;
-            closeDisabled = true;
-        } else {
-            if (selectedPath === path) {
-                openDisabled = true;
-                closeDisabled = false;
-            } else {
-                openDisabled = false;
-                closeDisabled = true;
-            }
-        }
         return (
-            <div style={{
-                width: "100%",
-                height: "100%",
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "space-between"
-            }}>
+            <div
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
-                    <text>Serial Port Assistant</text>
+                    <label>DexArm Assistant</label>
                     }
                     {path &&
                     <Switch size="small" onChange={actions.setSerialPortAssistantVisible}/>
@@ -145,27 +151,28 @@ class Index extends React.Component {
                             ghost
                             key="connect"
                             type="primary"
-                            disabled={openDisabled}
+                            disabled={connectDisabled}
                             onClick={actions.openSerialPort}>
-                            Open
+                            Connect
                         </Button>,
                         <Button
                             ghost
                             key="disconnect"
                             type="primary"
-                            disabled={closeDisabled}
+                            disabled={disconnectDisabled}
                             onClick={actions.closeSerialPort}>
-                            Close
+                            Disconnect
                         </Button>,
                     ]}
                 >
                     <Space direction={"vertical"}>
                         <h4>{`Status: ${statusDes}`}</h4>
-                        <Select style={{width: 300}}
-                                value={selectedPath}
-                                onChange={actions.selectPath}
-                                placeholder="Choose a port"
-                                options={options}/>
+                        <Select
+                            style={{width: 300}}
+                            value={selectedPath}
+                            onChange={actions.selectPath}
+                            placeholder="Choose a port"
+                            options={options}/>
                     </Space>
                 </Modal>
 

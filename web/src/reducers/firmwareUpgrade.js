@@ -41,7 +41,6 @@ export const actions = {
     start: () => (dispatch, getState) => {
         //data: {step, status, description}
         socketClientManager.addServerListener(FIRMWARE_UPGRADE_STEP_CHANGE, (data) => {
-            console.log("data: " + JSON.stringify(data))
             const {current, status, description} = data;
             dispatch(actions._updateState({current, status, description}));
         });

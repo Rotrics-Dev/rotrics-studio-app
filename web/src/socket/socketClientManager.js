@@ -38,7 +38,8 @@ class SocketClientManager {
     }
 
     removeServerListener(eventName, listener) {
-        this.socketClient.removeListener(eventName, listener);
+        console.log("@@@@@")
+        this.socketClient.removeEventListener(eventName, listener);
     }
 
     removeAllServerListener(eventName) {

@@ -38,7 +38,7 @@ import {
     FIRMWARE_UPGRADE_STEP_CHANGE,
 } from "./constants.js"
 import getCWD from "./getCWD.js";
-import firmwareUpgradeManager from "./firmwareUpgrade/firmwareUpgradeManager2.js";
+import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 
 /**
  * 保存file到，静态文件夹下的cache
@@ -296,7 +296,7 @@ const setupSocket = () => {
             });
 
             socket.on(FIRMWARE_UPGRADE_START, () => {
-                firmwareUpgradeManager.start((current, status, description, progress) => {
+                firmwareUpgradeManager.start(cache_dir, (current, status, description, progress) => {
                     socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description, progress});
                     console.log("##", current, status, description, progress)
                 })

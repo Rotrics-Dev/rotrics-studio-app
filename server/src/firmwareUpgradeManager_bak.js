@@ -1,10 +1,13 @@
 import fs from 'fs';
 import _ from 'lodash';
+import path from 'path';
 import isOnline from "is-online";
+import request from 'request';
 import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
 import {start_frame, end_frame, eot, chunk_frame} from "./frameUtil.js";
-import serialPortManager from '../serialPortManager.js';
+import {SERIAL_PORT_DATA} from "./constants.js"
+import serialPortManager from './serialPortManager.js';
 
 const baudRate = 9600;
 
@@ -14,7 +17,7 @@ const sleep = time => {
     })
 };
 
-class FirmwareUpgradeManager {
+class FirmwareUpgradeManager_bak {
     constructor() {
         this.path = null; //serial port path
         this.serialPort = null;
@@ -60,10 +63,33 @@ class FirmwareUpgradeManager {
             return;
         }
 
-        //step-1: Fetch firmware
+        //step-1: Collect DexArm info
         this.onChange(1, 'process');
+        //获取设备的固件，硬件版本号
+        const deviceInfo = await this.getDeviceInfo();
+        if (!deviceInfo) {
+            this.onChange(1, 'error', 'Collect DexArm info failed');
+            return;
+        }
+        const {firmwareVersion, hardwareVersion} = deviceInfo;
+
+        //step-2: Check need upgrade
+        this.onChange(2, 'process');
+        const {isNeedUpgrade, err, url} = await this.isNeedUpgrade(firmwareVersion, hardwareVersion);
+        if (err) {
+            this.onChange(2, 'error', err);
+            return;
+        }
+        if (!isNeedUpgrade) {
+            this.onChange(2, 'finish', 'Firmware is up to date');
+            return;
+        }
+
+        //step-3: Download firmware
+        this.onChange(3, 'process');
+
         //获取固件升级信息
-        const upgradeInfo = await this.fetchFirmwareFromServer();
+        const upgradeInfo = await this.downloadFirmware(url);
         //下载固件文件到本地，并准备数据
         let firmwarePath = null;
         firmwarePath = "/Users/liuming/Desktop/firmware/Firmware_V2.1.3/Firmware_V2.1.3_For_Hardware_V3.2_20200521.bin";
@@ -72,19 +98,6 @@ class FirmwareUpgradeManager {
         this.frames = this.prepareData(firmwarePath, firmwareName);
         this.frameCount = this.frames.length;
 
-        //step-2: Collect DexArm info
-        this.onChange(2, 'process');
-        //获取设备的固件，硬件版本号
-        const deviceInfo = await this.getDeviceInfo();
-        console.log("deviceInfo: " + JSON.stringify(deviceInfo))
-
-        //step-3: Start upgrade
-        //是否需要升级
-        if (!this.isNeedUpgrade(upgradeInfo, deviceInfo)) {
-            console.log("return: no need to upgrade");
-            this.onChange(3, 'finish', 'Firmware is up to date');
-            return;
-        }
 
         //step-4: Enter boot loader
         this.onChange(4, 'process');
@@ -119,20 +132,26 @@ class FirmwareUpgradeManager {
         return await isOnline();
     }
 
-    async fetchFirmwareFromServer() {
-        // return {
-        //     firmwareVersion: "V2.1.3",
-        //     hardwareVersion: "V3.2",
-        // }
+    async downloadFirmware(url) {
         const tryFetchFirmwareUpgradeInfo = () => {
             return new Promise(resolve => {
-                setTimeout(() => {
+                const timerId = setTimeout(() => {
+                    resolve(false);
+                }, 5000);
+                let stream = fs.createWriteStream(path.join("/Users/liuming/Desktop/Rotrics", "lm2.bin"));
+                request(url).pipe(stream).on("close", (err) => {
+                    clearTimeout(timerId);
+                    if (err) {
+                        console.log("err: ", err);
+                        resolve(false);
+                        return;
+                    }
                     resolve(true);
-                }, 2000);
+                    console.log("文件下载完毕");
+                });
             });
         };
-        const result = await tryFetchFirmwareUpgradeInfo();
-        return result;
+        return await tryFetchFirmwareUpgradeInfo();
     }
 
     //获取设备的固件，硬件版本号
@@ -170,9 +189,77 @@ class FirmwareUpgradeManager {
         return await tryGetDeviceInfo();
     }
 
-    isNeedUpgrade(upgradeInfo, deviceInfo) {
-        //比较
-        return true;
+    /**
+     * 检查是否需要upgrade
+     * @param firmwareVersion
+     * @param hardwareVersion
+     * @returns {isNeedUpgrade: true/false, err, url}
+     */
+    async isNeedUpgrade(firmwareVersion, hardwareVersion) {
+        const exe = () => {
+            return new Promise(resolve => {
+                const result = {
+                    isNeedUpgrade: null,
+                    err: null,
+                    url: null
+                };
+                const timerId = setTimeout(() => {
+                    result.err = "time out";
+                    resolve(result);
+                }, 5000);
+                const api = `http://api.rotrics.com/version/firmware/version?version=${firmwareVersion}&hardwareVersion=${hardwareVersion}`;
+                request(api, (error, response, body) => {
+                    clearTimeout(timerId);
+                    if (error) {
+                        result.err = "request error";
+                        resolve(result);
+                        return;
+                    }
+                    if (!response) {
+                        result.err = "response is null";
+                        resolve(result);
+                        return;
+                    }
+                    if (response.statusCode !== 200) {
+                        result.err = "response statusCode is not 200";
+                        resolve(result);
+                        return;
+                    }
+                    //body:
+                    //无新版本，则data=null
+                    // {
+                    //     "code": 200,
+                    //     "message": "Success",
+                    //     "data": {
+                    //         "id": 8,
+                    //         "version": "V2.1.3",
+                    //         "hardwareVersion": "V3.1",
+                    //         "status": 1,
+                    //         "createUser": null,
+                    //         "url": "https://rotrics.oss-cn-shenzhen.aliyuncs.com/frimware/69be4370-f7b5-4ca3-bec7-d12007c82989/Firmware_V2.1.3_For_Hardware_V3.1_20200521.bin",
+                    //         "infos": [ ],
+                    //         "createTime": 1594175130,
+                    //         "updateTime": null
+                    //     }
+                    // }
+                    const bodyJson = JSON.parse(body);
+                    //已经是最新版本了
+                    if (!bodyJson.data) {
+                        resolve(result);
+                        return;
+                    }
+                    if (!bodyJson.data.url) {
+                        result.err = "url is null";
+                        resolve(result);
+                        return;
+                    }
+                    result.isNeedUpgrade = true;
+                    result.url = bodyJson.data.url;
+                    resolve(result);
+                });
+            });
+        };
+        return await exe();
     }
 
     async enterBootLoader() {
@@ -193,7 +280,7 @@ class FirmwareUpgradeManager {
                         this.serialPort.close((error) => {
                             if (error) {
                                 console.log("close err ", err)
-                            }else {
+                            } else {
                                 clearTimeout(timerId);
                                 resolve(true);
                             }
@@ -229,8 +316,8 @@ class FirmwareUpgradeManager {
                 });
             });
         };
-        if (this.serialPort){
-            console.log("@@@this.serialPort.isOpen: "  + this.serialPort.isOpen)
+        if (this.serialPort) {
+            console.log("@@@this.serialPort.isOpen: " + this.serialPort.isOpen)
         }
         return await tryOpenSerialPort();
     }
@@ -353,6 +440,6 @@ class FirmwareUpgradeManager {
     };
 }
 
-const firmwareUpgradeManager = new FirmwareUpgradeManager();
+const firmwareUpgradeManager = new FirmwareUpgradeManager_bak();
 
 export default firmwareUpgradeManager;

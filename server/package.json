@@ -21,6 +21,7 @@
     "serialport": "^9.0.0",
     "socket.io": "^2.3.0",
     "text-to-svg": "^3.1.5",
-    "three-math": "^0.69.0"
+    "three-math": "^0.69.0",
+    "request": "^2.88.2"
   }
 }
