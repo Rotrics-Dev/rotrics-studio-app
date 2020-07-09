@@ -6,6 +6,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import globalStyles from "../../../../globalStyles.css";
 
 class Transformation extends PureComponent {
     actions = {
@@ -39,21 +40,22 @@ class Transformation extends PureComponent {
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
-            flipModelOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
+            flipModelOptions.push(<Select.Option style={{fontSize: "12px"}} key={key}
+                                                 value={option}>{key}</Select.Option>)
         });
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
                     <h4>{transformation.label}</h4>
                     <Row>
-                        <Col span={15}>
-                            <span>{width.label}</span>
-                            <span>{"(" + width.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{width.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + width.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={width.minimum_value}
                                 max={width.maximum_value}
@@ -62,11 +64,11 @@ class Transformation extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{height.label}</span>
-                            <span>{"(" + height.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{height.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + height.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={height.minimum_value}
                                 max={height.maximum_value}
@@ -75,11 +77,11 @@ class Transformation extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{rotation.label}</span>
-                            <span>{"(" + rotation.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{rotation.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + rotation.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={rotation.minimum_value}
                                 max={rotation.maximum_value}
@@ -88,11 +90,11 @@ class Transformation extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{x.label}</span>
-                            <span>{"(" + x.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{x.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + x.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={x.minimum_value}
                                 max={x.maximum_value}
@@ -101,11 +103,11 @@ class Transformation extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{y.label}</span>
-                            <span>{"(" + y.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{y.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + y.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={y.minimum_value}
                                 max={y.maximum_value}
@@ -114,11 +116,12 @@ class Transformation extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={13}>
-                            <span>{flip_model.label}</span>
+                        <Col span={15}>
+                            <span className={globalStyles.text_parameters}>{flip_model.label}</span>
                         </Col>
-                        <Col span={11}>
-                            <Select value={flip_model.default_value} style={{width: "100%"}}
+                        <Col span={9}>
+                            <Select size="small" value={flip_model.default_value}
+                                    style={{width: "100%", fontSize: "12px"}}
                                     onChange={actions.setFlipModel}>
                                 {flipModelOptions}
                             </Select>

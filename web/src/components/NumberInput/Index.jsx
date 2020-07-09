@@ -49,8 +49,11 @@ class Index extends PureComponent {
         // https://ant.design/components/input-number-cn/
         const {max = 999999, min = -99999, precision = 0, ...rest} = this.props;
         const actions = this.actions;
+        const step = 1 / Math.pow(10,precision);
         return (
             <InputNumber
+                style={{width: "60px", fontSize: "12px"}}
+                step={step}
                 {...rest}
                 min={min}
                 max={max}

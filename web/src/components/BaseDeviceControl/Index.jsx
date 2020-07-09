@@ -8,10 +8,7 @@ class Index extends React.Component {
         showLevel: false,
         pointIndex: undefined,
         accuracy: 0.1
-    }
-    level = () => {
-
-    }
+    };
 
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
@@ -21,7 +18,7 @@ class Index extends React.Component {
         const {hideRunBoundary} = this.props;
         const {showLevel} = this.props;
         return (
-            <div style={{padding: "0 6px 0 6px"}}>
+            <div style={{padding: "8px"}}>
                 <Space direction={"vertical"}>
                     <Space direction={"horizontal"}>
                         <button
@@ -105,11 +102,11 @@ class Index extends React.Component {
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
                         <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
+                        <Radio.Button value={5} className={styles.btn_step}>5</Radio.Button>
                         <Radio.Button value={1} className={styles.btn_step}>1</Radio.Button>
                         <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
                         <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
                     </Radio.Group>
-
                 </Space>
             </div>
         )

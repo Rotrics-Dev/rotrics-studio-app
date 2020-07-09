@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
-
+import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import {Button, Space, message, List} from 'antd';
 
@@ -160,25 +160,33 @@ class Index extends React.Component {
             }}>
                 <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.generateGcode}
                     >
                         {"Generate G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.exportGcode}
                     >
                         {"Export G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.startSendGcode}
                     >
                         {"Start Send"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.stopSendGcode}
                     >
                         {"Stop Send"}

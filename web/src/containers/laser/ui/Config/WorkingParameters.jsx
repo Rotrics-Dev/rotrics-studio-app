@@ -5,6 +5,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import globalStyles from "../../../../globalStyles.css";
 
 //hiddenStr: "movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", config) => {
@@ -116,15 +117,15 @@ class WorkingParameters extends PureComponent {
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
                     <h4>{working_parameters.label}</h4>
                     <Row>
-                        <Col span={15}>
-                            <span>{work_speed.label}</span>
-                            <span>{"(" + work_speed.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{work_speed.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + work_speed.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={work_speed.minimum_value}
                                 max={work_speed.maximum_value}
@@ -134,11 +135,11 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     {!jogSpeedHidden &&
                     <Row>
-                        <Col span={15}>
-                            <span>{jog_speed.label}</span>
-                            <span>{"(" + jog_speed.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{jog_speed.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + jog_speed.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={jog_speed.minimum_value}
                                 max={jog_speed.maximum_value}
@@ -149,11 +150,11 @@ class WorkingParameters extends PureComponent {
                     }
                     {!dwellTimeHidden &&
                     <Row>
-                        <Col span={15}>
-                            <span>{dwell_time.label}</span>
-                            <span>{"(" + dwell_time.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{dwell_time.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + dwell_time.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={dwell_time.minimum_value}
                                 max={dwell_time.maximum_value}
@@ -163,19 +164,19 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     }
                     <Row>
-                        <Col span={15}>
-                            <span>{multi_pass.label}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{multi_pass.label}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
                         </Col>
                     </Row>
                     {multi_pass.default_value &&
                     <Row>
-                        <Col span={13} push={2}>
-                            <span>{passes.label}</span>
+                        <Col span={17} push={2}>
+                            <span className={globalStyles.text_parameters}>{passes.label}</span>
                         </Col>
-                        <Col span={9} push={2}>
+                        <Col span={5} push={2}>
                             <NumberInput
                                 min={passes.minimum_value}
                                 max={passes.maximum_value}
@@ -186,11 +187,11 @@ class WorkingParameters extends PureComponent {
                     }
                     {multi_pass.default_value &&
                     <Row>
-                        <Col span={13} push={2}>
-                            <span>{pass_depth.label}</span>
-                            <span>{"(" + pass_depth.unit + ")"}</span>
+                        <Col span={17} push={2}>
+                            <span className={globalStyles.text_parameters}>{pass_depth.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + pass_depth.unit + ")"}</span>
                         </Col>
-                        <Col span={9} push={2}>
+                        <Col span={5} push={2}>
                             <NumberInput
                                 min={pass_depth.minimum_value}
                                 max={pass_depth.maximum_value}
@@ -201,20 +202,20 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     }
                     <Row>
-                        <Col span={15}>
-                            <span>{fixed_power.label}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{fixed_power.label}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>
                         </Col>
                     </Row>
                     {fixed_power.default_value &&
                     <Row>
-                        <Col span={13} push={2}>
-                            <span>{power.label}</span>
-                            <span>{"(" + power.unit + ")"}</span>
+                        <Col span={17} push={2}>
+                            <span className={globalStyles.text_parameters}>{power.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + power.unit + ")"}</span>
                         </Col>
-                        <Col span={9} push={2}>
+                        <Col span={5} push={2}>
                             <NumberInput
                                 min={power.minimum_value}
                                 max={power.maximum_value}

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './styles.css';
+import globalStyles from '../../../../globalStyles.css';
 import {message, Space, Button} from 'antd';
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
@@ -109,33 +110,44 @@ class Index extends React.Component {
         const actions = this.actions;
         return (
             <div>
-                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                <Space direction={"vertical"} size="small"
+                       style={{width: "100%", paddingLeft: "8px", paddingRight: "8px"}}>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.exportModel}
                     >
                         {"Export Model"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.generateGcode}
                     >
                         {"Generate G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.exportGcode}
                     >
                         {"Export G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.startSendGcode}
                     >
                         {"Start Send"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.stopSendGcode}
                     >
                         {"Stop Send"}

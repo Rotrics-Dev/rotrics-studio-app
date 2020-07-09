@@ -5,7 +5,7 @@ const SET_TAP = "taps/SET_TAP";
 const ACTION_UPDATE_STATE = 'taps/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    tap: TAP_BASIC,
+    tap: TAP_LASER,
     serialPortAssistantVisible: false
 };
 

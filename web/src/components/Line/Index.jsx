@@ -4,8 +4,8 @@ class Index extends PureComponent {
     render() {
         return (
             <div style={{
-                marginTop: "5px",
-                marginBottom: "5px",
+                marginTop: "8px",
+                marginBottom: "0px",
                 width: "100%",
                 opacity:0.5,
                 height: "1px",

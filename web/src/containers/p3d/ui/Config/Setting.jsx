@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
 import styles from './styles.css';
+import globalStyles from '../../../../globalStyles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
@@ -70,22 +71,24 @@ class Setting extends PureComponent {
         const settingsButtons = [];
         for (let i = settings.length - 1; i > -1; i--) {
             const item = settings[i];
-            settingsButtons.push(<Button key={i} style={{width: "100%"}} type={name === item.name ? 'primary' : ''}
+            settingsButtons.push(<Button key={i} size="small"  className={globalStyles.btn_func} style={{width: "100%", marginTop:"3px"}}
+                                         type={name === item.name ? 'primary' : ''}
                                          onClick={() => actions.select(item.name)}>{item.label}</Button>)
         }
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px 8px 0 8px"
                 }}>
                     {settingsButtons}
-                    <Row>
-                        <Col span={15}>
-                            <span>{layer_height.label}</span>
-                            <span>{"(" + layer_height.unit + ")"}</span>
+
+                    <Row style={{marginTop: "8px"}}>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{layer_height.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + layer_height.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 precision={2}
                                 disabled={isOfficial}
@@ -96,11 +99,11 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{top_thickness.label}</span>
-                            <span>{"(" + top_thickness.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{top_thickness.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + top_thickness.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 precision={2}
                                 disabled={isOfficial}
@@ -111,11 +114,12 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{infill_sparse_density.label}</span>
-                            <span>{"(" + infill_sparse_density.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{infill_sparse_density.label}</span>
+                            <span
+                                className={globalStyles.text_parameters}>{"(" + infill_sparse_density.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={infill_sparse_density.minimum_value}
@@ -125,11 +129,11 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{speed_infill.label}</span>
-                            <span>{"(" + speed_infill.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{speed_infill.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + speed_infill.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={speed_infill.minimum_value}
@@ -139,11 +143,11 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{speed_wall_0.label}</span>
-                            <span>{"(" + speed_wall_0.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{speed_wall_0.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + speed_wall_0.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={speed_wall_0.minimum_value}
@@ -153,11 +157,11 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{speed_wall_x.label}</span>
-                            <span>{"(" + speed_wall_x.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{speed_wall_x.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + speed_wall_x.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={speed_wall_x.minimum_value}
@@ -167,11 +171,11 @@ class Setting extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{speed_travel.label}</span>
-                            <span>{"(" + speed_travel.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{speed_travel.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + speed_travel.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={speed_travel.minimum_value}

@@ -143,24 +143,9 @@
     background-image: url(./images/scratch-hover.svg);
 }
 
-.btn_settings_selected {
-    width: 56px;
-    height: 40px;
-    background-color: transparent;
-    outline: none;
-    border: none;
-    border-right: 4px solid dodgerblue;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/settings-hover.svg);
-    position: absolute;
-    bottom: 0px;
-}
-
 .btn_settings {
     width: 56px;
-    height: 40px;
+    height: 45px;
     background-color: transparent;
     outline: none;
     border: none;
@@ -175,6 +160,21 @@
 
 .btn_settings:active {
     opacity: 0.4;
+}
+
+.btn_settings_selected {
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid dodgerblue;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/settings-hover.svg);
+    position: absolute;
+    bottom: 0px;
 }
 
 .btn_3d {

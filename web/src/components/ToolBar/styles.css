@@ -2,16 +2,18 @@
     width: 100%;
     height: 100%;
     border: 1px solid #C0C0C0;
-    background-color: #e9e9e9
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: #ECECEC;
 }
 
 .btn_undo {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/undo.svg);
@@ -23,12 +25,12 @@
 }
 
 .btn_redo {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/redo.svg);
@@ -40,12 +42,12 @@
 }
 
 .btn_duplicate {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/duplicate.svg);
@@ -57,12 +59,12 @@
 }
 
 .btn_delete {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/delete.svg);
@@ -74,12 +76,12 @@
 }
 
 .btn_clear {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/clear.svg);
@@ -91,12 +93,12 @@
 }
 
 .btn_lay_flat {
-    width: 40px;
+    width: 36px;
     height: 40px;
     outline: none;
     border: none;
     background-color: transparent;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/layflat.svg);

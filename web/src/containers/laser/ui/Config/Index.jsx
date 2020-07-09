@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
-
+import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import {Button, Input, Space, message} from 'antd';
 
@@ -150,27 +150,36 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%"
             }}>
-                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                <Space direction={"vertical"} size="small"
+                       style={{width: "100%", paddingLeft: "8px", paddingRight: "8px"}}>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.generateGcode}
                     >
                         {"Generate G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.exportGcode}
                     >
                         {"Export G-code"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.startSendGcode}
                     >
                         {"Start Send"}
                     </Button>
                     <Button
+                        className={globalStyles.btn_func}
                         block
+                        size="small"
                         onClick={actions.stopSendGcode}
                     >
                         {"Stop Send"}
@@ -178,7 +187,7 @@ class Index extends React.Component {
                 </Space>
                 <Line/>
                 <h4 style={{
-                    paddingLeft: "10px",
+                    padding: "10px 0 0 10px",
                     color: "grey"
                 }}> {" selected image type: " + (model ? model.fileType : "")}</h4>
                 <input
@@ -189,7 +198,7 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "7px"}} size={7}>
+                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px"}} size={16}>
                     <button
                         className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}

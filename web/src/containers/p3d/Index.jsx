@@ -58,7 +58,7 @@ class Index extends React.Component {
                     top: 0,
                     left: 0,
                     bottom: 0,
-                    right: "320px",
+                    right: "351px",
                     backgroundColor: "#e0e0e0"
                 }}>
                     <Canvas3D/>
@@ -79,7 +79,7 @@ class Index extends React.Component {
                 <div style={{
                     position: "absolute",
                     left: 0,
-                    right: "320px",
+                    right: "351px",
                     bottom: "-3px",
                     height: "38px",
                 }}>
@@ -88,7 +88,7 @@ class Index extends React.Component {
                 <div style={{
                     position: "absolute",
                     bottom: "15px",
-                    right: "320px",
+                    right: "351px",
                     height: "45px",
                     width: "100px",
                 }}>
@@ -98,9 +98,8 @@ class Index extends React.Component {
                     position: "absolute",
                     top: 0,
                     bottom: 0,
-                    right: "280px",
-                    width: "40px",
-                    backgroundColor: "#ff0000"
+                    right: "315px",
+                    width: "36px"
                 }}>
                     <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
@@ -109,20 +108,21 @@ class Index extends React.Component {
                     top: 0,
                     right: 0,
                     bottom: 0,
-                    width: "280px",
-                    backgroundColor: "#f0f0f0",
+                    width: "315px",
+                    backgroundColor: "#F2F2F2",
                     overflowY: "scroll"
                 }}>
-                    <Tabs type="card" tabBarGutter={0} tabBarStyle={{width: "260px"}}>
+                    <Tabs type="card" centered={true} size="small" tabBarGutter={0}
+                          tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "95px", height: "100%"}}>
+                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
                                 G-code
                             </div>
                         } key="1">
                             <Config/>
                         </TabPane>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "95px", height: "100%"}}>
+                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
                                 Control
                             </div>
                         } key="2">

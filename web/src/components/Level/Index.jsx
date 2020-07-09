@@ -140,7 +140,8 @@ class Index extends React.Component {
 
     render() {
         const {showLevel} = this.props;
-        return (<div>
+        return (
+            <div>
                 {showLevel && <button
                     onClick={this.showModal}
                     className={styles.btn_action_work}
@@ -228,4 +229,3 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
-// export default Index;

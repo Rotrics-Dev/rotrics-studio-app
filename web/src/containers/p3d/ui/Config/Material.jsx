@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
+import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
@@ -60,22 +61,22 @@ class Material extends PureComponent {
         const materialEles = [];
         for (let i = materials.length - 1; i > -1; i--) {
             const item = materials[i];
-            materialEles.push(<Button key={i} type={name === item.name ? 'primary' : ''}
+            materialEles.push(<Button key={i} size="small"  className={globalStyles.btn_func} style={{width: "50%"}} type={name === item.name ? 'primary' : ''}
                                       onClick={() => actions.select(item.name)}>{item.label}</Button>)
         }
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px 8px 0 8px"
                 }}>
                     {materialEles}
-                    <Row>
-                        <Col span={15}>
-                            <span>{material_diameter.label}</span>
-                            <span>{"(" + material_diameter.unit + ")"}</span>
+                    <Row style={{marginTop: "8px"}}>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{material_diameter.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + material_diameter.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 precision={2}
                                 disabled={true}
@@ -86,11 +87,11 @@ class Material extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{material_flow.label}</span>
-                            <span>{"(" + material_flow.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{material_flow.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + material_flow.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={material_flow.minimum_value}
@@ -100,11 +101,11 @@ class Material extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{material_print_temperature.label}</span>
-                            <span>{"(" + material_print_temperature.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{material_print_temperature.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + material_print_temperature.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={material_print_temperature.minimum_value}
@@ -114,11 +115,11 @@ class Material extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{material_print_temperature_layer_0.label}</span>
-                            <span>{"(" + material_print_temperature_layer_0.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{material_print_temperature_layer_0.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + material_print_temperature_layer_0.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={material_print_temperature_layer_0.minimum_value}
@@ -128,11 +129,11 @@ class Material extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{material_final_print_temperature.label}</span>
-                            <span>{"(" + material_final_print_temperature.unit + ")"}</span>
+                        <Col span={19}>
+                            <span className={globalStyles.text_parameters}>{material_final_print_temperature.label}</span>
+                            <span className={globalStyles.text_parameters}>{"(" + material_final_print_temperature.unit + ")"}</span>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 disabled={isOfficial}
                                 min={material_final_print_temperature.minimum_value}
