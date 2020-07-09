@@ -99,7 +99,7 @@
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/lay-flat.svg);
+    background-image: url(./images/layflat.svg);
 }
 
 .btn_lay_flat:disabled,
