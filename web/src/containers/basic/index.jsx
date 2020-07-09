@@ -5,7 +5,6 @@ import Canvas2D from '../writeAndDraw/ui/Canvas2D/Index.jsx';
 import TeachAndPlay from './ui/TeachAndPlay/Index.jsx';
 import Gcode from './ui/Gcode/Index.jsx';
 import Control from './ui/Control/Index.jsx';
-import ToolBar from '../../components/ToolBar/Index.jsx';
 
 const {TabPane} = Tabs;
 
@@ -49,11 +48,11 @@ class Index extends React.Component {
                 }}>
                     <Tabs type="card" tabBarGutter={0} tabBarStyle={{width: "260px"}}>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "76px", height: "100%"}}>
-                                Teach & Play
+                            <div style={{textAlign: "center", width: "42px", height: "100%"}}>
+                                Control
                             </div>
-                        } key="1" >
-                            <TeachAndPlay/>
+                        } key="3">
+                            <Control/>
                         </TabPane>
                         <TabPane tab={
                             <div style={{textAlign: "center", width: "38px", height: "100%"}}>
@@ -63,11 +62,11 @@ class Index extends React.Component {
                             <Gcode/>
                         </TabPane>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "42px", height: "100%"}}>
-                                Control
+                            <div style={{textAlign: "center", width: "76px", height: "100%"}}>
+                                Teach & Play
                             </div>
-                        } key="3">
-                            <Control/>
+                        } key="1">
+                            <TeachAndPlay/>
                         </TabPane>
                     </Tabs>
                 </div>

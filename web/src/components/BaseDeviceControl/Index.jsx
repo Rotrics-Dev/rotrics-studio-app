@@ -1,14 +1,25 @@
 import React from 'react';
 import styles from './styles.css';
 import {Radio, Space} from 'antd';
+import Level from '../Level/Index.jsx'
 
 class Index extends React.Component {
+    state = {
+        showLevel: false,
+        pointIndex: undefined,
+        accuracy: 0.1
+    }
+    level = () => {
+
+    }
+
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
         const {setStep, runBoundary, setWorkOrigin, goToWorkOrigin} = this.props.actions;
         const {step} = this.props;
         const {hideRunBoundary} = this.props;
+        const {showLevel} = this.props;
         return (
             <div style={{padding: "0 6px 0 6px"}}>
                 <Space direction={"vertical"}>
@@ -90,6 +101,7 @@ class Index extends React.Component {
                         className={styles.btn_action_work}
                     >Set Work Origin
                     </button>
+                    <Level showLevel={showLevel}/>
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
                         <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
@@ -97,6 +109,7 @@ class Index extends React.Component {
                         <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
                         <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
                     </Radio.Group>
+
                 </Space>
             </div>
         )

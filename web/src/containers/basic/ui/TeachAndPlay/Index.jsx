@@ -30,11 +30,12 @@ class Index extends React.Component {
 
     render() {
         const {
-            current_front_end,
-            current_front_end_state,
-            laser_power,
+            currentFrontEnd,
+            currentFrontEndState,
+            laserPower,
             stepArray,
             teachAndPlayMode,
+            repeatCount
         } = this.props;
 
         const frontEndOptions = [];
@@ -43,7 +44,7 @@ class Index extends React.Component {
             frontEndOptions.push({value: key, label: option.label})
         });
         const frontEndStateOptions = [];
-        const frontEndState = teach_and_play.front_end.options[current_front_end].state;
+        const frontEndState = teach_and_play.front_end.options[currentFrontEnd].state;
         Object.keys(frontEndState).forEach((key) => {
             frontEndStateOptions.push(<Radio.Button value={key} key={key}>{frontEndState[key].label}</Radio.Button>);
         });
@@ -69,11 +70,11 @@ class Index extends React.Component {
                     {teachAndPlayMode &&
                     <Row>
                         <Col span={8}>
-                            <span> {teach_and_play.front_end.options[this.props.current_front_end].label}</span>
+                            <span> {teach_and_play.front_end.options[this.props.currentFrontEnd].label}</span>
                         </Col>
                         <Col span={16} align={"right"}>{/*前端模块*/}
                             <Radio.Group
-                                defaultValue={current_front_end_state}
+                                value={currentFrontEndState}
                                 buttonStyle="solid"
                                 size="small"
                                 optionType="button"
@@ -82,21 +83,21 @@ class Index extends React.Component {
                             </Radio.Group>
                         </Col>
                     </Row>}
-                    {teachAndPlayMode && current_front_end === "laser" &&
+
+                    {teachAndPlayMode && currentFrontEnd === "laser" &&
                     <Row>
                         <Col span={8}>
-                            <span> {teach_and_play.front_end.options[this.props.current_front_end].power.label + "(%)"}</span>
+                            <span> {teach_and_play.front_end.options.laser.power.label + "(%)"}</span>
                         </Col>
                         <Col span={16} align={"right"}>
                             <NumberInput
                                 min={teach_and_play.front_end.options.laser.power.minimum_value}
                                 max={teach_and_play.front_end.options.laser.power.maximum_value}
                                 defaultValue={teach_and_play.front_end.options.laser.power.default}
-                                value={laser_power}
+                                value={laserPower}
                                 onAfterChange={this.props.setLaserPower}/>
                         </Col>
-                    </Row>
-                    }
+                    </Row>}
                 </div>
 
                 <div style={{padding: "0px 6px 0px 6px"}}>
@@ -104,7 +105,7 @@ class Index extends React.Component {
                             disabled={!(teachAndPlayMode)}> Record
                     </button>
 
-                    <button className={styles.btn} onClick={this.props.startPlayStep}
+                    <button className={styles.btn} onClick={() => this.props.startPlayStep()}
                             disabled={!(stepArray.length > 0)}>Start
                     </button>
 
@@ -112,7 +113,20 @@ class Index extends React.Component {
                             disabled={!(stepArray.length > 0)}>Stop
                     </button>
 
-
+                    {teachAndPlayMode &&
+                    <Row>
+                        <Col span={16}>
+                            <span> {teach_and_play.repeatCount.label}</span>
+                        </Col>
+                        <Col span={8} align={"right"}>
+                            <NumberInput
+                                min={teach_and_play.repeatCount.minimum_value}
+                                max={teach_and_play.repeatCount.maximum_value}
+                                defaultValue={teach_and_play.repeatCount.default}
+                                value={repeatCount}
+                                onAfterChange={this.props.setRepeatCount}/>
+                        </Col>
+                    </Row>}
                 </div>
 
                 <Line/>
@@ -121,9 +135,10 @@ class Index extends React.Component {
                     grid={{gutter: 1, column: 1}}
                     dataSource={stepArray}
                     renderItem={(item, index) => (
-                        <List.Item style={{
-                            marginBottom: '0px'
-                        }}>
+                        <List.Item
+                            style={{
+                                marginBottom: '0px'
+                            }}>
                             <Row>
                                 <Col span={2}>
                                     <div className={styles.div_num}>
@@ -131,13 +146,14 @@ class Index extends React.Component {
                                     </div>
                                 </Col>
                                 <Col span={22}>
-                                    <div className={styles.div_card}>
+                                    <div className={styles.div_card}
+                                         onClick={() => this.props.startPlayStep(index,false)}>
                                         <Row>
                                             <Col span={9}>
                                                 {'X:' + item.x}
                                             </Col>
                                             <Col span={15}>
-                                                {teach_and_play.front_end.options[item.current_front_end].label}{item.current_front_end == "laser" && `(Power ${item.laser_power}%)`}
+                                                {teach_and_play.front_end.options[item.currentFrontEnd].label}{item.currentFrontEnd == "laser" && `(Power ${item.laserPower}%)`}
                                             </Col>
                                         </Row>
                                         <Row>
@@ -145,11 +161,12 @@ class Index extends React.Component {
                                                 {'Y:' + item.y}
                                             </Col>
                                             <Col span={13}>
-                                                {teach_and_play.front_end.options[item.current_front_end].state[item.current_front_end_state].label}
+                                                {teach_and_play.front_end.options[item.currentFrontEnd].state[item.currentFrontEndState].label}
                                             </Col>
                                             <Col span={2}>
                                                 <button className={styles.btn_delete}
-                                                        onClick={() => {
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
                                                             this.props.deleteStep(index);
                                                         }}
                                                 />
@@ -206,7 +223,7 @@ class Index extends React.Component {
                     <Select style={{width: 300}}
                             onChange={this.props.onSelectFrontEnd}
                             placeholder="select a front end"
-                            defaultValue={this.props.current_front_end}
+                            defaultValue={this.props.currentFrontEnd}
                             options={frontEndOptions}/>
                 </Modal>
             </div>
@@ -220,7 +237,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         recordStep: () => dispatch(teachAndPlayActions.recordStep()),
-        startPlayStep: () => dispatch(teachAndPlayActions.startPlayStep()),
+        startPlayStep: (startIndex = 0, doRepeat = true) => dispatch(teachAndPlayActions.startPlayStep(startIndex, doRepeat)),
         stopPlayStep: () => dispatch(teachAndPlayActions.stopPlayStep()),
         clearStepArray: () => dispatch(teachAndPlayActions.clearStepArray()),
         sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
@@ -229,6 +246,7 @@ const mapDispatchToProps = (dispatch) => {
         onSelectFrontEnd: (front_end) => dispatch(teachAndPlayActions.onSelectFrontEnd(front_end)),
         setFrontEndState: (event) => dispatch(teachAndPlayActions.setFrontEndState(event.target.value)),
         setLaserPower: (power) => dispatch(teachAndPlayActions.setLaserPower(power)),
+        setRepeatCount: (repeatCount) => dispatch(teachAndPlayActions.setRepeatCount(repeatCount)),
         updateStep: (step, index) => dispatch(teachAndPlayActions.updateStep(step, index)),
         deleteStep: (index) => dispatch(teachAndPlayActions.deleteStep(index)),
         exportGcode: () => dispatch(teachAndPlayActions.exportGcode())

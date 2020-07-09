@@ -1,22 +1,29 @@
 {
+  "repeatCount": {
+    "label": "Repeat Count",
+    "description": "Repeat Count Description",
+    "default_value": 1,
+    "type": "int",
+    "unit": "",
+    "minimum_value": 1,
+    "maximum_value": 9999
+  },
   "front_end": {
     "label": "Front End",
     "description": "Front End description",
-    "default": "air_pick",
-    "current": "air_pick",
+    "default_value": "air_pick",
     "type": "enum",
     "options": {
       "air_pick": {
         "label": "Air Pick",
         "description": "Air Pick",
         "gcode": "M888 P2",
-        "default": "release",
-        "current": "release",
-        "type": "bool",
+        "default_value": "state_0",
+        "type": "enum",
         "state": {
           "state_0": {
-            "label": "Drop",
-            "description": "Drop Description",
+            "label": "Place",
+            "description": "Place Description",
             "gcode": "M1002"
           },
           "state_1": {
@@ -30,9 +37,8 @@
         "label": "Soft Gripper",
         "description": "Soft Gripper",
         "gcode": "M888 P2",
-        "default": "release",
-        "current": "release",
-        "type": "bool",
+        "default_value": "state_0",
+        "type": "enum",
         "state": {
           "state_0": {
             "label": "Neutral",
@@ -55,9 +61,8 @@
         "label": "Laser",
         "description": "Laser",
         "gcode": "M888 P1",
-        "default": "off",
-        "current": "off",
-        "type": "bool",
+        "default_value": "state_0",
+        "type": "enum",
         "state": {
           "state_0": {
             "label": "Off",
@@ -73,8 +78,7 @@
         "power": {
           "label": "Power",
           "description": "Power description",
-          "default": 100,
-          "current": 100,
+          "default_value": 1,
           "type": "int",
           "unit": "%",
           "minimum_value": 0,

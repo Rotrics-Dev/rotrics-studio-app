@@ -19,7 +19,7 @@ const INITIAL_STATE = {
     path: null //当前已连接的serial port的path; path为空，则表示serial port close；否则open
 };
 let onPositionListener = null;//用于M893位置查询的回调
-
+let onLevelPositionListener = null;
 const processM894 = (data) => {
     if (!onPositionListener) return;
     if (!data) return;
@@ -33,6 +33,22 @@ const processM894 = (data) => {
         parseInt(split[3].slice(1, split[3].length)),//Z
     );
     onPositionListener = null;
+}
+const processM114 = (data) => {
+    if (!onLevelPositionListener) return;
+    if (!data) return;
+    if (!data.received) return;
+    if (!data.received.startsWith('X:')) return;
+    const dataArray = data.received.split(' ');
+    if (!dataArray[1].startsWith('Y:')) return;
+    if (!dataArray[2].startsWith('Z:')) return;
+
+    let x = dataArray[0].split(':')[1];
+    let y = dataArray[1].split(':')[1];
+    let z = dataArray[2].split(':')[1];
+
+    onLevelPositionListener(x, y, z);
+    onLevelPositionListener = null;
 }
 
 export const actions = {
@@ -63,6 +79,7 @@ export const actions = {
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
             processM894(data);
+            processM114(data);
         });
     },
     _updateState: (state) => {
@@ -92,6 +109,9 @@ export const actions = {
     },
     addPositionListener: (onPosition) => {
         onPositionListener = onPosition;
+    },
+    addLevelPositionListener: (onLevelPosition) => {
+        onLevelPositionListener = onLevelPosition;
     }
 };
 
