@@ -5,6 +5,7 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
+import styles from './styles.css'//可以做一些样式覆盖
 
 const reduxStore = createStore(reducer, applyMiddleware(thunk));
 

@@ -7,8 +7,7 @@ import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 
 class Index extends React.Component {
-    state = {
-    };
+    state = {};
 
     actions = {
         runBoundary: () => {
@@ -20,7 +19,7 @@ class Index extends React.Component {
         const state = this.state;
         return (
             <div>
-                <DeviceControl runBoundary={actions.runBoundary} hideRunBoundary={true}/>
+                <DeviceControl runBoundary={actions.runBoundary} hideRunBoundary={true} showLevel={true}/>
             </div>
         )
     }

@@ -22,15 +22,16 @@
     bottom: 0;
     background-color: lightgray;
 }
+
 .btn_basic {
     width: 40px;
     height: 40px;
     margin: 7px;
-    background-image: url(./images/basic.png);
+    background-image: url(./images/basic.svg);
     background-color: transparent;
     outline: none;
     border: none;
-    background-size: 40px 40px;
+    background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -38,6 +39,7 @@
 .btn_basic:active {
     opacity: 0.4;
 }
+
 .btn_laser {
     width: 40px;
     height: 40px;
@@ -76,7 +78,7 @@
     width: 40px;
     height: 40px;
     margin: 7px;
-    background-image: url(./images/3d.svg);
+    background-image: url(./images/p3d.svg);
     background-color: transparent;
     outline: none;
     border: none;
@@ -93,7 +95,7 @@
     width: 40px;
     height: 40px;
     margin: 7px;
-    background-image: url(./images/code2.svg);
+    background-image: url(./images/scratch.svg);
     background-color: transparent;
     outline: none;
     border: none;
@@ -125,31 +127,35 @@
 .btn_settings:active {
     opacity: 0.4;
 }
+
 .btn_basic_selected {
     width: 40px;
     height: 40px;
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
-    background-size: 40px 40px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
+    background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/basic.png);
+    background-image: url(./images/basic_p.svg);
 }
+
 .btn_laser_selected {
     width: 40px;
     height: 40px;
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/laser.svg);
+    background-image: url(./images/laser_p.svg);
 }
 
 .btn_write_and_draw_selected {
@@ -158,12 +164,13 @@
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/write_draw.svg);
+    background-image: url(./images/write_draw_p.svg);
 }
 
 .btn_3d_selected {
@@ -172,12 +179,13 @@
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/3d.svg);
+    background-image: url(./images/p3d_p.svg);
 }
 
 .btn_code_selected {
@@ -186,12 +194,13 @@
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/code2.svg);
+    background-image: url(./images/scratch_p.svg);
 }
 
 .btn_settings_selected {
@@ -200,12 +209,13 @@
     margin: 7px;
     background-color: transparent;
     outline: none;
-    border: 2px solid grey;
-    border-radius: 3px;
+    border: none;
+    /*border: 2px solid grey;*/
+    /*border-radius: 3px;*/
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/settings.svg);
+    background-image: url(./images/settings_p.svg);
     position: absolute;
     bottom: 5px;
     left: 1px;
