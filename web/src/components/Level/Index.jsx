@@ -12,6 +12,7 @@ const INIT_Z_ARRAY = [
     undefined
 ]
 const POINT_NAME = ['A', 'B', 'C', 'D'];
+const POINT_STYLE = [styles.img_point_a, styles.img_point_b, styles.img_point_c, styles.img_point_d];
 
 class Index extends React.Component {
     state = {
@@ -19,35 +20,29 @@ class Index extends React.Component {
         pointIndex: undefined,
         accuracy: 0.1,
         zArray: INIT_Z_ARRAY,
-        lastConnectSerialPort: undefined
+        lastConnectSerialPort: undefined,
+        started: false,
+        serialPortState: null
     }
 
     onSetPoint = (event) => {
         const index = event.target.value;
-        let gcode = [];
+        let gcode = '';
         switch (index) {
             case 0://A
-                gcode.push('G0 Z10');
-                gcode.push('G0 X0 Y50');
-                gcode.push('G0 Z2');
+                gcode = 'G0 X0 Y350 Z0';
                 break;
             case 1://B
-                gcode.push('G0 Z10');
-                gcode.push('G0 X0 Y-50');
-                gcode.push('G0 Z2');
+                gcode = 'G0 X0 Y250 Z0';
                 break;
             case 2://C
-                gcode.push('G0 Z10');
-                gcode.push('G0 X50 Y0');
-                gcode.push('G0 Z2');
+                gcode = 'G0 X50 Y300 Z0';
                 break;
             case 3://D
-                gcode.push('G0 Z10');
-                gcode.push('G0 X-50 Y0');
-                gcode.push('G0 Z2');
+                gcode = 'G0 X-50 Y300 Z0';
                 break;
         }
-        this.props.serialPortWrite(gcode.join('\n') + '\n');
+        this.props.serialPortWrite(gcode + '\n');
         this.setState({
             pointIndex: index
         });
@@ -73,6 +68,14 @@ class Index extends React.Component {
         this.props.serialPortWrite('M114\n');
         message.success(`Point ${POINT_NAME[pointIndex]} was saved.`);
     }
+    onClickStart = () => {
+        const gcode = [
+            'M891 X0 Y0',
+            'M2007'
+        ];
+        this.props.serialPortWrite(gcode.join('\n') + '\n');
+        this.delayToConnectSerialPort(this, true, true, 'Level Started');
+    }
 
     onClickLevel = () => {
         for (let index = 0; index < this.state.zArray.length; index++) {
@@ -86,15 +89,45 @@ class Index extends React.Component {
             `M891 X${(zArray[0] - zArray[1]) / 100} Y${(zArray[2] - zArray[3]) / 100}`,
             'M2007'
         ];
-        console.log(gcode.join('\n') + '\n');
         this.props.serialPortWrite(gcode.join('\n') + '\n');
-
-
-        this.setState({showModal: false});
-        message.success(`Level Done.`);
+        this.delayToConnectSerialPort(this, false, false, 'Level Done,you could reconnect the device.');
 
     }
+    delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
+        setTimeout(() => {
+            const {lastConnectSerialPort} = that.state;
+            const {paths} = that.props;
+            if ((!paths) || (!paths.length)) {
+                this.delayToConnectSerialPort(that, showModal, msg);
+                return;
+            }
+            if (paths.indexOf(lastConnectSerialPort) === -1) {
+                message.error('Device not Found');
+                this.setState({showModal: false});
+                //找不到之前的串口
+            } else {
+                //连接之前串口
+                this.props.openSerialPort(lastConnectSerialPort);
+                this.delayToM1112(that, showModal, setStarted, msg);
+            }
+        }, 1000);
+    }
+    delayToM1112 = (that, showModal, setStarted, msg) => {
+        setTimeout(() => {
+            const {path} = that.props;
+            if (!path) {
+                this.delayToM1112(that, showModal, setStarted, msg);
+                return;
+            }
 
+            that.props.serialPortWrite('M1112\n');
+            message.success(msg);
+            that.setState({
+                showModal,
+                started: setStarted
+            });
+        }, 1000);
+    }
     onClickDown = () => {
         this.move(`G0 Z${-this.state.accuracy}`);
     }
@@ -110,9 +143,6 @@ class Index extends React.Component {
             'G90'//absolute position
         ];
         this.props.serialPortWrite(gcode.join("\n") + '\n');
-        setTimeout(() => {
-            this.props.openSerialPort(this.state.lastConnectSerialPort);
-        }, 1000);
     }
 
     showModal = () => {
@@ -126,20 +156,14 @@ class Index extends React.Component {
             pointIndex: undefined,
             accuracy: 10,
             zArray: INIT_Z_ARRAY,
-            lastConnectSerialPort: path
+            lastConnectSerialPort: path,
+            started: false
         });
-        const gcode = [
-            'M891 X0 Y0',
-            'M2007'
-        ];
-        this.props.serialPortWrite(gcode.join('\n') + '\n');
-        setTimeout(() => {
-            this.props.openSerialPort(path);
-        }, 1000);
     };
 
     render() {
         const {showLevel} = this.props;
+        const {pointIndex} = this.state;
         return (<div>
                 {showLevel && <button
                     onClick={this.showModal}
@@ -159,17 +183,22 @@ class Index extends React.Component {
                 >
                     <Space direction={"horizontal"} align={"start"}>
                         <Space direction={"vertical"}>
-                            <div> Before start levling, put a piece of A4 paper between
+                            <div> Before start leveling, put a piece of A4 paper between
                                 the 3D printing nozzle and the build plate. And follow the instructions to level your
                                 DexArm.
                             </div>
 
-                            <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the first point to start leveling.
+                            <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the button to reset DexArm's XY slope
+                                rate.
+                            </div>
+                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickStart}>start</Button>
+                            <div style={{marginTop: "10px"}}><b>Step 2:</b> Click the first point to start leveling.
                             </div>
                             <Radio.Group
                                 size={"small"}
                                 value={this.state.pointIndex}
                                 buttonStyle="solid"
+                                disabled={!this.state.started}
                                 onChange={this.onSetPoint}>
                                 <Radio.Button value={0}>Point A</Radio.Button>
                                 <Radio.Button value={1}>Point B</Radio.Button>
@@ -177,7 +206,7 @@ class Index extends React.Component {
                                 <Radio.Button value={3}>Point D</Radio.Button>
                             </Radio.Group>
 
-                            <div style={{marginTop: "10px"}}><b>Step 2:</b> Adjust the distance between the nozzle and
+                            <div style={{marginTop: "10px"}}><b>Step 3:</b> Adjust the distance between the nozzle and
                                 build plate using the
                                 Up and Down button until there is slight resistance on the A4 paper from the nozzle.
                             </div>
@@ -196,12 +225,12 @@ class Index extends React.Component {
                             </Space>
                             <Button size={"small"} style={{width: "130px"}} onClick={this.onClickSave}>Save</Button>
 
-                            <div style={{marginTop: "10px"}}><b>Step 3:</b> Click Level when all the points are leveled.
+                            <div style={{marginTop: "10px"}}><b>Step 4:</b> Click Level when all the points are leveled.
                             </div>
                             <Button size={"small"} style={{width: "130px"}} onClick={this.onClickLevel}>Level</Button>
                         </Space>
                         <Space>
-                            <img className={styles.img_level}/>
+                            <img className={POINT_STYLE[pointIndex ? pointIndex : 0]}/>
                         </Space>
                     </Space>
                 </Modal>
@@ -211,9 +240,10 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {path} = state.serialPort;
+    const {path, paths} = state.serialPort;
     return {
-        path
+        path,
+        paths
     };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -228,4 +258,3 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
-// export default Index;

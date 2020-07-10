@@ -11,6 +11,26 @@
     opacity: 0.4;
 }
 
-.img_level {
-    content: url("./images/level.png");
+.img_point_a {
+    content: url("./images/pointA.png");
+    width: 430px;
+    height: 400px;
+}
+
+.img_point_b {
+    content: url("./images/pointB.png");
+    width: 430px;
+    height: 400px;
+}
+
+.img_point_c {
+    content: url("./images/pointC.png");
+    width: 430px;
+    height: 400px;
+}
+
+.img_point_d {
+    content: url("./images/pointD.png");
+    width: 430px;
+    height: 400px;
 }

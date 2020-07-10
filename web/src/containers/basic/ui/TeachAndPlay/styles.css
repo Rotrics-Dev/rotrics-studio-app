@@ -19,12 +19,12 @@
 .div_card {
     border-radius: 5px;
     background-color: white;
-    padding: 0px 6px 0px 6px;
+    padding: 10px;
 }
 
 
 .div_num {
-    padding-top: 100%;
+    padding-top: 32px;
     text-align: center;
 }
 
@@ -37,11 +37,12 @@
     filter: Alpha(opacity=0);
     transition: opacity 0.3s;
     /*显示隐藏动画*/
+    position: absolute;
+    top: 6px;
+    right: 6px;
 
-    margin-top: 3px;
-    margin-left: 3px;
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     outline: none;
     border: none;
     background-color: transparent;
@@ -73,4 +74,151 @@
     width: 100%;
     height: 100%;
     background-color: green;
+}
+
+.front_end_air_drop {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/air_drop.svg);
+}
+
+.front_end_air_pick {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/air_pick.svg);
+}
+
+.front_end_laser_off {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/laser_off.svg);
+}
+
+.front_end_laser_on {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/laser_on.svg);
+}
+
+.front_end_soft_grip {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/soft_grip.svg);
+}
+
+.front_end_soft_neutral {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/soft_neutral.svg);
+}
+
+.front_end_soft_release {
+    width: 48px;
+    height: 48px;
+    content: url(../../images/soft_release.svg);
+}
+
+
+.button_start {
+    width: 48px;
+    height: 24px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../images/start.svg);
+}
+
+.button_start:active {
+    background-image: url(../../images/start_p.svg);
+}
+
+.button_start:disabled {
+    opacity: 0.4;
+    background-image: url(../../images/start.svg);
+}
+
+.button_stop {
+    width: 48px;
+    height: 24px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../images/stop.svg);
+}
+
+.button_stop:active {
+    background-image: url(../../images/stop_p.svg);
+}
+
+.button_stop:disabled {
+    opacity: 0.4;
+    background-image: url(../../images/stop.svg);
+}
+
+.button_record {
+    width: 48px;
+    height: 24px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../images/record.svg);
+}
+
+.button_record:active {
+    background-image: url(../../images/record_p.svg);
+}
+
+.button_record:disabled {
+    opacity: 0.4;
+    background-image: url(../../images/record.svg);
+}
+
+
+.button_delete {
+    width: 24px;
+    height: 24px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../images/delete.svg);
+}
+
+.button_delete:active {
+    opacity: 0.4;
+}
+
+.button_delete:disabled {
+    opacity: 0.4;
+}
+
+.button_export {
+    width: 24px;
+    height: 24px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../images/export.svg);
+}
+
+.button_export:active {
+    opacity: 0.4;
+}
+
+.button_export:disabled {
+    opacity: 0.4;
 }

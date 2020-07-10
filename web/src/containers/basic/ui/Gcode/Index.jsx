@@ -2,8 +2,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend.js";
 import Line from '../../../../components/Line/Index.jsx'
-import {Space, Button, Select} from 'antd';
+import {Space, Button, Select, message} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+
+const tooltipId = getUuid();
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -67,8 +71,20 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%",
             }}>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
+                <ReactTooltip/>
                 <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
                     <Button
+                        data-for={tooltipId}
+                        // data-tip="Make sure that work origin had been setup before import 3rd part gcode."
+                        data-tip="Select the right module to set the end effector offset before setting work origin."
                         style={{width: "100%"}}
                         onClick={this.actions.importGcode}
                     >
@@ -79,7 +95,8 @@ class Index extends React.Component {
                         style={{width: "100%", textAlign: "center"}}
                         onChange={this.actions.onSelectFrontEnd}
                         placeholder="select a front end"
-                        options={frontEndOptions}/>}
+                        options={frontEndOptions}/>
+                    }
                     {this.state.importLevel > 1 &&
                     <Button
                         style={{width: "100%"}}

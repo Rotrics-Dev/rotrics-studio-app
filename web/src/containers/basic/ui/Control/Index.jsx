@@ -81,8 +81,8 @@ class Index extends React.Component {
             <div>
                 <DeviceControl hideRunBoundary={true}/>
 
-                <div style={{padding: "0 6px 0 6px"}}>
-                    <Space direction={"vertical"}>
+                <div style={{padding: "10px 6px 0 6px"}}>
+                    <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
                             onChange={this.actions.onSelectMovementMode}
@@ -107,7 +107,7 @@ class Index extends React.Component {
 
                 <Line/>
                 <div style={{padding: "0 6px 0 6px", width: "100%"}}>
-                    <Space direction={"vertical"}>
+                    <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
                             onChange={this.actions.onSelectFrontEnd}
