@@ -189,9 +189,10 @@ class Index extends React.Component {
                             </div>
 
                             <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the button to reset DexArm's XY slope
-                                rate.
+                                rate. Wait about 4 seconds, the machine will be reconnected.
                             </div>
-                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickStart}>start</Button>
+                            <Button size={"small"} onClick={this.onClickStart}>
+                                Reset XY Slope Rate</Button>
                             <div style={{marginTop: "10px"}}><b>Step 2:</b> Click the first point to start leveling.
                             </div>
                             <Radio.Group
@@ -206,9 +207,9 @@ class Index extends React.Component {
                                 <Radio.Button value={3}>Point D</Radio.Button>
                             </Radio.Group>
 
-                            <div style={{marginTop: "10px"}}><b>Step 3:</b> Adjust the distance between the nozzle and
-                                build plate using the
-                                Up and Down button until there is slight resistance on the A4 paper from the nozzle.
+                            <div style={{marginTop: "10px"}}><b>Step 3:</b> Adjust the distance between the module and
+                                build plate using the Up and Down button until there is slight resistance on the A4
+                                paper from the nozzle.
                             </div>
                             <div style={{opacity: 0.5}}>Accuracy</div>
 
