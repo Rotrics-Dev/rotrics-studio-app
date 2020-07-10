@@ -67,8 +67,8 @@ class FirmwareUpgradeManager {
             this.onChange(1, 'error', 'Collect DexArm info failed');
             return;
         }
-        const {firmwareVersion, hardwareVersion} = deviceInfo;
-
+        let {firmwareVersion, hardwareVersion} = deviceInfo;
+        // firmwareVersion = "V2.1.2"
         //step-2: Check need upgrade
         this.onChange(2, 'process');
         const {isNeedUpgrade, err: err4needUpgrade, url} = await this.isNeedUpgrade(firmwareVersion, hardwareVersion);
@@ -269,7 +269,11 @@ class FirmwareUpgradeManager {
                     }
                 };
                 serialPortManager.on(SERIAL_PORT_DATA, callback);
-                serialPortManager.write('M2002\nM2003\n');
+                //设置E轴步进，是固定参数；是marlin cmd
+                //M92 E408.16  设置
+                //M500  保存settings
+                //查询E轴步进：M92
+                serialPortManager.write('M92 E408.16\nM500\nM2002\nM2003\n');
             });
         };
         return await exe();
