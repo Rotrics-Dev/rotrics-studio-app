@@ -130,20 +130,20 @@
         "label": "Work Speed",
         "description": "Work Speed description ",
         "placeholder": "#work_speed#",
-        "default_value": 3000,
+        "default_value": 400,
         "type": "int",
         "unit": "mm/min",
-        "minimum_value": 100,
+        "minimum_value": 10,
         "maximum_value": 4000
       },
       "jog_speed": {
         "label": "Jog Speed",
         "description": "Jog Speed description",
         "placeholder": "#jog_speed#",
-        "default_value": 4000,
+        "default_value": 400,
         "type": "int",
         "unit": "mm/min",
-        "minimum_value": 100,
+        "minimum_value": 10,
         "maximum_value": 4000
       },
       "jog_pen_offset": {
