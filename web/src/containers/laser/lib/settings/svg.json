@@ -130,17 +130,17 @@
         "label": "Work Speed",
         "description": "Work Speed description ",
         "placeholder": "#work_speed#",
-        "default_value": 300,
+        "default_value": 400,
         "type": "int",
         "unit": "mm/min",
-        "minimum_value": 100,
+        "minimum_value": 10,
         "maximum_value": 4000
       },
       "jog_speed": {
         "label": "Jog Speed",
         "description": "Jog Speed description",
         "placeholder": "#jog_speed#",
-        "default_value": 1000,
+        "default_value": 400,
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 100,
@@ -169,7 +169,7 @@
             "default_value": 2,
             "type": "int",
             "minimum_value": 1,
-            "maximum_value": 10
+            "maximum_value": 50
           },
           "pass_depth": {
             "label": "Pass Depth",
