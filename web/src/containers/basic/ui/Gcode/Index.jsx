@@ -80,7 +80,7 @@ class Index extends React.Component {
                     textColor="#292421"
                     delayShow={200}/>
                 <ReactTooltip/>
-                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                <Space direction={"vertical"} style={{width: "100%", padding: "6px"}}>
                     <Button
                         data-for={tooltipId}
                         // data-tip="Make sure that work origin had been setup before import 3rd part gcode."
@@ -123,7 +123,7 @@ class Index extends React.Component {
                 />
                 <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
                     {this.state.fileName &&
-                    <div>
+                    <div style={{textAlign: "center"}}>
                         {this.state.fileName}
                     </div>}
                 </Space>

@@ -71,7 +71,8 @@ class Index extends React.Component {
         return (
             <div style={{
                 width: "100%",
-                height: "100%"
+                height: "100%",
+                fontSize:"13px"
             }}>
                 <div style={{padding: "5px"}}>
                     <Row>
@@ -120,7 +121,7 @@ class Index extends React.Component {
                 </div>
 
                 <Line/>
-                <div style={{padding: "0px 6px 0px 6px"}}>
+                <div style={{padding: "6px 6px 0px 6px "}}>
                     {teachAndPlayMode &&
                     <Row>
                         <Col span={16}>

@@ -33,8 +33,8 @@ class Index extends React.Component {
                     position: "absolute",
                     top: 0,
                     bottom: 0,
-                    right: "280px",
-                    width: "1.5px",
+                    right: "315px",
+                    width: "1px",
                     backgroundColor: "#C0C0C0"
                 }}/>
                 <div style={{
@@ -42,27 +42,28 @@ class Index extends React.Component {
                     top: 0,
                     right: 0,
                     bottom: 0,
-                    width: "280px",
-                    backgroundColor: "#f0f0f0",
+                    width: "315px",
+                    backgroundColor: "#F2F2F2",
                     overflowY: "scroll"
                 }}>
-                    <Tabs type="card" tabBarGutter={0} tabBarStyle={{width: "260px"}}>
+                    <Tabs type="card" centered={true} size="small" tabBarGutter={0}
+                          tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "42px", height: "100%"}}>
+                            <div style={{textAlign: "center", fontSize: "15px", width: "52px", height: "100%"}}>
                                 Control
                             </div>
                         } key="3">
                             <Control/>
                         </TabPane>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "38px", height: "100%"}}>
+                            <div style={{textAlign: "center", fontSize: "15px", width: "52px", height: "100%"}}>
                                 Gcode
                             </div>
                         } key="2">
                             <Gcode/>
                         </TabPane>
                         <TabPane tab={
-                            <div style={{textAlign: "center", width: "76px", height: "100%"}}>
+                            <div style={{textAlign: "center", fontSize: "15px", width: "76px", height: "100%"}}>
                                 Teach & Play
                             </div>
                         } key="1">
