@@ -18,10 +18,10 @@ class Index extends React.Component {
             const {rgb, visible} = value;
             lineTypeEles.push(
                 <div key={key} style={{width: "150px"}}>
-                    <Checkbox checked={visible} onClick={(e) => {
+                    <Checkbox checked={visible} style={{marginRight: "5px"}} onClick={(e) => {
                         updateLineTypeVisibility(key, e.target.checked)
                     }}/>
-                    {key}
+                    <span style={{fontSize: "13px"}}>{key}</span>
                     <span className={styles.span_type_block}
                           style={{backgroundColor: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`}}></span>
                 </div>

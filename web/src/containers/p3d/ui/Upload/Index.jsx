@@ -4,7 +4,6 @@ import {Button, Slider, Space, Divider} from 'antd';
 import {uploadFile} from "../../../../api";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
-import globalStyles from "../../../../globalStyles.css";
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -35,7 +34,7 @@ class Index extends React.Component {
                     onChange={actions.uploadFile}
                 />
                 <Button
-                    className={globalStyles.btn_func}
+                    style={{fontSize: "12px"}}
                     size="small"
                     onClick={actions.onClickUpload}
                 >

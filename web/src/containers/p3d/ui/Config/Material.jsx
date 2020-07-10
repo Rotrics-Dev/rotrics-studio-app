@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
-import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as p3dMaterialActions} from "../../../../reducers/p3dMaterial";
 import {connect} from 'react-redux';
+import {ConfigText} from '../../../../components/Config';
 
 const getMaterialByName = (materials, name) => {
     for (let i = 0; i < materials.length; i++) {
@@ -61,20 +61,20 @@ class Material extends PureComponent {
         const materialEles = [];
         for (let i = materials.length - 1; i > -1; i--) {
             const item = materials[i];
-            materialEles.push(<Button key={i} size="small"  className={globalStyles.btn_func} style={{width: "50%"}} type={name === item.name ? 'primary' : ''}
+            materialEles.push(<Button key={i} size="small" style={{width: "50%", fontSize: "13px"}}
+                                      type={name === item.name ? 'primary' : ''}
                                       onClick={() => actions.select(item.name)}>{item.label}</Button>)
         }
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "8px 8px 0 8px"
+                    padding: "8px"
                 }}>
                     {materialEles}
                     <Row style={{marginTop: "8px"}}>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{material_diameter.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + material_diameter.unit + ")"}</span>
+                            <ConfigText text={`${material_diameter.label}(${material_diameter.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -88,8 +88,7 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{material_flow.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + material_flow.unit + ")"}</span>
+                            <ConfigText text={`${material_flow.label}(${material_flow.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -102,8 +101,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{material_print_temperature.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + material_print_temperature.unit + ")"}</span>
+                            <ConfigText
+                                text={`${material_print_temperature.label}(${material_print_temperature.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -116,8 +115,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{material_print_temperature_layer_0.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + material_print_temperature_layer_0.unit + ")"}</span>
+                            <ConfigText
+                                text={`${material_print_temperature_layer_0.label}(${material_print_temperature_layer_0.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -130,8 +129,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{material_final_print_temperature.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + material_final_print_temperature.unit + ")"}</span>
+                            <ConfigText
+                                text={`${material_final_print_temperature.label}(${material_final_print_temperature.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput

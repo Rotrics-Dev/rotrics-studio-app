@@ -6,7 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
 
-class ConfigText extends PureComponent {
+class ConfigSvgText extends PureComponent {
     actions = {
         //config text
         setText: (e) => {
@@ -141,5 +141,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigText);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigSvgText);
 

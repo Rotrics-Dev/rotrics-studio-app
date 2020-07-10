@@ -5,8 +5,9 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
 
-class ConfigText extends PureComponent {
+class ConfigSvgText extends PureComponent {
     actions = {
         //config text
         setText: (e) => {
@@ -44,7 +45,7 @@ class ConfigText extends PureComponent {
         const fontOptions = [];
         Object.keys(font.options).forEach((key) => {
             const option = font.options[key];
-            fontOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
+            fontOptions.push({label: key, value: option})
         });
 
         const {optimize_path, fill} = config.children;
@@ -56,32 +57,30 @@ class ConfigText extends PureComponent {
                 <div style={{
                     padding: "5px",
                 }}>
-                    <h4>{config.label}</h4>
+                    <ConfigTitle text={config.label}/>
                     <Row>
-                        <Col span={10}>
-                            <span>{text.label}</span>
+                        <Col span={13}>
+                            <ConfigText text={`${text.label}`}/>
                         </Col>
-                        <Col span={14}>
-                            <Input.TextArea value={text.default_value} autoSize={{minRows: 1, maxRows: 1}}
+                        <Col span={11}>
+                            <Input.TextArea style={{fontSize: "12px"}} value={text.default_value}
+                                            autoSize={{minRows: 1, maxRows: 1}}
                                             onChange={actions.setText}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={10}>
-                            <span>{font.label}</span>
+                        <Col span={13}>
+                            <ConfigText text={`${font.label}`}/>
                         </Col>
-                        <Col span={14}>
-                            <Select value={font.default_value} style={{width: "100%"}}
-                                    onChange={actions.setFont}>
-                                {fontOptions}
-                            </Select>
+                        <Col span={11}>
+                            <ConfigSelect options={fontOptions} value={font.default_value} onChange={actions.setFont}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{font_size.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${font_size.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={font_size.minimum_value}
                                 max={font_size.maximum_value}
@@ -90,27 +89,27 @@ class ConfigText extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{optimize_path.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${optimize_path.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{fill.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${fill.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
                         </Col>
                     </Row>
                     {fill.default_value &&
                     <Row>
-                        <Col span={13} push={2}>
-                            <span>{fill_density.label}</span>
+                        <Col span={17} push={2}>
+                            <ConfigText text={`${fill_density.label}`}/>
                         </Col>
-                        <Col span={9} push={2}>
+                        <Col span={5} push={2}>
                             <NumberInput
                                 min={fill_density.minimum_value}
                                 max={fill_density.maximum_value}
@@ -141,5 +140,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigText);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigSvgText);
 

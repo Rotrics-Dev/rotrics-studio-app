@@ -5,7 +5,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
-import globalStyles from "../../../../globalStyles.css";
+import {ConfigText, ConfigTitle} from "../../../../components/Config";
 
 //hiddenStr: "movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", config) => {
@@ -119,11 +119,10 @@ class WorkingParameters extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <h4>{working_parameters.label}</h4>
+                    <ConfigTitle text={working_parameters.label}/>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{work_speed.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + work_speed.unit + ")"}</span>
+                            <ConfigText text={`${work_speed.label}(${work_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -136,8 +135,7 @@ class WorkingParameters extends PureComponent {
                     {!jogSpeedHidden &&
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{jog_speed.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + jog_speed.unit + ")"}</span>
+                            <ConfigText text={`${jog_speed.label}(${jog_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -151,8 +149,7 @@ class WorkingParameters extends PureComponent {
                     {!dwellTimeHidden &&
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{dwell_time.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + dwell_time.unit + ")"}</span>
+                            <ConfigText text={`${dwell_time.label}(${dwell_time.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -165,7 +162,7 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{multi_pass.label}</span>
+                            <ConfigText text={`${multi_pass.label}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
@@ -174,7 +171,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <span className={globalStyles.text_parameters}>{passes.label}</span>
+                            <ConfigText text={`${passes.label}`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -188,8 +185,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <span className={globalStyles.text_parameters}>{pass_depth.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + pass_depth.unit + ")"}</span>
+                            <ConfigText text={`${pass_depth.label}(${pass_depth.unit})`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -203,7 +199,7 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{fixed_power.label}</span>
+                            <ConfigText text={`${fixed_power.label}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>
@@ -212,8 +208,7 @@ class WorkingParameters extends PureComponent {
                     {fixed_power.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <span className={globalStyles.text_parameters}>{power.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + power.unit + ")"}</span>
+                            <ConfigText text={`${power.label}(${power.unit})`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput

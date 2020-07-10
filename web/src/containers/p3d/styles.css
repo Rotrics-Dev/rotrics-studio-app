@@ -10,7 +10,7 @@
 .div_gcode_preview_control {
     position: absolute;
     top: 50%;
-    right: 320px;
+    right: 351px;
     width: 30px;
     height: 300px;
     -webkit-transform: translateY(-50%);

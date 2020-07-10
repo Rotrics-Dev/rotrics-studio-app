@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Switch, Slider} from 'antd';
 import styles from './styles.css';
-import globalStyles from '../../../../globalStyles.css';
 import DeviceControl from "../../../_deviceControl/Index.jsx"
 import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";

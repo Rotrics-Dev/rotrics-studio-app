@@ -6,7 +6,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
-import globalStyles from "../../../../globalStyles.css";
+import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 
 class Transformation extends PureComponent {
     actions = {
@@ -37,11 +37,11 @@ class Transformation extends PureComponent {
         }
         const actions = this.actions;
         const {width, height, rotation, x, y, flip_model} = transformation.children;
+
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
-            flipModelOptions.push(<Select.Option style={{fontSize: "12px"}} key={key}
-                                                 value={option}>{key}</Select.Option>)
+            flipModelOptions.push({label: key, value: option})
         });
         return (
             <div>
@@ -49,11 +49,10 @@ class Transformation extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <h4>{transformation.label}</h4>
+                    <ConfigTitle text={transformation.label}/>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{width.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + width.unit + ")"}</span>
+                            <ConfigText text={`${width.label}(${width.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -65,8 +64,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{height.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + height.unit + ")"}</span>
+                            <ConfigText text={`${height.label}(${height.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -78,8 +76,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{rotation.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + rotation.unit + ")"}</span>
+                            <ConfigText text={`${rotation.label}(${rotation.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -91,8 +88,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{x.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + x.unit + ")"}</span>
+                            <ConfigText text={`${x.label}(${x.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -104,8 +100,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{y.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + y.unit + ")"}</span>
+                            <ConfigText text={`${y.label}(${y.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -117,14 +112,10 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={15}>
-                            <span className={globalStyles.text_parameters}>{flip_model.label}</span>
+                            <ConfigText text={`${flip_model.label}`}/>
                         </Col>
                         <Col span={9}>
-                            <Select size="small" value={flip_model.default_value}
-                                    style={{width: "100%", fontSize: "12px"}}
-                                    onChange={actions.setFlipModel}>
-                                {flipModelOptions}
-                            </Select>
+                            <ConfigSelect options={flipModelOptions} value={flip_model.default_value} onChange={actions.setFlipModel}/>
                         </Col>
                     </Row>
                 </div>

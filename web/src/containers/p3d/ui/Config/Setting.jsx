@@ -1,12 +1,13 @@
 import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
 import styles from './styles.css';
-import globalStyles from '../../../../globalStyles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
 import {connect} from 'react-redux';
+import ActionButton from "../../../../components/ActionButton/Index.jsx";
+import {ConfigText} from "../../../../components/Config";
 
 const getSettingByName = (settings, name) => {
     for (let i = 0; i < settings.length; i++) {
@@ -71,10 +72,15 @@ class Setting extends PureComponent {
         const settingsButtons = [];
         for (let i = settings.length - 1; i > -1; i--) {
             const item = settings[i];
-            settingsButtons.push(<Button key={i} size="small"  className={globalStyles.btn_func} style={{width: "100%", marginTop:"3px"}}
-                                         type={name === item.name ? 'primary' : ''}
-                                         onClick={() => actions.select(item.name)}>{item.label}</Button>)
+            settingsButtons.push(
+                <ActionButton
+                    key={i}
+                    style={{width: "100%", marginTop: "3px"}}
+                    type={name === item.name ? 'primary' : ''}
+                    onClick={() => actions.select(item.name)}
+                    text={item.label}/>)
         }
+
         return (
             <div>
                 <Line/>
@@ -85,8 +91,7 @@ class Setting extends PureComponent {
 
                     <Row style={{marginTop: "8px"}}>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{layer_height.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + layer_height.unit + ")"}</span>
+                            <ConfigText text={`${layer_height.label}(${layer_height.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -100,8 +105,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{top_thickness.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + top_thickness.unit + ")"}</span>
+                            <ConfigText text={`${top_thickness.label}(${top_thickness.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -115,9 +119,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{infill_sparse_density.label}</span>
-                            <span
-                                className={globalStyles.text_parameters}>{"(" + infill_sparse_density.unit + ")"}</span>
+                            <ConfigText text={`${infill_sparse_density.label}(${infill_sparse_density.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -130,8 +132,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{speed_infill.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + speed_infill.unit + ")"}</span>
+                            <ConfigText text={`${speed_infill.label}(${speed_infill.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -144,8 +145,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{speed_wall_0.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + speed_wall_0.unit + ")"}</span>
+                            <ConfigText text={`${speed_wall_0.label}(${speed_wall_0.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -158,8 +158,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{speed_wall_x.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + speed_wall_x.unit + ")"}</span>
+                            <ConfigText text={`${speed_wall_x.label}(${speed_wall_x.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -172,8 +171,7 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <span className={globalStyles.text_parameters}>{speed_travel.label}</span>
-                            <span className={globalStyles.text_parameters}>{"(" + speed_travel.unit + ")"}</span>
+                            <ConfigText text={`${speed_travel.label}(${speed_travel.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput

@@ -85,6 +85,7 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>Y</span>
                         <Slider
+
                             min={-75}
                             max={75}
                             step={1}

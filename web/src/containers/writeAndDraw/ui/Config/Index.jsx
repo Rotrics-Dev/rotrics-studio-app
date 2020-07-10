@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
-import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import {Button, Space, message, List} from 'antd';
 
@@ -10,7 +9,7 @@ import "antd/dist/antd.css";
 import Transformation from './Transformation.jsx';
 
 import ConfigSvg from './ConfigSvg.jsx';
-import ConfigText from './ConfigText.jsx';
+import ConfigSvgText from './ConfigSvgText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
@@ -18,6 +17,9 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
+import ActionButton from "../../../../components/ActionButton/Index.jsx";
+import {ConfigTitle} from '../../../../components/Config';
+
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
     let accept = '';
@@ -158,43 +160,17 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%"
             }}>
-                <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.generateGcode}
-                    >
-                        {"Generate G-code"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.exportGcode}
-                    >
-                        {"Export G-code"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.startSendGcode}
-                    >
-                        {"Start Send"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.stopSendGcode}
-                    >
-                        {"Stop Send"}
-                    </Button>
+                <Space direction={"vertical"} size="small"
+                       style={{width: "100%", padding: "0 8px 8px 8px"}}>
+                    <ActionButton onClick={actions.exportModel} text={"Export Model"}/>
+                    <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
+                    <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
+                    <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>
+                    <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}/>
                 </Space>
                 <Line/>
                 <h4 style={{
-                    paddingLeft: "10px",
+                    padding: "10px 0 0 10px",
                     color: "grey"
                 }}> {" selected image type: " + (model ? model.fileType : "")}</h4>
                 <input
@@ -242,7 +218,7 @@ class Index extends React.Component {
                 </div>
                 <Transformation/>
                 <ConfigSvg/>
-                <ConfigText/>
+                <ConfigSvgText/>
                 <WorkingParameters/>
                 <div style={{height: "15px"}}/>
             </div>

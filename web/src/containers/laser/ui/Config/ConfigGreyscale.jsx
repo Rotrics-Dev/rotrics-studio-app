@@ -5,6 +5,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 
 class ConfigGreyscale extends PureComponent {
     actions = {
@@ -42,35 +43,34 @@ class ConfigGreyscale extends PureComponent {
         const algorithmOptions = [];
         Object.keys(algorithm.options).forEach((key) => {
             const option = algorithm.options[key];
-            algorithmOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
+            algorithmOptions.push({label: key, value: option})
         });
 
         const movementModeOptions = [];
         Object.keys(movement_mode.options).forEach((key) => {
             const option = movement_mode.options[key];
-            movementModeOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
+            movementModeOptions.push({label: key, value: option})
         });
-
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
-                    <h4>{config.label}</h4>
+                    <ConfigTitle text={config.label}/>
                     <Row>
-                        <Col span={15}>
-                            <span>{invert.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${invert.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{contrast.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${contrast.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={contrast.minimum_value}
                                 max={contrast.maximum_value}
@@ -79,10 +79,10 @@ class ConfigGreyscale extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{brightness.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${brightness.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={brightness.minimum_value}
                                 max={brightness.maximum_value}
@@ -91,10 +91,10 @@ class ConfigGreyscale extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{white_clip.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${white_clip.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={white_clip.minimum_value}
                                 max={white_clip.maximum_value}
@@ -103,11 +103,10 @@ class ConfigGreyscale extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{density.label}</span>
-                            <span>{"(" + density.unit + ")"}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${density.label}(${density.unit})`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={density.minimum_value}
                                 max={density.maximum_value}
@@ -116,25 +115,19 @@ class ConfigGreyscale extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={7}>
-                            <span>{algorithm.label}</span>
+                        <Col span={10}>
+                            <ConfigText text={`${algorithm.label}`}/>
                         </Col>
-                        <Col span={17}>
-                            <Select value={algorithm.default_value} style={{width: "100%"}}
-                                    onChange={actions.setAlgorithm}>
-                                {algorithmOptions}
-                            </Select>
+                        <Col span={14}>
+                            <ConfigSelect options={algorithmOptions} value={algorithm.default_value} onChange={actions.setAlgorithm}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={7}>
-                            <span>{movement_mode.label}</span>
+                        <Col span={10}>
+                            <ConfigText text={`${movement_mode.label}`}/>
                         </Col>
-                        <Col span={17}>
-                            <Select value={movement_mode.default_value} style={{width: "100%"}}
-                                    onChange={actions.setMovementMode}>
-                                {movementModeOptions}
-                            </Select>
+                        <Col span={14}>
+                            <ConfigSelect options={movementModeOptions} value={movement_mode.default_value} onChange={actions.setMovementMode}/>
                         </Col>
                     </Row>
                 </div>

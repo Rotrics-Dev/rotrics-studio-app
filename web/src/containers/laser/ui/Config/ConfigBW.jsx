@@ -5,6 +5,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
 
 class ConfigBW extends PureComponent {
     actions = {
@@ -29,31 +30,32 @@ class ConfigBW extends PureComponent {
         }
         const actions = this.actions;
         const {invert, bw, line_direction, density} = config.children;
+
         const directionOptions = [];
         Object.keys(line_direction.options).forEach((key) => {
             const option = line_direction.options[key];
-            directionOptions.push(<Select.Option key={key} value={option}>{key}</Select.Option>)
+            directionOptions.push({label: key, value: option})
         });
         return (
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
-                    <h4>{config.label}</h4>
+                    <ConfigTitle text={config.label}/>
                     <Row>
-                        <Col span={15}>
-                            <span>{invert.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${invert.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{bw.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${bw.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={bw.minimum_value}
                                 max={bw.maximum_value}
@@ -62,11 +64,10 @@ class ConfigBW extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{density.label}</span>
-                            <span>{"(" + density.unit + ")"}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${density.label}(${density.unit})`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={density.minimum_value}
                                 max={density.maximum_value}
@@ -75,13 +76,11 @@ class ConfigBW extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={13}>
-                            <span>{line_direction.label}</span>
+                        <Col span={15}>
+                            <ConfigText text={`${line_direction.label}`}/>
                         </Col>
-                        <Col span={11}>
-                            <Select value={line_direction.default_value} style={{width: "100%"}}
-                                    onChange={actions.setLineDirection}>
-                                {directionOptions}></Select>
+                        <Col span={9}>
+                            <ConfigSelect options={directionOptions} value={line_direction.default_value} onChange={actions.setLineDirection}/>
                         </Col>
                     </Row>
                 </div>

@@ -207,7 +207,7 @@
       "label": "Top Thickness",
       "description": "The thickness of the top layers in the print. This value divided by the layer height defines the number of top layers.",
       "unit": "mm",
-      "default_value": 0.11,
+      "default_value": 0.14,
       "minimum_value": "0",
       "minimum_value_warning": "0.2 + resolveOrValue('layer_height')",
       "maximum_value": "machine_height",

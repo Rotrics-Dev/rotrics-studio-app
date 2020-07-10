@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
-import globalStyles from '../../../../globalStyles.css';
 import styles from './styles.css';
 import {Button, Input, Space, message} from 'antd';
 
@@ -12,13 +11,14 @@ import Transformation from './Transformation.jsx';
 import ConfigGreyscale from './ConfigGreyscale.jsx';
 import ConfigBW from './ConfigBW.jsx';
 import ConfigSvg from './ConfigSvg.jsx';
-import ConfigText from './ConfigText.jsx';
+import ConfigSvgText from './ConfigSvgText.jsx';
 
 import WorkingParameters from './WorkingParameters.jsx';
 
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as laserActions} from "../../../../reducers/laser";
+import ActionButton from "../../../../components/ActionButton/Index.jsx";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -151,39 +151,11 @@ class Index extends React.Component {
                 height: "100%"
             }}>
                 <Space direction={"vertical"} size="small"
-                       style={{width: "100%", paddingLeft: "8px", paddingRight: "8px"}}>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.generateGcode}
-                    >
-                        {"Generate G-code"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.exportGcode}
-                    >
-                        {"Export G-code"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.startSendGcode}
-                    >
-                        {"Start Send"}
-                    </Button>
-                    <Button
-                        className={globalStyles.btn_func}
-                        block
-                        size="small"
-                        onClick={actions.stopSendGcode}
-                    >
-                        {"Stop Send"}
-                    </Button>
+                       style={{width: "100%", padding: "0 8px 8px 8px"}}>
+                    <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
+                    <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
+                    <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>
+                    <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}/>
                 </Space>
                 <Line/>
                 <h4 style={{
@@ -228,7 +200,7 @@ class Index extends React.Component {
                 <ConfigGreyscale/>
                 <ConfigBW/>
                 <ConfigSvg/>
-                <ConfigText/>
+                <ConfigSvgText/>
                 <WorkingParameters/>
             </div>
         )
