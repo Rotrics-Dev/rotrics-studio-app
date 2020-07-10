@@ -4,6 +4,9 @@ import _ from 'lodash';
 import styles from './styles.css';
 import {Radio, Space, Modal, message, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
+import {
+    MSG_SERIAL_PORT_CLOSE_TOAST
+} from "../../constants";
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -56,7 +59,7 @@ class Index extends React.Component {
 
     onClickSave = () => {
         if (this.state.pointIndex === undefined) {
-            message.error('You should choose one point first!');
+            message.warn(MSG_SERIAL_PORT_CLOSE_TOAST);
             return;
         }
         const pointIndex = this.state.pointIndex;
@@ -90,7 +93,7 @@ class Index extends React.Component {
             'M2007'
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');
-        this.delayToConnectSerialPort(this, false, false, 'Level Done,you could reconnect the device.');
+        this.delayToConnectSerialPort(this, false, false, 'Level Done, you could reconnect the device.');
 
     }
     delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
@@ -148,7 +151,7 @@ class Index extends React.Component {
     showModal = () => {
         const {path} = this.props;
         if (!path) {
-            message.error('You should connect the device first.');
+            message.warn(MSG_SERIAL_PORT_CLOSE_TOAST);
             return;
         }
         this.setState({
@@ -164,13 +167,15 @@ class Index extends React.Component {
     render() {
         const {showLevel} = this.props;
         const {pointIndex} = this.state;
-        return (<div>
-                {showLevel && <button
+        return (
+            <div>
+                {showLevel &&
+                <button
                     onClick={this.showModal}
                     className={styles.btn_action_work}
                 >Level
-                </button>}
-
+                </button>
+                }
                 <Modal
                     title="Leveling"
                     visible={this.state.showModal}

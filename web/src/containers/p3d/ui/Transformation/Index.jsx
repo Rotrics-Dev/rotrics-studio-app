@@ -31,7 +31,7 @@ class Index extends React.Component {
             this.props.updateTransformation("rz", degree2radian(value))
         },
         changeScale: (value) => {
-            this.props.updateTransformation("scale", value)
+            this.props.updateTransformation("scale", value / 100)
         },
         //after change
         afterChangeScale: (value) => {
@@ -85,7 +85,6 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>Y</span>
                         <Slider
-
                             min={-75}
                             max={75}
                             step={1}
@@ -101,10 +100,13 @@ class Index extends React.Component {
         const content4scale = (
             <div>
                 <Slider
-                    min={0.1}
-                    max={10}
-                    step={0.1}
-                    value={scale}
+                    tipFormatter={(value) => {
+                        return `${value}%`
+                    }}
+                    min={10}
+                    max={1000}
+                    step={1}
+                    value={scale * 100}
                     disabled={disabled}
                     style={sliderCss}
                     onChange={actions.changeScale}
