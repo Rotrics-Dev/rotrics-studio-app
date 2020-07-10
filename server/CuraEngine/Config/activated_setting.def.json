@@ -1,10 +1,10 @@
 {
   "id": "activated_setting",
   "version": 1,
-  "name": "fast_print",
-  "label": "Fast Print",
+  "name": "custom",
+  "label": "Custom",
   "inherits": "activated_material",
-  "isOfficial": true,
+  "isOfficial": false,
   "overrides": {
     "initial_layer_line_width_factor": {
       "label": "Initial Layer Line Width",
@@ -42,7 +42,7 @@
       "description": "The speed at which travel moves are made.",
       "unit": "mm/s",
       "type": "float",
-      "default_value": 70,
+      "default_value": 100,
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "300",
@@ -58,7 +58,7 @@
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "150",
-      "default_value": 30,
+      "default_value": 40,
       "value": "speed_print / 2",
       "limit_to_extruder": "top_bottom_extruder_nr",
       "settable_per_mesh": true
@@ -71,7 +71,7 @@
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "150",
-      "default_value": 40,
+      "default_value": 50,
       "value": "speed_wall * 2",
       "limit_to_extruder": "wall_x_extruder_nr",
       "settable_per_mesh": true
@@ -97,7 +97,7 @@
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "150",
-      "default_value": 30,
+      "default_value": 40,
       "value": "speed_print / 2",
       "settable_per_mesh": true
     },
@@ -109,7 +109,7 @@
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
       "maximum_value_warning": "150",
-      "default_value": 40,
+      "default_value": 80,
       "value": "speed_print",
       "limit_to_extruder": "infill_extruder_nr",
       "settable_per_mesh": true
@@ -122,34 +122,8 @@
       "minimum_value": "0.1",
       "maximum_value_warning": "150",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
-      "default_value": 40,
+      "default_value": 80,
       "settable_per_mesh": true
-    },
-    "retraction_speed": {
-      "label": "Retraction Speed",
-      "description": "The speed at which the filament is retracted and primed during a retraction move.",
-      "unit": "mm/s",
-      "type": "float",
-      "default_value": 25,
-      "minimum_value": "0.0001",
-      "minimum_value_warning": "1",
-      "maximum_value": "machine_max_feedrate_e",
-      "maximum_value_warning": "70",
-      "enabled": "retraction_enable",
-      "settable_per_mesh": false,
-      "settable_per_extruder": true
-    },
-    "retraction_amount": {
-      "label": "Retraction Distance",
-      "description": "The length of material retracted during a retraction move.",
-      "unit": "mm",
-      "type": "float",
-      "default_value": 6.5,
-      "minimum_value_warning": "-0.0001",
-      "maximum_value_warning": "10.0",
-      "enabled": "retraction_enable",
-      "settable_per_mesh": true,
-      "settable_per_extruder": true
     },
     "retract_at_layer_change": {
       "label": "Retract at Layer Change",
@@ -158,14 +132,6 @@
       "default_value": false,
       "settable_per_mesh": false,
       "settable_per_extruder": false
-    },
-    "retraction_enable": {
-      "label": "Enable Retraction",
-      "description": "Retract the filament when the nozzle is moving over a non-printed area. ",
-      "type": "bool",
-      "default_value": true,
-      "settable_per_mesh": true,
-      "settable_per_extruder": true
     },
     "infill_line_distance": {
       "label": "Infill Line Distance",
@@ -245,7 +211,7 @@
       "description": "The height of the initial layer in mm. A thicker initial layer makes adhesion to the build plate easier.",
       "unit": "mm",
       "type": "float",
-      "default_value": 0.3,
+      "default_value": 0.24,
       "resolve": "min(extruderValues('layer_height_0'))",
       "minimum_value": "0.001",
       "minimum_value_warning": "0.1",
@@ -291,7 +257,7 @@
       "description": "The speed of travel moves in the initial layer. A lower value is advised to prevent pulling previously printed parts away from the build plate. The value of this setting can automatically be calculated from the ratio between the Travel Speed and the Print Speed.",
       "unit": "mm/s",
       "type": "float",
-      "default_value": 40,
+      "default_value": 50,
       "value": "speed_layer_0 * speed_travel / speed_print",
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
@@ -304,7 +270,7 @@
       "description": "The speed of printing for the initial layer. A lower value is advised to improve adhesion to the build plate.",
       "unit": "mm/s",
       "type": "float",
-      "default_value": 30,
+      "default_value": 25,
       "value": "speed_layer_0",
       "minimum_value": "0.1",
       "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",

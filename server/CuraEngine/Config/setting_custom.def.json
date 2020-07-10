@@ -1,10 +1,10 @@
 {
   "id": "activated_setting",
   "version": 1,
-  "name": "fast_print",
-  "label": "Fast Print",
+  "name": "custom",
+  "label": "Custom",
   "inherits": "activated_material",
-  "isOfficial": true,
+  "isOfficial": false,
   "overrides": {
     "initial_layer_line_width_factor": {
       "label": "Initial Layer Line Width",
