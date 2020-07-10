@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {List, Modal, Checkbox, Select, Row, Col, Radio} from 'antd';
+import {List, Modal, Checkbox, Select, Row, Col, Radio, Space} from 'antd';
 
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
@@ -8,6 +8,24 @@ import {actions as teachAndPlayActions} from "../../../../reducers/teachAndPlay"
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import teach_and_play from "../../lib/settings/teach_and_play.json";
 import styles from "./styles.css";
+
+const FRONT_END_STYLE = {
+    laser: {
+        state_0: styles.front_end_laser_off,
+        state_1: styles.front_end_laser_on,
+    },
+    air_pick: {
+        state_0: styles.front_end_air_drop,
+        state_1: styles.front_end_air_pick,
+
+    },
+    soft_gripper: {
+        state_0: styles.front_end_soft_neutral,
+        state_1: styles.front_end_soft_grip,
+        state_2: styles.front_end_soft_release
+    }
+
+}
 
 class Index extends React.Component {
 
@@ -48,6 +66,7 @@ class Index extends React.Component {
         Object.keys(frontEndState).forEach((key) => {
             frontEndStateOptions.push(<Radio.Button value={key} key={key}>{frontEndState[key].label}</Radio.Button>);
         });
+
 
         return (
             <div style={{
@@ -100,19 +119,8 @@ class Index extends React.Component {
                     </Row>}
                 </div>
 
+                <Line/>
                 <div style={{padding: "0px 6px 0px 6px"}}>
-                    <button className={styles.btn} onClick={this.props.recordStep}
-                            disabled={!(teachAndPlayMode)}> Record
-                    </button>
-
-                    <button className={styles.btn} onClick={() => this.props.startPlayStep()}
-                            disabled={!(stepArray.length > 0)}>Start
-                    </button>
-
-                    <button className={styles.btn} onClick={this.props.stopPlayStep}
-                            disabled={!(stepArray.length > 0)}>Stop
-                    </button>
-
                     {teachAndPlayMode &&
                     <Row>
                         <Col span={16}>
@@ -127,6 +135,15 @@ class Index extends React.Component {
                                 onAfterChange={this.props.setRepeatCount}/>
                         </Col>
                     </Row>}
+
+                    <div style={{textAlign: "center"}}>
+                        <button className={styles.button_record} onClick={this.props.recordStep}
+                                disabled={!(teachAndPlayMode)}/>
+                        <button className={styles.button_start} onClick={() => this.props.startPlayStep()}
+                                disabled={!(stepArray.length > 0)}/>
+                        <button className={styles.button_stop} onClick={this.props.stopPlayStep}
+                                disabled={!(stepArray.length > 0)}/>
+                    </div>
                 </div>
 
                 <Line/>
@@ -145,42 +162,39 @@ class Index extends React.Component {
                                         {index + 1}
                                     </div>
                                 </Col>
-                                <Col span={22}>
-                                    <div className={styles.div_card}
-                                         onClick={() => this.props.startPlayStep(index,false)}>
+                                <Col span={22} className={styles.div_card}
+                                     onClick={() => this.props.startPlayStep(index, false)}>
+                                    <div>
                                         <Row>
-                                            <Col span={9}>
-                                                {'X:' + item.x}
+                                            <Col span={12}>
+                                                <Row>
+                                                    <Col span={8}>X</Col>
+                                                    <Col span={16}>{item.x}</Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col span={8}>Y</Col>
+                                                    <Col span={16}>{item.y}</Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col span={8}>Z</Col>
+                                                    <Col span={16}>{item.z}</Col>
+                                                </Row>
                                             </Col>
-                                            <Col span={15}>
-                                                {teach_and_play.front_end.options[item.currentFrontEnd].label}{item.currentFrontEnd == "laser" && `(Power ${item.laserPower}%)`}
+                                            <Col span={12} align={"center"}>
+                                                <img
+                                                    className={FRONT_END_STYLE[item.currentFrontEnd][item.currentFrontEndState]}/>
+                                                <div>{teach_and_play.front_end.options[item.currentFrontEnd].state[item.currentFrontEndState].label}</div>
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <Col span={9}>
-                                                {'Y:' + item.y}
-                                            </Col>
-                                            <Col span={13}>
-                                                {teach_and_play.front_end.options[item.currentFrontEnd].state[item.currentFrontEndState].label}
-                                            </Col>
-                                            <Col span={2}>
-                                                <button className={styles.btn_delete}
-                                                        onClick={(event) => {
-                                                            event.stopPropagation();
-                                                            this.props.deleteStep(index);
-                                                        }}
-                                                />
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col span={9}>
-                                                {'Z:' + item.z}
-                                            </Col>
-                                        </Row>
+                                        <button className={styles.btn_delete}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    this.props.deleteStep(index);
+                                                }}/>
                                     </div>
                                 </Col>
                             </Row>
-                            <Row justify="center">
+                            <Row justify="end">
                                 <Col>
                                     Set Delay(s):
                                     <NumberInput
@@ -202,17 +216,16 @@ class Index extends React.Component {
                     position: "fixed",
                     right: "20px",
                     bottom: "0px",
-                    padding: "3px",
+                    padding: "0px 3px",
                     width: "260px",
+                    height: "24px",
                     backgroundColor: "white",
                     textAlign: "right"
                 }}>
-                    <button className={styles.btn} onClick={this.props.clearStepArray}
-                            disabled={!(stepArray.length > 0)}>Clear
-                    </button>
-                    <button className={styles.btn} onClick={this.props.exportGcode}
-                            disabled={!(stepArray.length > 0)}>Export
-                    </button>
+                    <button className={styles.button_delete} onClick={this.props.clearStepArray}
+                            disabled={!(stepArray.length > 0)}/>
+                    <button className={styles.button_export} onClick={this.props.exportGcode}
+                            disabled={!(stepArray.length > 0)}/>
                 </div>
                 <Modal
                     title="Select Teach & Play Front End"

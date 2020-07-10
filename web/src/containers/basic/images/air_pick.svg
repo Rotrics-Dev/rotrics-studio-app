@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Pick</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Pick" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M28.3939264,24.4141224 C32.5755943,26.1911835 35.3931099,30.32251 35.3931099,35 L35.3931099,36.5 L12.3931099,36.5 L12.3931099,35 C12.3931099,30.3221389 15.2110697,26.1905591 19.3932202,24.4137278 L19.3931099,11.5 C19.3931099,9.84314575 20.7362556,8.5 22.3931099,8.5 L25.3931099,8.5 C27.0499641,8.5 28.3931099,9.84314575 28.3931099,11.4999052 L28.3939264,24.4141224 Z" id="形状结合备份" stroke="#007AFF" stroke-width="3"></path>
+        <line x1="9" y1="36.5235988" x2="39" y2="36.5235988" id="直线备份" stroke="#007AFF" stroke-width="3" stroke-linecap="round"></line>
+    </g>
+</svg>

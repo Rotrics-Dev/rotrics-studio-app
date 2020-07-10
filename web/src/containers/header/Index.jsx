@@ -35,7 +35,7 @@ class Index extends React.Component {
                     key: notificationKeyDisconnected,
                     message: 'Cable Disconnected',
                     description: dif[0],
-                    // duration: 3
+                    duration: 1 //设置延时，防止调平断联时消息不消失
                 });
                 notification.close(notificationKeyConnected)
             }
