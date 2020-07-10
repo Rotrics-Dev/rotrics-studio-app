@@ -109,4 +109,21 @@
     opacity: 0.4;
 }
 
+.btn_export {
+    width: 36px;
+    height: 40px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/export.svg);
+}
+
+.btn_export:disabled,
+.btn_export:active {
+    opacity: 0.4;
+}
+
 

@@ -4,7 +4,7 @@ import {message, Space, Button} from 'antd';
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
 import FileSaver from 'file-saver';
-import {exportModelsToBlob, actions as p3dModelActions} from "../../../../reducers/p3dModel";
+import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 
@@ -14,18 +14,8 @@ class Index extends React.Component {
     state = {};
 
     actions = {
-        exportModel: () => {
-            if (this.actions._checkStatus4gcode("exportModel")) {
-                const blob = exportModelsToBlob()
-                const date = new Date();
-                const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-                const fileName = arr.join("") + ".stl";
-                FileSaver.saveAs(blob, fileName, true);
-                message.success('Export model success', 1);
-            }
-        },
         generateGcode: () => {
-            if (this.actions._checkStatus4gcode("exportModel")) {
+            if (this.actions._checkStatus4gcode("generateGcode")) {
                 this.props.startSlice();
             }
         },
@@ -71,7 +61,7 @@ class Index extends React.Component {
         },
         _checkStatus4gcode: (type) => {
             switch (type) {
-                case "exportModel": {
+                case "generateGcode": {
                     if (this.props.modelCount === 0) {
                         message.warning('Load model first', 1);
                         return false;
@@ -113,7 +103,6 @@ class Index extends React.Component {
             <div>
                 <Space direction={"vertical"} size="small"
                        style={{width: "100%", padding: "0 8px 8px 8px"}}>
-                    <ActionButton onClick={actions.exportModel} text={"Export Model"}/>
                     <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
                     <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
                     <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>
