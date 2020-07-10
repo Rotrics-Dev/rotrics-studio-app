@@ -162,7 +162,6 @@ class Index extends React.Component {
             }}>
                 <Space direction={"vertical"} size="small"
                        style={{width: "100%", padding: "0 8px 8px 8px"}}>
-                    <ActionButton onClick={actions.exportModel} text={"Export Model"}/>
                     <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
                     <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
                     <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>

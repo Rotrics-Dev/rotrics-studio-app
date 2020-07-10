@@ -2,7 +2,7 @@ import React from 'react';
 
 const Index = (props) => {
     return (
-        <span style={{color: "#0000ff", fontSize: "12px"}}>{props.text}</span>
+        <span style={{fontSize: "12px"}}>{props.text}</span>
     );
 };
 

@@ -10,7 +10,7 @@ class Index extends PureComponent {
                 size="small"
                 value={value}
                 onChange={onChange}
-                style={{width: "100%", fontSize: "12px", color: "#ff0000"}}
+                style={{width: "100%", fontSize: "12px"}}
             >
                 {options.map(item => {
                     return (

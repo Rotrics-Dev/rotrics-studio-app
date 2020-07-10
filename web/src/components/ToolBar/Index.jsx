@@ -12,12 +12,28 @@ const tooltipId = getUuid();
 class Index extends PureComponent {
     render() {
         let {operations = {}, enabledInfo, visibleInfo} = this.props;
-        const {undo = noop, redo = noop, layFlat = noop, duplicate = noop, del = noop, clear = noop} = operations;
+        const {exportModels = noop, undo = noop, redo = noop, layFlat = noop, duplicate = noop, del = noop, clear = noop} = operations;
         if (!enabledInfo) {
-            enabledInfo = {undo: true, redo: true, layFlat: true, duplicate: true, del: true, clear: true};
+            enabledInfo = {
+                exportModels: true,
+                undo: true,
+                redo: true,
+                layFlat: true,
+                duplicate: true,
+                del: true,
+                clear: true
+            };
         }
         if (!visibleInfo) {
-            visibleInfo = {undo: true, redo: true, layFlat: true, duplicate: true, del: true, clear: true};
+            visibleInfo = {
+                exportModels: true,
+                undo: true,
+                redo: true,
+                layFlat: true,
+                duplicate: true,
+                del: true,
+                clear: true
+            };
         }
         return (
             <div className={styles.div_root}>
@@ -30,6 +46,7 @@ class Index extends PureComponent {
                     textColor="#292421"
                     delayShow={500}/>
                 <Space direction={"vertical"} size={0}>
+
                     {visibleInfo.undo &&
                     <button
                         data-for={tooltipId}
@@ -95,6 +112,15 @@ class Index extends PureComponent {
                             className={styles.btn_clear}
                         />
                     </Popconfirm>
+                    }
+                    {visibleInfo.exportModels &&
+                    <button
+                        data-for={tooltipId}
+                        data-tip="export models"
+                        disabled={!enabledInfo.exportModels}
+                        onClick={exportModels}
+                        className={styles.btn_export}
+                    />
                     }
                 </Space>
             </div>

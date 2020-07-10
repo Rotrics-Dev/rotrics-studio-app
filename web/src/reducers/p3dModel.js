@@ -228,12 +228,13 @@ const actions = {
         }));
     },
     removeSelected: () => (dispatch, getState) => {
+        console.log("remove")
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         rendererParent4model.remove(model);
         const modelCount = rendererParent4model.children.length;
         dispatch(actions._updateState({
-            model,
+            model: null,
             modelCount,
             transformation: null,
             gcodeObj3d: null,
