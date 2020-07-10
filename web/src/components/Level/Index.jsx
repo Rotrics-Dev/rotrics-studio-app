@@ -4,9 +4,6 @@ import _ from 'lodash';
 import styles from './styles.css';
 import {Radio, Space, Modal, message, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
-import {
-    MSG_SERIAL_PORT_CLOSE_TOAST
-} from "../../constants";
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -25,7 +22,8 @@ class Index extends React.Component {
         zArray: INIT_Z_ARRAY,
         lastConnectSerialPort: undefined,
         started: false,
-        serialPortState: null
+        serialPortState: null,
+        showLoading: false
     }
 
     onSetPoint = (event) => {
@@ -59,7 +57,7 @@ class Index extends React.Component {
 
     onClickSave = () => {
         if (this.state.pointIndex === undefined) {
-            message.warn(MSG_SERIAL_PORT_CLOSE_TOAST);
+            message.error('You should choose one point first!');
             return;
         }
         const pointIndex = this.state.pointIndex;
@@ -78,6 +76,7 @@ class Index extends React.Component {
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');
         this.delayToConnectSerialPort(this, true, true, 'Level Started');
+        this.setState({showLoading: true});
     }
 
     onClickLevel = () => {
@@ -93,8 +92,8 @@ class Index extends React.Component {
             'M2007'
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');
-        this.delayToConnectSerialPort(this, false, false, 'Level Done, you could reconnect the device.');
-
+        this.delayToConnectSerialPort(this, false, false, 'Level Done,you could reconnect the device.');
+        this.setState({showLoading: true});
     }
     delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
         setTimeout(() => {
@@ -106,7 +105,7 @@ class Index extends React.Component {
             }
             if (paths.indexOf(lastConnectSerialPort) === -1) {
                 message.error('Device not Found');
-                this.setState({showModal: false});
+                this.setState({showModal: false, showLoading: false});
                 //找不到之前的串口
             } else {
                 //连接之前串口
@@ -127,7 +126,8 @@ class Index extends React.Component {
             message.success(msg);
             that.setState({
                 showModal,
-                started: setStarted
+                started: setStarted,
+                showLoading: false
             });
         }, 1000);
     }
@@ -151,7 +151,7 @@ class Index extends React.Component {
     showModal = () => {
         const {path} = this.props;
         if (!path) {
-            message.warn(MSG_SERIAL_PORT_CLOSE_TOAST);
+            message.error('You should connect the device first.');
             return;
         }
         this.setState({
@@ -160,22 +160,21 @@ class Index extends React.Component {
             accuracy: 10,
             zArray: INIT_Z_ARRAY,
             lastConnectSerialPort: path,
-            started: false
+            started: false,
+            showLoading: false
         });
     };
 
     render() {
         const {showLevel} = this.props;
         const {pointIndex} = this.state;
-        return (
-            <div>
-                {showLevel &&
-                <button
+        return (<div>
+                {showLevel && <button
                     onClick={this.showModal}
                     className={styles.btn_action_work}
                 >Level
-                </button>
-                }
+                </button>}
+
                 <Modal
                     title="Leveling"
                     visible={this.state.showModal}
@@ -238,6 +237,16 @@ class Index extends React.Component {
                         <Space>
                             <img className={POINT_STYLE[pointIndex ? pointIndex : 0]}/>
                         </Space>
+                        <div
+                            className={this.state.showLoading ? styles.div_loading_visible : styles.div_loading_hidden}>
+                            <div className={styles.loading1}>
+                                <span></span>
+                                <span></span>
+                                <span></span>{/*进度条 勿删*/}
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </Space>
                 </Modal>
             </div>
