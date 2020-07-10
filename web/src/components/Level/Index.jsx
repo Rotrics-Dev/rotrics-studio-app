@@ -187,9 +187,8 @@ class Index extends React.Component {
                 >
                     <Space direction={"horizontal"} align={"start"}>
                         <Space direction={"vertical"}>
-                            <div> Before start leveling, put a piece of A4 paper between
-                                the 3D printing nozzle and the build plate. And follow the instructions to level your
-                                DexArm.
+                            <div> Before start bed leveling, put a piece of paper between the module and the build
+                                plate. And follow the instructions to level your DexArm.
                             </div>
 
                             <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the button to reset DexArm's XY slope
