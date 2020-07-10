@@ -181,7 +181,7 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "7px"}} size={7}>
+                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px"}} size={16}>
                     <button
                         className={styles.btn_select}
                         onClick={() => {

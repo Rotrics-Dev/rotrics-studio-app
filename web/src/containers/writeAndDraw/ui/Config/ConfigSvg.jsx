@@ -5,6 +5,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
+import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
 
 class ConfigSvg extends PureComponent {
     actions = {
@@ -32,31 +33,31 @@ class ConfigSvg extends PureComponent {
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
-                    <h4>{config.label}</h4>
+                    <ConfigTitle text={config.label}/>
                     <Row>
-                        <Col span={15}>
-                            <span>{optimize_path.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${optimize_path.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{fill.label}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${fill.label}`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
                         </Col>
                     </Row>
                     {fill.default_value &&
                     <Row>
-                        <Col span={13} push={2}>
-                            <span>{fill_density.label}</span>
+                        <Col span={17} push={2}>
+                            <ConfigText text={`${fill_density.label}`}/>
                         </Col>
-                        <Col span={9} push={2}>
+                        <Col span={5} push={2}>
                             <NumberInput
                                 min={fill_density.minimum_value}
                                 max={fill_density.maximum_value}

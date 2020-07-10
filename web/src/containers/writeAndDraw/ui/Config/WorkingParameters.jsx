@@ -4,6 +4,7 @@ import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
+import {ConfigText, ConfigTitle} from "../../../../components/Config";
 
 class WorkingParameters extends PureComponent {
     actions = {
@@ -30,15 +31,14 @@ class WorkingParameters extends PureComponent {
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
-                    <h4>{working_parameters.label}</h4>
+                    <ConfigTitle text={working_parameters.label}/>
                     <Row>
-                        <Col span={15}>
-                            <span>{work_speed.label}</span>
-                            <span>{"(" + work_speed.unit + ")"}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${work_speed.label}(${work_speed.unit})`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={work_speed.minimum_value}
                                 max={work_speed.maximum_value}
@@ -47,11 +47,10 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={15}>
-                            <span>{jog_speed.label}</span>
-                            <span>{"(" + jog_speed.unit + ")"}</span>
+                        <Col span={19}>
+                            <ConfigText text={`${jog_speed.label}(${jog_speed.unit})`}/>
                         </Col>
-                        <Col span={9}>
+                        <Col span={5}>
                             <NumberInput
                                 min={jog_speed.minimum_value}
                                 max={jog_speed.maximum_value}

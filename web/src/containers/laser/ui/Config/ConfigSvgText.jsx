@@ -55,7 +55,7 @@ class ConfigSvgText extends PureComponent {
             <div>
                 <Line/>
                 <div style={{
-                    padding: "5px",
+                    padding: "8px",
                 }}>
                     <ConfigTitle text={config.label}/>
                     <Row>

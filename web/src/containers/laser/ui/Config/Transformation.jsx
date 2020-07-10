@@ -115,7 +115,8 @@ class Transformation extends PureComponent {
                             <ConfigText text={`${flip_model.label}`}/>
                         </Col>
                         <Col span={9}>
-                            <ConfigSelect options={flipModelOptions} value={flip_model.default_value} onChange={actions.setFlipModel}/>
+                            <ConfigSelect options={flipModelOptions} value={flip_model.default_value}
+                                          onChange={actions.setFlipModel}/>
                         </Col>
                     </Row>
                 </div>
