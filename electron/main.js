@@ -1,18 +1,18 @@
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
-const path = require('path')
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
 
 function createWindow() {
-    // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1280,
         height: 768,
+        minWidth: 850,
+        minHeight: 400,
         webPreferences: {
             preload: path.join(__dirname, './start_server.js')
         },
         devTools: true,
         nodeIntegration: true,
-    })
+    });
 
     // and load the index.html of the app.
     mainWindow.loadFile('./build-web/index.html')
