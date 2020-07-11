@@ -12,6 +12,12 @@ import gcodeSender from "./gcode/gcodeSender.js";
 
 const baudRate = 9600;
 
+const sleep = (time) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, time)
+    })
+};
+
 class FirmwareUpgradeManager {
     constructor() {
         this.serialPort = null;
@@ -68,7 +74,8 @@ class FirmwareUpgradeManager {
             return;
         }
         let {firmwareVersion, hardwareVersion} = deviceInfo;
-        // firmwareVersion = "V2.1.2"
+        // firmwareVersion = "V2.1.2";
+
         //step-2: Check need upgrade
         this.onChange(2, 'process');
         const {isNeedUpgrade, err: err4needUpgrade, url} = await this.isNeedUpgrade(firmwareVersion, hardwareVersion);
@@ -93,19 +100,34 @@ class FirmwareUpgradeManager {
 
         //step-4: Enter boot loader
         this.onChange(4, 'process');
-        await this.enterBootLoader();
+        if (!await this.enterBootLoader()) {
+            this.onChange(4, 'error', "Enter boot loader failed");
+            return;
+        }
+
+        await sleep(3000);
 
         //step-5: Connect DexArm
         this.onChange(5, 'process');
         //重新open serial port
-        await this.openSerialPort();
+        if (!await this.openSerialPort()) {
+            this.onChange(5, 'error', "Connect DexArm failed");
+            return;
+        }
         //监听serial port，两种模式都需要，data和line
         this.listenSerialPort();
 
         //step-6: Load firmware
         this.onChange(6, 'process');
-        //开始更新固件
+
+        //start download firmware to flash
         this.write("1");
+
+        setTimeout(() => {
+            if (this.cCount === 0) {
+                this.write("1");
+            }
+        }, 5000)
     }
 
     /**
@@ -227,7 +249,7 @@ class FirmwareUpgradeManager {
                 const timerId = setTimeout(() => {
                     console.log("timeout: getDeviceInfo")
                     resolve(null);
-                }, 2000);
+                }, 3000);
                 const callback = (data) => {
                     const {received} = data;
                     if (received) {
@@ -257,11 +279,11 @@ class FirmwareUpgradeManager {
                 const timerId = setTimeout(() => {
                     console.log("timeout: enterBootLoader")
                     resolve(false);
-                }, 2000);
+                }, 3000);
                 const callback = (data) => {
                     const {received} = data;
                     if (received) {
-                        if (received.indexOf("Reset to enter update bootloader ") !== -1) {
+                        if (received.indexOf("Reset to enter update bootloader") !== -1) {
                             serialPortManager.removeListener(SERIAL_PORT_DATA, callback);
                             clearTimeout(timerId);
                             resolve(true);
@@ -285,9 +307,12 @@ class FirmwareUpgradeManager {
                 this.serialPort = new SerialPort(this.path, {baudRate, autoOpen: false});
                 this.serialPort.open((err) => {
                     if (err) {
+                        console.log("!!!! open sp failed: " + err.message)
                         resolve(false);
                         return;
                     }
+
+                    console.log("!!!! open sp ok")
                     resolve(true);
                 });
             });
@@ -298,7 +323,6 @@ class FirmwareUpgradeManager {
     listenSerialPort() {
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', async (data) => {
-
             console.log("#line: " + data)
             //step-6: Load firmware -> finish
             if (data.indexOf("Programming Completed Successfully!") !== -1) {
@@ -308,12 +332,17 @@ class FirmwareUpgradeManager {
                     console.log("## send: execute firmware")
                     this.write("3")
                 }, 1000)
+
+                setTimeout(() => {
+                    this.onChange(8, 'finish');
+                }, 2000)
             }
 
+            //有时候可能收不到"Start program execution......"
             //step-7: Execute firmware -> finish
-            if (data.indexOf("Start program execution......") !== -1) {
-                this.onChange(8, 'finish');
-            }
+            // if (data.indexOf("Start program execution......") !== -1) {
+            //     this.onChange(8, 'finish');
+            // }
         });
 
         this.serialPort.on("data", (buffer) => {
@@ -369,7 +398,7 @@ class FirmwareUpgradeManager {
             if (error) {
                 console.error("write error: " + data);
             } else {
-                console.log("write ok: ");
+                console.log("write ok: " + data);
             }
         })
     }
