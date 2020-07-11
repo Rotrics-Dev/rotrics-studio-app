@@ -398,7 +398,7 @@ class FirmwareUpgradeManager {
             if (error) {
                 console.error("write error: " + data);
             } else {
-                console.log("write ok: " + data);
+                console.log("write ok: ");
             }
         })
     }

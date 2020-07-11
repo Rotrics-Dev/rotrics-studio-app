@@ -35,7 +35,7 @@ class Index extends React.Component {
         },
         //after change
         afterChangeScale: (value) => {
-            this.props.afterUpdateTransformation("scale", value)
+            this.props.afterUpdateTransformation("scale", value / 100)
         },
         afterChangeRX: (value) => {
             this.props.afterUpdateTransformation("rx", degree2radian(value))
