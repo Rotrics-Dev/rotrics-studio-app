@@ -51,10 +51,7 @@ class Index extends React.Component {
         rightBottom: () => {
             this.actions._move(`G0 X${this.state.step} Y${-this.state.step}`)
         },
-        //work
-        runBoundary: () => {
-            this.props.runBoundary();
-        },
+
         setWorkOrigin: () => {
             this.props.sendGcode("G92 X0 Y0 Z0")
         },

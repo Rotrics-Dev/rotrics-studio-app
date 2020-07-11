@@ -79,7 +79,7 @@ class Index extends React.Component {
 
         return (
             <div>
-                <DeviceControl hideRunBoundary={true}/>
+                <DeviceControl/>
 
                 <div style={{padding: "6px"}}>
                     <Space direction={"vertical"} style={{width: "100%"}}>

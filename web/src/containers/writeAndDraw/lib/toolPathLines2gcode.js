@@ -1,4 +1,6 @@
 const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
+    console.log(JSON.stringify(toolPathLines, null, 2));
+
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
@@ -59,6 +61,8 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
                         cmds.push('G1 Z0.00')
                     } else if (value === 5) {
                         cmds.push(`G0 Z${jog_pen_offset}`)
+                    } else {
+                        cmds.push(key + value);
                     }
                     break;
                 default:
@@ -80,7 +84,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
         gcodeLines.push(line);
     }
 
-    //TODO：打印结束不应该执行M1112回home，打印底板可能高于home z，更好的是回 X0 Y0 Z10 类似的位置，比origin在z轴高一点的位置；或者结束位置抬高10mm也可以；这个需要观察用户使用习惯和场景
-    return header.join('\n') + '\n\n\n' + gcodeLines.join('\n') + 'M1112\n';
+    return header.join('\n') + '\n' + gcodeLines.join('\n') + '\n' + `G0 Z${jog_pen_offset}` + '\n';
 };
 export default toolPathLines2gcode;
