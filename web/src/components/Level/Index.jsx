@@ -88,7 +88,7 @@ class Index extends React.Component {
         }
         const zArray = this.state.zArray;
         const gcode = [
-            `M891 X${(zArray[0] - zArray[1]) / 100} Y${(zArray[2] - zArray[3]) / 100}`,
+            `M891 X${(zArray[2] - zArray[3]) / 100} Y${(zArray[0] - zArray[1]) / 100}`,
             'M2007'
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');

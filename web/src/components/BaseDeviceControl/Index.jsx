@@ -81,7 +81,14 @@ class Index extends React.Component {
                         >Z-
                         </button>
                     </Space>
-
+                    <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
+                        <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
+                        <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
+                        <Radio.Button value={5} className={styles.btn_step}>5</Radio.Button>
+                        <Radio.Button value={1} className={styles.btn_step}>1</Radio.Button>
+                        <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
+                        <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
+                    </Radio.Group>
                     <button
                         onClick={goToWorkOrigin}
                         className={styles.btn_action_work}
@@ -93,14 +100,6 @@ class Index extends React.Component {
                     >Set Work Origin
                     </button>
                     <Level showLevel={showLevel}/>
-                    <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
-                        <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
-                        <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
-                        <Radio.Button value={5} className={styles.btn_step}>5</Radio.Button>
-                        <Radio.Button value={1} className={styles.btn_step}>1</Radio.Button>
-                        <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
-                        <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
-                    </Radio.Group>
                 </Space>
             </div>
         )

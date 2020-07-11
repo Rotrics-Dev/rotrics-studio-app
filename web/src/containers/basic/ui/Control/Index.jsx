@@ -10,6 +10,7 @@ import Line from '../../../../components/Line/Index.jsx'
 
 import {connect} from 'react-redux';
 import NumberInput from "../../../../components/NumberInput/Index.jsx";
+import {ConfigTitle} from "../../../../components/Config";
 
 class Index extends React.Component {
     state = {
@@ -80,8 +81,9 @@ class Index extends React.Component {
         return (
             <div>
                 <DeviceControl/>
-
+                <Line/>
                 <div style={{padding: "6px"}}>
+                    <ConfigTitle text={"Motion mode"}/>
                     <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
@@ -107,6 +109,7 @@ class Index extends React.Component {
 
                 <Line/>
                 <div style={{padding: "6px", width: "100%"}}>
+                    <ConfigTitle text={"Front end"}/>
                     <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
