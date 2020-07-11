@@ -19,6 +19,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as laserActions} from "../../../../reducers/laser";
 import ActionButton from "../../../../components/ActionButton/Index.jsx";
+import {getGcode4runBoundary} from "../../../../reducers/laser";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -83,6 +84,12 @@ class Index extends React.Component {
                 const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(blob, fileName, true);
                 message.success('Export G-code success', 1);
+            }
+        },
+        runBoundary: () => {
+            if (this.actions._checkStatus4gcode("startSendGcode")) {
+                const gcode = getGcode4runBoundary();
+                this.props.startSendGcode(gcode)
             }
         },
         startSendGcode: () => {
@@ -151,11 +158,16 @@ class Index extends React.Component {
                 height: "100%"
             }}>
                 <Space direction={"vertical"} size="small"
-                       style={{width: "100%", padding: "0 8px 8px 8px"}}>
+                       style={{width: "100%", padding: "8px"}}>
                     <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
                     <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
-                    <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>
-                    <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}/>
+                    <ActionButton onClick={actions.runBoundary} text={"Run Boundary"}/>
+                    <div style={{width: "100%"}}>
+                        <ActionButton onClick={actions.startSendGcode} text={"Start Send"}
+                                      style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
+                        <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}
+                                      style={{width: "calc(50% - 4px)"}}/>
+                    </div>
                 </Space>
                 <Line/>
                 <h4 style={{

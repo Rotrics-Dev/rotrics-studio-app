@@ -88,7 +88,7 @@ class Index extends React.Component {
         }
         const zArray = this.state.zArray;
         const gcode = [
-            `M891 X${(zArray[0] - zArray[1]) / 100} Y${(zArray[2] - zArray[3]) / 100}`,
+            `M891 X${(zArray[2] - zArray[3]) / 100} Y${(zArray[0] - zArray[1]) / 100}`,
             'M2007'
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');
@@ -97,6 +97,7 @@ class Index extends React.Component {
     }
     delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
         setTimeout(() => {
+            // console.log('delayToConnectSerialPort' + Date.now());
             const {lastConnectSerialPort} = that.state;
             const {paths} = that.props;
             if ((!paths) || (!paths.length)) {
@@ -116,9 +117,10 @@ class Index extends React.Component {
     }
     delayToM1112 = (that, showModal, setStarted, msg) => {
         setTimeout(() => {
+            // console.log('delayToM1112' + Date.now());
             const {path} = that.props;
             if (!path) {
-                this.delayToM1112(that, showModal, setStarted, msg);
+                this.delayToConnectSerialPort(that, showModal, setStarted, msg);
                 return;
             }
 
@@ -187,9 +189,8 @@ class Index extends React.Component {
                 >
                     <Space direction={"horizontal"} align={"start"}>
                         <Space direction={"vertical"}>
-                            <div> Before start leveling, put a piece of A4 paper between
-                                the 3D printing nozzle and the build plate. And follow the instructions to level your
-                                DexArm.
+                            <div> Before start bed leveling, put a piece of paper between the module and the build
+                                plate. And follow the instructions to level your DexArm.
                             </div>
 
                             <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the button to reset DexArm's XY slope

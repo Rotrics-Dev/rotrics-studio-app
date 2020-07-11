@@ -169,7 +169,7 @@
             "default_value": 2,
             "type": "int",
             "minimum_value": 1,
-            "maximum_value": 50
+            "maximum_value": 10
           },
           "pass_depth": {
             "label": "Pass Depth",

@@ -3,16 +3,11 @@ import {connect} from 'react-redux';
 import DeviceControl from "../../../_deviceControl/Index.jsx"
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
-import {getGcode4runBoundary} from "../../../../reducers/writeAndDraw";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import {Row, Col} from 'antd';
 
 class Index extends React.Component {
     actions = {
-        runBoundary: () => {
-            const gcode = getGcode4runBoundary();
-            this.props.sendGcode(gcode)
-        },
         setJogPenOffset: (value) => {
             this.props.updateWriteAndDrawParameters('jog_pen_offset', value)
         }
@@ -23,7 +18,7 @@ class Index extends React.Component {
         const {jog_pen_offset} = this.props;
         return (
             <div>
-                <DeviceControl runBoundary={actions.runBoundary}/>
+                <DeviceControl/>
                 <div style={{padding: "6px"}}>
                     <Row>
                         <Col span={15}>
