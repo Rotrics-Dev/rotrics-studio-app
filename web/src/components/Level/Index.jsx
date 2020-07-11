@@ -97,6 +97,7 @@ class Index extends React.Component {
     }
     delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
         setTimeout(() => {
+            // console.log('delayToConnectSerialPort' + Date.now());
             const {lastConnectSerialPort} = that.state;
             const {paths} = that.props;
             if ((!paths) || (!paths.length)) {
@@ -116,9 +117,10 @@ class Index extends React.Component {
     }
     delayToM1112 = (that, showModal, setStarted, msg) => {
         setTimeout(() => {
+            // console.log('delayToM1112' + Date.now());
             const {path} = that.props;
             if (!path) {
-                this.delayToM1112(that, showModal, setStarted, msg);
+                this.delayToConnectSerialPort(that, showModal, setStarted, msg);
                 return;
             }
 
