@@ -68,29 +68,32 @@ class Index extends React.Component {
         return (
             <Draggable>
                 <div className={styles.div_fix}>
-                    <Input
-                        onPressEnter={actions.sendGcode}
-                        onChange={actions.onChangeGcode}
-                        placeholder="send gcode"
-                        style={{width: "310px"}}
-                        allowClear={true}
-                    />
-                    <Button
-                        ghost
-                        type="primary"
-                        size="middle"
-                        onClick={actions.sendGcode}>
-                        Send
-                    </Button>
+                    <div  style={{marginBottom: "5px"}}>
+                        <Input
+                            onPressEnter={actions.sendGcode}
+                            onChange={actions.onChangeGcode}
+                            placeholder="send gcode"
+                            style={{width: "327px", marginRight: "5px"}}
+                            allowClear={true}
+                            size="small"
+                        />
+                        <Button
+                            type="primary"
+                            size="small"
+                            onClick={actions.sendGcode}>
+                            Send
+                        </Button>
+                    </div>
                     <Input.TextArea
                         ref={this.refTextArea}
                         className={styles.textarea_received}
-                        rows={9}
+                        size="small"
                         allowClear={true}
                         value={state.receivedLines.join("\n")}
                         disabled={true}
                     />
                     <Checkbox
+                        style={{position: "absolute", bottom: "5px", left: "8px"}}
                         onChange={actions.toggleAutoScroll}
                         checked={state.autoScroll}>
                         Auto Scroll
@@ -99,7 +102,7 @@ class Index extends React.Component {
                         className={styles.btn_close}
                         ghost
                         type="primary"
-                        size="middle"
+                        size="small"
                         onClick={actions.close}>
                         Close
                     </Button>
@@ -107,7 +110,7 @@ class Index extends React.Component {
                         ghost
                         className={styles.btn_clear}
                         type="primary"
-                        size="middle"
+                        size="small"
                         onClick={actions.clearReceivedLines}>
                         Clear
                     </Button>
