@@ -1,6 +1,6 @@
 {
   "name": "rotrics-studio-app",
-  "productName": "Rotrics Stduio",
+  "productName": "Rotrics Studio",
   "version": "0.1.1",
   "author": "Rotrics Dev",
   "license": "MIT",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.rotrics.rotrics-studio-app",
     "asar": false,
-    "productName": "Rotrics Stduio",
+    "productName": "Rotrics Studio",
     "directories": {
       "buildResources": "build",
       "output": "output"
@@ -29,28 +29,26 @@
       ]
     },
     "dmg": {
-      "background": "electron-builder/background.png",
+      "background": "electron-builder/background.tiff",
       "icon": "electron-builder/icon.icns",
       "iconSize": 80,
       "iconTextSize": 12,
       "contents": [
         {
-          "x": 450,
-          "y": 310,
+          "x": 434,
+          "y": 220,
           "type": "link",
           "path": "/Applications"
         },
         {
-          "x": 190,
-          "y": 310,
+          "x": 140,
+          "y": 220,
           "type": "file"
         }
       ],
       "window": {
-        "x": 200,
-        "y": 300,
-        "width": 640,
-        "height": 500
+        "width": 574,
+        "height": 340
       }
     },
     "win": {
