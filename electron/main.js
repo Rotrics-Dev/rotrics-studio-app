@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, shell} = require('electron');
 const path = require('path');
 
 function createWindow() {
@@ -17,8 +17,14 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadFile('./build-web/index.html')
 
-    // Open the DevTools.
     // mainWindow.webContents.openDevTools()
+
+    // Open every external link in a new window of default OS browser
+    // https://github.com/electron/electron/blob/master/docs/api/web-contents.md
+    mainWindow.webContents.on('new-window', (event, url) => {
+        event.preventDefault();
+        shell.openExternal(url);
+    });
 }
 
 //https://github.com/electron/electron/issues/18397
@@ -28,7 +34,7 @@ app.allowRendererProcessReuse = false;
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow()
+    createWindow();
 
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
