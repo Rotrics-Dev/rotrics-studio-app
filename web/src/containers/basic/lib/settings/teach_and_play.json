@@ -22,11 +22,16 @@
         "type": "enum",
         "state": {
           "state_0": {
+            "label": "Off",
+            "description": "Off Description",
+            "gcode": "M1003"
+          },
+          "state_1": {
             "label": "Place",
             "description": "Place Description",
             "gcode": "M1002"
           },
-          "state_1": {
+          "state_2": {
             "label": "Pick",
             "description": "Pick Description",
             "gcode": "M1000"
@@ -41,16 +46,21 @@
         "type": "enum",
         "state": {
           "state_0": {
+            "label": "Off",
+            "description": "Off Description",
+            "gcode": "M1003"
+          },
+          "state_1": {
             "label": "Neutral",
             "description": "Release Description",
             "gcode": "M1002"
           },
-          "state_1": {
+          "state_2": {
             "label": "Grip",
             "description": "Pick Description",
             "gcode": "M1001"
           },
-          "state_2": {
+          "state_3": {
             "label": "Release",
             "description": "Drop Description",
             "gcode": "M1000"

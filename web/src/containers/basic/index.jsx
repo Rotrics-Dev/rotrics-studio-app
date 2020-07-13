@@ -25,7 +25,7 @@ class Index extends React.Component {
                     top: 0,
                     left: 0,
                     bottom: 0,
-                    right: "280px"
+                    right: "351px"
                 }}>
                     <Canvas2D/>
                 </div>
@@ -34,8 +34,12 @@ class Index extends React.Component {
                     top: 0,
                     bottom: 0,
                     right: "315px",
-                    width: "1px",
-                    backgroundColor: "#C0C0C0"
+                    width: "36px",
+                    border: "1px solid #C0C0C0",
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    backgroundColor: "#ECECEC"
+
                 }}/>
                 <div style={{
                     position: "absolute",

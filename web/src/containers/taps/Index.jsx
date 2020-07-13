@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import styles from './styles.css';
 
 import Header from '../header/Index.jsx';
-
+import Footer from '../footer/Index.jsx'
 import Laser from '../laser/Index.jsx';
 import P3D from '../p3d/Index.jsx';
 import WriteAndDraw from '../writeAndDraw/Index.jsx'
@@ -26,7 +26,6 @@ import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as settingsActions} from "../../reducers/settings";
 import {actions as firmwareUpgradeActions} from "../../reducers/firmwareUpgrade";
-import {Button, notification} from 'antd';
 
 import {getUuid} from '../../utils/index.js';
 
@@ -187,6 +186,7 @@ class Index extends React.Component {
                     </div>
                 </div>
                 <SerialPortAssistant/>
+                <Footer/>
             </div>
         )
     }

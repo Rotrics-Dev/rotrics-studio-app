@@ -118,10 +118,10 @@ class Index extends React.Component {
                             value={this.state.currentFrontEnd}
                             options={frontEndOptions}/>
                         <Row>
-                            <Col span={8}>
+                            <Col span={6}>
                                 <span>Actions</span>
                             </Col>
-                            <Col span={16} align={"right"}>{/*前端模块*/}
+                            <Col span={18} align={"right"}>{/*前端模块*/}
                                 <Radio.Group
                                     buttonStyle="solid"
                                     size="small"

@@ -1,0 +1,35 @@
+.footer {
+    position: absolute;
+    height: 20px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    line-height: 1em;
+
+    background-color: white;
+    outline: none;
+    border: none;
+    border-top: 1px solid #80808080;
+    text-align: right;
+    padding-right: 8px;
+}
+
+.img_feedback {
+    width: 16px;
+    height: 16px;
+    content: url(./image/feedback.svg);
+    outline: none;
+    border: none;
+}
+
+.img_logo {
+    margin-left: 8px;
+    width: 58px;
+    height: 14px;
+    content: url(./image/grayLogo.svg);
+    outline: none;
+}
+
+.btn_feedback:active {
+    opacity: 0.4;
+}
