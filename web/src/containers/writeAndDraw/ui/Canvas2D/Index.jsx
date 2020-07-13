@@ -36,7 +36,7 @@ class Index extends React.Component {
         this.setupPanControls();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.group.add(new PrintablePlate(new THREE.Vector2(110, 110)));
+        this.group.add(new PrintablePlate(new THREE.Vector2(150, 120)));
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -117,7 +117,7 @@ class Index extends React.Component {
         this.group.add(this.modelGroup);
 
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        this.camera.position.copy(new THREE.Vector3(0, 0, 165));
+        this.camera.position.copy(new THREE.Vector3(0, 0, 180));
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         this.renderer = new THREE.WebGLRenderer({antialias: true});
