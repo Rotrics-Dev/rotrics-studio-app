@@ -295,10 +295,12 @@ const setupSocket = () => {
                 socket.emit(GCODE_UPDATE_SENDER_STATUS, data);
             });
 
-            socket.on(FIRMWARE_UPGRADE_START, () => {
-                firmwareUpgradeManager.start(cache_dir, (current, status, description, progress) => {
+            socket.on(FIRMWARE_UPGRADE_START, (data) => {
+                const {isInBootLoader} = data;
+                console.log("isInBootLoader: " + isInBootLoader)
+                firmwareUpgradeManager.start(cache_dir, isInBootLoader,(current, status, description, progress) => {
                     socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description, progress});
-                    console.log("##", current, status, description, progress)
+                    // console.log("##", current, status, description, progress)
                 })
             });
         }

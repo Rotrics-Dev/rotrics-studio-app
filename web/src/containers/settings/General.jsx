@@ -7,15 +7,15 @@ import packageJson from "../../../../electron/package.json";
 import {actions as firmwareUpgradeActions} from '../../reducers/firmwareUpgrade.js';
 
 const stepTitles = [
-    "Check",
-    "Collect DexArm info",
-    "Check need upgrade",
-    "Download firmware",
-    "Enter boot loader",
-    "Connect DexArm",
-    "Load firmware",
-    "Execute firmware",
-    "Done"
+    "Check", //0
+    "Collect DexArm info", //1
+    "Check need upgrade", //2
+    "Download firmware", //3
+    "Enter boot loader", //4
+    "Connect DexArm", //5
+    "Load firmware", //6
+    "Execute firmware", //7
+    "Done" //8
 ];
 
 class General extends React.Component {
@@ -41,7 +41,7 @@ class General extends React.Component {
     render() {
         const state = this.state;
         const actions = this.actions;
-        const {firmwareVersion, hardwareVersion, current, status, description, isFirmwareUpToDate, isFirmwareUpgradeSuccess} = this.props;
+        const {firmwareVersion, hardwareVersion, current, status, description, isFirmwareUpToDate, isFirmwareUpgradeSuccess, bootLoaderModalVisible, closeBootLoaderModal} = this.props;
         const verticalSpace = 15;
         const spanCol1 = 8;
 
@@ -132,20 +132,38 @@ class General extends React.Component {
                     />
                     }
                 </Modal>
+                <Modal
+                    title="Boot Loader Alert"
+                    visible={bootLoaderModalVisible}
+                    footer={null}
+                    centered={true}
+                    closable={false}
+                >
+                    <p>{"You must upgrade firmware"}</p>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            closeBootLoaderModal();
+                            actions.startFirmwareUpgrade();
+                        }}
+                    >
+                        {"start upgrade"}
+                    </Button>
+                </Modal>
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    const {firmwareVersion, hardwareVersion} = state.settings;
-    const {current, status, description} = state.firmwareUpgrade;
+    const {current, status, description, firmwareVersion, hardwareVersion, bootLoaderModalVisible} = state.firmwareUpgrade;
     const isFirmwareUpToDate = (current === 2 && status === "finish");
     const isFirmwareUpgradeSuccess = (current === 8 && status === "finish");
-
     return {
         firmwareVersion,
         hardwareVersion,
+        bootLoaderModalVisible,
         current,
         status,
         description,
@@ -156,8 +174,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startFirmwareUpgrade: (path) => dispatch(firmwareUpgradeActions.start()),
-        resetFirmwareUpgrade: (path) => dispatch(firmwareUpgradeActions.reset()),
+        closeBootLoaderModal: () => dispatch(firmwareUpgradeActions.closeBootLoaderModal()),
+        startFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.start()),
+        resetFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.reset()),
     };
 };
 

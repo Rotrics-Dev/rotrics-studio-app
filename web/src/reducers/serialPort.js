@@ -55,6 +55,7 @@ export const actions = {
     init: () => (dispatch) => {
         socketClientManager.addServerListener("connect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
+            console.log("##connect")
             socketClientManager.emitToServer(SERIAL_PORT_GET_OPENED);
         });
         socketClientManager.addServerListener("disconnect", () => {

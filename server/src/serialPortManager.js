@@ -57,31 +57,6 @@ class SerialPortManager extends EventEmitter {
             this.emit(SERIAL_PORT_DATA, {received: data});
         });
 
-        this.serialPort.on("data", (buffer) => {
-            if (Buffer.isBuffer(buffer)) {
-                const value = buffer.readUInt8(0);
-                switch (value) {
-                    case 0x43:
-                        console.log("-> C");
-                        break;
-                    case 0x04:
-                        console.log("-> END");
-                        break;
-                    case 0x06:
-                        console.log("-> ACK");
-                        break;
-                    case 0x15:
-                        console.log("-> Re-Send");
-                        break;
-                    default:
-                        console.log("-> Unknown: 0x%s\n", value.toString(16));
-                        break;
-                }
-            } else {
-                console.log("received data is not buffer: " + JSON.stringify(buffer))
-            }
-        });
-
         this.serialPort.on("open", () => {
             console.log("serial port -> open: " + this.serialPort.path);
             this.emit(SERIAL_PORT_OPEN, this.serialPort.path);

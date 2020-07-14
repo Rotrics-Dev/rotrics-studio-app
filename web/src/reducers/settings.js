@@ -12,36 +12,12 @@ const ACTION_UPDATE_STATE = 'settings/ACTION_UPDATE_STATE';
 //M2010: query firmware version
 //M2011: query hardware version
 const INITIAL_STATE = {
-    firmwareVersion: null,
-    hardwareVersion: null,
+
 };
 
 export const actions = {
     init: () => (dispatch) => {
-        socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, (path) => {
-            if (path) {
-                dispatch(serialPortActions.write('M2010\nM2011\n'));
-            }
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_OPEN, (path) => {
-            dispatch(serialPortActions.write('M2010\nM2011\n'));
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
-            dispatch(actions._updateState({firmwareVersion: null, hardwareVersion: null}));
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            const {received} = data;
-            if (received) {
-                if (received.indexOf("Firmware ") === 0) {
-                    const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
-                    dispatch(actions._updateState({firmwareVersion}));
-                }
-                if (received.indexOf("Hardware ") === 0) {
-                    const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
-                    dispatch(actions._updateState({hardwareVersion}));
-                }
-            }
-        });
+
     },
     _updateState: (state) => {
         return {
