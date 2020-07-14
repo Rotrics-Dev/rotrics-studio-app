@@ -29,6 +29,77 @@ class FirmwareUpgradeManager {
         this.curFrame = null;
         this.cCount = 0;
         this.ackCount = 0;
+
+        this.onReceiveLine = async (line) => {
+            // console.log("#onReceiveLine: " + line);
+            //"Programming Completed Successfully!": load firmware成功的标志
+            if (line.indexOf("Programming Completed Successfully!") !== -1) {
+                //step-7: Execute firmware
+                this.onChange(7, 'process');
+
+                await sleep(500);
+                this.write("3");//execute firmware
+
+                //"Start program execution......": execute firmware成功的标志
+                //实际测试发现，有时候可能收不到，此时可认为已经升级成功
+                await sleep(2000);
+                this.onChange(8, 'finish');
+
+                await sleep(2000);
+                serialPortManager.serialPort = null;
+                serialPortManager.open(this.path);
+            }
+        };
+
+        this.onReceiveData = (buffer) => {
+            const callbackProgress = () => {
+                const description = `upgrading ${Math.floor(100 * (1 - this.frames.length / this.frameCount))}%`;
+                this.onChange(6, 'process', description);
+            };
+
+            if (Buffer.isBuffer(buffer)) {
+                const value = buffer.readUInt8(0);
+                switch (value) {
+                    case 0x43://C
+                        console.log("##-> C :" + this.cCount);
+                        if (this.cCount === 0) {
+                            ++this.cCount;
+                            this.curFrame = this.frames.shift();
+                            this.write(this.curFrame);
+                            callbackProgress();
+                        } else if (this.cCount === 1) {
+                            ++this.cCount;
+                            this.curFrame = this.frames.shift();
+                            this.write(this.curFrame);
+                            callbackProgress();
+                        }
+                        break;
+                    case 0x06: //ACK
+                        // console.log("##-> ACK");
+                        if (this.ackCount === 0) {
+                            ++this.ackCount;
+                        } else if (this.ackCount === 1) {
+                            this.curFrame = this.frames.shift();
+                            if (this.curFrame) {
+                                this.write(this.curFrame)
+                                callbackProgress();
+                            }
+                        }
+                        break;
+                    case 0x15: //Re-Send
+                        console.log("##-> Re-Send");
+                        if (this.curFrame) {
+                            this.write(this.curFrame);
+                        } else {
+                            console.log("## re-send err: curFrame is null")
+                        }
+                        break;
+                    default:
+                        console.log("##-> Unknown: 0x%s\n", value.toString(16));
+                        break;
+                }
+            }
+        };
     }
 
     /**
@@ -149,77 +220,6 @@ class FirmwareUpgradeManager {
         };
         return await exe();
     }
-
-    onReceiveLine = async (line) => {
-        // console.log("#onReceiveLine: " + line);
-        //"Programming Completed Successfully!": load firmware成功的标志
-        if (line.indexOf("Programming Completed Successfully!") !== -1) {
-            //step-7: Execute firmware
-            this.onChange(7, 'process');
-
-            await sleep(500);
-            this.write("3");//execute firmware
-
-            //"Start program execution......": execute firmware成功的标志
-            //实际测试发现，有时候可能收不到，此时可认为已经升级成功
-            await sleep(2000);
-            this.onChange(8, 'finish');
-
-            await sleep(2000);
-            serialPortManager.serialPort = null;
-            serialPortManager.open(this.path);
-        }
-    };
-
-    onReceiveData = (buffer) => {
-        const callbackProgress = () => {
-            const description = `upgrading ${Math.floor(100 * (1 - this.frames.length / this.frameCount))}%`;
-            this.onChange(6, 'process', description);
-        };
-
-        if (Buffer.isBuffer(buffer)) {
-            const value = buffer.readUInt8(0);
-            switch (value) {
-                case 0x43://C
-                    console.log("##-> C :" + this.cCount);
-                    if (this.cCount === 0) {
-                        ++this.cCount;
-                        this.curFrame = this.frames.shift();
-                        this.write(this.curFrame);
-                        callbackProgress();
-                    } else if (this.cCount === 1) {
-                        ++this.cCount;
-                        this.curFrame = this.frames.shift();
-                        this.write(this.curFrame);
-                        callbackProgress();
-                    }
-                    break;
-                case 0x06: //ACK
-                    // console.log("##-> ACK");
-                    if (this.ackCount === 0) {
-                        ++this.ackCount;
-                    } else if (this.ackCount === 1) {
-                        this.curFrame = this.frames.shift();
-                        if (this.curFrame) {
-                            this.write(this.curFrame)
-                            callbackProgress();
-                        }
-                    }
-                    break;
-                case 0x15: //Re-Send
-                    console.log("##-> Re-Send");
-                    if (this.curFrame) {
-                        this.write(this.curFrame);
-                    } else {
-                        console.log("## re-send err: curFrame is null")
-                    }
-                    break;
-                default:
-                    console.log("##-> Unknown: 0x%s\n", value.toString(16));
-                    break;
-            }
-        }
-    };
 
     async upgrade4app() {
         //step-1: Collect DexArm info
