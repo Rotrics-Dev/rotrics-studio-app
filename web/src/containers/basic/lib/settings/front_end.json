@@ -1,8 +1,8 @@
 {
-  "pen": {
-    "label": "Pen",
-    "description": "Pen",
-    "gcode": "M888 P0\nM2000\n"
+  "p3d": {
+    "label": "3D Print",
+    "description": "3D Print",
+    "gcode": "M888 P3\nM2000\n"
   },
   "laser": {
     "label": "Laser",
@@ -19,9 +19,9 @@
     "description": "Soft Gripper",
     "gcode": "M888 P2\nM2000\n"
   },
-  "p3d": {
-    "label": "3D Print",
-    "description": "3D Print",
-    "gcode": "M888 P3\nM2000\n"
+  "pen": {
+    "label": "Pen",
+    "description": "Pen",
+    "gcode": "M888 P0\nM2000\n"
   }
 }
