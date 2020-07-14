@@ -18,7 +18,7 @@ class GcodeSender extends EventEmitter {
 
     onSerialPortData(data) {
         if (this.status !== "sending") return;
-        if (data.received === "ok") {
+        if (data.received === "ok" || data.received.indexOf("ok") === 0) {
             ++this.okCount;
             this._sendNextCmd();
         }
