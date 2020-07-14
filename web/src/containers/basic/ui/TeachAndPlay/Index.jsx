@@ -216,7 +216,7 @@ class Index extends React.Component {
                 <div style={{
                     position: "fixed",
                     right: "15px",
-                    bottom: "0px",
+                    bottom: "20px",
                     padding: "0px 3px",
                     width: "300px",
                     height: "24px",
