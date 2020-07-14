@@ -68,7 +68,7 @@ class FirmwareUpgradeManager {
 
         //remove all listener
         if (this.serialPort) {
-            this.serialPort.removeAllListeners();
+            // this.serialPort.removeAllListeners();
             this.readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         }
 
@@ -128,7 +128,6 @@ class FirmwareUpgradeManager {
         }
     }
 
-    //hack: 半角，全角的冒号，两种都存在
     async getDeviceInfo4bootLoader() {
         const exe = () => {
             return new Promise(resolve => {

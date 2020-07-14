@@ -8,8 +8,6 @@ import {
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_CLOSE
 } from "../constants.js"
-import {notification} from 'antd';
-import {getUuid} from "../utils";
 
 const ACTION_UPDATE_STATE = 'firmwareUpgrade/ACTION_UPDATE_STATE';
 
@@ -25,27 +23,11 @@ const INITIAL_STATE = {
     description: null,
 };
 
-let timerId = 0;
-const timeoutDuration = 5000;
-const notificationKey = getUuid();
-
 export const actions = {
     init: () => (dispatch, getState) => {
         const callback4open = (path) => {
             if (path) {
-                dispatch(serialPortActions.write('a5\nM2010\nM2011'));
-                // clearTimeout(timerId);
-                // timerId = setTimeout(() => {
-                //     const {hardwareVersion} = getState().firmwareUpgrade;
-                //     if (!hardwareVersion) {
-                //         notification.warn({
-                //             key: notificationKey,
-                //             message: 'Connection Warning',
-                //             description: 'The device connected is not DexArm',
-                //             duration: 0
-                //         });
-                //     }
-                // }, timeoutDuration);
+                dispatch(serialPortActions.write('a5\nM2010\nM2011\n'));
             }
         };
         socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, callback4open);
