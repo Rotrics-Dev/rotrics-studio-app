@@ -84,7 +84,8 @@ class Index extends React.Component {
                     <Button
                         data-for={tooltipId}
                         // data-tip="Make sure that work origin had been setup before import 3rd part gcode."
-                        data-tip="Select the right module to set the end effector offset before setting work origin."
+                        // data-tip="Select the right module to set the end effector offset before setting work origin."
+                        data-tip="Select the right module and set work origin first."
                         style={{width: "100%"}}
                         onClick={this.actions.importGcode}
                     >
@@ -122,19 +123,11 @@ class Index extends React.Component {
                     onChange={this.actions.onChangeFile}
                 />
                 <Space direction={"vertical"} style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
+                    {this.state.fileName &&
                     <div style={{textAlign: "center"}}>
-                        {this.state.fileName ? this.state.fileName : ""}
-                    </div>
-                    <div style={{width: "100%", paddingLeft: "5px", paddingRight: "5px"}}>
-                        <h4>How to import third party G-code files:</h4>
-                        <div>
-                            <b>Step 1)</b> Import G-code and select the right module.<br/>
-                            <b>Step 2)</b> Click Control to set Work Origin.<br/>
-                            <b>Step 3)</b> Click G-code -> Start Send to start working.<br/>
-                        </div>
-                    </div>
+                        {this.state.fileName}
+                    </div>}
                 </Space>
-
             </div>
         )
     }
