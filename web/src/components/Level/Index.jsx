@@ -119,7 +119,7 @@ class Index extends React.Component {
         setTimeout(() => {
             // console.log('delayToM1112' + Date.now());
             const {path} = that.props;
-            if (!path) {
+            if (!path) {//串口未连接成功
                 this.delayToConnectSerialPort(that, showModal, setStarted, msg);
                 return;
             }

@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './styles.css';
 import {Radio, Space} from 'antd';
 import Level from '../Level/Index.jsx'
+import {ConfigTitle} from "../Config";
+import Line from '../../components/Line/Index.jsx'
 
 class Index extends React.Component {
     state = {
@@ -17,8 +19,8 @@ class Index extends React.Component {
         const {step} = this.props;
         const {showLevel} = this.props;
         return (
-            <div style={{padding: "8px"}}>
-                <Space direction={"vertical"}>
+            <div>
+                <Space direction={"vertical"} style={{padding: "8px 8px 0px 8px"}}>
                     <Space direction={"horizontal"}>
                         <button
                             onClick={leftTop}
@@ -81,14 +83,7 @@ class Index extends React.Component {
                         >Z-
                         </button>
                     </Space>
-                    <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
-                        <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
-                        <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
-                        <Radio.Button value={5} className={styles.btn_step}>5</Radio.Button>
-                        <Radio.Button value={1} className={styles.btn_step}>1</Radio.Button>
-                        <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
-                        <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
-                    </Radio.Group>
+
                     <button
                         onClick={goToWorkOrigin}
                         className={styles.btn_action_work}
@@ -101,6 +96,18 @@ class Index extends React.Component {
                     </button>
                     <Level showLevel={showLevel}/>
                 </Space>
+                <div style={{padding: "0px 8px 8px 8px"}}>
+
+                    <ConfigTitle text={"Accuracy"} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
+                    <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
+                        <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
+                        <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
+                        <Radio.Button value={5} className={styles.btn_step}>5</Radio.Button>
+                        <Radio.Button value={1} className={styles.btn_step}>1</Radio.Button>
+                        <Radio.Button value={0.2} className={styles.btn_step}>0.2</Radio.Button>
+                        <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
+                    </Radio.Group>
+                </div>
             </div>
         )
     }

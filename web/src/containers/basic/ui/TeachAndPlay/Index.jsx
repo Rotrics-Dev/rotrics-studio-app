@@ -72,7 +72,7 @@ class Index extends React.Component {
             <div style={{
                 width: "100%",
                 height: "100%",
-                fontSize:"13px"
+                fontSize: "13px"
             }}>
                 <div style={{padding: "5px"}}>
                     <Row>
@@ -89,10 +89,10 @@ class Index extends React.Component {
 
                     {teachAndPlayMode &&
                     <Row>
-                        <Col span={8}>
+                        <Col span={6}>
                             <span> {teach_and_play.front_end.options[this.props.currentFrontEnd].label}</span>
                         </Col>
-                        <Col span={16} align={"right"}>{/*前端模块*/}
+                        <Col span={18} align={"right"}>{/*前端模块*/}
                             <Radio.Group
                                 value={currentFrontEndState}
                                 buttonStyle="solid"
@@ -122,7 +122,6 @@ class Index extends React.Component {
 
                 <Line/>
                 <div style={{padding: "6px 6px 0px 6px "}}>
-                    {teachAndPlayMode &&
                     <Row>
                         <Col span={16}>
                             <span> {teach_and_play.repeatCount.label}</span>
@@ -133,9 +132,10 @@ class Index extends React.Component {
                                 max={teach_and_play.repeatCount.maximum_value}
                                 defaultValue={teach_and_play.repeatCount.default}
                                 value={repeatCount}
+                                disabled={!(stepArray.length > 0)}
                                 onAfterChange={this.props.setRepeatCount}/>
                         </Col>
-                    </Row>}
+                    </Row>
 
                     <div style={{textAlign: "center"}}>
                         <button className={styles.button_record} onClick={this.props.recordStep}
@@ -215,10 +215,10 @@ class Index extends React.Component {
                 />
                 <div style={{
                     position: "fixed",
-                    right: "20px",
-                    bottom: "0px",
+                    right: "15px",
+                    bottom: "20px",
                     padding: "0px 3px",
-                    width: "260px",
+                    width: "300px",
                     height: "24px",
                     backgroundColor: "white",
                     textAlign: "right"
