@@ -235,7 +235,7 @@ class FirmwareUpgradeManager {
     async upgrade4app() {
         //step-1: Collect DexArm info
         let {firmwareVersion, hardwareVersion} = await this.getDeviceInfo4app();
-        firmwareVersion = "V2.1.1";
+        // firmwareVersion = "V2.1.1";
         if (!firmwareVersion || !hardwareVersion) {
             this.onChange(1, 'error', 'Time out, please retry');
             return;
