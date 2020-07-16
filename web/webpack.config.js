@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     entry: "./src/index.jsx",
     // devtool: 'source-map',
-    mode: "production", //development, production
+    mode: "development", //development, production
     output: {
         path: __dirname + "/build-web",
         filename: "bundle.js"
