@@ -298,8 +298,8 @@ const setupSocket = () => {
             socket.on(FIRMWARE_UPGRADE_START, (data) => {
                 const {isInBootLoader} = data;
                 console.log("isInBootLoader: " + isInBootLoader)
-                firmwareUpgradeManager.start(cache_dir, isInBootLoader,(current, status, description, progress) => {
-                    socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description, progress});
+                firmwareUpgradeManager.start(cache_dir, isInBootLoader,(current, status, description) => {
+                    socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description});
                     // console.log("##", current, status, description, progress)
                 })
             });

@@ -29,7 +29,7 @@ export const actions = {
             console.log("#callback4open: " + path)
             if (path) {
                 console.log("#write a5....")
-                dispatch(serialPortActions.write('a5\nM2010\nM2011\n'));
+                dispatch(serialPortActions.write('M2010\nM2011\na5\n'));
             }
         };
         socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, callback4open);
@@ -47,7 +47,17 @@ export const actions = {
             const {received} = data;
             console.log("#received: " + received)
             if (received) {
-                if (received.indexOf("Firmware ") === 0) {
+                //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
+                //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
+                if (received.startsWith("Hardware Version:")) {
+                    const hardwareVersion = received.replace("Hardware Version:", "").replace("\r", "").trim();
+                    console.log("boot loader hardwareVersion -> " + hardwareVersion)
+                    dispatch(actions._updateState({
+                        hardwareVersion,
+                        bootLoaderModalVisible: true,
+                        isInBootLoader: true
+                    }));
+                } else if (received.startsWith("Firmware ")) {
                     const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
                     console.log("app firmwareVersion -> " + firmwareVersion)
                     dispatch(actions._updateState({
@@ -55,8 +65,7 @@ export const actions = {
                         bootLoaderModalVisible: false,
                         isInBootLoader: false
                     }));
-                }
-                if (received.indexOf("Hardware ") === 0) {
+                } else if (received.startsWith("Hardware ")) {
                     const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
                     console.log("app hardwareVersion -> " + hardwareVersion)
                     dispatch(actions._updateState({
@@ -65,17 +74,13 @@ export const actions = {
                         isInBootLoader: false
                     }));
                 }
-                //收到"Hardware Version:"，表示处在boot loader模式下，提示强制升级
-                if (received.indexOf("Hardware Version:") === 0) {
-                    const hardwareVersion = received.replace("Hardware Version:", "").replace("\r", "").trim();
-                    console.log("boot loader hardwareVersion -> " + hardwareVersion)
-                    dispatch(actions._updateState({
-                        hardwareVersion,
-                        bootLoaderModalVisible: true,
-                        isInBootLoader: true
-                    }));
-                }
             }
+        });
+
+        //data: {step, status, description}
+        socketClientManager.addServerListener(FIRMWARE_UPGRADE_STEP_CHANGE, (data) => {
+            const {current, status, description} = data;
+            dispatch(actions._updateState({current, status, description}));
         });
     },
     _updateState: (state) => {
@@ -88,14 +93,9 @@ export const actions = {
         dispatch(actions._updateState({current: 0, status: 'wait', description: null}));
     },
     start: () => (dispatch, getState) => {
-        //data: {step, status, description}
-        socketClientManager.addServerListener(FIRMWARE_UPGRADE_STEP_CHANGE, (data) => {
-            const {current, status, description} = data;
-            dispatch(actions._updateState({current, status, description}));
-        });
         const {isInBootLoader} = getState().firmwareUpgrade;
         socketClientManager.emitToServer(FIRMWARE_UPGRADE_START, {isInBootLoader});
-        return {type: null,};
+        dispatch(actions._updateState({bootLoaderModalVisible: false}));
     },
     closeBootLoaderModal: () => (dispatch) => {
         dispatch(actions._updateState({bootLoaderModalVisible: false}));

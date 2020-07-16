@@ -133,13 +133,12 @@ class General extends React.Component {
                     }
                 </Modal>
                 <Modal
-                    title="Boot Loader Alert"
                     visible={bootLoaderModalVisible}
                     footer={null}
                     centered={true}
                     closable={false}
                 >
-                    <p>{"You must upgrade firmware"}</p>
+                    <h3>{"Current is boot loader mode, you should upgrade firmware"}</h3>
                     <Button
                         type="link"
                         size="small"
