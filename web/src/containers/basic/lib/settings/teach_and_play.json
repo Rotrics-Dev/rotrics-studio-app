@@ -52,7 +52,7 @@
           },
           "state_1": {
             "label": "Neutral",
-            "description": "Release Description",
+            "description": "Neutral Description",
             "gcode": "M1002"
           },
           "state_2": {
