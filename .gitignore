@@ -6,7 +6,7 @@
 
 #web
 /web/node_modules
-/web/build-web
+/web/build-web/*.js
 /web/package-lock.json
 
 #electron
