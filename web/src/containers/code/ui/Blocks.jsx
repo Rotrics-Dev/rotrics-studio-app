@@ -93,14 +93,12 @@ class Blocks extends React.Component {
         // When stopped, yellow border disappear
         this.props.vm.addListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
         this.props.vm.addListener('SCRIPT_GLOW_OFF', this.onScriptGlowOff);
-
         this.props.vm.addListener('workspaceUpdate', this.onWorkspaceUpdate);
     };
 
     detachVM = () => {
         this.props.vm.removeListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
         this.props.vm.removeListener('SCRIPT_GLOW_OFF', this.onScriptGlowOff);
-
         this.props.vm.removeListener('workspaceUpdate', this.onWorkspaceUpdate);
     };
 
@@ -153,7 +151,7 @@ class Blocks extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {vm} = state.vm;
+    const {vm} = state.code;
     const {tap} = state.taps;
     return {
         vm,

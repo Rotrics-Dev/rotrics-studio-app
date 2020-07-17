@@ -17,7 +17,7 @@ import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTING
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
-import {actions as vmActions} from "../../reducers/vm";
+import {actions as codeActions} from "../../reducers/code";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 import {actions as tapsActions} from "../../reducers/taps"
@@ -210,7 +210,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());
             dispatch(serialPortActions.init());
-            dispatch(vmActions.init());
+            dispatch(codeActions.init());
             dispatch(settingsActions.init());
             dispatch(firmwareUpgradeActions.init());
             //3dp

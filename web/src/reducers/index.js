@@ -11,7 +11,7 @@ import serialPort from "./serialPort";
 import settings from "./settings";
 import socket from "./socket";
 import taps from "./taps";
-import vm from "./vm";
+import code from "./code";
 import firmwareUpgrade from "./firmwareUpgrade";
 
 export default combineReducers({
@@ -28,6 +28,6 @@ export default combineReducers({
     settings,
     socket,
     taps,
-    vm,
+    code,
     firmwareUpgrade
 });
