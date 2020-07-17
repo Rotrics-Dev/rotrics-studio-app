@@ -1,6 +1,7 @@
 import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
 import {actions as gcodeSendActions} from './gcodeSend';
+import ScratchBlocks from "rotrics-scratch-blocks";
 
 const INIT_VM = 'code/INIT_VM';
 const SET_RUNNING = "code/SET_RUNNING";
@@ -98,6 +99,16 @@ export const actions = {
             type: SET_RUNNING,
             value
         };
+    },
+    changeLanguage: (lng) => (dispatch, getState) => {
+        ScratchBlocks.ScratchMsgs.setLocale(lng);
+        const vm = getState().code.vm;
+        vm.setLocale(lng)
+            .then(() => {
+                ScratchBlocks.getMainWorkspace().getFlyout().setRecyclingEnabled(false);
+                vm.refreshWorkspace();
+            });
+        return {type: null};
     },
 };
 
