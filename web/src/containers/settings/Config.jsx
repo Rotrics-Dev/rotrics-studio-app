@@ -2,7 +2,7 @@ import React from 'react';
 import {Row, Col, Button, Steps, message, Modal, Result} from 'antd';
 import {connect} from 'react-redux';
 import styles from './styles.css';
-import {actions as firmwareUpgradeActions} from '../../reducers/firmwareUpgrade.js';
+import {actions as firmwareUpgradeActions} from '../../reducers/settingsGeneral.js';
 import {withTranslation} from 'react-i18next';
 
 class Config extends React.Component {
@@ -27,7 +27,6 @@ class Config extends React.Component {
     render() {
         const state = this.state;
         const actions = this.actions;
-        const {firmwareVersion, hardwareVersion, current, status, description, isFirmwareUpToDate, isFirmwareUpgradeSuccess, bootLoaderModalVisible, closeBootLoaderModal} = this.props;
 
         return (
             <div className={styles.div_content}>
@@ -46,29 +45,5 @@ class Config extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {current, status, description, firmwareVersion, hardwareVersion, bootLoaderModalVisible} = state.firmwareUpgrade;
-    const isFirmwareUpToDate = (current === 2 && status === "finish");
-    const isFirmwareUpgradeSuccess = (current === 8 && status === "finish");
-    return {
-        firmwareVersion,
-        hardwareVersion,
-        bootLoaderModalVisible,
-        current,
-        status,
-        description,
-        isFirmwareUpToDate,
-        isFirmwareUpgradeSuccess
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        closeBootLoaderModal: () => dispatch(firmwareUpgradeActions.closeBootLoaderModal()),
-        startFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.start()),
-        resetFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.reset()),
-    };
-};
-
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Config));
+export default withTranslation()(Config);
 

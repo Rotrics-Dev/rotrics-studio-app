@@ -28,7 +28,7 @@ class Index extends React.Component {
                     mode="inline"
                 >
                     <Menu.Item key="General">General</Menu.Item>
-                    {/*<Menu.Item key="Config">Config</Menu.Item>*/}
+                    <Menu.Item key="Config">Config</Menu.Item>
                     {/*<Menu.Item key="About">About</Menu.Item>*/}
                     {/*<Menu.Item key="Console">About</Menu.Item>*/}
                 </Menu>

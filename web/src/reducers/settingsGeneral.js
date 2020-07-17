@@ -9,7 +9,7 @@ import {
     SERIAL_PORT_CLOSE
 } from "../constants.js"
 
-const ACTION_UPDATE_STATE = 'firmwareUpgrade/ACTION_UPDATE_STATE';
+const ACTION_UPDATE_STATE = 'settingsGeneral/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     firmwareVersion: null,
@@ -93,7 +93,7 @@ export const actions = {
         dispatch(actions._updateState({current: 0, status: 'wait', description: null}));
     },
     start: () => (dispatch, getState) => {
-        const {isInBootLoader} = getState().firmwareUpgrade;
+        const {isInBootLoader} = getState().settingsGeneral;
         socketClientManager.emitToServer(FIRMWARE_UPGRADE_START, {isInBootLoader});
         dispatch(actions._updateState({bootLoaderModalVisible: false}));
     },
