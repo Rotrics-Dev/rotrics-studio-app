@@ -8,7 +8,7 @@ const i18nOptions = {
      * Array of allowed languages
      * @default false
      */
-    supportedLngs: ['en', 'zh-cn'],
+    supportedLngs: ['en', 'zh-CN'],
     /**
      * Language codes to lookup, given set language is
      * 'en-US': 'all' --> ['en-US', 'en', 'dev'],

@@ -102,7 +102,8 @@ export const actions = {
     },
     changeLanguage: (lng) => (dispatch, getState) => {
         console.log("##changeLanguage: " + lng)
-        ScratchBlocks.ScratchMsgs.setLocale(lng);
+        //hack: i18next用zh-CN，scratch用zh-cn
+        ScratchBlocks.ScratchMsgs.setLocale(lng.toLowerCase());
         const vm = getState().code.vm;
         vm.setLocale(lng)
             .then(() => {
