@@ -8,7 +8,7 @@ const i18nOptions = {
      * Array of allowed languages
      * @default false
      */
-    supportedLngs: ['en', 'zh-CN'],
+    supportedLngs: ['en', 'zh-cn'],
     /**
      * Language codes to lookup, given set language is
      * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
@@ -30,6 +30,6 @@ const i18nOptions = {
         useSuspense: false,
         wait: true
     }
-}
+};
 
 export default i18nOptions

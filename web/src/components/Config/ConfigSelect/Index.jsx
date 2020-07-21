@@ -6,7 +6,6 @@ class Index extends PureComponent {
         const {value, options, onChange, ...rest} = this.props;
         return (
             <Select
-                block
                 size="small"
                 value={value}
                 onChange={onChange}

@@ -101,6 +101,7 @@ export const actions = {
         };
     },
     changeLanguage: (lng) => (dispatch, getState) => {
+        console.log("##changeLanguage: " + lng)
         ScratchBlocks.ScratchMsgs.setLocale(lng);
         const vm = getState().code.vm;
         vm.setLocale(lng)
