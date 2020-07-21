@@ -5,6 +5,7 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import {Row, Col} from 'antd';
+import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
     actions = {
@@ -16,13 +17,14 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const {jog_pen_offset} = this.props;
+        const {t} = this.props;
         return (
             <div>
                 <DeviceControl/>
                 <div style={{padding: "6px"}}>
                     <Row>
                         <Col span={15}>
-                            <span>{jog_pen_offset.label}</span>
+                            <span>{t(jog_pen_offset.label)}</span>
                             <span>{"(" + jog_pen_offset.unit + ")"}</span>
                         </Col>
                         <Col span={9}>
@@ -55,5 +57,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
 

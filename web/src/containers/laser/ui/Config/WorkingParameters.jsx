@@ -6,6 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 //hiddenStr: "movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", config) => {
@@ -83,6 +84,7 @@ class WorkingParameters extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, working_parameters, config} = this.props;
         if (!model || !working_parameters || !config) {
             return null;
@@ -119,10 +121,10 @@ class WorkingParameters extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={working_parameters.label}/>
+                    <ConfigTitle text={t(working_parameters.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${work_speed.label}(${work_speed.unit})`}/>
+                            <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -135,7 +137,7 @@ class WorkingParameters extends PureComponent {
                     {!jogSpeedHidden &&
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${jog_speed.label}(${jog_speed.unit})`}/>
+                            <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -149,7 +151,7 @@ class WorkingParameters extends PureComponent {
                     {!dwellTimeHidden &&
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${dwell_time.label}(${dwell_time.unit})`}/>
+                            <ConfigText text={`${t(dwell_time.label)}(${dwell_time.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -162,7 +164,7 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${multi_pass.label}`}/>
+                            <ConfigText text={`${t(multi_pass.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
@@ -171,7 +173,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={`${passes.label}`}/>
+                            <ConfigText text={`${t(passes.label)}`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -185,7 +187,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={`${pass_depth.label}(${pass_depth.unit})`}/>
+                            <ConfigText text={`${t(pass_depth.label)}(${pass_depth.unit})`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -199,7 +201,7 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${fixed_power.label}`}/>
+                            <ConfigText text={`${t(fixed_power.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>
@@ -208,7 +210,7 @@ class WorkingParameters extends PureComponent {
                     {fixed_power.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={`${power.label}(${power.unit})`}/>
+                            <ConfigText text={`${t(power.label)}(${power.unit})`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -240,6 +242,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkingParameters);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(WorkingParameters));
 
 

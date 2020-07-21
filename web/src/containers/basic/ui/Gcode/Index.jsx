@@ -6,6 +6,7 @@ import {Space, Button, Select, message} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
 import ReactTooltip from "react-tooltip";
 import {getUuid} from '../../../../utils';
+import {withTranslation} from 'react-i18next';
 
 const tooltipId = getUuid();
 
@@ -57,9 +58,6 @@ class Index extends React.Component {
     };
 
     render() {
-        // const actions = this.actions;
-        // const {jog_pen_offset} = this.props;
-
         const frontEndOptions = [];
         Object.keys(front_end).forEach((key) => {
             const option = front_end[key];
@@ -83,19 +81,17 @@ class Index extends React.Component {
                 <Space direction={"vertical"} style={{width: "100%", padding: "6px"}}>
                     <Button
                         data-for={tooltipId}
-                        // data-tip="Make sure that work origin had been setup before import 3rd part gcode."
-                        // data-tip="Select the right module to set the end effector offset before setting work origin."
-                        data-tip="Select the right module and set work origin first."
+                        data-tip={this.props.t('Select the right module and set work origin first.')}
                         style={{width: "100%"}}
                         onClick={this.actions.importGcode}
                     >
-                        {"Import G-code"}
+                        {this.props.t("Import G-code")}
                     </Button>
                     {this.state.importLevel > 0 &&
                     <Select
                         style={{width: "100%", textAlign: "center"}}
                         onChange={this.actions.onSelectFrontEnd}
-                        placeholder="select a front end"
+                        placeholder={this.props.t('select a front end')}
                         options={frontEndOptions}/>
                     }
                     {this.state.importLevel > 1 &&
@@ -103,14 +99,14 @@ class Index extends React.Component {
                         style={{width: "100%"}}
                         onClick={this.actions.startSendGcode}
                     >
-                        {"Start Send"}
+                        {this.props.t("Start Send")}
                     </Button>}
                     {this.state.importLevel > 2 &&
                     <Button
                         style={{width: "100%"}}
                         onClick={this.actions.stopSendGcode}
                     >
-                        {"Stop Send"}
+                        {this.props.t("Stop Send")}
                     </Button>}
                 </Space>
                 <Line/>
@@ -139,6 +135,5 @@ const mapDispatchToProps = (dispatch) => {
         stopSendGcode: () => dispatch(gcodeSendActions.stop()),
     };
 };
-
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(withTranslation()(Index));
 

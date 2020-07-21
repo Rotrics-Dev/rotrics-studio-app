@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';
 import {actions as tapsActions} from "../../reducers/taps";
+import {withTranslation} from 'react-i18next';
 
 const notificationKeyConnected = getUuid();
 const notificationKeyDisconnected = getUuid();
@@ -83,7 +84,7 @@ class Index extends React.Component {
         const state = this.state;
         const {paths, path, serialPortAssistantVisible} = this.props;
         const {selectedPath} = state;
-
+        const {t} = this.props;
         let statusDes = "";
         if (selectedPath) {
             if (path === selectedPath) {
@@ -123,7 +124,7 @@ class Index extends React.Component {
                 }}>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
-                    <label>Terminal</label>
+                    <label>{t("Terminal")}</label>
                     }
                     {path &&
                     <Switch
@@ -201,4 +202,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

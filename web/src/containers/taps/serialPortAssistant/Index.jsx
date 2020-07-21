@@ -7,6 +7,7 @@ import {actions as serialPortActions} from "../../../reducers/serialPort";
 import {actions as tapsActions} from "../../../reducers/taps"
 import socketClientManager from "../../../socket/socketClientManager";
 import {SERIAL_PORT_DATA} from "../../../constants";
+import {withTranslation} from 'react-i18next';
 
 const MAX_LINE_COUNT = 150; //最多可展示多少条数据
 
@@ -65,14 +66,15 @@ class Index extends React.Component {
         }
         const actions = this.actions;
         const state = this.state;
+        const {t} = this.props;
         return (
             <Draggable>
                 <div className={styles.div_fix}>
-                    <div  style={{marginBottom: "5px"}}>
+                    <div style={{marginBottom: "5px"}}>
                         <Input
                             onPressEnter={actions.sendGcode}
                             onChange={actions.onChangeGcode}
-                            placeholder="send gcode"
+                            placeholder={t("send g-code")}
                             style={{width: "327px", marginRight: "5px"}}
                             allowClear={true}
                             size="small"
@@ -81,7 +83,7 @@ class Index extends React.Component {
                             type="primary"
                             size="small"
                             onClick={actions.sendGcode}>
-                            Send
+                            {t("Send")}
                         </Button>
                     </div>
                     <Input.TextArea
@@ -96,7 +98,7 @@ class Index extends React.Component {
                         style={{position: "absolute", bottom: "5px", left: "8px"}}
                         onChange={actions.toggleAutoScroll}
                         checked={state.autoScroll}>
-                        Auto Scroll
+                        {t("Auto Scroll")}
                     </Checkbox>
                     <Button
                         className={styles.btn_close}
@@ -104,7 +106,7 @@ class Index extends React.Component {
                         type="primary"
                         size="small"
                         onClick={actions.close}>
-                        Close
+                        {t("Close")}
                     </Button>
                     <Button
                         ghost
@@ -112,7 +114,7 @@ class Index extends React.Component {
                         type="primary"
                         size="small"
                         onClick={actions.clearReceivedLines}>
-                        Clear
+                        {t("Clear")}
                     </Button>
                 </div>
             </Draggable>
@@ -134,4 +136,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

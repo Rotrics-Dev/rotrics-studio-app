@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 import styles from './styles.css';
 import packageJson from "../../../../electron/package.json";
 import {actions as firmwareUpgradeActions} from '../../reducers/firmwareUpgrade.js';
+import {withTranslation} from 'react-i18next';
+import language from "./lib/language.json";
 
 const stepTitles = [
     "Check", //0
@@ -39,6 +41,7 @@ class General extends React.Component {
     };
 
     render() {
+        const {t,i18n} = this.props;
         const state = this.state;
         const actions = this.actions;
         const {firmwareVersion, hardwareVersion, current, status, description, isFirmwareUpToDate, isFirmwareUpgradeSuccess, bootLoaderModalVisible, closeBootLoaderModal} = this.props;
@@ -63,46 +66,45 @@ class General extends React.Component {
                         <button className={styles.btn_right_top}/>
                     </div>
                     <div className={styles.div_product_right}>
-                        <h2>The Modular All-in-1 Desktop Robot Arm For Everyone</h2>
-                        <h5>The most versatile robot arm with interchangeable modules, easily do laser cutting and 3D
-                            printing.</h5>
+                        <h2>{t('The Modular All-in-1 Desktop Robot Arm For Everyone')}</h2>
+                        <h5>{t('The most versatile robot arm with interchangeable modules, easily do laser cutting and 3D printing.')}</h5>
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "20px"}}>
-                    <h2>Device Info</h2>
+                    <h2>{t('Device Info')}</h2>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>
-                            <Col span={spanCol1}>Product Name</Col>
+                            <Col span={spanCol1}>{t('Product Name')}</Col>
                             <Col span={12}>Rotrics DexArm</Col>
                         </Row>
                         <Row gutter={[0, verticalSpace]}>
                             <Col span={spanCol1}>
-                                Firmware Version
+                                {t('Firmware Version')}
                                 <Button
                                     type="link"
                                     size="small"
                                     onClick={actions.startFirmwareUpgrade}
                                 >
-                                    {"check update"}
+                                    {t("check update")}
                                 </Button></Col>
                             <Col span={12}>{firmwareVersion}</Col>
                         </Row>
                         <Row gutter={[0, verticalSpace]}>
-                            <Col span={spanCol1}>Hardware Version</Col>
+                            <Col span={spanCol1}>{t("Hardware Version")}</Col>
                             <Col span={12}>{hardwareVersion}</Col>
                         </Row>
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "30px", marginBottom: "30px"}}>
-                    <h2>Rotrics Studio Info</h2>
+                    <h2>{t("Rotrics Studio Info")}</h2>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>
-                            <Col span={spanCol1}>Version</Col>
+                            <Col span={spanCol1}>{t("Version")}</Col>
                             <Col span={12}>{`V${packageJson.version}`}</Col>
                         </Row>
                         <Row>
-                            <Col span={spanCol1}>Language</Col>
-                            <Col span={12}>English</Col>
+                            <Col span={spanCol1}>{t("Language")}</Col>
+                            <Col span={12}>{language[i18n.language]}</Col>
                         </Row>
                     </div>
                 </div>
@@ -180,5 +182,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(General);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(General));
 

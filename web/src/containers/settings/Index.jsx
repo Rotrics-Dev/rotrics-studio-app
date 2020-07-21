@@ -3,6 +3,7 @@ import {Menu} from 'antd';
 import styles from './styles.css';
 import General from "./General.jsx";
 import Config from "./Config.jsx";
+import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
     state = {
@@ -16,6 +17,7 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const state = this.state;
         const {key} = state;
         const actions = this.actions;
@@ -27,8 +29,8 @@ class Index extends React.Component {
                     defaultSelectedKeys={[state.key]}
                     mode="inline"
                 >
-                    <Menu.Item key="General">General</Menu.Item>
-                    <Menu.Item key="Config">Config</Menu.Item>
+                    <Menu.Item key="General">{t('General')}</Menu.Item>
+                    <Menu.Item key="Config">{t('Config')}</Menu.Item>
                     {/*<Menu.Item key="About">About</Menu.Item>*/}
                     {/*<Menu.Item key="Console">About</Menu.Item>*/}
                 </Menu>
@@ -36,9 +38,7 @@ class Index extends React.Component {
                 <General/>
                 }
                 {key === 'Config' &&
-                <div className={styles.div_content}>
-                    <Config/>
-                </div>
+                <Config/>
                 }
                 {key === 'About' &&
                 <div className={styles.div_content}>
@@ -50,4 +50,4 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+export default withTranslation()(Index);

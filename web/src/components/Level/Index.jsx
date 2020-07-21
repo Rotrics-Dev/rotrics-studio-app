@@ -4,6 +4,7 @@ import _ from 'lodash';
 import styles from './styles.css';
 import {Radio, Space, Modal, message, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
+import {withTranslation} from 'react-i18next';
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -168,17 +169,18 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const {showLevel} = this.props;
         const {pointIndex} = this.state;
         return (<div>
                 {showLevel && <button
                     onClick={this.showModal}
                     className={styles.btn_action_work}
-                >Level
+                >{t('Level')}
                 </button>}
 
                 <Modal
-                    title="Leveling"
+                    title={t("Leveling")}
                     visible={this.state.showModal}
                     width={1000}
                     footer={null}
@@ -189,16 +191,20 @@ class Index extends React.Component {
                 >
                     <Space direction={"horizontal"} align={"start"}>
                         <Space direction={"vertical"}>
-                            <div> Before start bed leveling, put a piece of paper between the module and the build
-                                plate. And follow the instructions to level your DexArm.
+                            <div>
+                                {t("Before start bed leveling, put a piece of paper between the module and the build plate. And follow the instructions to level your DexArm.")}
                             </div>
 
-                            <div style={{marginTop: "10px"}}><b>Step 1:</b> Click the button to reset DexArm's XY slope
-                                rate. Wait about 4 seconds, the machine will be reconnected.
+                            <div style={{marginTop: "10px"}}>
+
+                                <b>{t("Step")} 1:</b>
+                                {t("Click the button to reset DexArm's XY slope rate. Wait about 4 seconds, the machine will be reconnected.")}
+
                             </div>
                             <Button size={"small"} onClick={this.onClickStart}>
-                                Reset XY Slope Rate</Button>
-                            <div style={{marginTop: "10px"}}><b>Step 2:</b> Click the first point to start leveling.
+                                {t('Reset XY Slope Rate')}</Button>
+                            <div style={{marginTop: "10px"}}>
+                                <b>{t("Step")} 2:</b> {t("Click the first point to start leveling.")}
                             </div>
                             <Radio.Group
                                 size={"small"}
@@ -206,17 +212,16 @@ class Index extends React.Component {
                                 buttonStyle="solid"
                                 disabled={!this.state.started}
                                 onChange={this.onSetPoint}>
-                                <Radio.Button value={0}>Point A</Radio.Button>
-                                <Radio.Button value={1}>Point B</Radio.Button>
-                                <Radio.Button value={2}>Point C</Radio.Button>
-                                <Radio.Button value={3}>Point D</Radio.Button>
+                                <Radio.Button value={0}>{t("Point")} A</Radio.Button>
+                                <Radio.Button value={1}>{t("Point")} B</Radio.Button>
+                                <Radio.Button value={2}>{t("Point")} C</Radio.Button>
+                                <Radio.Button value={3}>{t("Point")} D</Radio.Button>
                             </Radio.Group>
 
-                            <div style={{marginTop: "10px"}}><b>Step 3:</b> Adjust the distance between the module and
-                                build plate using the Up and Down button until there is slight resistance on the A4
-                                paper from the nozzle.
+                            <div style={{marginTop: "10px"}}><b>{t("Step")} 3:</b>
+                                {t("Adjust the distance between the module and build plate using the Up and Down button until there is slight resistance on the A4 paper from the nozzle.")}
                             </div>
-                            <div style={{opacity: 0.5}}>Accuracy</div>
+                            <div style={{opacity: 0.5}}>{t("Accuracy")}</div>
 
                             <Radio.Group size={"small"} value={this.state.accuracy} buttonStyle="solid"
                                          onChange={this.onSetAccuracy}>
@@ -226,14 +231,18 @@ class Index extends React.Component {
                                 <Radio.Button value={0.1}>0.1</Radio.Button>
                             </Radio.Group>
                             <Space direction={"horizontal"}>
-                                <Button size={"small"} style={{width: "61px"}} onClick={this.onClickDown}>Down</Button>
-                                <Button size={"small"} style={{width: "61px"}} onClick={this.onClickUp}>Up</Button>
+                                <Button size={"small"} style={{width: "61px"}}
+                                        onClick={this.onClickDown}>{t("Down")}</Button>
+                                <Button size={"small"} style={{width: "61px"}}
+                                        onClick={this.onClickUp}>{t("Up")}</Button>
                             </Space>
-                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickSave}>Save</Button>
+                            <Button size={"small"} style={{width: "130px"}}
+                                    onClick={this.onClickSave}>{t("Save")}</Button>
 
-                            <div style={{marginTop: "10px"}}><b>Step 4:</b> Click Level when all the points are leveled.
+                            <div style={{marginTop: "10px"}}><b>{t("Step")} 4:</b>
+                                {t("Click Level when all the points are leveled.")}
                             </div>
-                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickLevel}>Level</Button>
+                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickLevel}>{t("Level")}</Button>
                         </Space>
                         <Space>
                             <img className={POINT_STYLE[pointIndex ? pointIndex : 0]}/>
@@ -273,4 +282,4 @@ const mapDispatchToProps = (dispatch) => {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

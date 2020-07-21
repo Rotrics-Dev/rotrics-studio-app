@@ -6,6 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class ConfigSvg extends PureComponent {
     actions = {
@@ -21,6 +22,7 @@ class ConfigSvg extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, config} = this.props;
         if (!model || model.fileType !== "svg" || !config) {
             return null;
@@ -35,10 +37,10 @@ class ConfigSvg extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={config.label}/>
+                    <ConfigTitle text={t(config.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${optimize_path.label}`}/>
+                            <ConfigText text={`${t(optimize_path.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
@@ -46,7 +48,7 @@ class ConfigSvg extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${fill.label}`}/>
+                            <ConfigText text={`${t(fill.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
@@ -55,7 +57,7 @@ class ConfigSvg extends PureComponent {
                     {fill.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={`${fill_density.label}`}/>
+                            <ConfigText text={`${t(fill_density.label)}`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -86,6 +88,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigSvg);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigSvg));
 
 

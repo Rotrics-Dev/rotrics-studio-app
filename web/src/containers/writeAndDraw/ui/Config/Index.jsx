@@ -20,6 +20,7 @@ import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
 import ActionButton from "../../../../components/ActionButton/Index.jsx";
 import {ConfigTitle} from '../../../../components/Config';
 import {getGcode4runBoundary} from "../../../../reducers/writeAndDraw";
+import {withTranslation} from 'react-i18next';
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -161,6 +162,7 @@ class Index extends React.Component {
     render() {
         const {accept} = this.state;
         const {model} = this.props;
+        const {t} = this.props;
         const actions = this.actions;
         return (
             <div style={{
@@ -169,13 +171,13 @@ class Index extends React.Component {
             }}>
                 <Space direction={"vertical"} size="small"
                        style={{width: "100%", padding: "8px"}}>
-                    <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
-                    <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
-                    <ActionButton onClick={actions.runBoundary} text={"Run Boundary"}/>
+                    <ActionButton onClick={actions.generateGcode} text={t("Generate G-code")}/>
+                    <ActionButton onClick={actions.exportGcode} text={t("Export G-code")}/>
+                    <ActionButton onClick={actions.runBoundary} text={t("Run Boundary")}/>
                     <div style={{width: "100%"}}>
-                        <ActionButton onClick={actions.startSendGcode} text={"Start Send"}
+                        <ActionButton onClick={actions.startSendGcode} text={t("Start Send")}
                                       style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
-                        <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}
+                        <ActionButton onClick={actions.stopSendGcode} text={t("Stop Send")}
                                       style={{width: "calc(50% - 4px)"}}/>
                     </div>
                 </Space>
@@ -183,7 +185,7 @@ class Index extends React.Component {
                 <h4 style={{
                     padding: "10px 0 0 10px",
                     color: "grey"
-                }}> {" selected image type: " + (model ? model.fileType : "")}</h4>
+                }}> {`${t('selected image type : ')} ${model ? t(model.fileType) : ""}`}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -199,19 +201,19 @@ class Index extends React.Component {
                             this.buildInSvgList.current.style.display = 'block'
                         }}
                     >
-                        <h6 className={styles.h_file_type}>SELECT</h6>
+                        <h6 className={styles.h_file_type}>{t('SELECT')}</h6>
                     </button>
                     <button
                         className={styles.btn_svg}
                         onClick={() => actions.onClickToUpload('svg')}
                     >
-                        <h6 className={styles.h_file_type}>SVG</h6>
+                        <h6 className={styles.h_file_type}>{t('SVG')}</h6>
                     </button>
                     <button
                         className={styles.btn_text}
                         onClick={() => actions.onClickToUpload('text')}
                     >
-                        <h6 className={styles.h_file_type}>TEXT</h6>
+                        <h6 className={styles.h_file_type}>{t('TEXT')}</h6>
                     </button>
                 </Space>
                 <div
@@ -261,4 +263,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

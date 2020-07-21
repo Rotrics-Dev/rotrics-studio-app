@@ -27,6 +27,7 @@ import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as settingsActions} from "../../reducers/settings";
 import {actions as firmwareUpgradeActions} from "../../reducers/firmwareUpgrade";
 import {notification} from 'antd';
+import {withTranslation} from 'react-i18next';
 
 import {getUuid} from '../../utils/index.js';
 
@@ -115,6 +116,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const {tap, serialPortAssistantVisible} = this.props;
+        const {t} = this.props;
         return (
             <div>
                 <div className={styles.div_header}>
@@ -131,37 +133,37 @@ class Index extends React.Component {
                         delayShow={500}/>
                     <button
                         data-for={tooltipId}
-                        data-tip="Basic"
+                        data-tip={t("Basic")}
                         onClick={() => actions.setTap(TAP_BASIC)}
                         className={tap === TAP_BASIC ? styles.btn_basic_selected : styles.btn_basic}
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="Write&Draw"
+                        data-tip={t("Write&Draw")}
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
                         className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="Laser"
+                        data-tip={t("Laser")}
                         onClick={() => actions.setTap(TAP_LASER)}
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="3D Print"
+                        data-tip={t("3D Print")}
                         onClick={() => actions.setTap(TAP_P3D)}
                         className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="Code"
+                        data-tip={t("Code")}
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
                     <button
                         data-for={tooltipId}
-                        data-tip="Settings"
+                        data-tip={t("Settings")}
                         onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
@@ -220,4 +222,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

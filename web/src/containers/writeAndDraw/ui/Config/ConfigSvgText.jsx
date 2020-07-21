@@ -6,6 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class ConfigSvgText extends PureComponent {
     actions = {
@@ -34,6 +35,7 @@ class ConfigSvgText extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, config_text, config} = this.props;
         if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
@@ -57,10 +59,10 @@ class ConfigSvgText extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={config.label}/>
+                    <ConfigTitle text={t(config.label)}/>
                     <Row>
                         <Col span={13}>
-                            <ConfigText text={`${text.label}`}/>
+                            <ConfigText text={t(text.label)}/>
                         </Col>
                         <Col span={11}>
                             <Input.TextArea style={{fontSize: "12px"}} value={text.default_value}
@@ -70,7 +72,7 @@ class ConfigSvgText extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={13}>
-                            <ConfigText text={`${font.label}`}/>
+                            <ConfigText text={t(font.label)}/>
                         </Col>
                         <Col span={11}>
                             <ConfigSelect options={fontOptions} value={font.default_value} onChange={actions.setFont}/>
@@ -78,7 +80,7 @@ class ConfigSvgText extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${font_size.label}`}/>
+                            <ConfigText text={t(font_size.label)}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -90,7 +92,7 @@ class ConfigSvgText extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${optimize_path.label}`}/>
+                            <ConfigText text={t(optimize_path.label)}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
@@ -98,7 +100,7 @@ class ConfigSvgText extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${fill.label}`}/>
+                            <ConfigText text={t(fill.label)}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
@@ -107,7 +109,7 @@ class ConfigSvgText extends PureComponent {
                     {fill.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={`${fill_density.label}`}/>
+                            <ConfigText text={t(fill_density.label)}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
@@ -140,5 +142,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigSvgText);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigSvgText));
 

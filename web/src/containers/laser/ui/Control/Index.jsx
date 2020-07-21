@@ -5,6 +5,7 @@ import styles from './styles.css';
 import DeviceControl from "../../../_deviceControl/Index.jsx"
 import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import {withTranslation} from 'react-i18next';
 
 const INIT_LASER_POWER = 1;
 
@@ -46,6 +47,7 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const actions = this.actions;
         const state = this.state;
         return (
@@ -53,7 +55,7 @@ class Index extends React.Component {
                 <DeviceControl/>
                 <Line/>
                 <div style={{padding: "5px"}}>
-                    <span>Laser</span>
+                    <span>{t('Laser')}</span>
                     <Switch style={{position: "absolute", right: "5px"}} checked={state.isLaserOn}
                             onChange={actions.toggleLaser}/>
                     <Slider
@@ -79,5 +81,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(withTranslation()(Index));
 
