@@ -11,6 +11,7 @@ import Control from "./ui/Control/Index.jsx";
 import styles from './styles.css';
 import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 
 const {TabPane} = Tabs;
 
@@ -34,6 +35,7 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const {model, modelCount} = this.props;
         const operations = this.operations;
         const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount > 0)};
@@ -75,14 +77,14 @@ class Index extends React.Component {
                           tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                G-code
+                                {t("G-code")}
                             </div>
                         } key="1">
                             <Config/>
                         </TabPane>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                Control
+                                {t('Control')}
                             </div>
                         } key="2">
                             <Control/>
@@ -112,7 +114,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
 
 
 

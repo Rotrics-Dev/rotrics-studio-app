@@ -8,6 +8,7 @@ import {actions as teachAndPlayActions} from "../../../../reducers/teachAndPlay"
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import teach_and_play from "../../lib/settings/teach_and_play.json";
 import styles from "./styles.css";
+import {withTranslation} from 'react-i18next'
 
 const FRONT_END_STYLE = {
     laser: {
@@ -53,18 +54,19 @@ class Index extends React.Component {
             laserPower,
             stepArray,
             teachAndPlayMode,
-            repeatCount
+            repeatCount,
+            t
         } = this.props;
 
         const frontEndOptions = [];
         Object.keys(teach_and_play.front_end.options).forEach((key) => {
             const option = teach_and_play.front_end.options[key];
-            frontEndOptions.push({value: key, label: option.label})
+            frontEndOptions.push({value: key, label: t(option.label)})
         });
         const frontEndStateOptions = [];
         const frontEndState = teach_and_play.front_end.options[currentFrontEnd].state;
         Object.keys(frontEndState).forEach((key) => {
-            frontEndStateOptions.push(<Radio.Button value={key} key={key}>{frontEndState[key].label}</Radio.Button>);
+            frontEndStateOptions.push(<Radio.Button value={key} key={key}>{t(frontEndState[key].label)}</Radio.Button>);
         });
 
 
@@ -77,12 +79,12 @@ class Index extends React.Component {
                 <div style={{padding: "5px"}}>
                     <Row>
                         <Col span={15}>
-                            <span> Teach & Play Mode</span>
+                            <span> {t('Teach & Play Mode')}</span>
                         </Col>
                         <Col span={9} align={"right"}>
                             <Checkbox checked={teachAndPlayMode}
                                       onChange={this.actions.setTeachAndPlay}>
-                                {teachAndPlayMode ? 'On' : 'Off'}
+                                {t(teachAndPlayMode ? 'On' : 'Off')}
                             </Checkbox>
                         </Col>
                     </Row>
@@ -90,7 +92,7 @@ class Index extends React.Component {
                     {teachAndPlayMode &&
                     <Row>
                         <Col span={6}>
-                            <span> {teach_and_play.front_end.options[this.props.currentFrontEnd].label}</span>
+                            <span> {t(teach_and_play.front_end.options[this.props.currentFrontEnd].label)}</span>
                         </Col>
                         <Col span={18} align={"right"}>{/*前端模块*/}
                             <Radio.Group
@@ -107,7 +109,7 @@ class Index extends React.Component {
                     {teachAndPlayMode && currentFrontEnd === "laser" &&
                     <Row>
                         <Col span={8}>
-                            <span> {teach_and_play.front_end.options.laser.power.label + "(%)"}</span>
+                            <span> {t(teach_and_play.front_end.options.laser.power.label) + "(%)"}</span>
                         </Col>
                         <Col span={16} align={"right"}>
                             <NumberInput
@@ -124,7 +126,7 @@ class Index extends React.Component {
                 <div style={{padding: "6px 6px 0px 6px "}}>
                     <Row>
                         <Col span={16}>
-                            <span> {teach_and_play.repeatCount.label}</span>
+                            <span> {t(teach_and_play.repeatCount.label)}</span>
                         </Col>
                         <Col span={8} align={"right"}>
                             <NumberInput
@@ -184,7 +186,7 @@ class Index extends React.Component {
                                             <Col span={12} align={"center"}>
                                                 <img
                                                     className={FRONT_END_STYLE[item.currentFrontEnd][item.currentFrontEndState]}/>
-                                                <div>{teach_and_play.front_end.options[item.currentFrontEnd].state[item.currentFrontEndState].label}</div>
+                                                <div>{t(teach_and_play.front_end.options[item.currentFrontEnd].state[item.currentFrontEndState].label)}</div>
                                             </Col>
                                         </Row>
                                         <button className={styles.btn_delete}
@@ -197,7 +199,7 @@ class Index extends React.Component {
                             </Row>
                             <Row justify="end">
                                 <Col>
-                                    Set Delay(s):
+                                    {t('Set Delay') + '(s)'}:
                                     <NumberInput
                                         size="small"
                                         style={{width: "48px"}}
@@ -229,7 +231,7 @@ class Index extends React.Component {
                             disabled={!(stepArray.length > 0)}/>
                 </div>
                 <Modal
-                    title="Select Teach & Play Front End"
+                    title={t("Select Teach & Play Front End")}
                     visible={this.props.showFrontEndSelect}
                     onCancel={this.actions.onCancel}
                     onOk={this.actions.onOk}>
@@ -267,5 +269,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
 

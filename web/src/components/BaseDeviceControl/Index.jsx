@@ -4,6 +4,7 @@ import {Radio, Space} from 'antd';
 import Level from '../Level/Index.jsx'
 import {ConfigTitle} from "../Config";
 import Line from '../../components/Line/Index.jsx'
+import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
     state = {
@@ -18,6 +19,7 @@ class Index extends React.Component {
         const {setStep, setWorkOrigin, goToWorkOrigin} = this.props.actions;
         const {step} = this.props;
         const {showLevel} = this.props;
+        const {t} = this.props;
         return (
             <div>
                 <Space direction={"vertical"} style={{padding: "8px 8px 0px 8px"}}>
@@ -87,18 +89,18 @@ class Index extends React.Component {
                     <button
                         onClick={goToWorkOrigin}
                         className={styles.btn_action_work}
-                    >Go To Work Origin
+                    >{t("Go To Work Origin")}
                     </button>
                     <button
                         onClick={setWorkOrigin}
                         className={styles.btn_action_work}
-                    >Set Work Origin
+                    >{t("Set Work Origin")}
                     </button>
                     <Level showLevel={showLevel}/>
                 </Space>
                 <div style={{padding: "0px 8px 8px 8px"}}>
 
-                    <ConfigTitle text={"Accuracy"} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
+                    <ConfigTitle text={t("Accuracy")} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
                         <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
@@ -113,5 +115,5 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+export default withTranslation()(Index);
 

@@ -5,6 +5,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class WorkingParameters extends PureComponent {
     actions = {
@@ -21,6 +22,7 @@ class WorkingParameters extends PureComponent {
 
     render() {
         const {model, working_parameters, config} = this.props;
+        const {t} = this.props;
 
         if (!model || !working_parameters || !config) {
             return null;
@@ -33,10 +35,10 @@ class WorkingParameters extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={working_parameters.label}/>
+                    <ConfigTitle text={t(working_parameters.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${work_speed.label}(${work_speed.unit})`}/>
+                            <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -48,7 +50,7 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${jog_speed.label}(${jog_speed.unit})`}/>
+                            <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -79,6 +81,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkingParameters);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(WorkingParameters));
 
 

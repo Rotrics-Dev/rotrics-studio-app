@@ -11,6 +11,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {connect} from 'react-redux';
 import NumberInput from "../../../../components/NumberInput/Index.jsx";
 import {ConfigTitle} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next'
 
 class Index extends React.Component {
     state = {
@@ -61,21 +62,22 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const movementModeOptions = [];
         Object.keys(movement.mode).forEach((key) => {
-            movementModeOptions.push({value: key, label: movement.mode[key].label})
+            movementModeOptions.push({value: key, label: t(movement.mode[key].label)})
         });
 
 
         const frontEndOptionsObj = teach_and_play.front_end.options;
         const frontEndOptions = [];
         Object.keys(teach_and_play.front_end.options).forEach((key) => {
-            frontEndOptions.push({value: key, label: frontEndOptionsObj[key].label})
+            frontEndOptions.push({value: key, label: t(frontEndOptionsObj[key].label)})
         });
         const frontEndStateOptions = [];
         const frontEndState = frontEndOptionsObj[this.state.currentFrontEnd].state;
         Object.keys(frontEndState).forEach((key) => {
-            frontEndStateOptions.push(<Radio.Button value={key} key={key}>{frontEndState[key].label}</Radio.Button>);
+            frontEndStateOptions.push(<Radio.Button value={key} key={key}>{t(frontEndState[key].label)}</Radio.Button>);
         });
 
         return (
@@ -83,7 +85,7 @@ class Index extends React.Component {
                 <DeviceControl/>
                 <Line/>
                 <div style={{padding: "6px"}}>
-                    <ConfigTitle text={"Motion mode"}/>
+                    <ConfigTitle text={t("Motion mode")}/>
                     <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
@@ -92,7 +94,7 @@ class Index extends React.Component {
                             options={movementModeOptions}/>
                         <Row>
                             <Col span={12}>
-                                <span> {`${movement.speed.label}(${movement.speed.unit})`}</span>
+                                <span> {`${t(movement.speed.label)}(${movement.speed.unit})`}</span>
                             </Col>
                             <Col span={12} align={"right"}>
                                 <NumberInput
@@ -109,17 +111,17 @@ class Index extends React.Component {
 
                 <Line/>
                 <div style={{padding: "6px", width: "100%"}}>
-                    <ConfigTitle text={"Front end"}/>
+                    <ConfigTitle text={t("Front end")}/>
                     <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}
                             onChange={this.actions.onSelectFrontEnd}
-                            placeholder="select a front end"
+                            placeholder={t("select a front end")}
                             value={this.state.currentFrontEnd}
                             options={frontEndOptions}/>
                         <Row>
                             <Col span={6}>
-                                <span>Actions</span>
+                                <span>{t("Actions")}</span>
                             </Col>
                             <Col span={18} align={"right"}>{/*前端模块*/}
                                 <Radio.Group
@@ -135,7 +137,7 @@ class Index extends React.Component {
                         {this.state.currentFrontEnd === "laser" &&
                         <Row>
                             <Col span={8}>
-                                <span> {teach_and_play.front_end.options.laser.power.label + "(%)"}</span>
+                                <span> {t(teach_and_play.front_end.options.laser.power.label) + "(%)"}</span>
                             </Col>
                             <Col span={16} align={"right"}>
                                 <NumberInput
@@ -159,5 +161,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(withTranslation()(Index));
 

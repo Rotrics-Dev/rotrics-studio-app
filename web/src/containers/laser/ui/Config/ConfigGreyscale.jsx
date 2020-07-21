@@ -6,6 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class ConfigGreyscale extends PureComponent {
     actions = {
@@ -33,6 +34,7 @@ class ConfigGreyscale extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, config} = this.props;
         if (!model || model.fileType !== "greyscale" || !config) {
             return null;
@@ -57,10 +59,10 @@ class ConfigGreyscale extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={config.label}/>
+                    <ConfigTitle text={t(config.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${invert.label}`}/>
+                            <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
@@ -68,7 +70,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${contrast.label}`}/>
+                            <ConfigText text={`${t(contrast.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -80,7 +82,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${brightness.label}`}/>
+                            <ConfigText text={`${t(brightness.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -92,7 +94,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${white_clip.label}`}/>
+                            <ConfigText text={`${t(white_clip.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -104,7 +106,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${density.label}(${density.unit})`}/>
+                            <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -116,18 +118,20 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={10}>
-                            <ConfigText text={`${algorithm.label}`}/>
+                            <ConfigText text={`${t(algorithm.label)}`}/>
                         </Col>
                         <Col span={14}>
-                            <ConfigSelect options={algorithmOptions} value={algorithm.default_value} onChange={actions.setAlgorithm}/>
+                            <ConfigSelect options={algorithmOptions} value={algorithm.default_value}
+                                          onChange={actions.setAlgorithm}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={10}>
-                            <ConfigText text={`${movement_mode.label}`}/>
+                            <ConfigText text={`${t(movement_mode.label)}`}/>
                         </Col>
                         <Col span={14}>
-                            <ConfigSelect options={movementModeOptions} value={movement_mode.default_value} onChange={actions.setMovementMode}/>
+                            <ConfigSelect options={movementModeOptions} value={movement_mode.default_value}
+                                          onChange={actions.setMovementMode}/>
                         </Col>
                     </Row>
                 </div>
@@ -150,5 +154,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigGreyscale);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigGreyscale));
 

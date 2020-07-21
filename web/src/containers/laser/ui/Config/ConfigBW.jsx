@@ -6,6 +6,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class ConfigBW extends PureComponent {
     actions = {
@@ -24,6 +25,7 @@ class ConfigBW extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, config} = this.props;
         if (!model || model.fileType !== "bw" || !config) {
             return null;
@@ -42,10 +44,10 @@ class ConfigBW extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={config.label}/>
+                    <ConfigTitle text={t(config.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${invert.label}`}/>
+                            <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
@@ -53,7 +55,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${bw.label}`}/>
+                            <ConfigText text={`${t(bw.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -65,7 +67,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${density.label}(${density.unit})`}/>
+                            <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -77,10 +79,11 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={15}>
-                            <ConfigText text={`${line_direction.label}`}/>
+                            <ConfigText text={`${t(line_direction.label)}`}/>
                         </Col>
                         <Col span={9}>
-                            <ConfigSelect options={directionOptions} value={line_direction.default_value} onChange={actions.setLineDirection}/>
+                            <ConfigSelect options={directionOptions} value={line_direction.default_value}
+                                          onChange={actions.setLineDirection}/>
                         </Col>
                     </Row>
                 </div>
@@ -103,6 +106,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigBW);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigBW));
 
 

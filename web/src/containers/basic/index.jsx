@@ -5,6 +5,7 @@ import Canvas2D from '../writeAndDraw/ui/Canvas2D/Index.jsx';
 import TeachAndPlay from './ui/TeachAndPlay/Index.jsx';
 import Gcode from './ui/Gcode/Index.jsx';
 import Control from './ui/Control/Index.jsx';
+import {withTranslation} from 'react-i18next';
 
 const {TabPane} = Tabs;
 
@@ -54,21 +55,21 @@ class Index extends React.Component {
                           tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "52px", height: "100%"}}>
-                                Control
+                                {this.props.t('Control')}
                             </div>
                         } key="3">
                             <Control/>
                         </TabPane>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "52px", height: "100%"}}>
-                                Gcode
+                                {this.props.t('G-code')}
                             </div>
                         } key="2">
                             <Gcode/>
                         </TabPane>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "76px", height: "100%"}}>
-                                Teach & Play
+                                {this.props.t('Teach & Play')}
                             </div>
                         } key="1">
                             <TeachAndPlay/>
@@ -80,7 +81,7 @@ class Index extends React.Component {
     }
 }
 
-export default Index;
+export default withTranslation()(Index);
 
 
 

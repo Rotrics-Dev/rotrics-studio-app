@@ -3,7 +3,7 @@ import {Select} from 'antd';
 
 class Index extends PureComponent {
     render() {
-        const {value, options, onChange} = this.props;
+        const {value, options, onChange, ...rest} = this.props;
         return (
             <Select
                 block
@@ -11,6 +11,7 @@ class Index extends PureComponent {
                 value={value}
                 onChange={onChange}
                 style={{width: "100%", fontSize: "12px"}}
+                {...rest}
             >
                 {options.map(item => {
                     return (

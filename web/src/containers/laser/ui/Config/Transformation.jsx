@@ -7,6 +7,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 class Transformation extends PureComponent {
     actions = {
@@ -31,6 +32,7 @@ class Transformation extends PureComponent {
     };
 
     render() {
+        const {t} = this.props;
         const {model, transformation} = this.props;
         if (!model || !transformation) {
             return null;
@@ -41,7 +43,7 @@ class Transformation extends PureComponent {
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
             const option = flip_model.options[key];
-            flipModelOptions.push({label: key, value: option})
+            flipModelOptions.push({label: t(key), value: option})
         });
         return (
             <div>
@@ -49,10 +51,10 @@ class Transformation extends PureComponent {
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={transformation.label}/>
+                    <ConfigTitle text={t(transformation.label)}/>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${width.label}(${width.unit})`}/>
+                            <ConfigText text={`${t(width.label)}(${width.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -64,7 +66,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${height.label}(${height.unit})`}/>
+                            <ConfigText text={`${t(height.label)}(${height.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -76,7 +78,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${rotation.label}(${rotation.unit})`}/>
+                            <ConfigText text={`${t(rotation.label)}(${rotation.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -88,7 +90,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${x.label}(${x.unit})`}/>
+                            <ConfigText text={`${t(x.label)}(${x.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -100,7 +102,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${y.label}(${y.unit})`}/>
+                            <ConfigText text={`${t(y.label)}(${y.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -112,7 +114,7 @@ class Transformation extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={15}>
-                            <ConfigText text={`${flip_model.label}`}/>
+                            <ConfigText text={`${t(flip_model.label)}`}/>
                         </Col>
                         <Col span={9}>
                             <ConfigSelect options={flipModelOptions} value={flip_model.default_value}
@@ -139,7 +141,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Transformation);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Transformation));
 
 
 
