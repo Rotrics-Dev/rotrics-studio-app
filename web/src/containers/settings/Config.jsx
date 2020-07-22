@@ -10,7 +10,6 @@ import language from "./lib/language.json";
 
 class Config extends React.Component {
     state = {};
-
     // componentDidMount() {
     //     setInterval(() => {
     //         const languages = this.props.i18n.languages;
@@ -33,7 +32,6 @@ class Config extends React.Component {
         Object.keys(language).forEach((key) => {
             languageOptions.push({value: key, label: language[key]})
         });
-
 
         return (
             <div className={styles.div_content}>

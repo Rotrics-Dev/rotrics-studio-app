@@ -174,8 +174,7 @@ class Index extends React.Component {
                 <Line/>
                 <h4 style={{
                     padding: "10px 0 0 10px",
-                    color: "grey"
-                }}> {`${t('selected image type : ')} ${model ? t(model.fileType) : ""}`}</h4>
+                }}>{t(model ? model.fileType : "")}</h4>
                 <input
                     ref={this.fileInput}
                     type="file"
