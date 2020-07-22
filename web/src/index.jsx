@@ -32,8 +32,8 @@ const i18nOptions = {
     load: 'currentOnly',
     fallbackLng: 'en',
     debug: false,
-    ns: ['translations'],
-    defaultNS: 'translations',
+    ns: ['common', 'cura'],
+    defaultNS: 'common',
     keySeparator: false,
     interpolation: {
         escapeValue: false,

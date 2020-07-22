@@ -26,7 +26,6 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch, getState) => {
         const callback4open = (path) => {
-            console.log("#callback4open: " + path)
             if (path) {
                 console.log("#write a5....")
                 dispatch(serialPortActions.write('M2010\nM2011\na5\n'));

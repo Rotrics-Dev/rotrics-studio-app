@@ -4,6 +4,7 @@ import {Button, Slider, Space, Divider} from 'antd';
 import {uploadFile} from "../../../../api";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -23,6 +24,7 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
+        const {t} = this.props;
         return (
             <div>
                 <input
@@ -38,7 +40,7 @@ class Index extends React.Component {
                     size="small"
                     onClick={actions.onClickUpload}
                 >
-                    {"Upload"}
+                    {t("cura:Upload")}
                 </Button>
             </div>
         )
@@ -51,5 +53,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(withTranslation(['cura'])(Index));
+
 
