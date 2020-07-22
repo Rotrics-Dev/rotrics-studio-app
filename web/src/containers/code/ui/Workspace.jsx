@@ -31,7 +31,7 @@ class Workspace extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {vm, running} = state.vm;
+    const {vm, running} = state.code;
     return {
         vm,
         running

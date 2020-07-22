@@ -2,6 +2,9 @@ import React from 'react';
 import ScratchBlocks from 'rotrics-scratch-blocks';
 import makeToolboxXML from '../lib/make-toolbox-xml';
 import {connect} from 'react-redux';
+import i18next from 'i18next'
+import {withTranslation} from 'react-i18next';
+import {TAP_CODE} from "../../../constants.js";
 
 const BLOCKS_DEFAULT_OPTIONS = {
     media: './asset/blocks-media/',
@@ -52,7 +55,27 @@ class Blocks extends React.Component {
         this.attachVM();
 
         this.updateCss();
+
+        //language
+        if (this.props.i18n.language.toLowerCase() !== this.props.vm.getLocale()) {
+            this.changeLanguage(this.props.i18n.language.toLowerCase());
+        }
+        i18next.on('languageChanged', (lng) => {
+            if (this.props.i18n.language.toLowerCase() !== this.props.vm.getLocale()) {
+                this.changeLanguage(this.props.i18n.language.toLowerCase());
+            }
+        })
     }
+
+    changeLanguage = (lng) => {
+        ScratchBlocks.ScratchMsgs.setLocale(lng);
+        this.props.vm.setLocale(lng)
+            .then(() => {
+                //必须调用setRecyclingEnabled，否则部分blocks不会正常显示多语言
+                ScratchBlocks.getMainWorkspace().getFlyout().setRecyclingEnabled(false);
+                this.props.vm.refreshWorkspace();
+            });
+    };
 
     updateCss() {
         //参考：rotrics-scratch-blocks/core/css.js
@@ -72,8 +95,12 @@ class Blocks extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.tap !== nextProps.tap) {
-            ScratchBlocks.svgResize(this.workspace)
+        if (this.props.tap !== nextProps.tap && nextProps.tap === TAP_CODE) {
+            ScratchBlocks.svgResize(this.workspace);
+            //TODO: 待优化，多语言有切换，才调用refreshWorkspace
+            setTimeout(() => {
+                this.props.vm.refreshWorkspace();
+            }, 0)
         }
     }
 
@@ -93,14 +120,12 @@ class Blocks extends React.Component {
         // When stopped, yellow border disappear
         this.props.vm.addListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
         this.props.vm.addListener('SCRIPT_GLOW_OFF', this.onScriptGlowOff);
-
         this.props.vm.addListener('workspaceUpdate', this.onWorkspaceUpdate);
     };
 
     detachVM = () => {
         this.props.vm.removeListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
         this.props.vm.removeListener('SCRIPT_GLOW_OFF', this.onScriptGlowOff);
-
         this.props.vm.removeListener('workspaceUpdate', this.onWorkspaceUpdate);
     };
 
@@ -153,7 +178,7 @@ class Blocks extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {vm} = state.vm;
+    const {vm} = state.code;
     const {tap} = state.taps;
     return {
         vm,
@@ -161,5 +186,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Blocks);
+export default connect(mapStateToProps, null)(withTranslation()(Blocks));
+
 

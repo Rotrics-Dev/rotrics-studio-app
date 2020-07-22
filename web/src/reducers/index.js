@@ -8,11 +8,10 @@ import p3dMaterial from "./p3dMaterial";
 import p3dModel from "./p3dModel";
 import p3dSetting from "./p3dSetting";
 import serialPort from "./serialPort";
-import settings from "./settings";
 import socket from "./socket";
 import taps from "./taps";
-import vm from "./vm";
-import firmwareUpgrade from "./firmwareUpgrade";
+import code from "./code";
+import settingsGeneral from "./settingsGeneral";
 
 export default combineReducers({
     gcodeSend,
@@ -25,9 +24,8 @@ export default combineReducers({
     p3dModel,
     p3dSetting,
     serialPort,
-    settings,
     socket,
     taps,
-    vm,
-    firmwareUpgrade
+    code,
+    settingsGeneral
 });

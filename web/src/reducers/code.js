@@ -1,9 +1,10 @@
 import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
 import {actions as gcodeSendActions} from './gcodeSend';
+import ScratchBlocks from "rotrics-scratch-blocks";
 
-const INIT_VM = 'INIT_VM';
-const SET_RUNNING = "SET_RUNNING";
+const INIT_VM = 'code/INIT_VM';
+const SET_RUNNING = "code/SET_RUNNING";
 
 const INITIAL_STATE = {
     vm: null,
@@ -21,7 +22,7 @@ export const actions = {
         };
     },
     _setupListener: () => (dispatch, getState) => {
-        const vm = getState().vm.vm;
+        const vm = getState().code.vm;
 
         //参考：scratch-gui/lib/vm-listener-hoc.jsx
         document.addEventListener('keydown', (e) => {
@@ -98,7 +99,7 @@ export const actions = {
             type: SET_RUNNING,
             value
         };
-    },
+    }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {

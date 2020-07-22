@@ -4,7 +4,7 @@ import {LoadingOutlined, SmileOutlined} from '@ant-design/icons';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import packageJson from "../../../../electron/package.json";
-import {actions as firmwareUpgradeActions} from '../../reducers/firmwareUpgrade.js';
+import {actions as settingsGeneralActions} from '../../reducers/settingsGeneral.js';
 import {withTranslation} from 'react-i18next';
 import language from "./lib/language.json";
 
@@ -53,6 +53,7 @@ class General extends React.Component {
             const title = stepTitles[i];
             stepEles.push(
                 <Steps.Step
+                    key={i}
                     title={title}
                     description={current === i ? description : undefined}
                     icon={(current === i && status === "process") ? <LoadingOutlined/> : undefined}
@@ -159,7 +160,7 @@ class General extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {current, status, description, firmwareVersion, hardwareVersion, bootLoaderModalVisible} = state.firmwareUpgrade;
+    const {current, status, description, firmwareVersion, hardwareVersion, bootLoaderModalVisible} = state.settingsGeneral;
     const isFirmwareUpToDate = (current === 2 && status === "finish");
     const isFirmwareUpgradeSuccess = (current === 8 && status === "finish");
     return {
@@ -176,9 +177,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        closeBootLoaderModal: () => dispatch(firmwareUpgradeActions.closeBootLoaderModal()),
-        startFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.start()),
-        resetFirmwareUpgrade: () => dispatch(firmwareUpgradeActions.reset()),
+        closeBootLoaderModal: () => dispatch(settingsGeneralActions.closeBootLoaderModal()),
+        startFirmwareUpgrade: () => dispatch(settingsGeneralActions.start()),
+        resetFirmwareUpgrade: () => dispatch(settingsGeneralActions.reset()),
     };
 };
 
