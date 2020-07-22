@@ -56,9 +56,6 @@ class Index extends React.Component {
     componentDidMount() {
         this.displayTap(this.props.tap);
 
-        const lng = this.props.i18n.language;
-        this.props.changeLanguage4code(lng)
-
         // disable select text on document
         document.onselectstart = () => {
             return false;
@@ -208,7 +205,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeLanguage4code: (lng) => dispatch(codeActions.changeLanguage(lng)),
         setTap: (value) => dispatch(tapsActions.setTap(value)),
         init: () => {
             dispatch(socketActions.init()); //必须首先执行

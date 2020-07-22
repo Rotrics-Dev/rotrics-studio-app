@@ -99,19 +99,7 @@ export const actions = {
             type: SET_RUNNING,
             value
         };
-    },
-    changeLanguage: (lng) => (dispatch, getState) => {
-        console.log("##changeLanguage: " + lng)
-        //hack: i18next用zh-CN，scratch用zh-cn
-        ScratchBlocks.ScratchMsgs.setLocale(lng.toLowerCase());
-        const vm = getState().code.vm;
-        vm.setLocale(lng)
-            .then(() => {
-                ScratchBlocks.getMainWorkspace().getFlyout().setRecyclingEnabled(false);
-                vm.refreshWorkspace();
-            });
-        return {type: null};
-    },
+    }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {

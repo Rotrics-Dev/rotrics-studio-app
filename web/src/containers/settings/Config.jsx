@@ -1,10 +1,8 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import styles from './styles.css';
 import {withTranslation} from 'react-i18next';
 import ConfigSelect from '../../components/Config/ConfigSelect/Index.jsx';
 import language from "./lib/language.json";
-import {actions as codeActions} from "../../reducers/code";
 
 class Config extends React.Component {
     state = {};
@@ -12,7 +10,6 @@ class Config extends React.Component {
     actions = {
         changeLanguage: (lng) => {
             this.props.i18n.changeLanguage(lng);
-            this.props.changeLanguage4code(lng)
         }
     };
 
@@ -36,11 +33,5 @@ class Config extends React.Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        changeLanguage4code: (lng) => dispatch(codeActions.changeLanguage(lng))
-    };
-};
-
-export default connect(null, mapDispatchToProps)(withTranslation()(Config));
+export default withTranslation()(Config);
 

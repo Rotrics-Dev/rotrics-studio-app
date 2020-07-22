@@ -8,19 +8,50 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
-import styles from './styles.css'//可以做一些样式覆盖
-import i18nOptions from "./i18n";
-import i18n from 'i18next'
+import styles from './styles.css';
+import i18next from 'i18next'
 
-console.time('i18n');
-i18n
+const i18nOptions = {
+    // lng: "zh-CN",
+    backend: {
+        /* translation file path */
+        loadPath: './asset/i18n/{{ns}}/{{lng}}.json'
+    },
+    /**
+     * Array of allowed languages
+     * @default false
+     */
+    supportedLngs: ['en', 'zh-CN'],
+    /**
+     * Language codes to lookup, given set language is
+     * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
+     * 'currentOnly' --> 'en-US',
+     * 'languageOnly' --> 'en'
+     * @default 'all'
+     */
+    load: 'currentOnly',
+    fallbackLng: 'en',
+    debug: false,
+    ns: ['translations'],
+    defaultNS: 'translations',
+    keySeparator: false,
+    interpolation: {
+        escapeValue: false,
+        formatSeparator: ','
+    },
+    react: {
+        useSuspense: false,
+        wait: true
+    }
+};
+
+i18next
     .use(Backend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init(i18nOptions)
     .then(
         (t) => {
-            console.timeEnd('i18n');
             const reduxStore = createStore(reducer, applyMiddleware(thunk));
             ReactDom.render(
                 <Provider store={reduxStore}>
