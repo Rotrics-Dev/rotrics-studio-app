@@ -96,13 +96,13 @@ class Index extends React.Component {
         this.delayToConnectSerialPort(this, false, false, 'Level Done,you could reconnect the device.');
         this.setState({showLoading: true});
     }
-    delayToConnectSerialPort = (that, showModal, setStarted, msg) => {
+    delayToConnectSerialPort = (that, showModal, started, msg) => {
         setTimeout(() => {
             // console.log('delayToConnectSerialPort' + Date.now());
             const {lastConnectSerialPort} = that.state;
             const {paths} = that.props;
             if ((!paths) || (!paths.length)) {
-                this.delayToConnectSerialPort(that, showModal, msg);
+                this.delayToConnectSerialPort(that, showModal, started, msg);
                 return;
             }
             if (paths.indexOf(lastConnectSerialPort) === -1) {
@@ -112,16 +112,16 @@ class Index extends React.Component {
             } else {
                 //连接之前串口
                 this.props.openSerialPort(lastConnectSerialPort);
-                this.delayToM1112(that, showModal, setStarted, msg);
+                this.delayToM1112(that, showModal, started, msg);
             }
         }, 1000);
     }
-    delayToM1112 = (that, showModal, setStarted, msg) => {
+    delayToM1112 = (that, showModal, started, msg) => {
         setTimeout(() => {
             // console.log('delayToM1112' + Date.now());
             const {path} = that.props;
             if (!path) {//串口未连接成功
-                this.delayToConnectSerialPort(that, showModal, setStarted, msg);
+                this.delayToConnectSerialPort(that, showModal, started, msg);
                 return;
             }
 
@@ -129,7 +129,7 @@ class Index extends React.Component {
             message.success(msg);
             that.setState({
                 showModal,
-                started: setStarted,
+                started,
                 showLoading: false
             });
         }, 1000);
@@ -242,7 +242,8 @@ class Index extends React.Component {
                             <div style={{marginTop: "10px"}}><b>{t("Step")} 4:</b>
                                 {t("Click Level when all the points are leveled.")}
                             </div>
-                            <Button size={"small"} style={{width: "130px"}} onClick={this.onClickLevel}>{t("Level")}</Button>
+                            <Button size={"small"} style={{width: "130px"}}
+                                    onClick={this.onClickLevel}>{t("Level")}</Button>
                         </Space>
                         <Space>
                             <img className={POINT_STYLE[pointIndex ? pointIndex : 0]}/>
