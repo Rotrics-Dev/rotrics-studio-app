@@ -7,6 +7,10 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+
+const tooltipId = getUuid();
 
 class ConfigGreyscale extends PureComponent {
     actions = {
@@ -55,12 +59,22 @@ class ConfigGreyscale extends PureComponent {
         });
         return (
             <div>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
                     <ConfigTitle text={t(config.label)}/>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Inverts black to white and vise versa.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
@@ -68,7 +82,9 @@ class ConfigGreyscale extends PureComponent {
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('The difference between the lightest color and the darkest color.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(contrast.label)}`}/>
                         </Col>
@@ -80,7 +96,9 @@ class ConfigGreyscale extends PureComponent {
                                 onAfterChange={actions.setContrast}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('The engraved picture is brighter when this value is bigger.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(brightness.label)}`}/>
                         </Col>
@@ -92,7 +110,9 @@ class ConfigGreyscale extends PureComponent {
                                 onAfterChange={actions.setBrightness}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Set the threshold to turn the color that is not pure white into pure white.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(white_clip.label)}`}/>
                         </Col>
@@ -104,7 +124,9 @@ class ConfigGreyscale extends PureComponent {
                                 onAfterChange={actions.setWhiteClip}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
@@ -116,7 +138,9 @@ class ConfigGreyscale extends PureComponent {
                                 onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Choose an algorithm for image processing.')}>
                         <Col span={10}>
                             <ConfigText text={`${t(algorithm.label)}`}/>
                         </Col>
@@ -125,7 +149,9 @@ class ConfigGreyscale extends PureComponent {
                                           onChange={actions.setAlgorithm}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Choose the movement mode')}>
                         <Col span={10}>
                             <ConfigText text={`${t(movement_mode.label)}`}/>
                         </Col>

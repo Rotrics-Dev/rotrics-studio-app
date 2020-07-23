@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
-import {Button, Modal, Select, Space, notification, Switch} from 'antd';
+import {Button, Modal, Select, Space, Switch} from 'antd';
+import notification from "../../utils/notificationUtils";
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
@@ -147,7 +148,7 @@ class Index extends React.Component {
                     </a>
                 </Space>
                 <Modal
-                    title="Connect DexArm"
+                    title={t("Connect DexArm")}
                     visible={state.serialPortModalVisible}
                     onCancel={actions.closeSerialPortModal}
                     footer={[
@@ -157,7 +158,7 @@ class Index extends React.Component {
                             type="primary"
                             disabled={connectDisabled}
                             onClick={actions.openSerialPort}>
-                            Connect
+                            {t("Connect")}
                         </Button>,
                         <Button
                             ghost
@@ -165,17 +166,17 @@ class Index extends React.Component {
                             type="primary"
                             disabled={disconnectDisabled}
                             onClick={actions.closeSerialPort}>
-                            Disconnect
+                            {t('Disconnect')}
                         </Button>,
                     ]}
                 >
                     <Space direction={"vertical"}>
-                        <h4>{`Status: ${statusDes}`}</h4>
+                        <h4>{`${t('Status')}: ${t(statusDes)}`}</h4>
                         <Select
                             style={{width: 300}}
                             value={selectedPath}
                             onChange={actions.selectPath}
-                            placeholder="Choose a port"
+                            placeholder={t("Choose a port")}
                             options={options}/>
                     </Space>
                 </Modal>

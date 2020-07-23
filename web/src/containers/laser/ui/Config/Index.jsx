@@ -172,10 +172,9 @@ class Index extends React.Component {
                     </div>
                 </Space>
                 <Line/>
-                <h4 style={{
-                    padding: "10px 0 0 10px",
-                    color: "grey"
-                }}> {`${t('selected image type : ')} ${model ? t(model.fileType) : ""}`}</h4>
+                {/*<h4 style={{*/}
+                {/*    padding: "10px 0 0 10px",*/}
+                {/*}}>{t(model ? model.fileType : "")}</h4>*/}
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -184,7 +183,8 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px"}} size={16}>
+                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px", paddingTop: "10px"}}
+                       size={16}>
                     <button
                         className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}
@@ -210,11 +210,11 @@ class Index extends React.Component {
                         <h6 className={styles.h_file_type}>{t('TEXT')}</h6>
                     </button>
                 </Space>
-                <Transformation/>
                 <ConfigGreyscale/>
                 <ConfigBW/>
                 <ConfigSvg/>
                 <ConfigSvgText/>
+                <Transformation/>
                 <WorkingParameters/>
             </div>
         )

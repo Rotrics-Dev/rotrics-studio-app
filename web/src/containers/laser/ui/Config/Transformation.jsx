@@ -8,6 +8,10 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+
+const tooltipId = getUuid();
 
 class Transformation extends PureComponent {
     actions = {
@@ -47,12 +51,22 @@ class Transformation extends PureComponent {
         });
         return (
             <div>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
                     <ConfigTitle text={t(transformation.label)}/>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Width of the picture.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(width.label)}(${width.unit})`}/>
                         </Col>
@@ -64,7 +78,9 @@ class Transformation extends PureComponent {
                                 onAfterChange={actions.setWidth}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Height of the picture.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(height.label)}(${height.unit})`}/>
                         </Col>
@@ -76,7 +92,9 @@ class Transformation extends PureComponent {
                                 onAfterChange={actions.setHeight}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Rotate of the picture.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(rotation.label)}(${rotation.unit})`}/>
                         </Col>
@@ -88,7 +106,9 @@ class Transformation extends PureComponent {
                                 onAfterChange={actions.setRotationDegree}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('X offset of the picture.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(x.label)}(${x.unit})`}/>
                         </Col>
@@ -100,7 +120,9 @@ class Transformation extends PureComponent {
                                 onAfterChange={actions.setX}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Y offset of the picture.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(y.label)}(${y.unit})`}/>
                         </Col>
@@ -112,7 +134,9 @@ class Transformation extends PureComponent {
                                 onAfterChange={actions.setY}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Flip the selected picture vertically, horizontally or in both directions.')}>
                         <Col span={15}>
                             <ConfigText text={`${t(flip_model.label)}`}/>
                         </Col>

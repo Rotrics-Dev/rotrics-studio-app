@@ -8,6 +8,10 @@ import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
 
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+const tooltipId = getUuid();
+
 //hiddenStr: "movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", config) => {
     let hidden = false;
@@ -117,12 +121,22 @@ class WorkingParameters extends PureComponent {
 
         return (
             <div>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
                     <ConfigTitle text={t(working_parameters.label)}/>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how fast the front end moves when it’s working.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>
@@ -135,7 +149,9 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     {!jogSpeedHidden &&
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how fast the front end moves when it’s not working.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>
@@ -149,7 +165,9 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     }
                     {!dwellTimeHidden &&
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how long the laser keeps on when it’s engraving a dot.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(dwell_time.label)}(${dwell_time.unit})`}/>
                         </Col>
@@ -162,7 +180,9 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can\'t be cut with only one pass.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(multi_pass.label)}`}/>
                         </Col>
@@ -171,7 +191,9 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     {multi_pass.default_value &&
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how many times the printer will run the G-code automatically.')}>
                         <Col span={17} push={2}>
                             <ConfigText text={`${t(passes.label)}`}/>
                         </Col>
@@ -185,7 +207,9 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     }
                     {multi_pass.default_value &&
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how much the laser module will be lowered after each pass.')}>
                         <Col span={17} push={2}>
                             <ConfigText text={`${t(pass_depth.label)}(${pass_depth.unit})`}/>
                         </Col>
@@ -199,7 +223,9 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('When enabled, the power used to engrave this image will be set in the G-code, When engraving multiple images, you can set the power for each image separately.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(fixed_power.label)}`}/>
                         </Col>
@@ -208,7 +234,9 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     {fixed_power.default_value &&
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Power to use when laser is working.')}>
                         <Col span={17} push={2}>
                             <ConfigText text={`${t(power.label)}(${power.unit})`}/>
                         </Col>

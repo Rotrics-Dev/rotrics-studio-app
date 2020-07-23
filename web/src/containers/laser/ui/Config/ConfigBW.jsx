@@ -7,6 +7,10 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+
+const tooltipId = getUuid();
 
 class ConfigBW extends PureComponent {
     actions = {
@@ -40,12 +44,22 @@ class ConfigBW extends PureComponent {
         });
         return (
             <div>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
                     <ConfigTitle text={t(config.label)}/>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Inverts black to white and vise versa.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
@@ -53,7 +67,9 @@ class ConfigBW extends PureComponent {
                             <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Set the threshold of the black color based on the original color of the image.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(bw.label)}`}/>
                         </Col>
@@ -65,7 +81,9 @@ class ConfigBW extends PureComponent {
                                 onAfterChange={actions.setBW}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
@@ -77,7 +95,9 @@ class ConfigBW extends PureComponent {
                                 onAfterChange={actions.setDensity}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Select the direction of the engraving path.')}>
                         <Col span={15}>
                             <ConfigText text={`${t(line_direction.label)}`}/>
                         </Col>
