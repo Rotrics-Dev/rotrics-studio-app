@@ -7,6 +7,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {actions as p3dMaterialActions} from "../../../../reducers/p3dMaterial";
 import {connect} from 'react-redux';
 import {ConfigText} from '../../../../components/Config';
+import {withTranslation} from 'react-i18next';
 
 const getMaterialByName = (materials, name) => {
     for (let i = 0; i < materials.length; i++) {
@@ -54,6 +55,10 @@ class Material extends PureComponent {
         if (!name || materials.length === 0) {
             return null;
         }
+        let {t} = this.props;
+        const tCura = (key) => {
+            return this.props.t("cura:" + key)
+        };
         const actions = this.actions;
         const selected = getMaterialByName(materials, name);
         const {isOfficial = false, overrides} = selected;
@@ -74,7 +79,8 @@ class Material extends PureComponent {
                     {materialEles}
                     <Row style={{marginTop: "8px"}}>
                         <Col span={19}>
-                            <ConfigText text={`${material_diameter.label}(${material_diameter.unit})`}/>
+                            <ConfigText text={tCura(material_diameter.label)}/>
+                            <ConfigText text={`(${material_diameter.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -88,7 +94,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${material_flow.label}(${material_flow.unit})`}/>
+                            <ConfigText text={tCura(material_flow.label)}/>
+                            <ConfigText text={`(${material_flow.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -101,8 +108,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText
-                                text={`${material_print_temperature.label}(${material_print_temperature.unit})`}/>
+                            <ConfigText text={tCura(material_print_temperature.label)}/>
+                            <ConfigText text={`(${material_print_temperature.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -115,8 +122,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText
-                                text={`${material_print_temperature_layer_0.label}(${material_print_temperature_layer_0.unit})`}/>
+                            <ConfigText text={tCura(material_print_temperature_layer_0.label)}/>
+                            <ConfigText text={`(${material_print_temperature_layer_0.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -129,8 +136,8 @@ class Material extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText
-                                text={`${material_final_print_temperature.label}(${material_final_print_temperature.unit})`}/>
+                            <ConfigText text={tCura(material_final_print_temperature.label)}/>
+                            <ConfigText text={`(${material_final_print_temperature.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -165,7 +172,9 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Material);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Material));
+
+
 
 
 

@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
-    "build": "webpack"
+    "build": "webpack",
+    "extract_i18n_cura": "node ./i18n_cura/extract.js"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.2.1",

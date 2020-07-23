@@ -40,7 +40,7 @@ class Index extends React.Component {
                     size="small"
                     onClick={actions.onClickUpload}
                 >
-                    {t("cura:Upload")}
+                    {t("Upload")}
                 </Button>
             </div>
         )
@@ -53,6 +53,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(withTranslation(['cura'])(Index));
+export default connect(null, mapDispatchToProps)(withTranslation()(Index));
 
 
