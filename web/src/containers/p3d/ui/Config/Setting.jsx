@@ -67,7 +67,7 @@ class Setting extends PureComponent {
         }
         let {t} = this.props;
         const tCura = (key) => {
-            return this.props.t("cura:" + key)
+            return t("cura:" + key)
         };
         const actions = this.actions;
         const selected = getSettingByName(settings, name);
