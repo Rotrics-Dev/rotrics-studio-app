@@ -41,7 +41,7 @@ class General extends React.Component {
     };
 
     render() {
-        const {t,i18n} = this.props;
+        const {t, i18n} = this.props;
         const state = this.state;
         const actions = this.actions;
         const {firmwareVersion, hardwareVersion, current, status, description, isFirmwareUpToDate, isFirmwareUpgradeSuccess, bootLoaderModalVisible, closeBootLoaderModal} = this.props;
@@ -54,8 +54,8 @@ class General extends React.Component {
             stepEles.push(
                 <Steps.Step
                     key={i}
-                    title={title}
-                    description={current === i ? description : undefined}
+                    title={t(title)}
+                    description={current === i ? t(description) : undefined}
                     icon={(current === i && status === "process") ? <LoadingOutlined/> : undefined}
                 />
             )
@@ -110,7 +110,7 @@ class General extends React.Component {
                     </div>
                 </div>
                 <Modal
-                    title="Firmware Upgrade"
+                    title={t("Firmware Upgrade")}
                     visible={state.firmwareUpgradeModalVisible}
                     onCancel={actions.closeFirmwareUpgradeModal}
                     footer={null}
@@ -123,26 +123,26 @@ class General extends React.Component {
                     {isFirmwareUpToDate &&
                     <Result
                         icon={<SmileOutlined/>}
-                        title="Firmware is up to date, no need to upgrade."
+                        title={t("Firmware is up to date, no need to upgrade.")}
                         extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>OK</Button>}
                     />
                     }
                     {isFirmwareUpgradeSuccess &&
                     <Result
                         status="success"
-                        title="Successfully Upgrade!"
+                        title={t("Successfully Upgrade!")}
                         extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>OK</Button>}
                     />
                     }
                 </Modal>
                 <Modal
-                    title="Boot Loader Alert"
+                    title={t("Boot Loader Alert")}
                     visible={bootLoaderModalVisible}
                     footer={null}
                     centered={true}
                     closable={false}
                 >
-                    <p>{"You must upgrade firmware"}</p>
+                    <p>{t("You should upgrade firmware")}</p>
                     <Button
                         type="link"
                         size="small"
@@ -151,7 +151,7 @@ class General extends React.Component {
                             actions.startFirmwareUpgrade();
                         }}
                     >
-                        {"start upgrade"}
+                        {t("start upgrade")}
                     </Button>
                 </Modal>
             </div>

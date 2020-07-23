@@ -2,9 +2,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import styles from './styles.css';
-import {Radio, Space, Modal, message, Button,} from 'antd';
+import {Radio, Space, Modal, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {withTranslation} from 'react-i18next';
+import message from "../../utils/messageUtils";
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -93,7 +94,7 @@ class Index extends React.Component {
             'M2007'
         ];
         this.props.serialPortWrite(gcode.join('\n') + '\n');
-        this.delayToConnectSerialPort(this, false, false, 'Level Done,you could reconnect the device.');
+        this.delayToConnectSerialPort(this, false, false, 'Level Done.');
         this.setState({showLoading: true});
     }
     delayToConnectSerialPort = (that, showModal, started, msg) => {

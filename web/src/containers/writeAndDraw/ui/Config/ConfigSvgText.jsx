@@ -7,6 +7,10 @@ import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw"
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
+import ReactTooltip from "react-tooltip";
+import {getUuid} from '../../../../utils';
+
+const tooltipId = getUuid();
 
 class ConfigSvgText extends PureComponent {
     actions = {
@@ -55,14 +59,24 @@ class ConfigSvgText extends PureComponent {
 
         return (
             <div>
+                <ReactTooltip
+                    id={tooltipId}
+                    place="left"
+                    type="info"
+                    effect="solid"
+                    backgroundColor="#c0c0c0"
+                    textColor="#292421"
+                    delayShow={200}/>
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
-                    <ConfigTitle text={t(config.label)}/>
-                    <Row>
+                    <ConfigTitle text={t('Text')}/>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Content of the Text.')}>
                         <Col span={13}>
-                            <ConfigText text={t(text.label)}/>
+                            <ConfigText text={`${t('Content')}`}/>
                         </Col>
                         <Col span={11}>
                             <Input.TextArea style={{fontSize: "12px"}} value={text.default_value}
@@ -70,17 +84,21 @@ class ConfigSvgText extends PureComponent {
                                             onChange={actions.setText}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Font of the Text.')}>
                         <Col span={13}>
-                            <ConfigText text={t(font.label)}/>
+                            <ConfigText text={`${t(font.label)}`}/>
                         </Col>
                         <Col span={11}>
                             <ConfigSelect options={fontOptions} value={font.default_value} onChange={actions.setFont}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Font size of the Text.')}>
                         <Col span={19}>
-                            <ConfigText text={t(font_size.label)}/>
+                            <ConfigText text={`${t(font_size.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -90,17 +108,21 @@ class ConfigSvgText extends PureComponent {
                                 onAfterChange={actions.setFontSize}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Optimizes the path based on the proximity of the lines in the image.')}>
                         <Col span={19}>
-                            <ConfigText text={t(optimize_path.label)}/>
+                            <ConfigText text={`${t(optimize_path.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Set the degree to which an area is filled with laser dots.')}>
                         <Col span={19}>
-                            <ConfigText text={t(fill.label)}/>
+                            <ConfigText text={`${t(fill.label)}`}/>
                         </Col>
                         <Col span={5}>
                             <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
@@ -109,7 +131,7 @@ class ConfigSvgText extends PureComponent {
                     {fill.default_value &&
                     <Row>
                         <Col span={17} push={2}>
-                            <ConfigText text={t(fill_density.label)}/>
+                            <ConfigText text={`${t(fill_density.label)}`}/>
                         </Col>
                         <Col span={5} push={2}>
                             <NumberInput
