@@ -6,11 +6,12 @@
   "license": "MIT",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "npm run pre-build && electron .",
     "rebuild": "electron-rebuild -f -w serialport",
     "build:mac-x64": "electron-builder --mac --x64",
     "build:win-x64": "electron-builder --windows --x64",
-    "build": "electron-builder --mac --x64"
+    "build": "electron-builder --mac --x64",
+    "pre-build": "node ./pre-build.js"
   },
   "build": {
     "appId": "com.rotrics.rotrics-studio-app",
