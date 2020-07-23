@@ -1,76 +1,53 @@
 const fs = require('fs');
+const path = require('path');
 
-const delDir = (dirPath) => {
-    let files = [];
-    if(fs.existsSync(dirPath)){
-        files = fs.readdirSync(dirPath);
-        files.forEach((file, index) => {
-            let curPath = dirPath + "/" + file;
-            if(fs.statSync(curPath).isDirectory()){
-                delDir(curPath); //递归删除文件夹
+function CopyDirectory(src, dest) {
+    if (!fs.existsSync(src)) {
+        return false;
+    }
+    if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, {recursive: true});
+    }
+    var dirs = fs.readdirSync(src);
+    dirs.forEach(function (item) {
+        var item_path = path.join(src, item);
+        var temp = fs.statSync(item_path);
+        if (temp.isFile()) {
+            fs.copyFileSync(item_path, path.join(dest, item));
+        } else if (temp.isDirectory()) {
+            // console.log("Item Is Directory:" + item);
+            CopyDirectory(item_path, path.join(dest, item));
+        }
+    });
+}
+
+function DeleteDirectory(dir) {
+    if (fs.existsSync(dir) == true) {
+        var files = fs.readdirSync(dir);
+        files.forEach(function (item) {
+            var item_path = path.join(dir, item);
+            // console.log(item_path);
+            if (fs.statSync(item_path).isDirectory()) {
+                DeleteDirectory(item_path);
             } else {
-                fs.unlinkSync(curPath); //删除文件
+                fs.unlinkSync(item_path);
             }
         });
-        fs.rmdirSync(dirPath);
+        fs.rmdirSync(dir);
     }
-};
-
-/*
- * 复制目录、子目录，及其中的文件
- * @param src {String} 要复制的目录
- * @param dist {String} 复制到目标目录
- */
-const copyDir = (src, dist, callback) => {
-    fs.access(dist, (err) => {
-        if(err){
-            // 目录不存在时创建目录
-            fs.mkdirSync(dist);
-        }
-        _copy(null, src, dist);
-    });
-
-    const _copy = (err, src, dist) => {
-        if(err){
-            callback(err);
-        } else {
-            fs.readdir(src, function(err, paths) {
-                if(err){
-                    callback(err)
-                } else {
-                    paths.forEach(function(path) {
-                        var _src = src + '/' +path;
-                        var _dist = dist + '/' +path;
-                        fs.stat(_src, function(err, stat) {
-                            if(err){
-                                callback(err);
-                            } else {
-                                // 判断是文件还是目录
-                                if(stat.isFile()) {
-                                    fs.writeFileSync(_dist, fs.readFileSync(_src));
-                                } else if(stat.isDirectory()) {
-                                    // 当是目录是，递归复制
-                                    copyDir(_src, _dist, callback)
-                                }
-                            }
-                        })
-                    })
-                }
-            })
-        }
-    }
-};
+}
 
 //1. 删除文件夹：build-server，build-web，CuraEngine
 //2. 从目标目录，复制文件夹：build-server，build-web，CuraEngine
-delDir("./build-server");
-delDir("./build-web");
-delDir("./CuraEngine");
+DeleteDirectory("./build-server");
+DeleteDirectory("./CuraEngine");
+DeleteDirectory("./build-web");
 
-fs.mkdirSync("./build-server");
-fs.mkdirSync("./build-web");
-fs.mkdirSync("./CuraEngine");
+CopyDirectory("../server/src", "./build-server");
+CopyDirectory("../server/CuraEngine", "./CuraEngine");
+CopyDirectory("../web/build-web", "./build-web");
 
-copyDir("../server/src", "./build-server")
-copyDir("../web/build-web", "./build-web")
-copyDir("../server/CuraEngine", "./CuraEngine")
+//https://stackoverflow.com/questions/20769023/using-nodejs-chmod-777-and-0777
+fs.chmodSync("./CuraEngine/2.7/Linux-x64/CuraEngine", 511);
+fs.chmodSync("./CuraEngine/2.7/macOS/CuraEngine", 511);
+fs.chmodSync("./CuraEngine/2.7/Win-x64/CuraEngine.exe", 511);

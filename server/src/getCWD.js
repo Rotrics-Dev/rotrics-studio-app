@@ -20,9 +20,9 @@ const getCWD = () => {
     }
 
     // run in packaged electron app
-    // __dirname为/Users/liuming/Documents/github/rotrics/rotrics-studio-app/electron/output/mac/Rotrics Stduio.app/Contents/Resources/app/build-server/src
-    // src的据对路径，因此需要向上两级，/electron/才是对的
-    return path.join(__dirname, '../..');
+    // __dirname为/Users/liuming/Documents/github/rotrics/rotrics-studio-app/electron/output/mac/Rotrics Stduio.app/Contents/Resources/app/build-server
+    // cwd是app，因此需要向上一级
+    return path.join(__dirname, './..');
 };
 
 export default getCWD;
