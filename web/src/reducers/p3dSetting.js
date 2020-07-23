@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 const _getAvailableOfficialName = (settings) => {
     for (let i = 0; i < settings.length; i++) {
         const item = settings[i];
-        if (item.isOfficial) {
+        if (item.isOfficial && item.isDefault) {
             return item.name;
         }
     }

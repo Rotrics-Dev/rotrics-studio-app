@@ -5,6 +5,7 @@
   "label": "Normal Quality",
   "inherits": "activated_material",
   "isOfficial": true,
+  "isDefault": true,
   "overrides": {
     "initial_layer_line_width_factor": {
       "label": "Initial Layer Line Width",
