@@ -1,7 +1,7 @@
 import {message} from 'antd';
 import i18next from 'i18next'
 
-const myMessage = {
+export default  {
     info: (content, duration, onClose) => message.info(i18next.t(content), duration, onClose),
     success: (content, duration, onClose) => message.success(i18next.t(content), duration, onClose),
     error: (content, duration, onClose) => message.error(i18next.t(content), duration, onClose),
@@ -12,4 +12,3 @@ const myMessage = {
     config: (options) => message.config(options),
     destroy: () => message.destroy()
 }
-export default myMessage;

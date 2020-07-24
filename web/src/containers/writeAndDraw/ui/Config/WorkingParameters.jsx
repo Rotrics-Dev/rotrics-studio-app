@@ -49,7 +49,7 @@ class WorkingParameters extends PureComponent {
                     <ConfigTitle text={t(working_parameters.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fast the front end moves when it’s working.')}>
+                        data-tip={t('Determines how fast the front end moves when itâ€™s working.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>
@@ -61,9 +61,9 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fast the front end moves when it’s not working.')}>
+                        data-tip={t('Determines how fast the front end moves when itâ€™s working.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>

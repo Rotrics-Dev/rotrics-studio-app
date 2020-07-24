@@ -1,4 +1,4 @@
-import {message} from 'antd';
+import message from "../utils/message";
 import socketClientManager from "../socket/socketClientManager";
 import {
     GCODE_UPDATE_SENDER_STATUS,

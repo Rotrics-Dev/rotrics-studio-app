@@ -79,8 +79,8 @@ class ConfigSvgText extends PureComponent {
                             <ConfigText text={`${t('Content')}`}/>
                         </Col>
                         <Col span={11}>
-                            <Input.TextArea style={{fontSize: "12px"}} value={text.default_value}
-                                            autoSize={{minRows: 1, maxRows: 1}}
+                            <Input.TextArea style={{fontSize: "12px", resize: "none"}}
+                                            value={text.default_value}
                                             onChange={actions.setText}/>
                         </Col>
                     </Row>

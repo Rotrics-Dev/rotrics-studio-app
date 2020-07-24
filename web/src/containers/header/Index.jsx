@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
 import {Button, Modal, Select, Space, Switch} from 'antd';
-import notification from "../../utils/notificationUtils";
+import notification from "../../utils/notification";
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';

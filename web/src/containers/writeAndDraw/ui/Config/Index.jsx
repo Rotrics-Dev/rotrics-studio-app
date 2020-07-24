@@ -2,8 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
 import styles from './styles.css';
-import {Button, Space, message, List} from 'antd';
-
+import {Button, Space, List} from 'antd';
+import message from "../../../../utils/message";
 import "antd/dist/antd.css";
 
 import Transformation from './Transformation.jsx';

@@ -25,7 +25,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
-import {notification} from 'antd';
+import notification from "../../utils/notification";
 import {withTranslation} from 'react-i18next';
 
 import {getUuid} from '../../utils/index.js';

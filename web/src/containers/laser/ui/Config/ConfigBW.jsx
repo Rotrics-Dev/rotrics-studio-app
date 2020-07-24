@@ -69,7 +69,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Set the threshold of the black color based on the original color of the image.')}>
+                        data-tip={t('Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(bw.label)}`}/>
                         </Col>

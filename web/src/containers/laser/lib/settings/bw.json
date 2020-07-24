@@ -95,8 +95,8 @@
         "type": "bool"
       },
       "bw": {
-        "label": "B&W",
-        "description": "B&W description",
+        "label": "Threshold",
+        "description": "Threshold description",
         "default_value": 140,
         "type": "int",
         "minimum_value": 0,
