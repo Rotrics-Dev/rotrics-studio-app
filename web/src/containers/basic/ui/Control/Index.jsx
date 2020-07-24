@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import NumberInput from "../../../../components/NumberInput/Index.jsx";
 import {ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next'
-import notification from '../../../../utils/notificationUtils.js'
 
 class Index extends React.Component {
     state = {
@@ -84,13 +83,6 @@ class Index extends React.Component {
         return (
             <div>
                 <DeviceControl/>
-                <button onClick={() => {
-                    notification.success({
-                        message: 'Content of the Text.',
-                        duration: 1 //设置延时，防止调平断联时消息不消失
-                    })
-                }}>notification
-                </button>
                 <Line/>
                 <div style={{padding: "6px"}}>
                     <ConfigTitle text={t("Motion Mode")}/>
