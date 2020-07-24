@@ -25,7 +25,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
 import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
-import notification from "../../utils/notification";
+import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
 
 import {getUuid} from '../../utils/index.js';
@@ -67,14 +67,14 @@ class Index extends React.Component {
 
         setInterval(() => {
             if (this.props.socketStatus === "disconnect") {
-                notification.error({
+                notificationI18n.error({
                     key: notificationKey,
                     message: 'Internal error occurred',
                     description: 'Please restart the app',
                     duration: 0
                 });
             } else if (this.props.socketStatus === "connect") {
-                notification.close(notificationKey);
+                notificationI18n.close(notificationKey);
             }
         }, 2000)
     }

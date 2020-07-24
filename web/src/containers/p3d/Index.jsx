@@ -1,9 +1,9 @@
 import React from 'react';
 import {Tabs} from 'antd';
-import message from "../../utils/message";
+import messageI18n from "../../utils/messageI18n";
 import "antd/dist/antd.css";
 import FileSaver from 'file-saver';
-import ToolBar from '../../components/ToolBar/Index.jsx'
+import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 
 import Upload from "./ui/Upload/Index.jsx";
 import Transformation from "./ui/Transformation/Index.jsx";
@@ -18,6 +18,7 @@ import Control from "./ui/Control/Index.jsx";
 import styles from './styles.css';
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 
 const {TabPane} = Tabs;
 
@@ -44,7 +45,7 @@ class Index extends React.Component {
         exportModels: () => {
             console.log("exportModels")
             if (this.props.modelCount === 0) {
-                message.warning('Load model first', 1);
+                messageI18n.warning('Load model first', 1);
                 return;
             }
             const blob = exportModelsToBlob();
@@ -52,12 +53,13 @@ class Index extends React.Component {
             const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
             const fileName = arr.join("") + ".stl";
             FileSaver.saveAs(blob, fileName, true);
-            message.success('Export model success', 1);
+            messageI18n.success('Export model success', 1);
         }
     };
 
     render() {
         const {model, modelCount} = this.props;
+        const {t} = this.props;
         const operations = this.operations;
         const enabledInfo = {
             exportModels: (modelCount > 0),
@@ -129,7 +131,7 @@ class Index extends React.Component {
                     right: "315px",
                     width: "36px"
                 }}>
-                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
+                    <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",
@@ -144,14 +146,14 @@ class Index extends React.Component {
                           tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                G-code
+                                {t('G-code')}
                             </div>
                         } key="1">
                             <Config/>
                         </TabPane>
                         <TabPane tab={
                             <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                Control
+                                {t('Control')}
                             </div>
                         } key="2">
                             <Control/>
@@ -183,4 +185,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

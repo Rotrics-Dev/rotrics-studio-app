@@ -3,7 +3,6 @@ import styles from './styles.css';
 import {Radio, Space} from 'antd';
 import Level from '../Level/Index.jsx'
 import {ConfigTitle} from "../Config";
-import Line from '../../components/Line/Index.jsx'
 import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {

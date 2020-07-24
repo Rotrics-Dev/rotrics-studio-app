@@ -5,14 +5,14 @@ import styles from './styles.css';
 import {Radio, Space, Modal, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {withTranslation} from 'react-i18next';
-import message from "../../utils/message";
+import messageI18n from "../../utils/messageI18n";
 
 const INIT_Z_ARRAY = [
     undefined,
     undefined,
     undefined,
     undefined
-]
+];
 const POINT_NAME = ['A', 'B', 'C', 'D'];
 const POINT_STYLE = [styles.img_point_a, styles.img_point_b, styles.img_point_c, styles.img_point_d];
 
@@ -59,7 +59,7 @@ class Index extends React.Component {
 
     onClickSave = () => {
         if (this.state.pointIndex === undefined) {
-            message.error('You should choose one point first!');
+            messageI18n.error('You should choose one point first!');
             return;
         }
         const pointIndex = this.state.pointIndex;
@@ -69,7 +69,7 @@ class Index extends React.Component {
             this.setState({zArray});
         });
         this.props.serialPortWrite('M114\n');
-        message.success(`Point ${POINT_NAME[pointIndex]} was saved.`);
+        messageI18n.success(`Point ${POINT_NAME[pointIndex]} was saved.`);
     }
     onClickStart = () => {
         const gcode = [
@@ -84,7 +84,7 @@ class Index extends React.Component {
     onClickLevel = () => {
         for (let index = 0; index < this.state.zArray.length; index++) {
             if (this.state.zArray[index] === undefined) {
-                message.error(`Point ${POINT_NAME[index]} need to be saved.`);
+                messageI18n.error(`Point ${POINT_NAME[index]} need to be saved.`);
                 return;
             }
         }
@@ -107,7 +107,7 @@ class Index extends React.Component {
                 return;
             }
             if (paths.indexOf(lastConnectSerialPort) === -1) {
-                message.error('Device not Found');
+                messageI18n.error('Device not Found');
                 this.setState({showModal: false, showLoading: false});
                 //找不到之前的串口
             } else {
@@ -127,7 +127,7 @@ class Index extends React.Component {
             }
 
             that.props.serialPortWrite('M1112\n');
-            message.success(msg);
+            messageI18n.success(msg);
             that.setState({
                 showModal,
                 started,
@@ -155,7 +155,7 @@ class Index extends React.Component {
     showModal = () => {
         const {path} = this.props;
         if (!path) {
-            message.error('You should connect the device first.');
+            messageI18n.error('You should connect the device first.');
             return;
         }
         this.setState({

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
 import styles from './styles.css';
 import {Button, Space, List} from 'antd';
-import message from "../../../../utils/message";
+import messageI18n from "../../../../utils/messageI18n";
 import "antd/dist/antd.css";
 
 import Transformation from './Transformation.jsx';
@@ -18,7 +18,6 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
 import ActionButton from "../../../../components/ActionButton/Index.jsx";
-import {ConfigTitle} from '../../../../components/Config';
 import {getGcode4runBoundary} from "../../../../reducers/writeAndDraw";
 import {withTranslation} from 'react-i18next';
 
@@ -82,7 +81,7 @@ class Index extends React.Component {
             if (this.actions._checkStatus4gcode("generateGcode")) {
                 const {write_and_draw} = this.props;
                 this.props.generateGcode(write_and_draw);
-                message.success('Generate G-code success', 1);
+                messageI18n.success('Generate G-code success', 1);
             }
         },
         exportGcode: () => {
@@ -94,7 +93,7 @@ class Index extends React.Component {
                 const gcode = this.props.gcode;
                 const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(blob, fileName, true);
-                message.success('Export G-code success', 1);
+                messageI18n.success('Export G-code success', 1);
             }
         },
         runBoundary: () => {
@@ -118,39 +117,39 @@ class Index extends React.Component {
             switch (type) {
                 case "generateGcode": {
                     if (this.props.modelCount === 0) {
-                        message.warning('Load model first', 1);
+                        messageI18n.warning('Load model first', 1);
                         return false;
                     }
                     if (!this.props.isAllPreviewed) {
-                        message.warning('Previewing', 1);
+                        messageI18n.warning('Previewing', 1);
                         return false;
                     }
                     break;
                 }
                 case "exportGcode": {
                     if (this.props.modelCount === 0) {
-                        message.warning('Load model first', 1);
+                        messageI18n.warning('Load model first', 1);
                         return false;
                     }
                     if (!this.props.isAllPreviewed) {
-                        message.warning('Previewing', 1);
+                        messageI18n.warning('Previewing', 1);
                         return false;
                     }
                     if (!this.props.gcode) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 }
                 case "startSendGcode":
                     if (!this.props.gcode) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 case "stopSendGcode":
                     if (!this.props.gcode) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;

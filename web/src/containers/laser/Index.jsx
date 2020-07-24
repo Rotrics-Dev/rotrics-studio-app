@@ -3,7 +3,7 @@ import {Tabs} from 'antd';
 import "antd/dist/antd.css";
 
 import Canvas2D from './ui/Canvas2D/Index.jsx'
-import ToolBar from '../../components/ToolBar/Index.jsx'
+import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
@@ -62,7 +62,7 @@ class Index extends React.Component {
                     right: "315px",
                     width: "36px"
                 }}>
-                    <ToolBar operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
+                    <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div style={{
                     position: "absolute",

@@ -1,4 +1,4 @@
-import message from "../utils/message";
+import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
     SERIAL_PORT_PATH_UPDATE,
@@ -103,7 +103,7 @@ export const actions = {
         if (getState().serialPort.path) {
             socketClientManager.emitToServer(SERIAL_PORT_WRITE, data);
         } else {
-            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }
         return {type: null};
     },

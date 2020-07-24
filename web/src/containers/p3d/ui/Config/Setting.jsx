@@ -83,7 +83,7 @@ class Setting extends PureComponent {
                     style={{width: "100%", marginTop: "3px"}}
                     type={name === item.name ? 'primary' : ''}
                     onClick={() => actions.select(item.name)}
-                    text={item.label}/>)
+                    text={t("common:" + item.label)}/>)
         }
 
         return (

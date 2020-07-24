@@ -5,13 +5,11 @@ import {Space, Popconfirm} from 'antd';
 import styles from './styles.css';
 import {getUuid} from "../../utils";
 
-const clearConfirmText = 'Are you sure to delete all?';
-
 const tooltipId = getUuid();
 
 class Index extends PureComponent {
     render() {
-        let {operations = {}, enabledInfo, visibleInfo} = this.props;
+        let {operations = {}, enabledInfo, visibleInfo, tipInfo, clearPopConfirmInfo} = this.props;
         const {exportModels = noop, undo = noop, redo = noop, layFlat = noop, duplicate = noop, del = noop, clear = noop} = operations;
         if (!enabledInfo) {
             enabledInfo = {
@@ -35,6 +33,24 @@ class Index extends PureComponent {
                 clear: true
             };
         }
+        if (!tipInfo) {
+            tipInfo = {
+                exportModels: "export models",
+                undo: "undo",
+                redo: "redo",
+                layFlat: "lay flat",
+                duplicate: "duplicate",
+                del: "delete",
+                clear: "clear"
+            };
+        }
+        if (!clearPopConfirmInfo) {
+            clearPopConfirmInfo = {
+                cancelText: "NO",
+                okText: "OK",
+                title: "Are you sure to delete all?"
+            };
+        }
         return (
             <div className={styles.div_root}>
                 <ReactTooltip
@@ -46,11 +62,10 @@ class Index extends PureComponent {
                     textColor="#292421"
                     delayShow={500}/>
                 <Space direction={"vertical"} size={0}>
-
                     {visibleInfo.undo &&
                     <button
                         data-for={tooltipId}
-                        data-tip="undo"
+                        data-tip={tipInfo.undo}
                         onClick={undo}
                         className={styles.btn_undo}
                     />
@@ -58,7 +73,7 @@ class Index extends PureComponent {
                     {visibleInfo.redo &&
                     <button
                         data-for={tooltipId}
-                        data-tip="redo"
+                        data-tip={tipInfo.redo}
                         onClick={redo}
                         className={styles.btn_redo}
                     />
@@ -66,7 +81,7 @@ class Index extends PureComponent {
                     {visibleInfo.layFlat &&
                     <button
                         data-for={tooltipId}
-                        data-tip="lay flat"
+                        data-tip={tipInfo.layFlat}
                         disabled={!enabledInfo.layFlat}
                         onClick={layFlat}
                         className={styles.btn_lay_flat}
@@ -75,7 +90,7 @@ class Index extends PureComponent {
                     {visibleInfo.duplicate &&
                     <button
                         data-for={tooltipId}
-                        data-tip="duplicate"
+                        data-tip={tipInfo.duplicate}
                         disabled={!enabledInfo.duplicate}
                         onClick={duplicate}
                         className={styles.btn_duplicate}
@@ -84,7 +99,7 @@ class Index extends PureComponent {
                     {visibleInfo.del &&
                     <button
                         data-for={tooltipId}
-                        data-tip="delete"
+                        data-tip={tipInfo.del}
                         disabled={!enabledInfo.del}
                         onClick={del}
                         className={styles.btn_delete}
@@ -93,7 +108,7 @@ class Index extends PureComponent {
                     {visibleInfo.clear && !enabledInfo.clear &&
                     <button
                         data-for={tooltipId}
-                        data-tip="clear"
+                        data-tip={tipInfo.clear}
                         disabled={true}
                         className={styles.btn_clear}
                     />
@@ -101,14 +116,14 @@ class Index extends PureComponent {
                     {visibleInfo.clear && enabledInfo.clear &&
                     <Popconfirm
                         placement="left"
-                        title={clearConfirmText}
+                        title={clearPopConfirmInfo.title}
                         onConfirm={clear}
-                        okText="Yes"
-                        cancelText="No"
+                        okText={clearPopConfirmInfo.okText}
+                        cancelText={clearPopConfirmInfo.cancelText}
                     >
                         <button
                             data-for={tooltipId}
-                            data-tip="clear"
+                            data-tip={tipInfo.clear}
                             className={styles.btn_clear}
                         />
                     </Popconfirm>
@@ -116,7 +131,7 @@ class Index extends PureComponent {
                     {visibleInfo.exportModels &&
                     <button
                         data-for={tooltipId}
-                        data-tip="export models"
+                        data-tip={tipInfo.exportModels}
                         disabled={!enabledInfo.exportModels}
                         onClick={exportModels}
                         className={styles.btn_export}

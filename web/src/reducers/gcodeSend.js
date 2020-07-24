@@ -1,4 +1,4 @@
-import message from "../utils/message";
+import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
     GCODE_UPDATE_SENDER_STATUS,
@@ -28,13 +28,13 @@ export const actions = {
             const {status} = data;
             switch (status) {
                 case "start":
-                    message.success("Sending Start");
+                    messageI18n.success("Sending Start");
                     break;
                 case "end":
-                    message.success("Sending End");
+                    messageI18n.success("Sending End");
                     break;
                 case "stopped":
-                    message.success("Sending Stopped");
+                    messageI18n.success("Sending Stopped");
                     break;
             }
             dispatch(actions._updateState({...data}));
@@ -50,7 +50,7 @@ export const actions = {
         if (getState().serialPort.path) {
             socketClientManager.emitToServer(GCODE_START_SEND, {gcode: gcode + "\n", requireStatus});
         } else {
-            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }
         return {type: null};
     },
@@ -58,7 +58,7 @@ export const actions = {
         if (getState().serialPort.path) {
             socketClientManager.emitToServer(GCODE_APPEND_SEND, gcode);
         } else {
-            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }
         return {type: null};
     },
@@ -66,7 +66,7 @@ export const actions = {
         if (getState().serialPort.path) {
             socketClientManager.emitToServer(GCODE_STOP_SEND);
         } else {
-            message.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }
         return {type: null};
     }

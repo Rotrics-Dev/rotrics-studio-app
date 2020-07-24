@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
 import {Button, Modal, Select, Space, Switch} from 'antd';
-import notification from "../../utils/notification";
+import notificationI18n from "../../utils/notificationI18n";
 import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
@@ -24,22 +24,22 @@ class Index extends React.Component {
             const countDif = nextProps.paths.length - this.props.paths.length;
             if (countDif === 1) {
                 const dif = _.difference(nextProps.paths, this.props.paths);
-                notification.success({
+                notificationI18n.success({
                     key: notificationKeyConnected,
-                    message: 'Cable Connected',
+                    message: 'Cable Inserted',
                     description: dif[0],
                     // duration: 3
                 });
-                notification.close(notificationKeyDisconnected);
+                notificationI18n.close(notificationKeyDisconnected);
             } else if (countDif === -1) {
                 const dif = _.difference(this.props.paths, nextProps.paths);
-                notification.error({
+                notificationI18n.error({
                     key: notificationKeyDisconnected,
-                    message: 'Cable Disconnected',
+                    message: 'Cable Cable Pulled Out',
                     description: dif[0],
                     duration: 1 //设置延时，防止调平断联时消息不消失
                 });
-                notification.close(notificationKeyConnected)
+                notificationI18n.close(notificationKeyConnected)
             }
         }
         if (this.props.paths.includes(this.state.selectedPath) && !nextProps.paths.includes(this.state.selectedPath)) {

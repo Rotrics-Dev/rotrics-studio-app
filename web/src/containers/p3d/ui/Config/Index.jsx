@@ -1,13 +1,14 @@
 import React from 'react';
 import styles from './styles.css';
 import {Space, Button} from 'antd';
-import message from "../../../../utils/message";
+import messageI18n from "../../../../utils/messageI18n";
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
 import FileSaver from 'file-saver';
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import {withTranslation} from 'react-i18next';
 
 import ActionButton from '../../../../components/ActionButton/Index.jsx';
 
@@ -33,12 +34,11 @@ class Index extends React.Component {
                     .then(resp => resp.blob())
                     .then(blob => {
                         FileSaver.saveAs(blob, fileName, true);
-                        // message.success('Export G-code success', 1);
-                        message.error('Export G-code error', 1);
+                        messageI18n.success('Export G-code success', 1);
                     })
                     .catch(() => {
                         console.error("down load err")
-                        message.error('Export G-code error', 1);
+                        messageI18n.error('Export G-code failed', 1);
                     });
             }
         },
@@ -64,32 +64,31 @@ class Index extends React.Component {
             switch (type) {
                 case "generateGcode": {
                     if (this.props.modelCount === 0) {
-                        message.warning('Load model first', 1);
+                        messageI18n.warning('Load model first', 1);
                         return false;
                     }
                     break;
                 }
                 case "exportGcode": {
                     if (this.props.modelCount === 0) {
-                        message.warning('Load model first', 1);
+                        messageI18n.warning('Load model first', 1);
                         return false;
                     }
                     if (!this.props.result) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 }
                 case "startSendGcode":
-                    console.log("result: " + JSON.stringify(this.props.result))
                     if (!this.props.result) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
                 case "stopSendGcode":
                     if (!this.props.result) {
-                        message.warning('Generate G-code first', 1);
+                        messageI18n.warning('Generate G-code first', 1);
                         return false;
                     }
                     break;
@@ -99,15 +98,20 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const actions = this.actions;
         return (
             <div>
                 <Space direction={"vertical"} size="small"
                        style={{width: "100%", padding: "8px"}}>
-                    <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
-                    <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
-                    <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>
-                    <ActionButton onClick={actions.stopSendGcode} text={"Stop Send"}/>
+                    <ActionButton onClick={actions.generateGcode} text={t("Generate G-code")}/>
+                    <ActionButton onClick={actions.exportGcode} text={t("Export G-code")}/>
+                    <div style={{width: "100%"}}>
+                        <ActionButton onClick={actions.startSendGcode} text={t("Start Send")}
+                                      style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
+                        <ActionButton onClick={actions.stopSendGcode} text={t("Stop Send")}
+                                      style={{width: "calc(50% - 4px)"}}/>
+                    </div>
                 </Space>
                 <Material/>
                 <Setting/>
@@ -132,4 +136,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
+

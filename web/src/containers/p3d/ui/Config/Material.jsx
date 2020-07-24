@@ -68,7 +68,7 @@ class Material extends PureComponent {
             const item = materials[i];
             materialEles.push(<Button key={i} size="small" style={{width: "50%", fontSize: "13px"}}
                                       type={name === item.name ? 'primary' : ''}
-                                      onClick={() => actions.select(item.name)}>{item.label}</Button>)
+                                      onClick={() => actions.select(item.name)}>{t("common:" + item.label)}</Button>)
         }
         return (
             <div>
