@@ -1,5 +1,6 @@
 import React from 'react';
-import {Tabs, message, Button} from 'antd';
+import {Tabs} from 'antd';
+import message from "../../utils/message";
 import "antd/dist/antd.css";
 import FileSaver from 'file-saver';
 import ToolBar from '../../components/ToolBar/Index.jsx'
@@ -17,6 +18,7 @@ import Control from "./ui/Control/Index.jsx";
 import styles from './styles.css';
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {connect} from 'react-redux';
+
 const {TabPane} = Tabs;
 
 class Index extends React.Component {
@@ -57,8 +59,22 @@ class Index extends React.Component {
     render() {
         const {model, modelCount} = this.props;
         const operations = this.operations;
-        const enabledInfo = {exportModels: (modelCount > 0), layFlat: !!model, duplicate: !!model, del: !!model, clear: (modelCount > 0)};
-        const visibleInfo = {exportModels: true, undo: false, redo: false, layFlat: true, duplicate: true, del: true, clear: true};
+        const enabledInfo = {
+            exportModels: (modelCount > 0),
+            layFlat: !!model,
+            duplicate: !!model,
+            del: !!model,
+            clear: (modelCount > 0)
+        };
+        const visibleInfo = {
+            exportModels: true,
+            undo: false,
+            redo: false,
+            layFlat: true,
+            duplicate: true,
+            del: true,
+            clear: true
+        };
         const actions = this.actions;
         return (
             <div style={{

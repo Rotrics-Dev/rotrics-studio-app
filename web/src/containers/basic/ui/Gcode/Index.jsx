@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend.js";
 import Line from '../../../../components/Line/Index.jsx'
-import {Space, Button, Select, message} from 'antd';
+import {Space, Button, Select} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
 import ReactTooltip from "react-tooltip";
 import {getUuid} from '../../../../utils';

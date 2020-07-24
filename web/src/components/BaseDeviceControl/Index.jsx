@@ -100,7 +100,7 @@ class Index extends React.Component {
                 </Space>
                 <div style={{padding: "0px 8px 8px 8px"}}>
 
-                    <ConfigTitle text={t("Accuracy")} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
+                    <ConfigTitle text={t("Step length")} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
                         <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>

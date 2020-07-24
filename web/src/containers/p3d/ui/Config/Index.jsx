@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './styles.css';
-import {message, Space, Button} from 'antd';
+import {Space, Button} from 'antd';
+import message from "../../../../utils/message";
 import Material from './Material.jsx';
 import Setting from './Setting.jsx';
 import FileSaver from 'file-saver';
@@ -102,7 +103,7 @@ class Index extends React.Component {
         return (
             <div>
                 <Space direction={"vertical"} size="small"
-                       style={{width: "100%", padding: "0 8px 8px 8px"}}>
+                       style={{width: "100%", padding: "8px"}}>
                     <ActionButton onClick={actions.generateGcode} text={"Generate G-code"}/>
                     <ActionButton onClick={actions.exportGcode} text={"Export G-code"}/>
                     <ActionButton onClick={actions.startSendGcode} text={"Start Send"}/>

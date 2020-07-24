@@ -1,4 +1,4 @@
-import {message} from 'antd';
+import message from "../utils/message";
 import socketClientManager from "../socket/socketClientManager";
 import {
     SERIAL_PORT_PATH_UPDATE,

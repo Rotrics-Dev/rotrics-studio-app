@@ -5,7 +5,7 @@ import styles from './styles.css';
 import {Radio, Space, Modal, Button,} from 'antd';
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {withTranslation} from 'react-i18next';
-import message from "../../utils/messageUtils";
+import message from "../../utils/message";
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -20,7 +20,7 @@ class Index extends React.Component {
     state = {
         showModal: false,
         pointIndex: undefined,
-        accuracy: 0.1,
+        stepLength: 0.1,
         zArray: INIT_Z_ARRAY,
         lastConnectSerialPort: undefined,
         started: false,
@@ -51,9 +51,9 @@ class Index extends React.Component {
         });
     }
 
-    onSetAccuracy = (event) => {
+    onSetStepLength = (event) => {
         this.setState({
-            accuracy: event.target.value
+            stepLength: event.target.value
         })
     }
 
@@ -136,11 +136,11 @@ class Index extends React.Component {
         }, 1000);
     }
     onClickDown = () => {
-        this.move(`G0 Z${-this.state.accuracy}`);
+        this.move(`G0 Z${-this.state.stepLength}`);
     }
 
     onClickUp = () => {
-        this.move(`G0 Z${this.state.accuracy}`);
+        this.move(`G0 Z${this.state.stepLength}`);
     }
 
     move = (cmd) => {
@@ -161,7 +161,7 @@ class Index extends React.Component {
         this.setState({
             showModal: true,
             pointIndex: undefined,
-            accuracy: 10,
+            stepLength: 10,
             zArray: INIT_Z_ARRAY,
             lastConnectSerialPort: path,
             started: false,
@@ -222,10 +222,10 @@ class Index extends React.Component {
                             <div style={{marginTop: "10px"}}><b>{t("Step")} 3:</b>
                                 {t("Adjust the distance between the module and build plate using the Up and Down button until there is slight resistance on the A4 paper from the nozzle.")}
                             </div>
-                            <div style={{opacity: 0.5}}>{t("Accuracy")}</div>
+                            <div style={{opacity: 0.5}}>{t("Step length")}</div>
 
-                            <Radio.Group size={"small"} value={this.state.accuracy} buttonStyle="solid"
-                                         onChange={this.onSetAccuracy}>
+                            <Radio.Group size={"small"} value={this.state.stepLength} buttonStyle="solid"
+                                         onChange={this.onSetStepLength}>
                                 <Radio.Button value={10}>10</Radio.Button>
                                 <Radio.Button value={1.0}>1.0</Radio.Button>
                                 <Radio.Button value={0.2}>0.2</Radio.Button>

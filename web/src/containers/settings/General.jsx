@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Button, Steps, message, Modal, Result} from 'antd';
+import {Row, Col, Button, Steps, Modal, Result} from 'antd';
 import {LoadingOutlined, SmileOutlined} from '@ant-design/icons';
 import {connect} from 'react-redux';
 import styles from './styles.css';

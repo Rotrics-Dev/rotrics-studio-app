@@ -8,7 +8,6 @@ import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
 import ReactTooltip from "react-tooltip";
 import {getUuid} from '../../../../utils';
-
 const tooltipId = getUuid();
 
 class WorkingParameters extends PureComponent {
@@ -21,14 +20,11 @@ class WorkingParameters extends PureComponent {
         },
         setWorkSpeed: (value) => {
             this.props.updateWorkingParameters("work_speed", value)
-        },
-        setJogPenOffset: (value) => {
-            this.props.updateWriteAndDrawParameters('jog_pen_offset', value)
         }
     };
 
     render() {
-        const {model, working_parameters, config, jog_pen_offset} = this.props;
+        const {model, working_parameters, config} = this.props;
         const {t} = this.props;
 
         if (!model || !working_parameters || !config) {
@@ -67,7 +63,7 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fast the front end moves when it’s not working.')}>
+                        data-tip={t('Determines how fast the front end moves when it’s working.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>
@@ -79,20 +75,6 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Determines the offset of the pen when it is not drawn.')}>
-                        <Col span={19}>
-                            <ConfigText text={`${t(jog_pen_offset.label)}(${jog_pen_offset.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                min={jog_pen_offset.minimum_value}
-                                max={jog_pen_offset.maximum_value}
-                                value={jog_pen_offset.default_value}
-                                onAfterChange={actions.setJogPenOffset}/>
-                        </Col>
-                    </Row>
                 </div>
             </div>
         );
@@ -101,20 +83,16 @@ class WorkingParameters extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, working_parameters, config} = state.writeAndDraw;
-    const {jog_pen_offset} = state.writeAndDraw.write_and_draw;
-
     return {
         model,
         working_parameters,
-        config,
-        jog_pen_offset
+        config
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         updateWorkingParameters: (key, value) => dispatch(writeAndDrawActions.updateWorkingParameters(key, value)),
-        updateWriteAndDrawParameters: (key, value) => dispatch(writeAndDrawActions.updateWriteAndDrawParameters(key, value))
     };
 };
 
