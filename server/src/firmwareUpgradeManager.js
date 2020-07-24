@@ -53,7 +53,7 @@ class FirmwareUpgradeManager {
 
         this.onReceiveData = (buffer) => {
             const callbackProgress = () => {
-                const description = `upgrading ${Math.floor(100 * (1 - this.frames.length / this.frameCount))}%`;
+                const description = `${Math.floor(100 * (1 - this.frames.length / this.frameCount))}%`;
                 this.onChange(6, 'process', description);
             };
 

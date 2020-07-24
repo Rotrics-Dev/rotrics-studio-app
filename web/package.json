@@ -50,6 +50,7 @@
     "i18next-browser-languagedetector": "5.0.0",
     "i18next-http-backend": "1.0.15",
     "i18next-xhr-backend": "^3.2.2",
+    "react-ga": "^3.1.2",
     "react-i18next": "11.3.4"
   }
 }

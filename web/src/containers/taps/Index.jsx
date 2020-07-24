@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTooltip from "react-tooltip";
 import {connect} from 'react-redux';
 import styles from './styles.css';
-
+import ReactGA from 'react-ga';
 import Header from '../header/Index.jsx';
 import Footer from '../footer/Index.jsx'
 import Laser from '../laser/Index.jsx';
@@ -34,6 +34,9 @@ const notificationKey = getUuid();
 
 const tooltipId = getUuid();
 
+console.log("ReactGA.initialize('UA-173484896-1');")
+ReactGA.initialize('UA-173484896-1');
+
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +57,7 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
+
         this.displayTap(this.props.tap);
 
         // disable select text on document
@@ -84,6 +88,8 @@ class Index extends React.Component {
     // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
     // 如此写，可以实现，先计算parent element的size，再显示指定的tap
     displayTap = (tap) => {
+        ReactGA.pageview(tap)
+
         this.refBasic.current.style.display = 'none';
         this.refLaser.current.style.display = 'none';
         this.refP3D.current.style.display = 'none';
