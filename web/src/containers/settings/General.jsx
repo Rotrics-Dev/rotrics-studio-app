@@ -68,7 +68,7 @@ class General extends React.Component {
                     </div>
                     <div className={styles.div_product_right}>
                         <h2>{t('The Modular All-in-1 Desktop Robot Arm For Everyone')}</h2>
-                        <h5>{t('The most versatile robot arm with interchangeable modules, easily do laser cutting and 3D printing.')}</h5>
+                        <h4>{t('The most versatile robot arm with interchangeable modules, easily do laser cutting and 3D printing.')}</h4>
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "20px"}}>
