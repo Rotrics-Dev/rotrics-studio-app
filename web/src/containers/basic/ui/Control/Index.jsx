@@ -85,7 +85,7 @@ class Index extends React.Component {
                 <DeviceControl/>
                 <Line/>
                 <div style={{padding: "6px"}}>
-                    <ConfigTitle text={t("Motion mode")}/>
+                    <ConfigTitle text={t("Motion Mode")}/>
                     <Space direction={"vertical"} style={{width: "100%"}}>
                         <Select
                             style={{width: "100%", textAlign: "center"}}

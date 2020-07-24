@@ -91,7 +91,7 @@ class Index extends React.Component {
                     <Select
                         style={{width: "100%", textAlign: "center"}}
                         onChange={this.actions.onSelectFrontEnd}
-                        placeholder={this.props.t('select a front end')}
+                        placeholder={this.props.t('Select a front end')}
                         options={frontEndOptions}/>
                     }
                     {this.state.importLevel > 1 &&

@@ -8,6 +8,7 @@ import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
 import {connect} from 'react-redux';
 import ActionButton from "../../../../components/ActionButton/Index.jsx";
 import {ConfigText} from "../../../../components/Config";
+import {withTranslation} from 'react-i18next';
 
 const getSettingByName = (settings, name) => {
     for (let i = 0; i < settings.length; i++) {
@@ -64,6 +65,10 @@ class Setting extends PureComponent {
         if (!name || settings.length === 0) {
             return null;
         }
+        let {t} = this.props;
+        const tCura = (key) => {
+            return t("cura:" + key)
+        };
         const actions = this.actions;
         const selected = getSettingByName(settings, name);
         let {isOfficial = false, overrides} = selected;
@@ -88,10 +93,10 @@ class Setting extends PureComponent {
                     padding: "8px 8px 0 8px"
                 }}>
                     {settingsButtons}
-
                     <Row style={{marginTop: "8px"}}>
                         <Col span={19}>
-                            <ConfigText text={`${layer_height.label}(${layer_height.unit})`}/>
+                            <ConfigText text={tCura(layer_height.label)}/>
+                            <ConfigText text={`(${layer_height.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -105,7 +110,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${top_thickness.label}(${top_thickness.unit})`}/>
+                            <ConfigText text={tCura(top_thickness.label)}/>
+                            <ConfigText text={`(${top_thickness.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -119,7 +125,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${infill_sparse_density.label}(${infill_sparse_density.unit})`}/>
+                            <ConfigText text={tCura(infill_sparse_density.label)}/>
+                            <ConfigText text={`(${infill_sparse_density.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -132,7 +139,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${speed_infill.label}(${speed_infill.unit})`}/>
+                            <ConfigText text={tCura(speed_infill.label)}/>
+                            <ConfigText text={`(${speed_infill.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -145,7 +153,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${speed_wall_0.label}(${speed_wall_0.unit})`}/>
+                            <ConfigText text={tCura(speed_wall_0.label)}/>
+                            <ConfigText text={`(${speed_wall_0.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -158,7 +167,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${speed_wall_x.label}(${speed_wall_x.unit})`}/>
+                            <ConfigText text={tCura(speed_wall_x.label)}/>
+                            <ConfigText text={`(${speed_wall_x.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -171,7 +181,8 @@ class Setting extends PureComponent {
                     </Row>
                     <Row>
                         <Col span={19}>
-                            <ConfigText text={`${speed_travel.label}(${speed_travel.unit})`}/>
+                            <ConfigText text={tCura(speed_travel.label)}/>
+                            <ConfigText text={`(${speed_travel.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
@@ -206,7 +217,8 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Setting);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Setting));
+
 
 
 

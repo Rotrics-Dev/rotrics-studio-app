@@ -42,7 +42,7 @@
         "maximum_value": 300
       },
       "rotation": {
-        "label": "rotation",
+        "label": "Rotation",
         "description": "Rotation description",
         "default_value": 0,
         "type": "int",

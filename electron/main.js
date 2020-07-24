@@ -8,7 +8,7 @@ function createWindow() {
         minWidth: 850,
         minHeight: 400,
         webPreferences: {
-            preload: path.join(__dirname, './start_server.js')
+            preload: path.join(__dirname, './start-server.js')
         },
         devTools: true,
         nodeIntegration: true,
