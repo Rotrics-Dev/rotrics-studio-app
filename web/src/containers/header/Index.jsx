@@ -89,9 +89,9 @@ class Index extends React.Component {
         let statusDes = "";
         if (selectedPath) {
             if (path === selectedPath) {
-                statusDes = "connected"
+                statusDes = "Connected"
             } else {
-                statusDes = "disconnected"
+                statusDes = "Disconnected"
             }
         }
 
