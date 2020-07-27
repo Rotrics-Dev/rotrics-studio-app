@@ -10,6 +10,7 @@ import {withTranslation} from 'react-i18next';
 
 import ReactTooltip from "react-tooltip";
 import {getUuid} from '../../../../utils';
+
 const tooltipId = getUuid();
 
 //hiddenStr: "movement_mode === greyscale-dot"
@@ -31,7 +32,7 @@ const getHiddenValue = (hiddenStr = "", config) => {
         const rightValue = tokens[2];
 
         if (!config.children[left]) {
-            return false;
+            return true;
         }
         const leftValue = config.children[left].default_value;
         switch (opt) {
@@ -68,6 +69,9 @@ class WorkingParameters extends PureComponent {
         setDwellTime: (value) => {
             this.props.updateWorkingParameters("dwell_time", value)
         },
+        setDwellTime2: (value) => {
+            this.props.updateWorkingParameters("dwell_time2", value)
+        },
         //multi pass
         setMultiPass: (e) => {
             this.props.updateWorkingParameters("multi_pass", e.target.checked)
@@ -100,7 +104,7 @@ class WorkingParameters extends PureComponent {
         //greyscale:
         //config.movement_mode === greyscale-dot => {work_speed, jog_speed(不可见), dwell_time}
         //config.movement_mode === greyscale-line => {work_speed, jog_speed, dwell_time(不可见)}
-        const {work_speed, jog_speed, dwell_time} = working_parameters.children;
+        const {work_speed, jog_speed, dwell_time, dwell_time2} = working_parameters.children;
 
         const {passes, pass_depth} = multi_pass.children;
         const {power} = fixed_power.children;
@@ -113,12 +117,22 @@ class WorkingParameters extends PureComponent {
         }
 
         let dwellTimeHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
-        if (typeof dwell_time.hidden === "boolean") {
+        if (!dwell_time) {
+            dwellTimeHidden = true;
+        } else if (typeof dwell_time.hidden === "boolean") {
             dwellTimeHidden = dwell_time.hidden;
         } else if (typeof dwell_time.hidden === "string") {
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
         }
 
+        let dwellTime2Hidden = false;
+        if (!dwell_time2) {
+            dwellTime2Hidden = true;
+        } else if (typeof dwell_time2.hidden === "boolean") {
+            dwellTime2Hidden = dwell_time2.hidden;
+        } else if (typeof dwell_time2.hidden === "string") {
+            dwellTime2Hidden = getHiddenValue(dwell_time2.hidden, config);
+        }
         return (
             <div>
                 <ReactTooltip
@@ -177,6 +191,22 @@ class WorkingParameters extends PureComponent {
                                 max={dwell_time.maximum_value}
                                 value={dwell_time.default_value}
                                 onAfterChange={actions.setDwellTime}/>
+                        </Col>
+                    </Row>
+                    }
+                    {!dwellTime2Hidden &&
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines how long the laser keeps on when it’s engraving a dot.')}>
+                        <Col span={19}>
+                            <ConfigText text={`${t(dwell_time2.label)}(${dwell_time2.unit})`}/>
+                        </Col>
+                        <Col span={5}>
+                            <NumberInput
+                                min={dwell_time2.minimum_value}
+                                max={dwell_time2.maximum_value}
+                                value={dwell_time2.default_value}
+                                onAfterChange={actions.setDwellTime2}/>
                         </Col>
                     </Row>
                     }

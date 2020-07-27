@@ -157,7 +157,8 @@
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 10,
-        "maximum_value": 4000
+        "maximum_value": 4000,
+        "hidden": "movement_mode === greyscale-dot"
       },
       "dwell_time": {
         "label": "Dwell Time",
@@ -167,8 +168,19 @@
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 1,
-        "maximum_value": 10,
-        "hidden": true
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
+      },
+      "dwell_time2": {
+        "label": "Dwell Time2",
+        "description": "Dwell Time2 description ",
+        "placeholder": "#dwell_time2#",
+        "default_value": 5,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 0,
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
       },
       "multi_pass": {
         "label": "Multi-Pass",

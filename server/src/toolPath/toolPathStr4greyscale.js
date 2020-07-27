@@ -165,6 +165,7 @@ const img2toolPathStrGs = (img, settings) => {
 
     const work_speed = working_parameters.children.work_speed.placeholder;
     const dwell_time = working_parameters.children.dwell_time.placeholder;
+    const dwell_time2 = working_parameters.children.dwell_time2.placeholder;
 
     img.mirror(false, true);
 
@@ -185,9 +186,10 @@ const img2toolPathStrGs = (img, settings) => {
             const idx = j * width * 4 + i * 4;
             if (img.bitmap.data[idx] < bw) {
                 content += `G1 X${normalizer.x(i)} Y${normalizer.y(j)}\n`;
-                content += 'M03\n';
+                content += `G4 P${dwell_time2}\n`;
+                content += 'M03\n'; //laser on
                 content += `G4 P${dwell_time}\n`;
-                content += 'M05\n';
+                content += 'M05\n'; //laser off
             }
         }
     }

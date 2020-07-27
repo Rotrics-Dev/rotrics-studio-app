@@ -143,8 +143,9 @@
         "default_value": 400,
         "type": "int",
         "unit": "mm/min",
-        "minimum_value": 100,
-        "maximum_value": 4000
+        "minimum_value": 10,
+        "maximum_value": 4000,
+        "hidden": "movement_mode === greyscale-dot"
       },
       "dwell_time": {
         "label": "Dwell Time",
@@ -154,8 +155,19 @@
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 1,
-        "maximum_value": 10,
-        "hidden": true
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
+      },
+      "dwell_time2": {
+        "label": "Dwell Time2",
+        "description": "Dwell Time2 description ",
+        "placeholder": "#dwell_time2#",
+        "default_value": 5,
+        "type": "int",
+        "unit": "mm/min",
+        "minimum_value": 0,
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
       },
       "multi_pass": {
         "label": "Multi-Pass",
@@ -174,16 +186,16 @@
           "pass_depth": {
             "label": "Pass Depth",
             "description": "Pass Depth description",
-            "default_value": 0.5,
-            "type": "float",
+            "default_value": 1,
+            "type": "int",
             "unit": "mm",
-            "minimum_value": 0,
+            "minimum_value": 1,
             "maximum_value": 5
           }
         }
       },
       "fixed_power": {
-        "default_value": true,
+        "default_value": false,
         "label": "Fixed Power",
         "type": "bool",
         "description": "Fixed Power description",
@@ -191,7 +203,7 @@
           "power": {
             "label": "Power",
             "description": "Power description",
-            "default_value": 100,
+            "default_value": 50,
             "type": "int",
             "unit": "%",
             "minimum_value": 0,
