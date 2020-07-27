@@ -90,13 +90,13 @@
     "children": {
       "invert": {
         "label": "Invert",
-        "description": "Invert description",
+        "description": "Inverts black to white and vise versa.",
         "default_value": false,
         "type": "bool"
       },
       "bw": {
         "label": "Threshold",
-        "description": "Threshold description",
+        "description": "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.",
         "default_value": 140,
         "type": "int",
         "minimum_value": 0,
@@ -104,7 +104,7 @@
       },
       "line_direction": {
         "label": "Line Direction",
-        "description": "Line Direction description",
+        "description": "Select the direction of the engraving path.",
         "default_value": "Horizontal",
         "type": "enum",
         "options": {
@@ -116,7 +116,7 @@
       },
       "density": {
         "label": "Density",
-        "description": "Density description",
+        "description": "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.",
         "default_value": 4,
         "type": "int",
         "unit": "dot/mm",

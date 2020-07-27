@@ -166,7 +166,7 @@
   "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.": "决定了雕刻的图片将会有多精细和光滑。这个值越大，质量就越好。",
   "Choose an algorithm for image processing.": "选择一种图像处理算法",
   "Choose the movement mode": "选择移动模式",
-  "Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.": "设置阈值，以确保其灰度小于阈值的像素为黑色",
+  "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.": "设置阈值，以确保其灰度小于阈值的像素为黑色",
   "Select the direction of the engraving path.": "选择雕刻路径的方向",
   "Determines the offset of the pen when it is not drawn.": "设置不绘制时笔的高度",
   "Internal error occurred": "发生内部错误",

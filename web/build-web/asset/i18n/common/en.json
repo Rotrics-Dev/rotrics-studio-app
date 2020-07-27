@@ -166,7 +166,7 @@
   "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.": "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.",
   "Choose an algorithm for image processing.": "Choose an algorithm for image processing.",
   "Choose the movement mode": "Choose the movement mode",
-  "Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.": "Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.",
+  "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.": "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.",
   "Select the direction of the engraving path.": "Select the direction of the engraving path.",
   "Determines the offset of the pen when it is not drawn.": "Determines the offset of the pen when it is not drawn.",
   "Internal error occurred": "Internal error occurred",

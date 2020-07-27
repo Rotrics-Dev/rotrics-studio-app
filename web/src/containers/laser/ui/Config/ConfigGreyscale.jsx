@@ -74,7 +74,7 @@ class ConfigGreyscale extends PureComponent {
                     <ConfigTitle text={t(config.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Inverts black to white and vise versa.')}>
+                        data-tip={t(invert.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
@@ -84,7 +84,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('The difference between the lightest color and the darkest color.')}>
+                        data-tip={t(contrast.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(contrast.label)}`}/>
                         </Col>
@@ -98,7 +98,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('The engraved picture is brighter when this value is bigger.')}>
+                        data-tip={t(brightness.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(brightness.label)}`}/>
                         </Col>
@@ -112,7 +112,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Set the threshold to turn the color that is not pure white into pure white.')}>
+                        data-tip={t(white_clip.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(white_clip.label)}`}/>
                         </Col>
@@ -126,7 +126,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.')}>
+                        data-tip={t(density.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
@@ -140,7 +140,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Choose an algorithm for image processing.')}>
+                        data-tip={t(algorithm.description)}>
                         <Col span={10}>
                             <ConfigText text={`${t(algorithm.label)}`}/>
                         </Col>
@@ -151,7 +151,7 @@ class ConfigGreyscale extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Choose the movement mode')}>
+                        data-tip={t(movement_mode.description)}>
                         <Col span={10}>
                             <ConfigText text={`${t(movement_mode.label)}`}/>
                         </Col>

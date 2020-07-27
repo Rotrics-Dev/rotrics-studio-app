@@ -59,7 +59,7 @@ class ConfigBW extends PureComponent {
                     <ConfigTitle text={t(config.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Inverts black to white and vise versa.')}>
+                        data-tip={t(invert.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(invert.label)}`}/>
                         </Col>
@@ -69,7 +69,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.')}>
+                        data-tip={t(bw.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(bw.label)}`}/>
                         </Col>
@@ -83,7 +83,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.')}>
+                        data-tip={t(density.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(density.label)}(${density.unit})`}/>
                         </Col>
@@ -97,7 +97,7 @@ class ConfigBW extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Select the direction of the engraving path.')}>
+                        data-tip={t(line_direction.description)}>
                         <Col span={15}>
                             <ConfigText text={`${t(line_direction.label)}`}/>
                         </Col>

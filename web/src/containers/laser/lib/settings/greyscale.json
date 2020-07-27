@@ -90,13 +90,13 @@
     "children": {
       "invert": {
         "label": "Invert",
-        "description": "Invert description",
+        "description": "Inverts black to white and vise versa.",
         "default_value": false,
         "type": "bool"
       },
       "contrast": {
         "label": "Contrast",
-        "description": "contrast description",
+        "description": "The difference between the lightest color and the darkest color.",
         "default_value": 50,
         "type": "int",
         "minimum_value": 1,
@@ -104,7 +104,7 @@
       },
       "brightness": {
         "label": "Brightness",
-        "description": "brightness description",
+        "description": "The engraved picture is brighter when this value is bigger.",
         "default_value": 50,
         "type": "int",
         "minimum_value": 0,
@@ -112,7 +112,7 @@
       },
       "white_clip": {
         "label": "White Clip",
-        "description": "White Clip description",
+        "description": "Set the threshold to turn the color that is not pure white into pure white.",
         "default_value": 100,
         "type": "int",
         "minimum_value": 0,
@@ -123,7 +123,7 @@
       },
       "algorithm": {
         "label": "Algorithm",
-        "description": "algorithm description",
+        "description": "Choose an algorithm for image processing.",
         "default_value": "JarvisJudiceNinke",
         "type": "enum",
         "options": {
@@ -139,7 +139,7 @@
       },
       "movement_mode": {
         "label": "Movement Mode",
-        "description": "Movement Mode description",
+        "description": "Choose the movement mode",
         "default_value": "greyscale-line",
         "type": "enum",
         "options": {
@@ -149,7 +149,7 @@
       },
       "density": {
         "label": "Density",
-        "description": "Density description",
+        "description": "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.",
         "default_value": 4,
         "type": "int",
         "unit": "dot/mm",
