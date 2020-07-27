@@ -69,8 +69,8 @@ class WorkingParameters extends PureComponent {
         setDwellTime: (value) => {
             this.props.updateWorkingParameters("dwell_time", value)
         },
-        setDwellTime2: (value) => {
-            this.props.updateWorkingParameters("dwell_time2", value)
+        setEngraveTime: (value) => {
+            this.props.updateWorkingParameters("engrave_time", value)
         },
         //multi pass
         setMultiPass: (e) => {
@@ -101,7 +101,7 @@ class WorkingParameters extends PureComponent {
         //greyscale:
         //config.movement_mode === greyscale-dot => {work_speed, jog_speed(不可见), dwell_time}
         //config.movement_mode === greyscale-line => {work_speed, jog_speed, dwell_time(不可见)}
-        const {work_speed, jog_speed, dwell_time, dwell_time2} = working_parameters.children;
+        const {work_speed, jog_speed, dwell_time, engrave_time} = working_parameters.children;
 
         const {passes, pass_depth} = multi_pass.children;
 
@@ -121,13 +121,13 @@ class WorkingParameters extends PureComponent {
             dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
         }
 
-        let dwellTime2Hidden = false;
-        if (!dwell_time2) {
-            dwellTime2Hidden = true;
-        } else if (typeof dwell_time2.hidden === "boolean") {
-            dwellTime2Hidden = dwell_time2.hidden;
-        } else if (typeof dwell_time2.hidden === "string") {
-            dwellTime2Hidden = getHiddenValue(dwell_time2.hidden, config);
+        let engraveTimeHidden = false;
+        if (!engrave_time) {
+            engraveTimeHidden = true;
+        } else if (typeof engrave_time.hidden === "boolean") {
+            engraveTimeHidden = engrave_time.hidden;
+        } else if (typeof engrave_time.hidden === "string") {
+            engraveTimeHidden = getHiddenValue(engrave_time.hidden, config);
         }
         return (
             <div>
@@ -190,19 +190,19 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    {!dwellTime2Hidden &&
+                    {!engraveTimeHidden &&
                     <Row
                         data-for={tooltipId}
                         data-tip={t('Determines how long the laser keeps on when it’s engraving a dot.')}>
                         <Col span={19}>
-                            <ConfigText text={`${t(dwell_time2.label)}(${dwell_time2.unit})`}/>
+                            <ConfigText text={`${t(engrave_time.label)}(${engrave_time.unit})`}/>
                         </Col>
                         <Col span={5}>
                             <NumberInput
-                                min={dwell_time2.minimum_value}
-                                max={dwell_time2.maximum_value}
-                                value={dwell_time2.default_value}
-                                onAfterChange={actions.setDwellTime2}/>
+                                min={engrave_time.minimum_value}
+                                max={engrave_time.maximum_value}
+                                value={engrave_time.default_value}
+                                onAfterChange={actions.setEngraveTime}/>
                         </Col>
                     </Row>
                     }

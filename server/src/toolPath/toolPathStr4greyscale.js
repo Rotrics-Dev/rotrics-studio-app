@@ -164,7 +164,7 @@ const img2toolPathStrGs = (img, settings) => {
 
     const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
     const dwell_time_placeholder = working_parameters.children.dwell_time.placeholder;
-    const dwell_time2_placeholder = working_parameters.children.dwell_time2.placeholder;
+    const engrave_time_placeholder = working_parameters.children.engrave_time.placeholder;
     const power_placeholder = working_parameters.children.power.placeholder;
 
     img.mirror(false, true);
@@ -186,7 +186,7 @@ const img2toolPathStrGs = (img, settings) => {
             const idx = j * width * 4 + i * 4;
             if (img.bitmap.data[idx] < bw) {
                 content += `G1 X${normalizer.x(i)} Y${normalizer.y(j)}\n`;
-                content += `G4 P${dwell_time2_placeholder}\n`;
+                content += `G4 P${engrave_time_placeholder}\n`;
                 content += `M3 S${power_placeholder}\n`;
                 content += `G4 P${dwell_time_placeholder}\n`;
                 content += 'M5\n';
