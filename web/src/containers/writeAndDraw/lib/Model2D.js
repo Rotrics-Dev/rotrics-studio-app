@@ -227,7 +227,6 @@ class Model2D extends THREE.Group {
     updateWorkingParameters(key, value) {
         //multi_pass.passes
         //multi_pass.pass_depth
-        //fixed_power.power
         if (key.indexOf(".") !== -1) {
             const arr = key.split(".");
             const keyParent = arr[0];

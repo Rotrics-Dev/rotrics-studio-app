@@ -77,7 +77,6 @@ const file2img = async (url, settings) => {
     const flip_model = transformation.children.flip_model.default_value;
     let flipFlag = getFlipFlag(flip_model);
 
-    console.log("flipFlag: " + flipFlag)
     const invert = config.children.invert.default_value;
     const contrast = config.children.contrast.default_value;
     const brightness = config.children.brightness.default_value;
@@ -163,9 +162,10 @@ const img2toolPathStrGs = (img, settings) => {
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
 
-    const work_speed = working_parameters.children.work_speed.placeholder;
-    const dwell_time = working_parameters.children.dwell_time.placeholder;
-    const dwell_time2 = working_parameters.children.dwell_time2.placeholder;
+    const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
+    const dwell_time_placeholder = working_parameters.children.dwell_time.placeholder;
+    const dwell_time2_placeholder = working_parameters.children.dwell_time2.placeholder;
+    const power_placeholder = working_parameters.children.power.placeholder;
 
     img.mirror(false, true);
 
@@ -178,7 +178,7 @@ const img2toolPathStrGs = (img, settings) => {
     });
 
     let content = '';
-    content += `G1 F${work_speed}\n`;
+    content += `G1 F${work_speed_placeholder}\n`;
 
     for (let i = 0; i < width; ++i) {
         const isReverse = (i % 2 === 0);
@@ -186,15 +186,16 @@ const img2toolPathStrGs = (img, settings) => {
             const idx = j * width * 4 + i * 4;
             if (img.bitmap.data[idx] < bw) {
                 content += `G1 X${normalizer.x(i)} Y${normalizer.y(j)}\n`;
-                content += `G4 P${dwell_time2}\n`;
-                content += 'M03\n'; //laser on
-                content += `G4 P${dwell_time}\n`;
-                content += 'M05\n'; //laser off
+                content += `G4 P${dwell_time2_placeholder}\n`;
+                content += `M3 S${power_placeholder}\n`;
+                content += `G4 P${dwell_time_placeholder}\n`;
+                content += 'M5\n';
             }
         }
     }
     content += 'G0 X0 Y0';
 
+    // console.log(content);
     return content;
 };
 

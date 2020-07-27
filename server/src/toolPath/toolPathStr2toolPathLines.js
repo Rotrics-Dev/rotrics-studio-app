@@ -4,7 +4,7 @@ const TOKEN_EMPTY_LINE = 'N';
 /**
  * tool path：将string转为obj line array；保留所有信息，包括comment，空行
  *
- *  * tool path str
+ * tool path str
  * G0 X1 Y2 Z3 ;this is comment
  * G1 X10 Y20 Z30
  *

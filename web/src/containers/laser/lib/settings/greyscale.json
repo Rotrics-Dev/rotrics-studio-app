@@ -227,6 +227,16 @@
         "maximum_value": 100,
         "hidden": "movement_mode === greyscale-line"
       },
+      "power": {
+        "label": "Power",
+        "description": "Power description",
+        "placeholder": "#power#",
+        "default_value": 50,
+        "type": "int",
+        "unit": "%",
+        "minimum_value": 1,
+        "maximum_value": 100
+      },
       "multi_pass": {
         "label": "Multi-Pass",
         "description": "Multi-Pass description",
@@ -249,23 +259,6 @@
             "unit": "mm",
             "minimum_value": 1,
             "maximum_value": 5
-          }
-        }
-      },
-      "fixed_power": {
-        "default_value": false,
-        "label": "Fixed Power",
-        "type": "bool",
-        "description": "Fixed Power description",
-        "children": {
-          "power": {
-            "label": "Power",
-            "description": "Power description",
-            "default_value": 50,
-            "type": "int",
-            "unit": "%",
-            "minimum_value": 0,
-            "maximum_value": 100
           }
         }
       }

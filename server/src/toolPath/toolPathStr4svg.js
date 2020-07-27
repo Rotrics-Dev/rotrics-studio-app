@@ -12,8 +12,9 @@ function pointEqual(p1, p2) {
 const svg2toolPathStr = async (url, settings) => {
     const {transformation, config, working_parameters} = settings;
 
-    const workSpeed = working_parameters.children.work_speed.placeholder;
-    const jogSpeed = working_parameters.children.jog_speed.placeholder;
+    const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
+    const jog_speed_placeholder = working_parameters.children.jog_speed.placeholder;
+    const power_placeholder = working_parameters.children.power.placeholder;
 
     const originWidth = transformation.children.img_width.default_value;
     const originHeight = transformation.children.img_height.default_value;
@@ -64,8 +65,8 @@ const svg2toolPathStr = async (url, settings) => {
 
     // second pass generate gcode
     let content = '';
-    content += `G0 F${jogSpeed}\n`;
-    content += `G1 F${workSpeed}\n`;
+    content += `G0 F${jog_speed_placeholder}\n`;
+    content += `G1 F${work_speed_placeholder}\n`;
 
     let current = null;
     for (const segment of segments) {
@@ -77,7 +78,7 @@ const svg2toolPathStr = async (url, settings) => {
 
             // Move to start point
             content += `G0 X${normalizer.x(segment.start[0])} Y${normalizer.y(segment.start[1])}\n`;
-            content += 'M3\n';
+            content += `M3 S${power_placeholder}\n`;
         }
 
         // G0 move to end

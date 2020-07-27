@@ -102,10 +102,10 @@ const img2toolPathStrBw = (img, settings) => {
         return len;
     }
 
-    function genMovement(normalizer, start, end) {
+    function genMovement(normalizer, start, end, power_placeholder) {
         return [
             `G0 X${normalizer.x(start.x)} Y${normalizer.y(start.y)}`,
-            'M3',
+            `M3 S${power_placeholder}`,
             `G1 X${normalizer.x(end.x)} Y${normalizer.y(end.y)}`,
             'M5'
         ].join('\n') + '\n';
@@ -124,8 +124,9 @@ const img2toolPathStrBw = (img, settings) => {
     const density = config.children.density.default_value;
     const line_direction = config.children.line_direction.default_value;
 
-    const work_speed = working_parameters.children.work_speed.placeholder;
-    const jog_speed = working_parameters.children.jog_speed.placeholder;
+    const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
+    const jog_speed_placeholder = working_parameters.children.jog_speed.placeholder;
+    const power_placeholder = working_parameters.children.power.placeholder;
 
     const normalizer = new Normalizer('Center', 0, width, 0, height, {
         x: 1 / density,
@@ -133,8 +134,8 @@ const img2toolPathStrBw = (img, settings) => {
     });
 
     let content = '';
-    content += `G0 F${jog_speed}\n`;
-    content += `G1 F${work_speed}\n`;
+    content += `G0 F${jog_speed_placeholder}\n`;
+    content += `G1 F${work_speed_placeholder}\n`;
 
     if (!line_direction || line_direction === 'Horizontal') {
         const direction = {x: 1, y: 0};
@@ -154,7 +155,7 @@ const img2toolPathStrBw = (img, settings) => {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
                     };
-                    content += genMovement(normalizer, start, end);
+                    content += genMovement(normalizer, start, end, power_placeholder);
                 } else {
                     len = 1;
                 }
@@ -178,7 +179,7 @@ const img2toolPathStrBw = (img, settings) => {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
                     };
-                    content += genMovement(normalizer, start, end);
+                    content += genMovement(normalizer, start, end, power_placeholder);
                 } else {
                     len = 1;
                 }
@@ -206,7 +207,7 @@ const img2toolPathStrBw = (img, settings) => {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
                         };
-                        content += genMovement(normalizer, start, end);
+                        content += genMovement(normalizer, start, end, power_placeholder);
                     } else {
                         len = 1;
                     }
@@ -235,7 +236,7 @@ const img2toolPathStrBw = (img, settings) => {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
                         };
-                        content += genMovement(normalizer, start, end);
+                        content += genMovement(normalizer, start, end, power_placeholder);
                     } else {
                         len = 1;
                     }

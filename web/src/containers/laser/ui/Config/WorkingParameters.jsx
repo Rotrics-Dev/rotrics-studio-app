@@ -82,12 +82,9 @@ class WorkingParameters extends PureComponent {
         setMultiPassPassDepth: (value) => {
             this.props.updateWorkingParameters("multi_pass.pass_depth", value)
         },
-        //fixed power
-        setFixedPower: (e) => {
-            this.props.updateWorkingParameters("fixed_power", e.target.checked)
-        },
-        setFixedPowerPower: (value) => {
-            this.props.updateWorkingParameters("fixed_power.power", value)
+        //power
+        setPower: (value) => {
+            this.props.updateWorkingParameters("power", value)
         }
     };
 
@@ -98,7 +95,7 @@ class WorkingParameters extends PureComponent {
             return null;
         }
         const actions = this.actions;
-        const {print_order, multi_pass, fixed_power} = working_parameters.children;
+        const {print_order, multi_pass, power} = working_parameters.children;
 
         //bw/svg: {work_speed, jog_speed}
         //greyscale:
@@ -107,7 +104,6 @@ class WorkingParameters extends PureComponent {
         const {work_speed, jog_speed, dwell_time, dwell_time2} = working_parameters.children;
 
         const {passes, pass_depth} = multi_pass.children;
-        const {power} = fixed_power.children;
 
         let jogSpeedHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
         if (typeof jog_speed.hidden === "boolean") {
@@ -212,6 +208,20 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row
                         data-for={tooltipId}
+                        data-tip={t('Power to use when laser is working.')}>
+                        <Col span={19}>
+                            <ConfigText text={`${t(power.label)}(${power.unit})`}/>
+                        </Col>
+                        <Col span={5}>
+                            <NumberInput
+                                min={power.minimum_value}
+                                max={power.maximum_value}
+                                value={power.default_value}
+                                onAfterChange={actions.setPower}/>
+                        </Col>
+                    </Row>
+                    <Row
+                        data-for={tooltipId}
                         data-tip={t('When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can\'t be cut with only one pass.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(multi_pass.label)}`}/>
@@ -253,32 +263,6 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('When enabled, the power used to engrave this image will be set in the G-code, When engraving multiple images, you can set the power for each image separately.')}>
-                        <Col span={19}>
-                            <ConfigText text={`${t(fixed_power.label)}`}/>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox checked={fixed_power.default_value} onChange={actions.setFixedPower}/>
-                        </Col>
-                    </Row>
-                    {fixed_power.default_value &&
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Power to use when laser is working.')}>
-                        <Col span={17} push={2}>
-                            <ConfigText text={`${t(power.label)}(${power.unit})`}/>
-                        </Col>
-                        <Col span={5} push={2}>
-                            <NumberInput
-                                min={power.minimum_value}
-                                max={power.maximum_value}
-                                value={power.default_value}
-                                onAfterChange={actions.setFixedPowerPower}/>
-                        </Col>
-                    </Row>
-                    }
                 </div>
             </div>
         );
@@ -287,6 +271,7 @@ class WorkingParameters extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, working_parameters, config} = state.laser;
+    // console.log(JSON.stringify(working_parameters, null, 2))
     return {
         model,
         working_parameters,
