@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
+    "start": "npm run extract_i18n_common && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
     "build": "webpack",
     "extract_i18n_cura": "node ./i18n_cura/extract.js",
     "extract_i18n_common": "node ./extract-translation.js"

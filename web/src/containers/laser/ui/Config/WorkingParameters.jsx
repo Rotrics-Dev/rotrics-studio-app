@@ -32,7 +32,7 @@ const getHiddenValue = (hiddenStr = "", config) => {
         const rightValue = tokens[2];
 
         if (!config.children[left]) {
-            return true;
+            return false;
         }
         const leftValue = config.children[left].default_value;
         switch (opt) {
@@ -95,39 +95,24 @@ class WorkingParameters extends PureComponent {
             return null;
         }
         const actions = this.actions;
-        const {print_order, multi_pass, power} = working_parameters.children;
+        const {multi_pass, power} = working_parameters.children;
 
-        //bw/svg: {work_speed, jog_speed}
-        //greyscale:
-        //config.movement_mode === greyscale-dot => {work_speed, jog_speed(不可见), dwell_time}
-        //config.movement_mode === greyscale-line => {work_speed, jog_speed, dwell_time(不可见)}
         const {work_speed, jog_speed, dwell_time, engrave_time} = working_parameters.children;
-
         const {passes, pass_depth} = multi_pass.children;
+        const {movement_mode} = config.children;
 
-        let jogSpeedHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
-        if (typeof jog_speed.hidden === "boolean") {
-            jogSpeedHidden = jog_speed.hidden;
-        } else if (typeof jog_speed.hidden === "string") {
-            jogSpeedHidden = getHiddenValue(jog_speed.hidden, config);
-        }
-
-        let dwellTimeHidden = false; //默认显示的，dwell_time.hidden === null/undefined表示显示
-        if (!dwell_time) {
-            dwellTimeHidden = true;
-        } else if (typeof dwell_time.hidden === "boolean") {
-            dwellTimeHidden = dwell_time.hidden;
-        } else if (typeof dwell_time.hidden === "string") {
-            dwellTimeHidden = getHiddenValue(dwell_time.hidden, config);
-        }
-
-        let engraveTimeHidden = false;
-        if (!engrave_time) {
-            engraveTimeHidden = true;
-        } else if (typeof engrave_time.hidden === "boolean") {
-            engraveTimeHidden = engrave_time.hidden;
-        } else if (typeof engrave_time.hidden === "string") {
-            engraveTimeHidden = getHiddenValue(engrave_time.hidden, config);
+        //TODO: 根据settings动态设置
+        //bw/svg/text: {work_speed, jog_speed}
+        //greyscale:
+        //config.children.movement_mode.default_value === greyscale-dot => {work_speed,  dwell_time, engrave_time}
+        //config.children.movement_mode.default_value === greyscale-line => {work_speed, jog_speed}
+        let jogSpeedVisible = true;
+        let dwellTimeVisible = false;
+        let engraveTimeVisible = false;
+        if (movement_mode && movement_mode.default_value === "greyscale-dot") {
+            jogSpeedVisible = false;
+            dwellTimeVisible = true;
+            engraveTimeVisible = true;
         }
         return (
             <div>
@@ -146,7 +131,7 @@ class WorkingParameters extends PureComponent {
                     <ConfigTitle text={t(working_parameters.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fast the front end moves when it’s working.')}>
+                        data-tip={t(work_speed.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>
@@ -158,10 +143,10 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
-                    {!jogSpeedHidden &&
+                    {jogSpeedVisible &&
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how fast the front end moves when it’s not working.')}>
+                        data-tip={t(jog_speed.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                         </Col>
@@ -174,10 +159,10 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    {!dwellTimeHidden &&
+                    {dwellTimeVisible &&
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how long the laser keeps on when it’s engraving a dot.')}>
+                        data-tip={t(dwell_time.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(dwell_time.label)}(${dwell_time.unit})`}/>
                         </Col>
@@ -190,10 +175,10 @@ class WorkingParameters extends PureComponent {
                         </Col>
                     </Row>
                     }
-                    {!engraveTimeHidden &&
+                    {engraveTimeVisible &&
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how long the laser keeps on when it’s engraving a dot.')}>
+                        data-tip={t(engrave_time.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(engrave_time.label)}(${engrave_time.unit})`}/>
                         </Col>
@@ -208,7 +193,7 @@ class WorkingParameters extends PureComponent {
                     }
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Power to use when laser is working.')}>
+                        data-tip={t(power.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(power.label)}(${power.unit})`}/>
                         </Col>
@@ -222,7 +207,7 @@ class WorkingParameters extends PureComponent {
                     </Row>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can\'t be cut with only one pass.')}>
+                        data-tip={t(multi_pass.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(multi_pass.label)}`}/>
                         </Col>
@@ -233,7 +218,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how many times the printer will run the G-code automatically.')}>
+                        data-tip={t(passes.description)}>
                         <Col span={17} push={2}>
                             <ConfigText text={`${t(passes.label)}`}/>
                         </Col>
@@ -249,7 +234,7 @@ class WorkingParameters extends PureComponent {
                     {multi_pass.default_value &&
                     <Row
                         data-for={tooltipId}
-                        data-tip={t('Determines how much the laser module will be lowered after each pass.')}>
+                        data-tip={t(pass_depth.description)}>
                         <Col span={17} push={2}>
                             <ConfigText text={`${t(pass_depth.label)}(${pass_depth.unit})`}/>
                         </Col>
@@ -271,7 +256,6 @@ class WorkingParameters extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, working_parameters, config} = state.laser;
-    // console.log(JSON.stringify(working_parameters, null, 2))
     return {
         model,
         working_parameters,

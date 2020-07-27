@@ -131,17 +131,9 @@
     "type": "category",
     "description": "Working Parameters description",
     "children": {
-      "print_order": {
-        "label": "Print Order",
-        "description": "Print Order description",
-        "default_value": 1,
-        "type": "int",
-        "minimum_value": 1,
-        "maximum_value": 10
-      },
       "work_speed": {
         "label": "Work Speed",
-        "description": "Work Speed description ",
+        "description": "Determines how fast the front end moves when it’s working.",
         "placeholder": "#work_speed#",
         "default_value": 400,
         "type": "int",
@@ -151,7 +143,7 @@
       },
       "jog_speed": {
         "label": "Jog Speed",
-        "description": "Jog Speed description",
+        "description": "Determines how fast the front end moves when it’s not working.",
         "placeholder": "#jog_speed#",
         "default_value": 400,
         "type": "int",
@@ -184,7 +176,7 @@
       },
       "power": {
         "label": "Power",
-        "description": "Power description",
+        "description": "Power to use when laser is working.",
         "placeholder": "#power#",
         "default_value": 50,
         "type": "int",
@@ -194,13 +186,13 @@
       },
       "multi_pass": {
         "label": "Multi-Pass",
-        "description": "Multi-Pass description",
+        "description": "When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can't be cut with only one pass.",
         "default_value": false,
         "type": "bool",
         "children": {
           "passes": {
             "label": "Passes",
-            "description": "Passes description",
+            "description": "Determines how many times the printer will run the G-code automatically.",
             "default_value": 2,
             "type": "int",
             "minimum_value": 1,
@@ -208,7 +200,7 @@
           },
           "pass_depth": {
             "label": "Pass Depth",
-            "description": "Pass Depth description",
+            "description": "Determines how much the laser module will be lowered after each pass.",
             "default_value": 1,
             "type": "int",
             "unit": "mm",

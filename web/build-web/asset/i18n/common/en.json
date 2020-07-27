@@ -57,6 +57,8 @@
   "Work Speed": "Work Speed",
   "Jog Speed": "Jog Speed",
   "Dwell Time": "Dwell Time",
+  "Engrave Time": "Engrave Time",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.": "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.",
   "Multi-Pass": "Multi-Pass",
   "Passes": "Passes",
   "Pass Depth": "Pass Depth",
