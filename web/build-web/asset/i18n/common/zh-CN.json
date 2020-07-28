@@ -30,7 +30,7 @@
   "Rotation": "旋转",
   "Font": "字体",
   "Font Size": "字体大小",
-  "Open File": "打开文件",
+  "Upload": "上传",
   "Rotate": "旋转",
   "Greyscale": "灰度图",
   "Invert": "反转",
@@ -230,9 +230,9 @@
   "Fast Print": "快速打印",
   "Normal Quality": "普通精度",
   "High Quality": "高精度",
-  "reset": "reset",
-  "move to home": "move to home",
-  "move to origin": "move to origin",
-  "move to position": "move to position",
-  "set work origin": "set work origin"
+  "reset": "重置",
+  "move home": "前往 home",
+  "move to origin": "前往工作原点",
+  "move to position": "移动到位置",
+  "set work origin": "设置工作原点"
 }

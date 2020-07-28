@@ -35,6 +35,42 @@ const BLOCKS_DEFAULT_OPTIONS = {
     sounds: false
 };
 
+const getLocale = (language) => {
+    let locale = "en";
+    switch (language) {
+        case "de-DE":
+            locale = "de";
+            break;
+        case "en":
+            break;
+        case "es-ES":
+            locale = "de";
+            break;
+        case "fr-FR":
+            locale = "fr";
+            break;
+        case "it-IT":
+            locale = "it";
+            break;
+        case "ja-JP":
+            locale = "ja";
+            break;
+        case "ko-KR":
+            locale = "ko";
+            break;
+        case "ru-RU":
+            locale = "ru";
+            break;
+        case "zh-CN":
+            locale = "zh-cn";
+            break;
+        case "zh-TW":
+            locale = "zh-tw";
+            break;
+    }
+    return locale;
+};
+
 class Blocks extends React.Component {
     constructor(props) {
         super(props);
@@ -57,19 +93,20 @@ class Blocks extends React.Component {
         this.updateCss();
 
         //language
-        if (this.props.i18n.language.toLowerCase() !== this.props.vm.getLocale()) {
-            this.changeLanguage(this.props.i18n.language.toLowerCase());
+        if (getLocale(this.props.i18n.language) !== this.props.vm.getLocale()) {
+            this.changeLocale(getLocale(this.props.i18n.language));
         }
         i18next.on('languageChanged', (lng) => {
-            if (this.props.i18n.language.toLowerCase() !== this.props.vm.getLocale()) {
-                this.changeLanguage(this.props.i18n.language.toLowerCase());
+            const locale = getLocale(lng)
+            if (locale !== this.props.vm.getLocale()) {
+                this.changeLocale(locale);
             }
         })
     }
 
-    changeLanguage = (lng) => {
-        ScratchBlocks.ScratchMsgs.setLocale(lng);
-        this.props.vm.setLocale(lng)
+    changeLocale = (locale) => {
+        ScratchBlocks.ScratchMsgs.setLocale(locale);
+        this.props.vm.setLocale(locale)
             .then(() => {
                 //必须调用setRecyclingEnabled，否则部分blocks不会正常显示多语言
                 ScratchBlocks.getMainWorkspace().getFlyout().setRecyclingEnabled(false);

@@ -40,7 +40,7 @@ class Index extends React.Component {
                     size="small"
                     onClick={actions.onClickUpload}
                 >
-                    {t("Open File")}
+                    {t("Upload")}
                 </Button>
             </div>
         )
