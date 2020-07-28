@@ -3,7 +3,8 @@
     "start": "npm run extract_i18n_common && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server",
     "build": "webpack",
     "extract_i18n_cura": "node ./i18n_cura/extract.js",
-    "extract_i18n_common": "node ./extract-translation.js"
+    "extract_i18n_common": "node ./extract-translation.js",
+    "json-xlsx":"node ./json-xlsx.js"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.2.1",
@@ -43,6 +44,7 @@
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.3.1",
     "worker-loader": "^2.0.0",
+    "xlsx": "^0.16.4",
     "xml2js": "^0.4.23"
   },
   "dependencies": {
