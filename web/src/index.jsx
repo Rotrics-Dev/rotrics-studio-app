@@ -35,6 +35,7 @@ const i18nOptions = {
     ns: ['common', 'cura'],
     defaultNS: 'common',
     keySeparator: false,
+    nsSeparator: "#",
     interpolation: {
         escapeValue: false,
         formatSeparator: ','

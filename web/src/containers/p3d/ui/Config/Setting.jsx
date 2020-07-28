@@ -71,7 +71,7 @@ class Setting extends PureComponent {
         }
         let {t} = this.props;
         const tCura = (key) => {
-            return t("cura:" + key)
+            return t("cura#" + key)
         };
         const actions = this.actions;
         const selected = getSettingByName(settings, name);
@@ -87,7 +87,7 @@ class Setting extends PureComponent {
                     style={{width: "100%", marginTop: "3px"}}
                     type={name === item.name ? 'primary' : ''}
                     onClick={() => actions.select(item.name)}
-                    text={t("common:" + item.label)}/>)
+                    text={t("common#" + item.label)}/>)
         }
 
         return (
