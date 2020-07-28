@@ -125,7 +125,7 @@ class WorkingParameters extends PureComponent {
                     <ConfigTitle text={t(working_parameters.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t(work_speed.description) + "<br/>" + "safaf"}>
+                        data-tip={t(work_speed.description)}>
                         <Col span={19}>
                             <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>

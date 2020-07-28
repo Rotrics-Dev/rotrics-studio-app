@@ -2,13 +2,17 @@ import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
 import {connect} from 'react-redux';
 import ActionButton from "../../../../components/ActionButton/Index.jsx";
 import {ConfigText} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
+import {getUuid} from "../../../../utils";
+
+
+const tooltipId = getUuid();
 
 const getSettingByName = (settings, name) => {
     for (let i = 0; i < settings.length; i++) {
@@ -88,12 +92,20 @@ class Setting extends PureComponent {
 
         return (
             <div>
+                <Tooltip
+                    id={tooltipId}
+                    place="left"
+                />
                 <Line/>
                 <div style={{
                     padding: "8px 8px 0 8px"
                 }}>
                     {settingsButtons}
-                    <Row style={{marginTop: "8px"}}>
+                    <Row
+                        style={{marginTop: "8px"}}
+                        data-for={tooltipId}
+                        data-tip={tCura(layer_height.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(layer_height.label)}/>
                             <ConfigText text={`(${layer_height.unit})`}/>
@@ -108,7 +120,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.layer_height}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(top_thickness.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(top_thickness.label)}/>
                             <ConfigText text={`(${top_thickness.unit})`}/>
@@ -123,7 +138,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.top_thickness}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(infill_sparse_density.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(infill_sparse_density.label)}/>
                             <ConfigText text={`(${infill_sparse_density.unit})`}/>
@@ -137,7 +155,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.infill_sparse_density}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(speed_infill.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(speed_infill.label)}/>
                             <ConfigText text={`(${speed_infill.unit})`}/>
@@ -151,7 +172,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.speed_infill}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(speed_wall_0.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(speed_wall_0.label)}/>
                             <ConfigText text={`(${speed_wall_0.unit})`}/>
@@ -165,7 +189,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.speed_wall_0}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(speed_wall_x.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(speed_wall_x.label)}/>
                             <ConfigText text={`(${speed_wall_x.unit})`}/>
@@ -179,7 +206,10 @@ class Setting extends PureComponent {
                                 onAfterChange={actions.speed_wall_x}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(speed_travel.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(speed_travel.label)}/>
                             <ConfigText text={`(${speed_travel.unit})`}/>

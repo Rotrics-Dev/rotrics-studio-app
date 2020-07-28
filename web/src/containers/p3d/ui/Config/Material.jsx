@@ -8,6 +8,10 @@ import {actions as p3dMaterialActions} from "../../../../reducers/p3dMaterial";
 import {connect} from 'react-redux';
 import {ConfigText} from '../../../../components/Config';
 import {withTranslation} from 'react-i18next';
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
+import {getUuid} from "../../../../utils";
+
+const tooltipId = getUuid();
 
 const getMaterialByName = (materials, name) => {
     for (let i = 0; i < materials.length; i++) {
@@ -72,12 +76,20 @@ class Material extends PureComponent {
         }
         return (
             <div>
+                <Tooltip
+                    id={tooltipId}
+                    place="left"
+                />
                 <Line/>
                 <div style={{
                     padding: "8px"
                 }}>
                     {materialEles}
-                    <Row style={{marginTop: "8px"}}>
+                    <Row
+                        style={{marginTop: "8px"}}
+                        data-for={tooltipId}
+                        data-tip={tCura(material_diameter.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(material_diameter.label)}/>
                             <ConfigText text={`(${material_diameter.unit})`}/>
@@ -92,7 +104,10 @@ class Material extends PureComponent {
                             />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(material_flow.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(material_flow.label)}/>
                             <ConfigText text={`(${material_flow.unit})`}/>
@@ -106,7 +121,10 @@ class Material extends PureComponent {
                                 onAfterChange={actions.material_flow}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(material_print_temperature.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(material_print_temperature.label)}/>
                             <ConfigText text={`(${material_print_temperature.unit})`}/>
@@ -120,7 +138,10 @@ class Material extends PureComponent {
                                 onAfterChange={actions.material_print_temperature}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(material_print_temperature_layer_0.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(material_print_temperature_layer_0.label)}/>
                             <ConfigText text={`(${material_print_temperature_layer_0.unit})`}/>
@@ -134,7 +155,10 @@ class Material extends PureComponent {
                                 onAfterChange={actions.material_print_temperature_layer_0}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={tCura(material_final_print_temperature.description)}
+                    >
                         <Col span={19}>
                             <ConfigText text={tCura(material_final_print_temperature.label)}/>
                             <ConfigText text={`(${material_final_print_temperature.unit})`}/>
