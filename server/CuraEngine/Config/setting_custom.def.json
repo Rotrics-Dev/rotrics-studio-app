@@ -150,7 +150,7 @@
       "description": "Adjusts the density of infill of the print.",
       "unit": "%",
       "type": "float",
-      "default_value": 8,
+      "default_value": 50,
       "minimum_value": "0",
       "maximum_value_warning": "100",
       "limit_to_extruder": "infill_extruder_nr",
