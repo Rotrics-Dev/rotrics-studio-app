@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import reducer from './reducers';
 import styles from './styles.css';
 import i18next from 'i18next'
-
+import language from './containers/settings/lib/language.json'
 const i18nOptions = {
     // lng: "zh-CN",
     backend: {
@@ -21,7 +21,7 @@ const i18nOptions = {
      * Array of allowed languages
      * @default false
      */
-    supportedLngs: ['en', 'zh-CN'],
+    supportedLngs: Object.keys(language),
     /**
      * Language codes to lookup, given set language is
      * 'en-US': 'all' --> ['en-US', 'en', 'dev'],

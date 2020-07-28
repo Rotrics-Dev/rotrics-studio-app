@@ -33,20 +33,31 @@ function xlsx2Json(fileName) {
             return;
         }
 
-        const sheet = workBook.Sheets[workBook.SheetNames[0]]
+        const sheet = workBook.Sheets[workBook.SheetNames[0]]//读取工作表
         let sheetJson = xlsx.utils.sheet_to_json(sheet, {header: 0});
         if (sheetJson.length <= 1) {
             console.log(`${sheetName} is empty`);
             return;
         }
-        const key = sheet.A1.v;
-        const value = sheet.B1.v;
-        const language = {}
+        const table = {}
+
         for (const data of sheetJson) {
-            language[data[key]] = data[value];
+            const enKey = data.en;
+            Object.keys(data).forEach((language) => {
+                if (language in table) {
+                    table[language][enKey] = data[language];
+                } else {
+                    const translate = {};
+                    translate[enKey] = data[language];
+                    table[language] = translate;
+                }
+            });
         }
-        console.log(`当前处理结果:${fileDir}${value}.json`)
-        fs.writeFileSync(`${fileDir}${value}.json`, JSON.stringify(language, null, 2));
+
+        Object.keys(table).forEach(language => {
+            console.log(`当前处理结果:${fileDir}${language}.json`)
+            fs.writeFileSync(`${fileDir}${language}.json`, JSON.stringify(table[language], null, 2));
+        });
     });
 }
 
