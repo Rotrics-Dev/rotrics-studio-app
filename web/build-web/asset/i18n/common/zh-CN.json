@@ -145,7 +145,7 @@
   "Determines how fast the front end moves when it’s working.": "设置前端模块工作移动速度",
   "Determines how long the laser keeps on when it’s engraving a dot.": "设置激光雕刻一个点的时长",
   "When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can't be cut with only one pass.": "当选中时，机械臂会根据下面的设置多跑几次，这个设置用于切割单次激光无法切割的材料。",
-  "Determines how many times the printer will run the G-code automatically.": "设置G-code自动运行的次数",
+  "Determines how many times the printer will run the G-code automatically.": "设置 G-code 自动运行的次数",
   "Determines how much the laser module will be lowered after each pass.": "设置激光模块每次运行沉降的深度",
   "When enabled, the power used to engrave this image will be set in the G-code, When engraving multiple images, you can set the power for each image separately.": "当选中时，用于雕刻此图像的功率会设置到 G-code中，当雕刻多个图像时，您可以为每个图像分别设置功率。",
   "Power to use when laser is working.": "激光工作时的功率",

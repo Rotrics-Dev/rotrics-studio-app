@@ -209,8 +209,8 @@ class WorkingParameters extends PureComponent {
                             <Checkbox checked={multi_pass.default_value} onChange={actions.setMultiPass}/>
                         </Col>
                     </Row>
-                    {multi_pass.default_value &&
                     <Row
+                        style={{display: multi_pass.default_value ? "" : "none"}}
                         data-for={tooltipId}
                         data-tip={t(passes.description)}>
                         <Col span={17} push={2}>
@@ -224,9 +224,8 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setMultiPassPasses}/>
                         </Col>
                     </Row>
-                    }
-                    {multi_pass.default_value &&
                     <Row
+                        style={{display: multi_pass.default_value ? "" : "none"}}
                         data-for={tooltipId}
                         data-tip={t(pass_depth.description)}>
                         <Col span={17} push={2}>
@@ -241,7 +240,6 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setMultiPassPassDepth}/>
                         </Col>
                     </Row>
-                    }
                 </div>
             </div>
         );
