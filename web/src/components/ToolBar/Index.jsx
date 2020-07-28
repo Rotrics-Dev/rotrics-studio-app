@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import ReactTooltip from "react-tooltip";
 import Tooltip from '../../components/Tooltip/Index.jsx';
 import noop from 'lodash/noop';
 import {Space, Popconfirm} from 'antd';
@@ -8,7 +9,12 @@ import {getUuid} from "../../utils";
 const tooltipId = getUuid();
 
 class Index extends PureComponent {
+    state = {
+        visible: false
+    };
+
     render() {
+        const state = this.state;
         let {operations = {}, enabledInfo, visibleInfo, tipInfo, clearPopConfirmInfo} = this.props;
         const {exportModels = noop, undo = noop, redo = noop, layFlat = noop, duplicate = noop, del = noop, clear = noop} = operations;
         if (!enabledInfo) {
@@ -56,7 +62,7 @@ class Index extends PureComponent {
                 <Tooltip
                     id={tooltipId}
                     place="left"
-                   />
+                />
                 <Space direction={"vertical"} size={0}>
                     {visibleInfo.undo &&
                     <button
@@ -101,28 +107,33 @@ class Index extends PureComponent {
                         className={styles.btn_delete}
                     />
                     }
-                    {visibleInfo.clear && !enabledInfo.clear &&
-                    <button
-                        data-for={tooltipId}
-                        data-tip={tipInfo.clear}
-                        disabled={true}
-                        className={styles.btn_clear}
-                    />
-                    }
-                    {visibleInfo.clear && enabledInfo.clear &&
-                    <Popconfirm
-                        placement="left"
-                        title={clearPopConfirmInfo.title}
-                        onConfirm={clear}
-                        okText={clearPopConfirmInfo.okText}
-                        cancelText={clearPopConfirmInfo.cancelText}
-                    >
-                        <button
-                            data-for={tooltipId}
-                            data-tip={tipInfo.clear}
-                            className={styles.btn_clear}
+                    {visibleInfo.clear &&
+                    <div>
+                        <Popconfirm
+                            visible={state.visible}
+                            placement="left"
+                            title={clearPopConfirmInfo.title}
+                            okText={clearPopConfirmInfo.okText}
+                            cancelText={clearPopConfirmInfo.cancelText}
+                            onConfirm={() => {
+                                clear();
+                                this.setState({visible: false})
+                            }}
+                            onCancel={() => {
+                                this.setState({visible: false})
+                            }}
                         />
-                    </Popconfirm>
+                        <button
+                            className={styles.btn_clear}
+                            data-for={tooltipId}
+                            disabled={!enabledInfo.clear}
+                            data-tip={tipInfo.clear}
+                            onClick={() => {
+                                this.setState({visible: true});
+                                ReactTooltip.hide()
+                            }}
+                        />
+                    </div>
                     }
                     {visibleInfo.exportModels &&
                     <button
