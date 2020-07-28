@@ -4,7 +4,7 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend.js";
 import Line from '../../../../components/Line/Index.jsx'
 import {Space, Button, Select} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 import {withTranslation} from 'react-i18next';
 
@@ -69,15 +69,10 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%",
             }}>
-                <ReactTooltip
+                <Tooltip
                     id={tooltipId}
                     place="left"
-                    type="info"
-                    effect="solid"
-                    backgroundColor="#c0c0c0"
-                    textColor="#292421"
-                    delayShow={200}/>
-                <ReactTooltip/>
+                   />
                 <Space direction={"vertical"} style={{width: "100%", padding: "6px"}}>
                     <Button
                         data-for={tooltipId}

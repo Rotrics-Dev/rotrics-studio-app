@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../components/Tooltip/Index.jsx';
 import noop from 'lodash/noop';
 import {Space, Popconfirm} from 'antd';
 import styles from './styles.css';
@@ -53,14 +53,10 @@ class Index extends PureComponent {
         }
         return (
             <div className={styles.div_root}>
-                <ReactTooltip
+                <Tooltip
                     id={tooltipId}
                     place="left"
-                    type="info"
-                    effect="solid"
-                    backgroundColor="#c0c0c0"
-                    textColor="#292421"
-                    delayShow={500}/>
+                   />
                 <Space direction={"vertical"} size={0}>
                     {visibleInfo.undo &&
                     <button

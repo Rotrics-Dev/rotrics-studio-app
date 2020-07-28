@@ -7,8 +7,7 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
-
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 
 const tooltipId = getUuid();
@@ -116,14 +115,9 @@ class WorkingParameters extends PureComponent {
         }
         return (
             <div>
-                <ReactTooltip
+                <Tooltip
                     id={tooltipId}
-                    place="left"
-                    type="info"
-                    effect="solid"
-                    backgroundColor="#c0c0c0"
-                    textColor="#292421"
-                    delayShow={200}/>
+                    place="left"/>
                 <Line/>
                 <div style={{
                     padding: "8px",
@@ -131,7 +125,7 @@ class WorkingParameters extends PureComponent {
                     <ConfigTitle text={t(working_parameters.label)}/>
                     <Row
                         data-for={tooltipId}
-                        data-tip={t(work_speed.description)}>
+                        data-tip={t(work_speed.description) + "<br/>" + "safaf"}>
                         <Col span={19}>
                             <ConfigText text={`${t(work_speed.label)}(${work_speed.unit})`}/>
                         </Col>

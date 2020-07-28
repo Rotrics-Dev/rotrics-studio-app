@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../components/Tooltip/Index.jsx';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import ReactGA from 'react-ga';
@@ -35,7 +35,16 @@ const notificationKey = getUuid();
 const tooltipId = getUuid();
 
 console.log("ReactGA.initialize('UA-173484896-1');")
-ReactGA.initialize('UA-173484896-1');
+// ReactGA.initialize('UA-173484896-1');
+
+ReactGA.initialize('UA-173484896-1', {
+    // debug: true,
+    titleCase: false,
+    gaOptions: {
+        userId: 123,
+        siteSpeedSampleRate: 100
+    }
+});
 
 class Index extends React.Component {
     constructor(props) {
@@ -65,18 +74,25 @@ class Index extends React.Component {
             return false;
         };
 
-        setInterval(() => {
-            if (this.props.socketStatus === "disconnect") {
-                notificationI18n.error({
-                    key: notificationKey,
-                    message: 'Internal error occurred',
-                    description: 'Please restart the app',
-                    duration: 0
-                });
-            } else if (this.props.socketStatus === "connect") {
-                notificationI18n.close(notificationKey);
-            }
-        }, 2000)
+        // setInterval(() => {
+        //     ReactGA.event({
+        //         category: 'Promotion',
+        //         action: 'Displayed Promotional Widget',
+        //         label: 'Homepage Thing',
+        //         nonInteraction: true
+        //     });
+        //
+        //     // if (this.props.socketStatus === "disconnect") {
+        //     //     notificationI18n.error({
+        //     //         key: notificationKey,
+        //     //         message: 'Internal error occurred',
+        //     //         description: 'Please restart the app',
+        //     //         duration: 0
+        //     //     });
+        //     // } else if (this.props.socketStatus === "connect") {
+        //     //     notificationI18n.close(notificationKey);
+        //     // }
+        // }, 1000)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -89,6 +105,12 @@ class Index extends React.Component {
     // 如此写，可以实现，先计算parent element的size，再显示指定的tap
     displayTap = (tap) => {
         ReactGA.pageview(tap)
+
+        console.log("GA veent")
+        ReactGA.event({
+            category: 'liuming',
+            action: 'test event'
+        });
 
         this.refBasic.current.style.display = 'none';
         this.refLaser.current.style.display = 'none';
@@ -128,14 +150,9 @@ class Index extends React.Component {
                     <Header/>
                 </div>
                 <div className={styles.div_tap_bar}>
-                    <ReactTooltip
+                    <Tooltip
                         id={tooltipId}
-                        place="right"
-                        type="info"
-                        effect="solid"
-                        backgroundColor="#c0c0c0"
-                        textColor="#292421"
-                        delayShow={500}/>
+                        place="right"/>
                     <button
                         data-for={tooltipId}
                         data-tip={t("Basic")}

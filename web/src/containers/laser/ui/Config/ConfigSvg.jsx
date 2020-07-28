@@ -7,7 +7,7 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 
 const tooltipId = getUuid();
@@ -37,14 +37,10 @@ class ConfigSvg extends PureComponent {
         const {fill_density} = fill.children;
         return (
             <div>
-                <ReactTooltip
+                <Tooltip
                     id={tooltipId}
                     place="left"
-                    type="info"
-                    effect="solid"
-                    backgroundColor="#c0c0c0"
-                    textColor="#292421"
-                    delayShow={200}/>
+                    />
                 <Line/>
                 <div style={{
                     padding: "8px",

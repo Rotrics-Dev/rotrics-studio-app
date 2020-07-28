@@ -6,7 +6,7 @@ import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw"
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
-import ReactTooltip from "react-tooltip";
+import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 const tooltipId = getUuid();
 
@@ -34,14 +34,10 @@ class WorkingParameters extends PureComponent {
         const {work_speed, jog_speed} = working_parameters.children;
         return (
             <div>
-                <ReactTooltip
+                <Tooltip
                     id={tooltipId}
                     place="left"
-                    type="info"
-                    effect="solid"
-                    backgroundColor="#c0c0c0"
-                    textColor="#292421"
-                    delayShow={200}/>
+                    />
                 <Line/>
                 <div style={{
                     padding: "8px",
