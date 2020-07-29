@@ -10,12 +10,12 @@
 /web/package-lock.json
 
 #electron
-/electron/node_modules
-/electron/build-web
 /electron/build-server
-/electron/output
-/electron/static/cache
+/electron/build-web
 /electron/CuraEngine
+/electron/node_modules
+/electron/output
+/electron/static
 /electron/package-lock.json
 
 # Development Env (Jetbrains, Vim, macOS)
