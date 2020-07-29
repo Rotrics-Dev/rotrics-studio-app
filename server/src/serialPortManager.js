@@ -9,6 +9,7 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
 } from "./constants.js"
+import {utf8bytes2string, string2utf8bytes, calculateXOR} from './utils/index.js';
 
 const baudRate = 9600;
 
@@ -51,9 +52,24 @@ class SerialPortManager extends EventEmitter {
     _openNew(path) {
         this.serialPort = new SerialPort(path, {baudRate, autoOpen: false});
 
+        //data: 类型是buffer的数组
+        //将buffer转为string，发送到前端
+        this.serialPort.on("data", (buffer) => {
+            if (Buffer.isBuffer(buffer)) {
+                const arr = [];
+                for (let i = 0; i < buffer.length; i++) {
+                    arr.push(buffer[i]);
+                }
+                const received = utf8bytes2string(arr);
+                console.log("received raw: " + received);
+            } else {
+                console.log("received data is not buffer: " + JSON.stringify(buffer))
+            }
+        });
+
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', (data) => {
-            console.log("received line: " + JSON.stringify(data));
+            console.log("received line: " + data)
             this.emit(SERIAL_PORT_DATA, {received: data});
         });
 
