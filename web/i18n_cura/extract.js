@@ -1,22 +1,5 @@
 const fs = require('fs');
 
-//从i18n_cura目录中，抽取需要的翻译字段
-//并写到/build-web/asset/i18n/cura/中
-const dirIn = "./i18n_cura/";
-const dirOutput = "./build-web/asset/i18n/cura/";
-const fdmJsonFilename = "fdmprinter.def.json.po";
-
-fs.mkdirSync(dirOutput, {recursive: true});
-
-const fileNames = fs.readdirSync(dirIn);
-const subDirNames = []; //i18n_cura下文件夹名字
-fileNames.forEach((filename) => {
-    const stats = fs.statSync(`${dirIn}${filename}`);
-    if (stats.isDirectory()) {
-        subDirNames.push(filename)
-    }
-});
-
 //从filePathIn读取，写入到filePathOutput
 const extract = (filePathIn, filePathOutput) => {
     const jsObj = {};
@@ -36,7 +19,7 @@ const extract = (filePathIn, filePathOutput) => {
                 const msgctxt = line0.replace("msgctxt", "").replace(/\"/g, "").trim();
                 const msgid = line1.replace("msgid", "").replace(/\"/g, "").trim();
                 const msgstr = line2.replace("msgstr", "").replace(/\"/g, "").trim();
-                if (msgstr.length === 0){
+                if (msgstr.length === 0) {
                     jsObj[msgid] = msgid;
                 } else {
                     jsObj[msgid] = msgstr;
@@ -47,17 +30,39 @@ const extract = (filePathIn, filePathOutput) => {
     fs.writeFileSync(filePathOutput, JSON.stringify(jsObj, null, 2));
 };
 
-subDirNames.forEach((subDirName) => {
-    const filePathIn = `${dirIn}${subDirName}/${fdmJsonFilename}`;
-    //下划线变中线
-    const filePathOut = `${dirOutput}${subDirName.replace("_", "-")}.json`;
-    extract(filePathIn, filePathOut);
-});
+const extract_i18n_cura = () => {
+    //从i18n_cura目录中，抽取需要的翻译字段
+    //并写到/build-web/asset/i18n/cura/中
+    const dirIn = "./i18n_cura/";
+    const dirOutput = "./build-web/asset/i18n/cura/";
+    const fdmJsonFilename = "fdmprinter.def.json.po";
 
-//english
-const filePathIn4en = `${dirIn}fdmprinter.def.json.pot`;
-const filePathOutput4en = `${dirOutput}en.json`;
-extract(filePathIn4en, filePathOutput4en);
+    fs.mkdirSync(dirOutput, {recursive: true});
+
+    const fileNames = fs.readdirSync(dirIn);
+    const subDirNames = []; //i18n_cura下文件夹名字
+    fileNames.forEach((filename) => {
+        const stats = fs.statSync(`${dirIn}${filename}`);
+        if (stats.isDirectory()) {
+            subDirNames.push(filename)
+        }
+    });
+
+    subDirNames.forEach((subDirName) => {
+        const filePathIn = `${dirIn}${subDirName}/${fdmJsonFilename}`;
+        //下划线变中线
+        const filePathOut = `${dirOutput}${subDirName.replace("_", "-")}.json`;
+        extract(filePathIn, filePathOut);
+    });
+
+    //english
+    const filePathIn4en = `${dirIn}fdmprinter.def.json.pot`;
+    const filePathOutput4en = `${dirOutput}en.json`;
+
+    extract(filePathIn4en, filePathOutput4en);
+};
+
+module.exports = extract_i18n_cura;
 
 
 

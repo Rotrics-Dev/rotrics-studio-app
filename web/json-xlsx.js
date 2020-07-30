@@ -8,6 +8,10 @@ const fs = require('fs');
  * 第二列为目标语言
  */
 const xlsx2json = (xlsxPath, targetDir) => {
+    if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, {recursive: true});
+    }
+
     fs.access(xlsxPath, (err) => {
         console.log(`当前处理文件:${xlsxPath}`)
         if (err) {
