@@ -56,7 +56,7 @@
   "Print Order": "Drucken  Reihenfolge ",
   "Work Speed": "Arbeitsgeschwindigkeit",
   "Jog Speed": "Jogging-Geschwindigkeit",
-  "Dwell Time": "Verweilzeit",
+  "Dwell Time": "Pausenzeit",
   "Multi-Pass": "Multi-Durchgänge",
   "Passes": "Zahl der Durchgängen",
   "Pass Depth": "Tiefe des Durchgangs",
@@ -228,9 +228,12 @@
   "Fast Print": "Schneller Druck",
   "Normal Quality": "Normale Qualität",
   "High Quality": "Hohe Qualität",
-  "reset": "reset",
-  "move to home": "move to home",
-  "move to origin": "move to origin",
-  "move to position": "move to position",
-  "set work origin": "set work origin"
+  "reset": "Zurücksetzen",
+  "move to home": "Zurück zur Startseite",
+  "move to origin": "Zurück zum Ausgangspunkt",
+  "move to position": "in Position bewegen",
+  "set work origin": "Arbeitsursprung einstellen",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ": "Halten Sie den Roboterarm an und warten Sie eine Weile bevor Sie den Laser einschalten. Mit Hilfe deses Parameteres verbessern den Effekt der Lasergravur.",
+  "Engrave Time": "Gravurszeit",
+  "Determines how long the laser keeps on when it's engraving a dot. ": "Dies bestimmt, wie lange der Laser beim Gravieren eines Punktes eingeschaltet bleibt."
 }

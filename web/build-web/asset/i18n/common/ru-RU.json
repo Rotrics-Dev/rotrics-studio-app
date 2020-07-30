@@ -56,7 +56,7 @@
   "Print Order": "Порядок печати",
   "Work Speed": "Скорость работы",
   "Jog Speed": "Порожная скорость",
-  "Dwell Time": "Время ожидания",
+  "Dwell Time": "Время паузы",
   "Multi-Pass": "Многократная гравировка",
   "Passes": "Раз",
   "Pass Depth": "Глубина каждого спуска",
@@ -232,5 +232,8 @@
   "move to home": "Перейти в дом",
   "move to origin": "Перейти в начало",
   "move to position": "Перейти в положение",
-  "set work origin": "Установить начало работы"
+  "set work origin": "Установить начало работы",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ": "Перед включением лазера остановить роботизированную руку и подождите. Этот параметр помогает улучшить эффект лазерной гравировки.",
+  "Engrave Time": "Время гравировки",
+  "Determines how long the laser keeps on when it's engraving a dot. ": "Как долго лазер остается в точке гравировки."
 }

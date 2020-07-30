@@ -56,7 +56,7 @@
   "Print Order": "Ordre d'impression",
   "Work Speed": "Vitesse de travail",
   "Jog Speed": "Vitesse de course vide",
-  "Dwell Time": "Durée de séjour",
+  "Dwell Time": "Durée de pause",
   "Multi-Pass": "Multi-gravure",
   "Passes": "Nombre de fois",
   "Pass Depth": "Profondeur de chaque baisse",
@@ -232,5 +232,8 @@
   "move to home": "Passer à l'accueil",
   "move to origin": "Passer à l'origine",
   "move to position": "Passer à la position",
-  "set work origin": "Régler l'origine du travail"
+  "set work origin": "Régler l'origine du travail",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ": "Avant d'activer le laser, veuillez mettre le bras mécanique en pause et attendre un moment. Ce paramètre permet d'améliorer l'effet de la gravure laser.",
+  "Engrave Time": "Durée de gravure",
+  "Determines how long the laser keeps on when it's engraving a dot. ": "Détermine la durée pendant laquelle le laser reste allumé lors de la gravure d'un point."
 }
