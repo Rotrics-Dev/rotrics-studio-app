@@ -8,7 +8,7 @@ function createWindow() {
         minWidth: 850,
         minHeight: 400,
         webPreferences: {
-            preload: path.join(__dirname, './start-server.js')
+            preload: path.join(__dirname, './build-server/startLocalServer.js')
         },
         devTools: true,
         nodeIntegration: true,
@@ -17,7 +17,7 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadFile('./build-web/index.html')
 
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools();
 
     // Open every external link in a new window of default OS browser
     // https://github.com/electron/electron/blob/master/docs/api/web-contents.md

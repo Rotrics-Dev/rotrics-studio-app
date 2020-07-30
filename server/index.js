@@ -2,5 +2,5 @@ require('babel-register')({
     presets: ['env']
 });
 
-module.exports = require('./build-server/index.js')
+module.exports = require('./src/index.js')
 

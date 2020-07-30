@@ -224,7 +224,7 @@
       "description": "The height of each layer in mm. Higher values produce faster prints in lower resolution, lower values produce slower prints in higher resolution.",
       "unit": "mm",
       "type": "float",
-      "default_value": 0.24,
+      "default_value": 0.1,
       "minimum_value": "0.001",
       "minimum_value_warning": "0.04",
       "maximum_value_warning": "0.8 * min(extruderValues('machine_nozzle_size'))",

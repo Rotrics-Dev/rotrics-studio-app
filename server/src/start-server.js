@@ -37,8 +37,15 @@ import {
     FIRMWARE_UPGRADE_START,
     FIRMWARE_UPGRADE_STEP_CHANGE,
 } from "./constants.js"
-import getCWD from "./getCWD.js";
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
+import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
+
+let cache_base_url; //获取端口后，再初始化
+//socket.io conjunction with koa: https://github.com/socketio/socket.io
+let app = new Koa();
+let router = new Router();
+let httpServer = http.createServer(app.callback());
+let socketIoServer = new SocketIoServer(httpServer);
 
 /**
  * 保存file到，静态文件夹下的cache
@@ -48,32 +55,11 @@ import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 const saveFileToCacheDir = (file) => {
     const reader = fs.createReadStream(file.path);
     const filename = getUniqueFilename(file.name);
-    let filePath = cache_dir + filename;
+    let filePath = path.join(CACHE_DIR, filename);
     const upStream = fs.createWriteStream(filePath);
     reader.pipe(upStream);
-    const url = cache_base_url + filename;
-    return url;
+    return cache_base_url + filename;
 };
-
-const cwd = getCWD();
-const static_dir = path.join(cwd, 'static/');
-const cache_dir = path.join(cwd, '/static/cache/');
-const p3d_config_dir = path.join(cwd, '/CuraEngine/Config/');
-
-console.log("cwd : " + cwd)
-
-isElectron() && console.log("__dirname : " + __dirname)
-console.log("static_dir : " + static_dir)
-console.log("cache_dir : " + cache_dir)
-console.log("p3d_config_dir : " + p3d_config_dir)
-
-let cache_base_url; //获取端口后，再初始化
-
-//socket.io conjunction with koa: https://github.com/socketio/socket.io
-let app = new Koa();
-let router = new Router();
-let httpServer = http.createServer(app.callback());
-let socketIoServer = new SocketIoServer(httpServer);
 
 const setupHttpServer = () => {
     //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
@@ -101,7 +87,7 @@ const setupHttpServer = () => {
     });
 
     app.use(koaBody({multipart: true}));
-    app.use(serve(static_dir));
+    app.use(serve(STATIC_DIR));
     app.use(router.routes());
     app.use(router.allowedMethods());
 };
@@ -110,10 +96,10 @@ const setupHttpServer = () => {
 // 以material_开头的文件
 const readP3dMaterialsSync = () => {
     const contents = [];
-    const fileNames = fs.readdirSync(p3d_config_dir);
+    const fileNames = fs.readdirSync(P3D_CONFIG_DIR);
     fileNames.forEach((filename) => {
         if (filename.indexOf("material_") === 0) {
-            const filePath = p3d_config_dir + filename;
+            const filePath = path.join(P3D_CONFIG_DIR, filename);
             const content = fs.readFileSync(filePath, 'utf8');
             contents.push(JSON.parse(content))
         }
@@ -122,17 +108,17 @@ const readP3dMaterialsSync = () => {
 };
 
 const getP3dMaterialPath = (name) => {
-    return `${p3d_config_dir}material_${name}.def.json`;
+    return path.join(P3D_CONFIG_DIR, `material_${name}.def.json`);
 };
 
 // p3d setting
 // 以setting_开头的文件
 const readP3dSettingSync = () => {
     const contents = [];
-    const fileNames = fs.readdirSync(p3d_config_dir);
+    const fileNames = fs.readdirSync(P3D_CONFIG_DIR);
     fileNames.forEach((filename) => {
         if (filename.indexOf("setting_") !== -1) {
-            const filePath = p3d_config_dir + filename;
+            const filePath = path.join(P3D_CONFIG_DIR, filename);
             const content = fs.readFileSync(filePath, 'utf8');
             contents.push(JSON.parse(content))
         }
@@ -141,7 +127,7 @@ const readP3dSettingSync = () => {
 };
 
 const getP3dSettingPath = (name) => {
-    return `${p3d_config_dir}setting_${name}.def.json`;
+    return path.join(P3D_CONFIG_DIR, `setting_${name}.def.json`);
 };
 
 const setupSocket = () => {
@@ -255,7 +241,6 @@ const setupSocket = () => {
                 const {name, key, value} = data;
                 //读出来
                 const filePath = getP3dSettingPath(name);
-                console.log("filePAth: " + filePath)
                 const setting = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 const keys = key.split('.');
                 switch (keys.length) {
@@ -297,10 +282,8 @@ const setupSocket = () => {
 
             socket.on(FIRMWARE_UPGRADE_START, (data) => {
                 const {isInBootLoader} = data;
-                console.log("isInBootLoader: " + isInBootLoader)
-                firmwareUpgradeManager.start(cache_dir, isInBootLoader,(current, status, description) => {
+                firmwareUpgradeManager.start(CACHE_DIR, isInBootLoader, (current, status, description) => {
                     socket.emit(FIRMWARE_UPGRADE_STEP_CHANGE, {current, status, description});
-                    // console.log("##", current, status, description, progress)
                 })
             });
         }
@@ -314,13 +297,13 @@ const startListen = () => {
     console.log("is electron: " + electron);
 
     //清除缓存
-    if (fs.existsSync(cache_dir)) {
-        fs.rmdirSync(cache_dir, {recursive: true})
+    if (fs.existsSync(CACHE_DIR)) {
+        fs.rmdirSync(CACHE_DIR, {recursive: true})
     }
 
-    fs.mkdirSync(cache_dir, {recursive: true});
+    fs.mkdirSync(CACHE_DIR, {recursive: true});
 
-    const cache_dir_exist = fs.existsSync(cache_dir);
+    const cache_dir_exist = fs.existsSync(CACHE_DIR);
     console.log("cache dir exist: " + cache_dir_exist);
 
     if (electron) {

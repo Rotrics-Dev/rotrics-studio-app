@@ -1,40 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import childProcess from 'child_process';
-import getCWD from "./getCWD.js";
+import {CURA_ENGINE_PATH, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
 
-const cwd = getCWD();
-
-let curaEnginePath;
-// Determine path of Cura Engine
-(() => {
-    switch (process.platform) {
-        case 'darwin':
-            curaEnginePath = path.join(cwd, '/CuraEngine/2.7/macOS/CuraEngine');
-            break;
-        case 'win32':
-            curaEnginePath = path.join(cwd, '/CuraEngine/2.7/Win-x64/CuraEngine.exe');
-            break;
-        case 'linux':
-            curaEnginePath = path.join(cwd, '/CuraEngine/2.7/Linux-x64/CuraEngine');
-            break;
-    }
-    if (fs.existsSync(curaEnginePath)) {
-        console.log(`Cura Engine exist: ${curaEnginePath}`);
-    } else {
-        console.error(`Cura Engine not found: ${curaEnginePath}`);
-    }
-})();
-
-function copyFile(src, dist) {
+const copyFileSync = (src, dist) => {
     fs.writeFileSync(dist, fs.readFileSync(src));
-}
+};
 
 const preHandle = (data) => {
     // stlUrl: http://localhost:9000/cache/1591695065752.stl
     const {stlUrl, materialName, settingName} = data;
-    const materialFilePath = path.join(cwd, `/CuraEngine/Config/material_${materialName}.def.json`);
-    const settingFilePath = path.join(cwd, `/CuraEngine/Config/setting_${settingName}.def.json`);
+    const materialFilePath = path.join(P3D_CONFIG_DIR, `material_${materialName}.def.json`);
+    const settingFilePath = path.join(P3D_CONFIG_DIR, `setting_${settingName}.def.json`);
 
     if (!fs.existsSync(materialFilePath)) {
         onError(`Slice Error: material config not found: ${materialFilePath}`);
@@ -45,29 +22,28 @@ const preHandle = (data) => {
         return null;
     }
 
-    const activatedMaterialFilePath = path.join(cwd, `/CuraEngine/Config/activated_material.def.json`);
-    const activatedSettingFilePath = path.join(cwd, `/CuraEngine/Config/activated_setting.def.json`);
+    const activatedMaterialFilePath = path.join(P3D_CONFIG_DIR, `activated_material.def.json`);
+    const activatedSettingFilePath = path.join(P3D_CONFIG_DIR, `activated_setting.def.json`);
 
-    copyFile(materialFilePath, activatedMaterialFilePath);
-    copyFile(settingFilePath, activatedSettingFilePath);
+    copyFileSync(materialFilePath, activatedMaterialFilePath);
+    copyFileSync(settingFilePath, activatedSettingFilePath);
 
     const items = stlUrl.split("/");
     const modelFileName = items[items.length - 1];
-    const modelPath = path.join(cwd, `/static/cache/${modelFileName}`);
+    const modelPath = path.join(CACHE_DIR, modelFileName);
 
     const date = new Date();
     const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
     const gcodeFileName = arr.join("") + ".gcode";
-    const gcodeFilePath = path.join(cwd, `/static/cache/${gcodeFileName}`);
+    const gcodeFilePath = path.join(CACHE_DIR, gcodeFileName);
 
     return {configFilePath: activatedSettingFilePath, modelPath, gcodeFilePath, gcodeFileName}
-
 };
 
 const callCuraEngine = (modelPath, configName, outputPath) => {
     const configPath = configName;
     return childProcess.spawn(
-        curaEnginePath,
+        CURA_ENGINE_PATH,
         ['slice', '-v', '-p', '-j', configPath, '-o', outputPath, '-l', modelPath]
     );
 };
@@ -75,8 +51,8 @@ const callCuraEngine = (modelPath, configName, outputPath) => {
 const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
     let progress, filamentLength, filamentWeight, printTime;
 
-    if (!fs.existsSync(curaEnginePath)) {
-        onError(`Slice Error: Cura Engine not found: ${curaEnginePath}`);
+    if (!fs.existsSync(CURA_ENGINE_PATH)) {
+        onError(`Slice Error: Cura Engine not found: ${CURA_ENGINE_PATH}`);
         return;
     }
 

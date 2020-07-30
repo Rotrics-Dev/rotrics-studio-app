@@ -11,13 +11,17 @@ fs.readdirSync('./node_modules')
     });
 
 module.exports = {
-    mode: 'development', //development, production
-    devtool: 'source-map',
+    mode: 'production', //development, production
+    // devtool: 'source-map',
     entry: './src/index.js',
     target: 'node',
+    node: {
+        __dirname: false,
+        __filename: false,
+    },
     output: {
-        path: path.resolve(__dirname, "dist"),
-        filename: "localServer.js",
+        path: path.resolve(__dirname, "build-server"),
+        filename: "startLocalServer.js",
         libraryTarget: "commonjs"
     },
     externals: nodeModules
