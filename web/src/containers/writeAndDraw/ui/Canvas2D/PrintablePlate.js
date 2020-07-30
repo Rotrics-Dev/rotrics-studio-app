@@ -115,9 +115,9 @@ class PrintablePlate extends THREE.Object3D {
                 }
             }
             {//working area
-                const workArea = new WorkArea();
-                workArea.name = 'WorkArea';
-                group.add(workArea);
+                // const workArea = new WorkArea();
+                // workArea.name = 'WorkArea';
+                // group.add(workArea);
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
