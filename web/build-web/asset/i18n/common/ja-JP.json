@@ -56,7 +56,7 @@
   "Print Order": "印刷順番",
   "Work Speed": "作業速度",
   "Jog Speed": "ジョッグ速度",
-  "Dwell Time": "滞留時間",
+  "Dwell Time": "一時停止時間",
   "Multi-Pass": "マルチパス",
   "Passes": "回数",
   "Pass Depth": "パス深度",
@@ -228,9 +228,12 @@
   "Fast Print": "高速印刷",
   "Normal Quality": "標準品質",
   "High Quality": "高品質",
-  "reset": "reset",
-  "move to home": "move to home",
-  "move to origin": "move to origin",
-  "move to position": "move to position",
-  "set work origin": "set work origin"
+  "reset": "リセット",
+  "move to home": "家に移動",
+  "move to origin": "原点に移動",
+  "move to position": "位置に移動",
+  "set work origin": "仕事の原点を設定します",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ": "レーザーをオンにする前に、ロボットアームを一時停止し、しばらくお待ちください。このパラメーターは、レーザー彫刻の効果を向上させることができます。",
+  "Engrave Time": "彫刻時間",
+  "Determines how long the laser keeps on when it's engraving a dot. ": "ポイントを彫刻することに決定したら、レーザーがどのぐらいオンにしますか。"
 }

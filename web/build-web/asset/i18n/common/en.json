@@ -57,8 +57,6 @@
   "Work Speed": "Work Speed",
   "Jog Speed": "Jog Speed",
   "Dwell Time": "Dwell Time",
-  "Engrave Time": "Engrave Time",
-  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.": "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.",
   "Multi-Pass": "Multi-Pass",
   "Passes": "Passes",
   "Pass Depth": "Pass Depth",
@@ -168,7 +166,7 @@
   "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.": "Determines how fine and smooth the engraved picture will be. The bigger this value is, the better quality you will get.",
   "Choose an algorithm for image processing.": "Choose an algorithm for image processing.",
   "Choose the movement mode": "Choose the movement mode",
-  "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.": "Set a threshold to make sure the pixel whose greyscale is less than the threshold to black.",
+  "Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.": "Set a threshold to make sure the pixel whose grayscale is less than the threshold to black.",
   "Select the direction of the engraving path.": "Select the direction of the engraving path.",
   "Determines the offset of the pen when it is not drawn.": "Determines the offset of the pen when it is not drawn.",
   "Internal error occurred": "Internal error occurred",
@@ -231,8 +229,11 @@
   "Normal Quality": "Normal Quality",
   "High Quality": "High Quality",
   "reset": "reset",
-  "move home": "move home",
+  "move to home": "move to home",
   "move to origin": "move to origin",
   "move to position": "move to position",
-  "set work origin": "set work origin"
+  "set work origin": "set work origin",
+  "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ": "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality. ",
+  "Engrave Time": "Engrave Time",
+  "Determines how long the laser keeps on when it's engraving a dot. ": "Determines how long the laser keeps on when it's engraving a dot. "
 }
