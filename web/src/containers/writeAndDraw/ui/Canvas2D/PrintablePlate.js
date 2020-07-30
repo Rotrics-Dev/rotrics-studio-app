@@ -5,7 +5,7 @@ import GridLine from './GridLine';
 import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
-
+import WorkArea from './WorkArea'
 const METRIC_GRID_SPACING = 10; // 10 mm
 
 class PrintablePlate extends THREE.Object3D {
@@ -51,6 +51,7 @@ class PrintablePlate extends THREE.Object3D {
                 gridLine.name = 'GridLine';
                 group.add(gridLine);
             }
+
 
             { // Coordinate Axes
                 const coordinateAxes = new CoordinateAxes(axisXLength, axisYLength);
@@ -112,6 +113,11 @@ class PrintablePlate extends THREE.Object3D {
                         group.add(textLabel);
                     }
                 }
+            }
+            {//working area
+                // const workArea = new WorkArea();
+                // workArea.name = 'WorkArea';
+                // group.add(workArea);
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
