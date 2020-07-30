@@ -229,7 +229,7 @@
   "Normal Quality": "Precisión Normal",
   "High Quality": "Precisión Alta",
   "reset": "Reiniciar",
-  "move to home": "mover a Inicio",
+  "move home": "mover a Inicio",
   "move to origin": "mover al origen",
   "move to position": "mover a la posición",
   "set work origin": "establecer origen de trabajo",

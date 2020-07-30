@@ -7,19 +7,19 @@ const fs = require('fs');
  * 第一列为英语
  * 第二列为目标语言
  */
-const xlsx2json = (filePath) => {
-    fs.access(filePath, (err) => {
-        console.log(`当前处理文件:${filePath}`)
+const xlsx2json = (xlsxPath, targetDir) => {
+    fs.access(xlsxPath, (err) => {
+        console.log(`当前处理文件:${xlsxPath}`)
         if (err) {
-            return console.log(`${filePath} 不存在`);
+            return console.log(`${xlsxPath} 不存在`);
         }
-        let workBook = xlsx.readFile(filePath, {raw: true});
+        let workBook = xlsx.readFile(xlsxPath, {raw: true});
         if (!workBook) {
-            console.log(`${filePath} 读取错误`)
+            console.log(`${xlsxPath} 读取错误`)
             return
         }
         if (workBook.SheetNames === 0) {
-            console.log(`${filePath} 不含表格`)
+            console.log(`${xlsxPath} 不含表格`)
             return;
         }
 
@@ -45,13 +45,12 @@ const xlsx2json = (filePath) => {
         }
 
         Object.keys(table).forEach(language => {
-            console.log(`当前处理结果:${fileDir}${language}.json`)
-            fs.writeFileSync(`${fileDir}${language}.json`, JSON.stringify(table[language], null, 2));
+            fs.writeFileSync(`${targetDir}${language}.json`, JSON.stringify(table[language], null, 2));
         });
     });
 };
 
-const json2xlsx = (filePath) => {
+const json2xlsx = (filePath, targetDir) => {
     fs.access(filePath, (err) => {
         console.log(`当前处理文件:${filePath}`)
         if (err) {
@@ -71,8 +70,7 @@ const json2xlsx = (filePath) => {
         const workSheet = xlsx.utils.json_to_sheet(languageArray);
         const workBook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        console.log(`当前处理结果:${fileDir}${language}.xlsx`)
-        xlsx.writeFile(workBook, `${fileDir}${language}.xlsx`);
+        xlsx.writeFile(workBook, `${targetDir}${language}.xlsx`);
     });
 };
 

@@ -229,7 +229,7 @@
   "Normal Quality": "Нормальная точность",
   "High Quality": "Высокая точность",
   "reset": "Сброс",
-  "move to home": "Перейти в дом",
+  "move home": "Перейти в дом",
   "move to origin": "Перейти в начало",
   "move to position": "Перейти в положение",
   "set work origin": "Установить начало работы",

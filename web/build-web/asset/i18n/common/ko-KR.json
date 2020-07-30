@@ -229,7 +229,7 @@
   "Normal Quality": "일반 정밀도",
   "High Quality": "고정밀도",
   "reset": "다시 열림",
-  "move to home": "집까지 이사함",
+  "move home": "집까지 이사함",
   "move to origin": "원점으로 이동함",
   "move to position": "위치에 이동함",
   "set work origin": " 공작원점 설정",
