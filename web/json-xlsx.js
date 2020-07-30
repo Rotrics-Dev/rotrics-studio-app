@@ -1,13 +1,5 @@
 const xlsx = require('xlsx');
 const fs = require('fs');
-const fileDir = './build-web/asset/i18n/common/';
-
-/**
- * 运行方式(1) npm run json-xlsx <xxx.json> Json转Xlsx
- * 运行方式(2) npm run json-xlsx <xxx.xlsx> Xlsx转Json
- * 生成结果会生成在/build-web/asset/i18n/common目录
- * 可以一次处理多个文件
- */
 
 /**
  * 一个文件只能有一个表格
@@ -15,31 +7,29 @@ const fileDir = './build-web/asset/i18n/common/';
  * 第一列为英语
  * 第二列为目标语言
  */
-function xlsx2Json(fileName) {
-    const path = `${fileDir}${fileName}`;
-
-    fs.access(path, (err) => {
-        console.log(`当前处理文件:${fileName}`)
+const xlsx2json = (filePath) => {
+    fs.access(filePath, (err) => {
+        console.log(`当前处理文件:${filePath}`)
         if (err) {
-            return console.log(`${fileName} 不存在`);
+            return console.log(`${filePath} 不存在`);
         }
-        let workBook = xlsx.readFile(path, {raw: true});
+        let workBook = xlsx.readFile(filePath, {raw: true});
         if (!workBook) {
-            console.log(`${fileName} 读取错误`)
+            console.log(`${filePath} 读取错误`)
             return
         }
         if (workBook.SheetNames === 0) {
-            console.log(`${fileName} 不含表格`)
+            console.log(`${filePath} 不含表格`)
             return;
         }
 
-        const sheet = workBook.Sheets[workBook.SheetNames[0]]//读取工作表
+        const sheet = workBook.Sheets[workBook.SheetNames[0]];//读取工作表
         let sheetJson = xlsx.utils.sheet_to_json(sheet, {header: 0});
         if (sheetJson.length <= 1) {
-            console.log(`${sheetName} is empty`);
+            console.log(`sheetJson is empty`);
             return;
         }
-        const table = {}
+        const table = {};
 
         for (const data of sheetJson) {
             const enKey = data.en;
@@ -59,17 +49,16 @@ function xlsx2Json(fileName) {
             fs.writeFileSync(`${fileDir}${language}.json`, JSON.stringify(table[language], null, 2));
         });
     });
-}
+};
 
-async function jsonToXlsx(fileName) {
-    const path = `${fileDir}${fileName}`;
-    fs.access(path, (err) => {
-        console.log(`当前处理文件:${fileName}`)
+const json2xlsx = (filePath) => {
+    fs.access(filePath, (err) => {
+        console.log(`当前处理文件:${filePath}`)
         if (err) {
-            return console.log(`${fileName} 不存在`);
+            return console.log(`${filePath} 不存在`);
         }
-        const language = fileName.slice(fileName.lastIndexOf('/') + 1, fileName.lastIndexOf('.'));
-        const json = JSON.parse(fs.readFileSync(path))
+        const language = filePath.slice(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
+        const json = JSON.parse(fs.readFileSync(filePath))
         const languageArray = [];
         Object.keys(json).forEach(
             (key) => {
@@ -78,27 +67,13 @@ async function jsonToXlsx(fileName) {
                 translate[language] = json[key];
                 languageArray.push(translate)
             }
-        )
+        );
         const workSheet = xlsx.utils.json_to_sheet(languageArray);
         const workBook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workBook, workSheet, "Sheet1");
         console.log(`当前处理结果:${fileDir}${language}.xlsx`)
         xlsx.writeFile(workBook, `${fileDir}${language}.xlsx`);
     });
-}
+};
 
-const argv = process.argv;
-if (argv.length <= 2) {
-    console.log('请指定.json或者.xlsx文件')
-    return;
-}
-const paths = argv.slice(2, argv.length);
-
-
-for (const path of paths) {
-    if (path.toLowerCase().endsWith('.xlsx')) {
-        xlsx2Json(path);
-    } else if (path.toLowerCase().endsWith('.json')) {
-        jsonToXlsx(path);
-    }
-}
+module.exports = {xlsx2json, json2xlsx};
