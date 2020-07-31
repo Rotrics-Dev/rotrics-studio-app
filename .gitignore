@@ -6,8 +6,7 @@
 
 #web
 /web/node_modules
-/web/build-web/*.js
-/web/build-web/asset/i18n
+/web/build-web
 /web/package-lock.json
 
 #electron
