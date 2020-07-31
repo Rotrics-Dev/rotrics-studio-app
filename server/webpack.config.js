@@ -11,7 +11,6 @@ fs.readdirSync('./node_modules')
     });
 
 module.exports = {
-    mode: 'production', //development, production
     // devtool: 'source-map',
     entry: './src/index.js',
     target: 'node',

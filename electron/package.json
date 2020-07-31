@@ -6,11 +6,11 @@
   "license": "MIT",
   "main": "main.js",
   "scripts": {
-    "start": "node ./pre-build-mac.js && electron .",
+    "start": "npm run copy_files && electron .",
     "rebuild": "electron-rebuild -f -w serialport",
-    "build:mac-x64": "node ./pre-build-mac.js && electron-builder --mac --x64",
-    "build:win-x64": "node ./pre-build-win.js && electron-builder --windows --x64",
-    "build": "electron-builder --mac --x64"
+    "build:mac-x64": "npm run copy_files mac && electron-builder --mac --x64",
+    "build:win-x64": "npm run copy_files windows && electron-builder --windows --x64",
+    "copy_files": "node ./copy_files.js"
   },
   "build": {
     "appId": "com.rotrics.rotrics-studio-app",
