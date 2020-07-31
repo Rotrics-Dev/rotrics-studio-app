@@ -7,7 +7,7 @@ import {withTranslation} from 'react-i18next';
 import {TAP_CODE} from "../../../constants.js";
 
 const BLOCKS_DEFAULT_OPTIONS = {
-    media: './asset/blocks-media/',
+    media: './asset/rotrics-scratch-blocks/media/',
     zoom: {
         controls: false,
         wheel: false,

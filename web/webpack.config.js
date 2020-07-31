@@ -1,7 +1,5 @@
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const env = process.env.NODd
 module.exports = {
     // devtool: 'source-map',
     entry: "./src/index.jsx",
@@ -50,7 +48,7 @@ module.exports = {
                     {
                         loader: 'url-loader',
                         options: {
-                            limit: 10000,
+                            limit: 100000,
                             name: './asset/image/[hash].[ext]'
                         }
                     }
