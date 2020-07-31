@@ -3,72 +3,55 @@ import path from 'path';
 import childProcess from 'child_process';
 import {CURA_ENGINE_PATH, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
 
-const copyFileSync = (src, dist) => {
-    fs.writeFileSync(dist, fs.readFileSync(src));
-};
-
 const preHandle = (data) => {
     // stlUrl: http://localhost:9000/cache/1591695065752.stl
     const {stlUrl, materialName, settingName} = data;
-    const materialFilePath = path.join(P3D_CONFIG_DIR, `material_${materialName}.def.json`);
-    const settingFilePath = path.join(P3D_CONFIG_DIR, `setting_${settingName}.def.json`);
+    const materialPath = path.join(P3D_CONFIG_DIR, `material_${materialName}.def.json`);
+    const settingPath = path.join(P3D_CONFIG_DIR, `setting_${settingName}.def.json`);
 
-    if (!fs.existsSync(materialFilePath)) {
-        onError(`Slice Error: material config not found: ${materialFilePath}`);
-        return null;
-    }
-    if (!fs.existsSync(settingFilePath)) {
-        onError(`Slice Error: setting config not found: ${settingFilePath}`);
-        return null;
-    }
+    const activatedMaterialPath = path.join(P3D_CONFIG_DIR, `activated_material.def.json`);
+    const activatedSettingPath = path.join(P3D_CONFIG_DIR, `activated_setting.def.json`);
 
-    const activatedMaterialFilePath = path.join(P3D_CONFIG_DIR, `activated_material.def.json`);
-    const activatedSettingFilePath = path.join(P3D_CONFIG_DIR, `activated_setting.def.json`);
-
-    copyFileSync(materialFilePath, activatedMaterialFilePath);
-    copyFileSync(settingFilePath, activatedSettingFilePath);
+    fs.existsSync(materialPath) && fs.writeFileSync(activatedMaterialPath, fs.readFileSync(materialPath));
+    fs.existsSync(settingPath) && fs.writeFileSync(activatedSettingPath, fs.readFileSync(settingPath));
 
     const items = stlUrl.split("/");
-    const modelFileName = items[items.length - 1];
-    const modelPath = path.join(CACHE_DIR, modelFileName);
+    const modelName = items[items.length - 1];
+    const modelPath = path.join(CACHE_DIR, modelName);
 
-    const date = new Date();
-    const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-    const gcodeFileName = arr.join("") + ".gcode";
-    const gcodeFilePath = path.join(CACHE_DIR, gcodeFileName);
+    const d = new Date();
+    const gcodeName = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].join("") + ".gcode";
+    const gcodePath = path.join(CACHE_DIR, gcodeName);
 
-    return {configFilePath: activatedSettingFilePath, modelPath, gcodeFilePath, gcodeFileName}
+    return {activatedSettingPath, modelPath, gcodePath, gcodeName}
 };
 
-const callCuraEngine = (modelPath, configName, outputPath) => {
-    const configPath = configName;
+const callCuraEngine = (modelPath, activatedSettingPath, gcodePath) => {
     return childProcess.spawn(
         CURA_ENGINE_PATH,
-        ['slice', '-v', '-p', '-j', configPath, '-o', outputPath, '-l', modelPath]
+        ['slice', '-v', '-p', '-j', activatedSettingPath, '-o', gcodePath, '-l', modelPath]
     );
 };
 
 const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
     let progress, filamentLength, filamentWeight, printTime;
 
+    const {activatedSettingPath, modelPath, gcodePath, gcodeName} = preHandle(data);
+
     if (!fs.existsSync(CURA_ENGINE_PATH)) {
-        onError(`Slice Error: Cura Engine not found: ${CURA_ENGINE_PATH}`);
+        onError(`Slice Error: Cura Engine not exist -> ${CURA_ENGINE_PATH}`);
         return;
     }
-
-    const {modelPath, configFilePath, gcodeFilePath, gcodeFileName} = preHandle(data);
-
+    if (!fs.existsSync(activatedSettingPath)) {
+        onError(`Slice Error: file not exist ->  ${activatedSettingPath}`);
+        return;
+    }
     if (!fs.existsSync(modelPath)) {
-        onError('Slice Error: stl file not exist -> ' + modelPath);
+        onError(`Slice Error: file not exist -> ${modelPath}`);
         return;
     }
 
-    if (!fs.existsSync(configFilePath)) {
-        onError('Slice Error: config file not exist -> ' + configFilePath);
-        return;
-    }
-
-    const process = callCuraEngine(modelPath, configFilePath, gcodeFilePath);
+    const process = callCuraEngine(modelPath, activatedSettingPath, gcodePath);
 
     process.stderr.on('data', (data) => {
         let array = data.toString().split('\n');
@@ -96,11 +79,11 @@ const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
         if (filamentLength && filamentWeight && printTime) {
             onProgress(1);
             onSucceed({
-                gcodeFileName,
+                gcodeName,
                 printTime,
                 filamentLength,
                 filamentWeight,
-                gcodeFilePath
+                gcodePath
             });
         }
         console.log('slice progress closed with code ' + code);

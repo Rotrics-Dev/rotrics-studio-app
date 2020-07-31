@@ -370,7 +370,8 @@ const actions = {
             } else if (progress) {
                 dispatch(actions._updateState({progress, progressTitle: "slicing"}));
             } else if (result) {
-                const gcodeUrl = window.serverIp + "/cache/" + result.gcodeFileName;
+                //result: {gcodeName, printTime, filamentLength, filamentWeight, gcodePath}
+                const gcodeUrl = window.serverCacheAddress + result.gcodeName;
                 result.gcodeUrl = gcodeUrl;
                 dispatch(actions._updateState({progress: 1, progressTitle: "slicing completed", result}));
                 dispatch(actions._renderGcode(gcodeUrl));

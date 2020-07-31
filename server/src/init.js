@@ -7,7 +7,6 @@ const STATIC_DIR = path.join(__dirname, '..', 'static');
 const CACHE_DIR = path.join(__dirname, '..', 'static', 'cache');
 const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'Config');
 
-// Determine path of Cura Engine
 (() => {
     switch (process.platform) {
         case 'darwin':
@@ -20,17 +19,9 @@ const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'Config');
             CURA_ENGINE_PATH = path.join(curaEngineBasePath, 'Linux-x64', 'CuraEngine');
             break;
     }
-    if (fs.existsSync(CURA_ENGINE_PATH)) {
-        console.log(`Cura Engine exist: ${CURA_ENGINE_PATH}`);
-    } else {
+    if (!fs.existsSync(CURA_ENGINE_PATH)) {
         console.error(`Cura Engine not found: ${CURA_ENGINE_PATH}`);
     }
-
-    console.log("__dirname : " + __dirname)
-    console.log("CURA_ENGINE_PATH : " + CURA_ENGINE_PATH)
-    console.log("STATIC_DIR : " + STATIC_DIR)
-    console.log("CACHE_DIR : " + CACHE_DIR)
-    console.log("P3D_CONFIG_DIR : " + P3D_CONFIG_DIR)
 })();
 
-export  {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR};
+export {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR};

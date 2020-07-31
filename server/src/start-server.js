@@ -40,7 +40,7 @@ import {
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
 
-let cache_base_url; //获取端口后，再初始化
+let serverCacheAddress; //获取端口后，再初始化
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
 let app = new Koa();
 let router = new Router();
@@ -58,7 +58,7 @@ const saveFileToCacheDir = (file) => {
     let filePath = path.join(CACHE_DIR, filename);
     const upStream = fs.createWriteStream(filePath);
     reader.pipe(upStream);
-    return cache_base_url + filename;
+    return serverCacheAddress + filename;
 };
 
 const setupHttpServer = () => {
@@ -291,45 +291,37 @@ const setupSocket = () => {
 };
 
 const startListen = () => {
-    console.log("=============================================")
-
-    const electron = isElectron();
-    console.log("is electron: " + electron);
-
     //清除缓存
     if (fs.existsSync(CACHE_DIR)) {
         fs.rmdirSync(CACHE_DIR, {recursive: true})
     }
-
     fs.mkdirSync(CACHE_DIR, {recursive: true});
 
-    const cache_dir_exist = fs.existsSync(CACHE_DIR);
-    console.log("cache dir exist: " + cache_dir_exist);
-
-    if (electron) {
+    //electron环境下: 动态获取可用端口
+    //dev环境下：http://localhost:9000
+    if (isElectron()) {
         httpServer.on('listening', () => {
             //http://nodejs.cn/api/net.html#net_class_net_server
             const {port, address} = httpServer.address();
-            const serverIp = `http://localhost:${port}`;
-            window.serverIp = serverIp;
-            cache_base_url = `${serverIp}/cache/`;
-            console.log('start server at: ' + serverIp);
-            console.log('cache_base_url: ' + cache_base_url);
-            console.log("=============================================")
+            serverCacheAddress = `http://localhost:${port}/cache/`;
+            window.serverAddress = `http://localhost:${port}`;
+            window.serverCacheAddress = `http://localhost:${port}/cache/`;
+            window.serverFontsAddress = `http://localhost:${port}/fonts/`;
+            console.log('server address: ' + window.serverAddress);
+            console.log('server cache address: ' + window.serverCacheAddress);
+            console.log('server fonts address: ' + window.serverFontsAddress);
         });
         httpServer.listen(0);
     } else {
         const port = 9000;
         httpServer.listen(port);
-        cache_base_url = `http://localhost:${port}/cache/`;
-        console.log('start server at: ' + `http://localhost:${port}`);
-        console.log('cache_base_url: ' + cache_base_url);
-        console.log("=============================================")
+        serverCacheAddress = `http://localhost:${port}/cache/`;
+        console.log('server address: ' + `http://localhost:${port}`);
+        console.log('server cache address: ' + `http://localhost:${port}/cache/`);
+        console.log('server fonts address: ' + `http://localhost:${port}/fonts/`);
     }
 };
 
-//electron环境下: 动态获取可用端口
-//dev环境下：http://localhost:9000
 const startServer = () => {
     setupHttpServer();
     setupSocket();

@@ -1,6 +1,0 @@
-{
-  "static_dir": "../static/",
-  "cache_dir": "../static/cache/",
-  "p3d_config_dir": "../CuraEngine/Config/",
-  "cura_engine_dir": "../CuraEngine/2.7/"
-}

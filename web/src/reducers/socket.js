@@ -10,10 +10,16 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch) => {
         if (!isElectron()) {
-            window.serverIp = "http://localhost:9000"
+            const port = 9000;
+            window.serverAddress = `http://localhost:${port}`;
+            window.serverCacheAddress = `http://localhost:${port}/cache/`;
+            window.serverFontsAddress = `http://localhost:${port}/fonts/`;
         }
-        console.log("serverIp: " + window.serverIp);
-        socketClientManager.initSocketClient(window.serverIp);
+        console.log('server address: ' + window.serverAddress);
+        console.log('server cache address: ' + window.serverCacheAddress);
+        console.log('server fonts address: ' + window.serverFontsAddress);
+
+        socketClientManager.initSocketClient(window.serverAddress);
         socketClientManager.addServerListener("connect", () => {
             console.log("socket -> connect")
             dispatch(actions._updateState({status: "connect"}));
