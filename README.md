@@ -78,9 +78,9 @@ electron下，安装node_modules必须使用npm而不是cnpm
 进入目录/web：npm run build  
 进入目录/server：npm run build  
 进入目录/electron  
-先rebuild serialport：npm run rebuild 
+先rebuild serialport：npm run rebuild  
 mac打包：npm run build:mac-x64  
-win打包：npm run build:win-x64 
+win打包：npm run build:win-x64  
 
 ## TODO:  
 Windows下构建rotrics-scratch-blocks    
