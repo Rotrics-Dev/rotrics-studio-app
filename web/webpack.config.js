@@ -1,10 +1,10 @@
 const path = require('path');
 // const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const env = process.env.NODd
 module.exports = {
-    entry: "./src/index.jsx",
     // devtool: 'source-map',
-    mode: "development", //development, production
+    entry: "./src/index.jsx",
     output: {
         path: __dirname + "/build-web",
         filename: "bundle.js"
@@ -15,7 +15,10 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader'
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true
+                    }
                 }
             },
             {
@@ -61,8 +64,9 @@ module.exports = {
     },
     devServer: {
         port: 8080,
-        progress: true,
         compress: true,
+        open:true,
+        hot: true,
         contentBase: path.join(__dirname, "build-web")
     }
 };
