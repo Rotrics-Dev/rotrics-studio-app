@@ -2,13 +2,13 @@
   "start_gcode": {
     "label": "Start Gcode",
     "description": "Start Gcode description",
-    "default_value": ";----- Start Gcode Begin -----\nM5\nM2000 ;Custom cmd: line-mode\nM888 P1 ;Custom cmd: header is laser\n;----- Start Gcode Over -----\n\n",
+    "default_value": ";----- Start Gcode Begin -----\nM5\nM2000 ;Custom cmd: line-mode\nM888 P1 ;Custom cmd: header is laser\nG0 Z0\n;----- Start Gcode Over -----",
     "type": "str"
   },
   "end_gcode": {
     "label": "End Gcode",
     "description": "End Gcode description",
-    "default_value": "\n;----- End Gcode Begin -----\nM5\n;----- End Gcode Over -----\n",
+    "default_value": ";----- End Gcode Begin -----\nM5\n;----- End Gcode Over -----",
     "type": "str"
   },
   "transformation": {

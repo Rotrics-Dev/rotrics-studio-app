@@ -1,30 +1,55 @@
 import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
-import {utf8bytes2string, string2utf8bytes, calculateXOR} from '../utils/index.js';
-import {
-    GCODE_UPDATE_SENDER_STATUS
-} from "../constants.js"
+import {string2utf8bytes, calculateXOR} from '../utils/index.js';
+import {GCODE_SENDER_STATUS_CHANGE} from "../constants.js"
+
+let lastStatus = null;
 
 class GcodeSender extends EventEmitter {
     constructor() {
         super();
+        this.requireStatus = true;
         this.lines = [];
         this.lineCountTotal = 0;   // 一共多少行
         this.lineCountSend = 0;    // 已发送多少行；不包括空行和注释
         this.okCount = 0;
-        this.status = "idle"; //idle/start/sending/end/stopped/paused
-        this.requireStatus = true;
+        // idle: 空闲，只有处于此状态，才可以开始发送
+        // sending: 正在发送
+        // end: 发送结束
+        // stopping: 正在停止
+        // stopped: 已经停止，然后马上切换到idle
+        this.status = "idle";
     }
 
     onSerialPortData(data) {
-        if (this.status !== "sending") return;
-        // console.log(data.received)
-        if (data.received.indexOf("Resend") !== -1){
-            console.log("Resend： " + data.received)
-        }
         if (data.received === "ok" || data.received.indexOf("ok") === 0) {
-            ++this.okCount;
-            this._sendNextCmd();
+            switch (this.status) {
+                case "stopping":
+                case "sending":
+                    ++this.okCount;
+                    this._sendNextLine();
+                    break;
+            }
+        }
+        // console.log(data.received)
+        if (data.received.indexOf("Resend:") === 0) {
+            const index = parseInt(data.received.replace("Resend:", "").trim());
+            if (Number.isNaN(index)) {
+                console.error("error: can not parse resend index. " + data.received);
+                return;
+            }
+            if (index > this.lines.length - 1) {
+                console.error(`error: index > this.lines.length - 1. index=${index}, this.lines.length=${this.lines.length}`);
+                return;
+            }
+            const line = this.lines[index];
+            if (!line || line.length === 0){
+                console.error(`error: line is empty`);
+                return;
+            }
+            console.log(this.lines)
+            console.log("#Resend: ", index, line)
+            serialPortManager.write(`${line}\n`);
         }
     }
 
@@ -35,46 +60,43 @@ class GcodeSender extends EventEmitter {
     //注意：发送注释，固件不会返回ok，因此必须把注释过滤掉
     //\n会返回ok
     //空行，注释不发送
-    _sendNextCmd() {
-        const line = this.lines.shift();
+    _sendNextLine() {
         //发完了
-        if (line === undefined) {
-            console.log("gcode sender status -> end")
-            console.log("\n")
-            this.status = "end";
-            this._emitStatus();
-            this._reset();
-        } else {
-            serialPortManager.write(line + "\n");
-            ++this.lineCountSend;
-            this._emitStatus();
+        if (this.lineCountSend === this.lineCountTotal) {
+            this.status === "stopping" && (this.status = "stopped");
+            this.status === "sending" && (this.status = "end");
+            this._emitStatusChange();
+            //reset
+            this.requireStatus = true;
+            this.lines = [];
+            this.lineCountTotal = 0;
+            this.lineCountSend = 0;
+            this.okCount = 0;
+            this.status = "idle";
+            this._emitStatusChange();
+        } else if (this.lineCountSend < this.lineCountTotal) {
+            const line = this.lines[this.lineCountSend++];
+            serialPortManager.write(`${line}\n`);
+            this._emitStatusChange();
             console.log("send: " + [this.lineCountTotal, this.lineCountSend, this.okCount, line].join("/"))
+        } else {
+            console.error("error: this.lineCountSend > this.lineCountTotal")
         }
     }
 
-    start(gcode, requireStatus) {
+    start(gcode, requireStatus = true) {
         if (this.status !== "idle") {
             console.warn("gcode sender: busy, can not send");
             return;
         }
-
-        console.log("\n")
-        console.log("gcode sender status -> start")
-
-        this._reset();
+        this.requireStatus = requireStatus;
         this.lines = this.processGcode(gcode);
         this.lineCountTotal = this.lines.length;
         this.lineCountSend = 0;
         this.okCount = 0;
-        this.requireStatus = requireStatus;
-
-        this.status = "start";
-        this._emitStatus();
-
         this.status = "sending";
-        this._emitStatus();
-
-        this._sendNextCmd();
+        this._emitStatusChange();
+        this._sendNextLine();
     }
 
     /**
@@ -83,14 +105,15 @@ class GcodeSender extends EventEmitter {
      * @returns {Array}
      */
     processGcode(gcode) {
-        const processLine = (line, lineNumber) => {
+        const addNumberCheck = (line, lineNumber) => {
             line = `N${lineNumber} ${line}`;
             const xor = calculateXOR(string2utf8bytes(line));
             line = `${line}*${xor}`;
             return line;
         };
 
-        const result = [];
+        const linesProcessed = [];
+        linesProcessed.push(addNumberCheck("M110", 0));
         const lines = gcode.trim().split('\n');
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].trim();
@@ -101,49 +124,47 @@ class GcodeSender extends EventEmitter {
             // contain comment
             if (line.indexOf(";") !== -1) {
                 line = line.substr(0, line.indexOf(";")).trim();
-                line = processLine(line, result.length);
-                result.push(line)
+                const lineNumber = linesProcessed.length;
+                line = addNumberCheck(line, lineNumber);
+                linesProcessed.push(line);
                 continue;
             }
-            line = processLine(line, result.length);
-            result.push(line)
+            line = addNumberCheck(line, linesProcessed.length);
+            linesProcessed.push(line)
         }
-        result.push("N-1 M110*15");
-        result.unshift("N-1 M110*15");
-        // console.log("******************");
-        // console.log(result.join("\n"));
-        // console.log("******************");
-        return result;
+        linesProcessed.push(addNumberCheck("M110", 0));
+        console.log(linesProcessed);
+        return linesProcessed;
     }
 
     stop() {
-        console.log("gcode sender status -> stopped")
-        console.log("\n")
-        this.status = "stopped";
-        this._emitStatus();
-        this._reset();
+        this.status = "stopping";
+        //目前不区分前端头，laser off，move up 10mm，set 3dp front end temperature to 0
+        const gcode = ['M5', 'G91', 'G0 Z10', 'G90', 'M104 S0'].join("\n");
+        const linesNumberChecked = this.processGcode(gcode);
+        this.lines = linesNumberChecked;
+        this.lineCountTotal = this.lines.length;
+        this.lineCountSend = 0;
+        this.okCount = 0;
+        this._emitStatusChange();
     }
 
     append(gcode) {
 
     }
 
-    _emitStatus() {
+    _emitStatusChange() {
+        if (this.status !== lastStatus) {
+            console.log("gcode sender status -> " + this.status);
+            lastStatus = this.status;
+        }
         if (this.requireStatus) {
-            this.emit(GCODE_UPDATE_SENDER_STATUS, {
+            this.emit(GCODE_SENDER_STATUS_CHANGE, {
                 status: this.status,
                 lineCountTotal: this.lineCountTotal,
                 lineCountSend: this.lineCountSend,
             });
         }
-    }
-
-    _reset() {
-        this.lines = [];
-        this.lineCountTotal = 0;
-        this.lineCountSend = 0;
-        this.okCount = 0;
-        this.status = "idle";
     }
 }
 

@@ -22,7 +22,7 @@ import {
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
     TOOL_PATH_GENERATE_WRITE_AND_DRAW,
-    GCODE_UPDATE_SENDER_STATUS,
+    GCODE_SENDER_STATUS_CHANGE,
     GCODE_START_SEND,
     GCODE_STOP_SEND,
     GCODE_APPEND_SEND,
@@ -180,8 +180,8 @@ const setupSocket = () => {
             });
             socket.on(GCODE_APPEND_SEND, (gcode) => gcodeSender.append(gcode));
             socket.on(GCODE_STOP_SEND, () => gcodeSender.stop());
-            socket.on(GCODE_UPDATE_SENDER_STATUS, () => {
-                socket.emit(GCODE_UPDATE_SENDER_STATUS, gcodeSender.getStatus());
+            socket.on(GCODE_SENDER_STATUS_CHANGE, () => {
+                socket.emit(GCODE_SENDER_STATUS_CHANGE, gcodeSender.getStatus());
             });
 
             //laser
@@ -276,8 +276,8 @@ const setupSocket = () => {
                 );
             });
 
-            gcodeSender.on(GCODE_UPDATE_SENDER_STATUS, (data) => {
-                socket.emit(GCODE_UPDATE_SENDER_STATUS, data);
+            gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
+                socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
             });
 
             socket.on(FIRMWARE_UPGRADE_START, (data) => {

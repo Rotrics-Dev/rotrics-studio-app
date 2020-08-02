@@ -2,13 +2,13 @@
   "start_gcode": {
     "label": "Start Gcode",
     "description": "Start Gcode description",
-    "default_value": ";----- Start Gcode Begin -----\nM2000 ;Custom cmd: line-mode\nM888 P0 ;Custom cmd: header is write&draw\n;----- Start Gcode Over -----\n\n",
+    "default_value": ";----- Start Gcode Begin -----\nM2000 ;Custom cmd: line-mode\nM888 P0 ;Custom cmd: header is write&draw\n;----- Start Gcode Over -----",
     "type": "str"
   },
   "end_gcode": {
     "label": "End Gcode",
     "description": "End Gcode description",
-    "default_value": "\n;----- End Gcode Begin -----\n;----- End Gcode Over -----\n",
+    "default_value": "\n;----- End Gcode Begin -----\n;----- End Gcode Over -----",
     "type": "str"
   },
   "transformation": {
@@ -118,17 +118,9 @@
     "type": "category",
     "description": "Working Parameters description",
     "children": {
-      "print_order": {
-        "label": "Print Order",
-        "description": "Print Order description",
-        "default_value": 1,
-        "type": "int",
-        "minimum_value": 1,
-        "maximum_value": 10
-      },
       "work_speed": {
         "label": "Work Speed",
-        "description": "Work Speed description ",
+        "description": "Determines how fast the front end moves when it’s working.",
         "placeholder": "#work_speed#",
         "default_value": 400,
         "type": "int",
@@ -138,33 +130,56 @@
       },
       "jog_speed": {
         "label": "Jog Speed",
-        "description": "Jog Speed description",
+        "description": "Determines how fast the front end moves when it’s not working.",
         "placeholder": "#jog_speed#",
         "default_value": 400,
         "type": "int",
         "unit": "mm/min",
         "minimum_value": 10,
-        "maximum_value": 4000
+        "maximum_value": 4000,
+        "hidden": "movement_mode === greyscale-dot"
       },
-      "jog_pen_offset": {
-        "label": "Jog Pen Offset",
-        "description": "Jog Pen Offset description",
-        "placeholder": "#jog_pen_offset#",
-        "default_value": 10,
+      "dwell_time": {
+        "label": "Dwell Time",
+        "description": "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.",
+        "placeholder": "#dwell_time#",
+        "default_value": 5,
         "type": "int",
-        "unit": "mm",
+        "unit": "ms",
+        "minimum_value": 1,
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
+      },
+      "engrave_time": {
+        "label": "Engrave Time",
+        "description": "Determines how long the laser keeps on when it's engraving a dot.",
+        "placeholder": "#engrave_time#",
+        "default_value": 5,
+        "type": "int",
+        "unit": "ms",
+        "minimum_value": 0,
+        "maximum_value": 100,
+        "hidden": "movement_mode === greyscale-line"
+      },
+      "power": {
+        "label": "Power",
+        "description": "Power to use when laser is working.",
+        "placeholder": "#power#",
+        "default_value": 50,
+        "type": "int",
+        "unit": "%",
         "minimum_value": 1,
         "maximum_value": 100
       },
       "multi_pass": {
         "label": "Multi-Pass",
-        "description": "Multi-Pass description",
+        "description": "When enabled, the Arm will run the G-code multiple times automatically according to the below settings. This feature helps you cut materials that can't be cut with only one pass.",
         "default_value": false,
         "type": "bool",
         "children": {
           "passes": {
             "label": "Passes",
-            "description": "Passes description",
+            "description": "Determines how many times the printer will run the G-code automatically.",
             "default_value": 2,
             "type": "int",
             "minimum_value": 1,
@@ -172,29 +187,12 @@
           },
           "pass_depth": {
             "label": "Pass Depth",
-            "description": "Pass Depth description",
+            "description": "Determines how much the laser module will be lowered after each pass.",
             "default_value": 1,
             "type": "int",
             "unit": "mm",
             "minimum_value": 1,
             "maximum_value": 5
-          }
-        }
-      },
-      "fixed_power": {
-        "default_value": true,
-        "label": "Fixed Power",
-        "type": "bool",
-        "description": "Fixed Power description",
-        "children": {
-          "power": {
-            "label": "Power",
-            "description": "Power description",
-            "default_value": 100,
-            "type": "int",
-            "unit": "%",
-            "minimum_value": 0,
-            "maximum_value": 100
           }
         }
       }

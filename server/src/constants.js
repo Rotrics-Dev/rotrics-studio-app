@@ -26,7 +26,7 @@ export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE'; //通过serial port发送数据，比如：固件升级相关数据，单条gcode等
 
 // gcode
-export const GCODE_UPDATE_SENDER_STATUS = 'GCODE_UPDATE_SENDER_STATUS'; //更新gcode sender状态：sending/end/stopped/paused?
+export const GCODE_SENDER_STATUS_CHANGE = 'GCODE_SENDER_STATUS_CHANGE'; //更新gcode sender状态：sending/end/stopped/paused?
 export const GCODE_START_SEND = 'GCODE_START_SEND'; //马上发送指定gcode，收到ok后发送下一条
 export const GCODE_STOP_SEND = 'GCODE_STOP_SEND'; //马上停止发送gcode，并清空gcode发送队列
 export const GCODE_APPEND_SEND = 'GCODE_APPEND_SEND'; //将指定的gcode追加到发送队列尾部

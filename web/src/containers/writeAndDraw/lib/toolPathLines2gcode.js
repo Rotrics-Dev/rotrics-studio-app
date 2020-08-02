@@ -1,6 +1,4 @@
 const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
-    console.log(JSON.stringify(toolPathLines, null, 2));
-
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 

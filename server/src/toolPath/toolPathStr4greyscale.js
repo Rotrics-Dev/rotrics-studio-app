@@ -194,8 +194,6 @@ const img2toolPathStrGs = (img, settings) => {
         }
     }
     content += 'G0 X0 Y0';
-
-    // console.log(content);
     return content;
 };
 

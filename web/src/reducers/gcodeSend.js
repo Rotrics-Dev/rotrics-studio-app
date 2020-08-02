@@ -1,7 +1,7 @@
 import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
-    GCODE_UPDATE_SENDER_STATUS,
+    GCODE_SENDER_STATUS_CHANGE,
     GCODE_APPEND_SEND,
     GCODE_START_SEND,
     GCODE_STOP_SEND,
@@ -20,9 +20,9 @@ const INITIAL_STATE = {
 export const actions = {
     init: () => (dispatch, getState) => {
         socketClientManager.addServerListener("connect", () => {
-            socketClientManager.emitToServer(GCODE_UPDATE_SENDER_STATUS);
+            socketClientManager.emitToServer(GCODE_SENDER_STATUS_CHANGE);
         });
-        socketClientManager.addServerListener(GCODE_UPDATE_SENDER_STATUS, (data) => {
+        socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, (data) => {
             //见: gcodeSender.js _emitStatus
             //data: {status, lineCountTotal, lineCountSend, lineCountSkipped};
             const {status} = data;

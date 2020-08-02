@@ -93,7 +93,6 @@ const svg2toolPathStr = async (url, settings) => {
 
     // move to work zero
     content += 'G0 X0 Y0\n';
-
     return content;
 };
 

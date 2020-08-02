@@ -61,7 +61,7 @@ class SerialPortManager extends EventEmitter {
                     arr.push(buffer[i]);
                 }
                 const received = utf8bytes2string(arr);
-                console.log("received raw: " + received);
+                // console.log("received raw: " + received);
             } else {
                 console.log("received data is not buffer: " + JSON.stringify(buffer))
             }
@@ -69,7 +69,7 @@ class SerialPortManager extends EventEmitter {
 
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', (data) => {
-            console.log("received line: " + data)
+            console.log("received line: " + data);
             this.emit(SERIAL_PORT_DATA, {received: data});
         });
 
@@ -163,7 +163,7 @@ class SerialPortManager extends EventEmitter {
                     console.error("write error: " + data);
                     this.emit(SERIAL_PORT_ERROR, error);
                 } else {
-                    console.log("write ok: " + data);
+                    // console.log("write ok: " + data);
                 }
             })
         } else {
