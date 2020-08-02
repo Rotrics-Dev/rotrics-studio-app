@@ -14,6 +14,7 @@ class GcodeSender extends EventEmitter {
         this.lineCountSend = 0;    // 已发送多少行；不包括空行和注释
         this.okCount = 0;
         // idle: 空闲，只有处于此状态，才可以开始发送
+        // start: 开始发送
         // sending: 正在发送
         // end: 发送结束
         // stopping: 正在停止
@@ -94,6 +95,8 @@ class GcodeSender extends EventEmitter {
         this.lineCountTotal = this.lines.length;
         this.lineCountSend = 0;
         this.okCount = 0;
+        this.status = "start";
+        this._emitStatusChange();
         this.status = "sending";
         this._emitStatusChange();
         this._sendNextLine();
