@@ -39,6 +39,7 @@ import {
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
+import SVGParser from './SVGParser/index.js';
 
 let serverCacheAddress; //获取端口后，再初始化
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
@@ -50,7 +51,7 @@ let socketIoServer = new SocketIoServer(httpServer);
 /**
  * 保存file到，静态文件夹下的cache
  * @param file: ctx.request.files.file
- * @returns url
+ * @returns {filePath: *, url: *}
  */
 const saveFileToCacheDir = (file) => {
     const reader = fs.createReadStream(file.path);
@@ -58,16 +59,15 @@ const saveFileToCacheDir = (file) => {
     let filePath = path.join(CACHE_DIR, filename);
     const upStream = fs.createWriteStream(filePath);
     reader.pipe(upStream);
-    return serverCacheAddress + filename;
+    return {url: serverCacheAddress + filename, filePath};
 };
 
 const setupHttpServer = () => {
     //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
     router.post('/uploadFile', async (ctx) => {
-        console.log("uploadFile")
         // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
-        const url = saveFileToCacheDir(file);
+        const {url} = saveFileToCacheDir(file);
         console.log("upload file ok: " + file.name + " -> " + url)
         return ctx.body = {url};
     });
@@ -75,8 +75,20 @@ const setupHttpServer = () => {
     router.post('/uploadImage', async (ctx) => {
         // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
-        const url = saveFileToCacheDir(file);
-        const {width, height} = getImageSize(file.path);
+        const {url, filePath} = saveFileToCacheDir(file);
+        let width = 0, height = 0;
+        //bug-fix: getImageSize获取svg size有时候不准确
+        //TODO: 读取文件，file.path ok，filePath就不行。why？
+        if (filePath.endsWith(".svg") || filePath.endsWith(".SVG")) {
+            const svgParser = new SVGParser();
+            const result = await svgParser.parseFile(file.path);
+            width = result.width;
+            height = result.height;
+        } else {
+            const result = getImageSize(file.path);
+            width = result.width;
+            height = result.height;
+        }
         console.log("upload image ok: " + file.name + " size: " + width + 'x' + height + " -> " + url);
         return ctx.body = {url, width, height};
     });
