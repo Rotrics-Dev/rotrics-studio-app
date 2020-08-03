@@ -69,6 +69,7 @@ class SerialPortManager extends EventEmitter {
 
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', (data) => {
+            console.log("--------------------------------- ");
             console.log("received line: " + data);
             this.emit(SERIAL_PORT_DATA, {received: data});
         });
