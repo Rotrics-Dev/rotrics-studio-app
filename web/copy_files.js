@@ -1,3 +1,4 @@
+//先执行copy_files，再执行extract_i18n
 const fs = require('fs');
 const path = require('path');
 
@@ -20,7 +21,6 @@ const copyDirectorySync = (src, dest) => {
     });
 };
 
-fs.rmdirSync("./build-web", {recursive: true});
 fs.mkdirSync("./build-web");
 fs.copyFileSync("./index.html", "./build-web/index.html");
 copyDirectorySync("../../rotrics-scratch-blocks/media", "./build-web/asset/rotrics-scratch-blocks/media/");
