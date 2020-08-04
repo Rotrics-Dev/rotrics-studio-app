@@ -81,9 +81,13 @@ export const actions = {
             console.log("received line: " + data.received);
             processM894(data);
             processM114(data);
-            const {received} = data;
-            if (received.indexOf("beyond limit..") !== -1 ||
-                received.indexOf("beyound limit..") !== -1 ||
+            let {received} = data;
+            //存在单词拼写错误，fix it
+            if (received.indexOf("beyound limit..") !== -1) {
+                received = received.replace("beyound", "beyond");
+            }
+            if (
+                received.indexOf("beyond limit..") !== -1 ||
                 received.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
                 received.indexOf("Warning!Laser protection door opened") !== -1 ||
                 received.indexOf("Laser protection door closed") !== -1
