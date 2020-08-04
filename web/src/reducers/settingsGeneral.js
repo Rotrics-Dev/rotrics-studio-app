@@ -27,7 +27,6 @@ export const actions = {
     init: () => (dispatch, getState) => {
         const callback4open = (path) => {
             if (path) {
-                console.log("#write a5....")
                 dispatch(serialPortActions.write('M2010\nM2011\na5\n'));
             }
         };
@@ -44,13 +43,11 @@ export const actions = {
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
             const {received} = data;
-            console.log("#received: " + received)
             if (received) {
                 //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
                 //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
                 if (received.startsWith("Hardware Version:")) {
                     const hardwareVersion = received.replace("Hardware Version:", "").replace("\r", "").trim();
-                    console.log("boot loader hardwareVersion -> " + hardwareVersion)
                     dispatch(actions._updateState({
                         hardwareVersion,
                         bootLoaderModalVisible: true,
@@ -58,7 +55,6 @@ export const actions = {
                     }));
                 } else if (received.startsWith("Firmware ")) {
                     const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
-                    console.log("app firmwareVersion -> " + firmwareVersion)
                     dispatch(actions._updateState({
                         firmwareVersion,
                         bootLoaderModalVisible: false,
@@ -66,7 +62,6 @@ export const actions = {
                     }));
                 } else if (received.startsWith("Hardware ")) {
                     const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
-                    console.log("app hardwareVersion -> " + hardwareVersion)
                     dispatch(actions._updateState({
                         hardwareVersion,
                         bootLoaderModalVisible: false,
