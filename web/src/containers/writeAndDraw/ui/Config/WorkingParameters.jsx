@@ -75,7 +75,9 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row
+                        data-for={tooltipId}
+                        data-tip={t('Determines the offset of the pen when it is not drawn.')}>
                         <Col span={19}>
                             <ConfigText text={`${t(jog_pen_offset.label)}(${jog_pen_offset.unit})`}/>
                         </Col>
