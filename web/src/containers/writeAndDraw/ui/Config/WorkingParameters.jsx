@@ -8,6 +8,7 @@ import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../../components/Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
+
 const tooltipId = getUuid();
 
 class WorkingParameters extends PureComponent {
@@ -20,11 +21,14 @@ class WorkingParameters extends PureComponent {
         },
         setWorkSpeed: (value) => {
             this.props.updateWorkingParameters("work_speed", value)
+        },
+        setJogPenOffset: (value) => {
+            this.props.updateWriteAndDrawParameters("jog_pen_offset", value)
         }
     };
 
     render() {
-        const {model, working_parameters, config} = this.props;
+        const {model, working_parameters, config, jog_pen_offset} = this.props;
         const {t} = this.props;
 
         if (!model || !working_parameters || !config) {
@@ -37,7 +41,7 @@ class WorkingParameters extends PureComponent {
                 <Tooltip
                     id={tooltipId}
                     place="left"
-                    />
+                />
                 <Line/>
                 <div style={{
                     padding: "8px",
@@ -71,6 +75,18 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col span={19}>
+                            <ConfigText text={`${t(jog_pen_offset.label)}(${jog_pen_offset.unit})`}/>
+                        </Col>
+                        <Col span={5}>
+                            <NumberInput
+                                min={jog_pen_offset.minimum_value}
+                                max={jog_pen_offset.maximum_value}
+                                value={jog_pen_offset.default_value}
+                                onAfterChange={actions.setJogPenOffset}/>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );
@@ -79,16 +95,20 @@ class WorkingParameters extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, working_parameters, config} = state.writeAndDraw;
+    const {jog_pen_offset} = state.writeAndDraw.write_and_draw;
+
     return {
         model,
         working_parameters,
-        config
+        config,
+        jog_pen_offset
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         updateWorkingParameters: (key, value) => dispatch(writeAndDrawActions.updateWorkingParameters(key, value)),
+        updateWriteAndDrawParameters: (key, value) => dispatch(writeAndDrawActions.updateWriteAndDrawParameters(key, value))
     };
 };
 
