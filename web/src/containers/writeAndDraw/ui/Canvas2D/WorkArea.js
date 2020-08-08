@@ -18,11 +18,11 @@ class WorkArea {
         const green = colornames('green');
 
         const curve1 = new THREE.EllipseCurve(
-            0, 0 - 300,            // ax, aY
-            70.9 + OFFSET_PEN + 0.0, 70.9 + OFFSET_PEN + 0.0,           // xRadius, yRadius
-            0, Math.PI,  // aStartAngle, aEndAngle
-            false,            // aClockwise
-            0                 // aRotation
+            0, 0,// ax, aY
+            70.9 + OFFSET_PEN, 70.9 + OFFSET_PEN,// xRadius, yRadius
+            0, Math.PI,// aStartAngle, aEndAngle
+            false,// aClockwise
+            0// aRotation
         )
         const points1 = curve1.getPoints(50);
         const geometry1 = new THREE.BufferGeometry().setFromPoints(points1);
@@ -31,11 +31,11 @@ class WorkArea {
         this.group.add(ellipse1);
 
         const curve2 = new THREE.EllipseCurve(
-            0, 0 - 300,            // ax, aY
-            300 + OFFSET_PEN - 0.0, 300 + OFFSET_PEN - 0.0,           // xRadius, yRadius
-            0, Math.PI,  // aStartAngle, aEndAngle
-            false,            // aClockwise
-            0                 // aRotation
+            0, 0,// ax, aY
+            300 + OFFSET_PEN, 300 + OFFSET_PEN,// xRadius, yRadius
+            0, Math.PI,// aStartAngle, aEndAngle
+            false,// aClockwise
+            0// aRotation
         )
         const points2 = curve2.getPoints(50);
         const geometry2 = new THREE.BufferGeometry().setFromPoints(points2);

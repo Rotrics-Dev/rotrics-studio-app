@@ -36,7 +36,7 @@ class Index extends React.Component {
         this.setupPanControls();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.group.add(new PrintablePlate(new THREE.Vector2(150, 120)));
+        this.group.add(new PrintablePlate(new THREE.Vector2(450, 260)));
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -117,8 +117,8 @@ class Index extends React.Component {
         this.group.add(this.modelGroup);
 
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        this.camera.position.copy(new THREE.Vector3(0, 0, 180));
-        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        this.camera.position.copy(new THREE.Vector3(0, 280, 150));
+        this.camera.lookAt(new THREE.Vector3(0, 280, 0));
 
         this.renderer = new THREE.WebGLRenderer({antialias: true});
         this.renderer.setClearColor(new THREE.Color(0xfafafa), 1);
@@ -143,8 +143,9 @@ class Index extends React.Component {
     setupZoom() {
         const mousewheel = (e) => {
             e.preventDefault();
+            console.log(e)
             //e.stopPropagation();
-            const delta = 3;
+            const delta = 10;
             let z = this.camera.position.z;
             if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件
                 if (e.wheelDelta > 0) { //当滑轮向上滚动时
@@ -161,8 +162,11 @@ class Index extends React.Component {
                     z += delta;
                 }
             }
-            this.camera.position.z = z;
-            this.camera.updateProjectionMatrix();
+            console.log(z);
+            if (z <= 500 && z >= 30) {//限制缩放范围
+                this.camera.position.z = z;
+                this.camera.updateProjectionMatrix();
+            }
         };
 
         this.renderer.domElement.addEventListener('mousewheel', mousewheel, false);

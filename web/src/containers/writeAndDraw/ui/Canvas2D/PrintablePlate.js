@@ -6,6 +6,7 @@ import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
 import WorkArea from './WorkArea'
+
 const METRIC_GRID_SPACING = 10; // 10 mm
 
 class PrintablePlate extends THREE.Object3D {
@@ -62,7 +63,7 @@ class PrintablePlate extends THREE.Object3D {
             { // Axis Labels
                 const axisXLabel = new TextSprite({
                     x: axisXLength + 10,
-                    y: 0,
+                    y: 200,
                     z: 0,
                     size: 10,
                     text: 'X',
@@ -70,7 +71,7 @@ class PrintablePlate extends THREE.Object3D {
                 });
                 const axisYLabel = new TextSprite({
                     x: 0,
-                    y: axisYLength + 10,
+                    y: axisYLength + 10 + 200,
                     z: 0,
                     size: 10,
                     text: 'Y',
@@ -85,7 +86,7 @@ class PrintablePlate extends THREE.Object3D {
                     if (x !== 0) {
                         const textLabel = new TextSprite({
                             x: x,
-                            y: -4,
+                            y: -4 + 200,
                             z: 0,
                             size: textSize,
                             text: x,
@@ -101,10 +102,10 @@ class PrintablePlate extends THREE.Object3D {
                     if (y !== 0) {
                         const textLabel = new TextSprite({
                             x: -4,
-                            y: y,
+                            y: y + 200,
                             z: 0,
                             size: textSize,
-                            text: y,
+                            text: y + 200,
                             textAlign: 'center',
                             textBaseline: 'bottom',
                             color: colornames('green'),
@@ -115,9 +116,9 @@ class PrintablePlate extends THREE.Object3D {
                 }
             }
             {//working area
-                // const workArea = new WorkArea();
-                // workArea.name = 'WorkArea';
-                // group.add(workArea);
+                const workArea = new WorkArea();
+                workArea.name = 'WorkArea';
+                group.add(workArea);
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
