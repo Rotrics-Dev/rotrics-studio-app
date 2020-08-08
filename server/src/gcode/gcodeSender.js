@@ -36,10 +36,10 @@ class GcodeSender extends EventEmitter {
     }
 
     onSerialPortData(data) {
-        // if (data.received === "ok" || data.received.indexOf("ok") === 0 || data.received.indexOf("wait") === 0) {
-        //     const seconds = new Date().getSeconds();
-        //     console.log(`${data.received} # ${this.okCount} # ${seconds}`);
-        // }
+        if (data.received === "ok" || data.received.indexOf("ok") === 0 || data.received.indexOf("wait") === 0) {
+            const seconds = new Date().getSeconds();
+            console.log(`${data.received} # ${this.okCount} # ${seconds}`);
+        }
 
         // Warning!Laser protection door opened
         // Laser protection door closed
@@ -67,25 +67,26 @@ class GcodeSender extends EventEmitter {
                     break;
             }
         }
-        // if (data.received.indexOf("Resend:") === 0) {
-        //     const index = parseInt(data.received.replace("Resend:", "").trim());
-        //     if (Number.isNaN(index)) {
-        //         console.error("error: can not parse resend index. " + data.received);
-        //         return;
-        //     }
-        //     if (index > this.lines.length - 1) {
-        //         console.error(`error: index > this.lines.length - 1. index=${index}, this.lines.length=${this.lines.length}`);
-        //         return;
-        //     }
-        //     const line = this.lines[index];
-        //     if (!line || line.length === 0) {
-        //         console.error(`error: line is empty`);
-        //         return;
-        //     }
-        //     // console.log(this.lines)
-        //     console.log("#Resend: ", index, line)
-        //     serialPortManager.write(`${line}\n`);
-        // }
+        if (data.received.indexOf("Resend:") === 0) {
+            console.log("#####: " + data.received)
+            const index = parseInt(data.received.replace("Resend:", "").trim());
+            if (Number.isNaN(index)) {
+                console.error("error: can not parse resend index. " + data.received);
+                return;
+            }
+            // if (index > this.lines.length - 1) {
+            //     console.error(`error: index > this.lines.length - 1. index=${index}, this.lines.length=${this.lines.length}`);
+            //     return;
+            // }
+            // const line = this.lines[index];
+            // if (!line || line.length === 0) {
+            //     console.error(`error: line is empty`);
+            //     return;
+            // }
+            // // console.log(this.lines)
+            // console.log("#Resend: ", index, line)
+            // serialPortManager.write(`${line}\n`);
+        }
     }
 
     getStatus() {
@@ -120,7 +121,7 @@ class GcodeSender extends EventEmitter {
             const line = this.lines[this.lineCountSend++];
             serialPortManager.write(`${line}\n`);
             const seconds = new Date().getSeconds();
-            // console.log("send: " + [this.lineCountTotal, this.lineCountSend, this.okCount, line, seconds].join("/"))
+            console.log("send: " + [this.lineCountTotal, this.lineCountSend, this.okCount, line, seconds].join("/"))
         } else {
             console.error("error: this.lineCountSend > this.lineCountTotal")
         }
