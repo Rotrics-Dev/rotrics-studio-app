@@ -25,11 +25,14 @@ export const SERIAL_PORT_ERROR = 'SERIAL_PORT_ERROR';
 export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE'; //通过serial port发送数据，比如：固件升级相关数据，单条gcode等
 
-// gcode
-export const GCODE_SENDER_STATUS_CHANGE = 'GCODE_SENDER_STATUS_CHANGE'; //更新gcode sender状态：sending/end/stopped/paused?
-export const GCODE_START_SEND = 'GCODE_START_SEND'; //马上发送指定gcode，收到ok后发送下一条
-export const GCODE_STOP_SEND = 'GCODE_STOP_SEND'; //马上停止发送gcode，并清空gcode发送队列
-export const GCODE_APPEND_SEND = 'GCODE_APPEND_SEND'; //将指定的gcode追加到发送队列尾部
+// gcode sender
+export const GCODE_SENDER_STATUS_CHANGE = 'GCODE_SENDER_STATUS_CHANGE'; //idle/started/stopping/paused
+export const GCODE_SENDER_ACTION_REFUSE = 'GCODE_SENDER_ACTION_REFUSE'; //操作不合法，被拒绝ß
+
+export const GCODE_SENDER_START = 'GCODE_SENDER_START';
+export const GCODE_SENDER_STOP_TASK = 'GCODE_SENDER_STOP_TASK';
+export const GCODE_SENDER_PAUSE_TASK = 'GCODE_SENDER_PAUSE_TASK';
+export const GCODE_SENDER_RESUME_TASK = 'GCODE_SENDER_RESUME_TASK';
 
 // tool path
 export const TOOL_PATH_GENERATE_LASER = 'TOOL_PATH_GENERATE_LASER';

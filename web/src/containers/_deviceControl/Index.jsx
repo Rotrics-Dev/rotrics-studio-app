@@ -33,11 +33,11 @@ class Index extends React.Component {
             this.actions._move(`G0 Z${-this.state.step}`)
         },
         z0: () => {
-            this.props.sendGcode("G0 Z0")
+            this.props.start("G0 Z0", false, false)
         },
         //others
         home: () => {
-            this.props.sendGcode("M1112")
+            this.props.start("M1112", false, false)
         },
         leftTop: () => {
             this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
@@ -51,19 +51,18 @@ class Index extends React.Component {
         rightBottom: () => {
             this.actions._move(`G0 X${this.state.step} Y${-this.state.step}`)
         },
-
         setWorkOrigin: () => {
-            this.props.sendGcode("G92 X0 Y0 Z0")
+            this.props.start("G92 X0 Y0 Z0", false, false)
         },
         goToWorkOrigin: () => {
-            this.props.sendGcode("G0 X0 Y0 Z0")
+            this.props.start("G0 X0 Y0 Z0", false, false)
         },
         //G90: absolute position
         //G91: relative position
         //G92: set position
         _move: (moveCmd) => {
             const gcode = ['G91', moveCmd, 'G90'].join("\n");
-            this.props.sendGcode(gcode)
+            this.props.start(gcode, false, false)
         }
     };
 
@@ -71,7 +70,6 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         const {...rest} = this.props;
-
         return (
             <div>
                 <BaseDeviceControl
@@ -85,7 +83,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode, false)),
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
     };
 };
 

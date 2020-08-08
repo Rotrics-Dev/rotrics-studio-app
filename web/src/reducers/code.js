@@ -89,8 +89,7 @@ export const actions = {
                         gcode = "G92 X0 Y0 Z0";
                         break;
                 }
-                console.log("gcode: " + gcode);
-                gcode && dispatch(gcodeSendActions.start(gcode));
+                gcode && dispatch(gcodeSendActions.start(gcode, false, false));
             }
         );
     },

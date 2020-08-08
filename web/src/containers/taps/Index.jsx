@@ -38,7 +38,7 @@ console.log("ReactGA.initialize('UA-173484896-1');")
 // ReactGA.initialize('UA-173484896-1');
 
 ReactGA.initialize('UA-173484896-1', {
-    // debug: true,
+    debug: true,
     titleCase: false,
     gaOptions: {
         userId: 123,
@@ -73,14 +73,24 @@ class Index extends React.Component {
         document.onselectstart = () => {
             return false;
         };
-
+        //
         // setInterval(() => {
-        //     ReactGA.event({
-        //         category: 'Promotion',
-        //         action: 'Displayed Promotional Widget',
-        //         label: 'Homepage Thing',
-        //         nonInteraction: true
-        //     });
+        //     ReactGA.ga('set', 'dimension1', 'Sports1');
+        //     ReactGA.ga('set', 'dimension2', 'Sports2');
+        //     ReactGA.ga('set', 'dimension3', 'Sports3');
+        //     ReactGA.ga('set', 'dimension4', 'Sports4');
+        //
+        //     ReactGA.set({ dimension1: 'Sports1-1' });
+        //     ReactGA.set({ dimension2: 'Sports1-2' });
+        //     ReactGA.set({ dimension3: 'Sports1-3' });
+        //     ReactGA.set({ dimension4: 'Sports1-4' });
+        //
+        //     // ReactGA.event({
+        //     //     category: 'Promotion',
+        //     //     action: 'Displayed Promotional Widget',
+        //     //     label: 'Homepage Thing',
+        //     //     nonInteraction: true
+        //     // });
         //
         //     // if (this.props.socketStatus === "disconnect") {
         //     //     notificationI18n.error({
@@ -106,7 +116,7 @@ class Index extends React.Component {
     displayTap = (tap) => {
         ReactGA.pageview(tap)
 
-        console.log("GA veent")
+        console.log("GA event")
         ReactGA.event({
             category: 'liuming',
             action: 'test event'

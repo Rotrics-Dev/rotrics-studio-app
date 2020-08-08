@@ -9,7 +9,7 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_DATA,
 } from "./constants.js"
-import {utf8bytes2string, string2utf8bytes, calculateXOR} from './utils/index.js';
+import {utf8bytes2string} from './utils/index.js';
 
 const baudRate = 9600;
 
@@ -69,9 +69,9 @@ class SerialPortManager extends EventEmitter {
 
         const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
         readLineParser.on('data', (data) => {
-            console.log("--------------------------------- ");
-            console.log("received line: " + data);
-            this.emit(SERIAL_PORT_DATA, {received: data});
+            // console.log("--------------------------------- ");
+            // console.log("received line: " + data.trim());
+            this.emit(SERIAL_PORT_DATA, {received: data.trim()});
         });
 
         this.serialPort.on("open", () => {

@@ -70,83 +70,56 @@ class Index extends React.Component {
             }
         },
         generateGcode: () => {
-            if (this.actions._checkStatus4gcode("generateGcode")) {
-                this.props.generateGcode();
-                messageI18n.success('Generate G-code success', 1);
+            if (this.props.modelCount === 0) {
+                messageI18n.warning('Load model first');
+                return;
             }
+            if (!this.props.isAllPreviewed) {
+                messageI18n.warning('Previewing');
+                return;
+            }
+            this.props.generateGcode();
+            messageI18n.success('Generate G-code success', 1);
         },
         exportGcode: () => {
-            if (this.actions._checkStatus4gcode("exportGcode")) {
-                const date = new Date();
-                //https://blog.csdn.net/xu511739113/article/details/72764321
-                const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-                const fileName = arr.join("") + ".gcode";
-                const gcode = this.props.gcode;
-                const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
-                FileSaver.saveAs(blob, fileName, true);
-                messageI18n.success('Export G-code success', 1);
+            if (this.props.modelCount === 0) {
+                messageI18n.warning('Load model first');
+                return;
             }
+            if (!this.props.isAllPreviewed) {
+                messageI18n.warning('Previewing');
+                return;
+            }
+            if (!this.props.gcode) {
+                messageI18n.warning('Generate G-code first');
+                return;
+            }
+            const d = new Date();
+            const filname = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].join("") + ".gcode";;
+            const gcode = this.props.gcode;
+            const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
+            FileSaver.saveAs(blob, filname, true);
+            messageI18n.success('Export G-code success');
         },
         runBoundary: () => {
-            if (this.actions._checkStatus4gcode("startSendGcode")) {
-                const gcode = getGcode4runBoundary();
-                this.props.startSendGcode(gcode)
-            }
+            this.props.start(getGcode4runBoundary(), false, false)
         },
-        startSendGcode: () => {
-            if (this.actions._checkStatus4gcode("startSendGcode")) {
-                const gcode = this.props.gcode;
-                this.props.startSendGcode(gcode);
+        startTask: () => {
+            if (!this.props.gcode) {
+                messageI18n.warning('Generate G-code first');
+                return;
             }
+            this.props.start(this.props.gcode, true, true);
         },
-        stopSendGcode: () => {
-            if (this.actions._checkStatus4gcode("stopSendGcode")) {
-                this.props.stopSendGcode();
-            }
+        stopTask: () => {
+            this.props.stopTask();
         },
-        _checkStatus4gcode: (type) => {
-            switch (type) {
-                case "generateGcode": {
-                    if (this.props.modelCount === 0) {
-                        messageI18n.warning('Load model first', 1);
-                        return false;
-                    }
-                    if (!this.props.isAllPreviewed) {
-                        messageI18n.warning('Previewing', 1);
-                        return false;
-                    }
-                    break;
-                }
-                case "exportGcode": {
-                    if (this.props.modelCount === 0) {
-                        messageI18n.warning('Load model first', 1);
-                        return false;
-                    }
-                    if (!this.props.isAllPreviewed) {
-                        messageI18n.warning('Previewing', 1);
-                        return false;
-                    }
-                    if (!this.props.gcode) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-                }
-                case "startSendGcode":
-                    if (!this.props.gcode) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-                case "stopSendGcode":
-                    if (!this.props.gcode) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-            }
-            return true;
+        pauseTask: () => {
+            this.props.pauseTask();
         },
+        resumeTask: () => {
+            this.props.resumeTask();
+        }
     };
 
     render() {
@@ -165,9 +138,15 @@ class Index extends React.Component {
                     <ActionButton onClick={actions.exportGcode} text={t("Export G-code")}/>
                     <ActionButton onClick={actions.runBoundary} text={t("Run Boundary")}/>
                     <div style={{width: "100%"}}>
-                        <ActionButton onClick={actions.startSendGcode} text={t("Start Send")}
+                        <ActionButton onClick={actions.startTask} text={t("Start Send")}
                                       style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
-                        <ActionButton onClick={actions.stopSendGcode} text={t("Stop Send")}
+                        <ActionButton onClick={actions.stopTask} text={t("Stop Send")}
+                                      style={{width: "calc(50% - 4px)"}}/>
+                    </div>
+                    <div style={{width: "100%"}}>
+                        <ActionButton onClick={actions.pauseTask} text={t("Pause Send")}
+                                      style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
+                        <ActionButton onClick={actions.resumeTask} text={t("Resume Send")}
                                       style={{width: "calc(50% - 4px)"}}/>
                     </div>
                 </Space>
@@ -233,8 +212,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
-        stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        stopTask: () => dispatch(gcodeSendActions.stopTask()),
+        pauseTask: () => dispatch(gcodeSendActions.pauseTask()),
+        resumeTask: () => dispatch(gcodeSendActions.resumeTask()),
         //model
         addModel: (fileType, file) => dispatch(laserActions.addModel(fileType, file)),
         generateGcode: () => dispatch(laserActions.generateGcode()),

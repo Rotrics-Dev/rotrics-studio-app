@@ -25,8 +25,7 @@ const FRONT_END_STYLE = {
         state_1: styles.front_end_soft_grip,
         state_2: styles.front_end_soft_release
     }
-
-}
+};
 
 class Index extends React.Component {
 
@@ -256,7 +255,6 @@ const mapDispatchToProps = (dispatch) => {
         startPlayStep: (startIndex = 0, doRepeat = true) => dispatch(teachAndPlayActions.startPlayStep(startIndex, doRepeat)),
         stopPlayStep: () => dispatch(teachAndPlayActions.stopPlayStep()),
         clearStepArray: () => dispatch(teachAndPlayActions.clearStepArray()),
-        sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
         setTeachAndPlay: (isTeachAndPlayMode) => dispatch(teachAndPlayActions.setTeachAndPlay(isTeachAndPlayMode)),
         setShowFrontEndSelect: (show) => dispatch(teachAndPlayActions.setShowFrontEndSelect(show)),
         onSelectFrontEnd: (front_end) => dispatch(teachAndPlayActions.onSelectFrontEnd(front_end)),

@@ -22,10 +22,13 @@ import {
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
     TOOL_PATH_GENERATE_WRITE_AND_DRAW,
+
     GCODE_SENDER_STATUS_CHANGE,
-    GCODE_START_SEND,
-    GCODE_STOP_SEND,
-    GCODE_APPEND_SEND,
+    GCODE_SENDER_START,
+    GCODE_SENDER_STOP_TASK,
+    GCODE_SENDER_PAUSE_TASK,
+    GCODE_SENDER_RESUME_TASK,
+    GCODE_SENDER_ACTION_REFUSE,
     P3D_MATERIAL_FETCH_ALL,
     P3D_MATERIAL_UPDATE,
     P3D_MATERIAL_DELETE,
@@ -185,15 +188,19 @@ const setupSocket = () => {
                 gcodeSender.onSerialPortData(data)
             });
 
-            //gcode send
-            socket.on(GCODE_START_SEND, (data) => {
-                const {gcode, requireStatus} = data;
-                gcodeSender.start(gcode, requireStatus)
+            //gcode sender
+            socket.on(GCODE_SENDER_START, (data) => {
+                const {gcode, isTask, isLaser} = data;
+                gcodeSender.start(gcode, isTask, isLaser)
             });
-            socket.on(GCODE_APPEND_SEND, (gcode) => gcodeSender.append(gcode));
-            socket.on(GCODE_STOP_SEND, () => gcodeSender.stop());
-            socket.on(GCODE_SENDER_STATUS_CHANGE, () => {
-                socket.emit(GCODE_SENDER_STATUS_CHANGE, gcodeSender.getStatus());
+            socket.on(GCODE_SENDER_STOP_TASK, () => gcodeSender.stopTask());
+            socket.on(GCODE_SENDER_PAUSE_TASK, () => gcodeSender.pauseTask());
+            socket.on(GCODE_SENDER_RESUME_TASK, () => gcodeSender.resumeTask());
+            gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
+                socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
+            });
+            gcodeSender.on(GCODE_SENDER_ACTION_REFUSE, (data) => {
+                socket.emit(GCODE_SENDER_ACTION_REFUSE, data);
             });
 
             //laser
@@ -286,10 +293,6 @@ const setupSocket = () => {
                         socket.emit(P3D_SLICE_STATUS, {err, id});
                     }
                 );
-            });
-
-            gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
-                socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
             });
 
             socket.on(FIRMWARE_UPGRADE_START, (data) => {

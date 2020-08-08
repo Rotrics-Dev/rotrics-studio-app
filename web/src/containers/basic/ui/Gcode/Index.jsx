@@ -22,7 +22,7 @@ class Index extends React.Component {
             if (!frontEnd) {
                 return;
             }
-            this.props.startSendGcode(front_end[frontEnd].gcode);
+            this.props.start(front_end[frontEnd].gcode, false, false);
             this.setState({importLevel: 2});
         },
         importGcode: () => {
@@ -45,16 +45,16 @@ class Index extends React.Component {
                     fileName: file.name,
                     importLevel: 1
                 });
-            }
+            };
             reader.readAsText(file, "utf8");
         },
-        startSendGcode: () => {
-            this.props.startSendGcode(this.state.gcode);
+        startTask: () => {
+            this.props.start(this.state.gcode, true, false);
             this.setState({importLevel: 3});
         },
-        stopSendGcode: () => {
-            this.props.stopSendGcode();
-        }
+        stopTask: () => {
+            this.props.stopTask();
+        },
     };
 
     render() {
@@ -92,14 +92,14 @@ class Index extends React.Component {
                     {this.state.importLevel > 1 &&
                     <Button
                         style={{width: "100%"}}
-                        onClick={this.actions.startSendGcode}
+                        onClick={this.actions.startTask}
                     >
                         {this.props.t("Start Send")}
                     </Button>}
                     {this.state.importLevel > 2 &&
                     <Button
                         style={{width: "100%"}}
-                        onClick={this.actions.stopSendGcode}
+                        onClick={this.actions.stopTask}
                     >
                         {this.props.t("Stop Send")}
                     </Button>}
@@ -126,8 +126,8 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
-        stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        stopTask: () => dispatch(gcodeSendActions.stopTask()),
     };
 };
 export default connect(null, mapDispatchToProps)(withTranslation()(Index));
