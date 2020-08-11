@@ -29,22 +29,19 @@ import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
 
 import {getUuid} from '../../utils/index.js';
+import {GA_tracking_id} from "./GA-tracking-id.json";
 
 const notificationKey = getUuid();
-
 const tooltipId = getUuid();
 
-// console.log("ReactGA.initialize('UA-173484896-1');")
-// ReactGA.initialize('UA-173484896-1');
-
-// ReactGA.initialize('UA-173484896-1', {
-//     debug: true,
-//     titleCase: false,
-//     gaOptions: {
-//         userId: 123,
-//         siteSpeedSampleRate: 100
-//     }
-// });
+ReactGA.initialize(GA_tracking_id, {
+    debug: false,
+    titleCase: false,
+    gaOptions: {
+        userId: 123,
+        siteSpeedSampleRate: 100
+    }
+});
 
 class Index extends React.Component {
     constructor(props) {
@@ -66,7 +63,6 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
-
         this.displayTap(this.props.tap);
 
         // disable select text on document
@@ -102,7 +98,7 @@ class Index extends React.Component {
             } else if (this.props.socketStatus === "connect") {
                 notificationI18n.close(notificationKey);
             }
-        }, 5000)
+        }, 3000)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -115,12 +111,10 @@ class Index extends React.Component {
     // 如此写，可以实现，先计算parent element的size，再显示指定的tap
     displayTap = (tap) => {
         // ReactGA.pageview(tap)
-        //
-        // console.log("GA event")
-        // ReactGA.event({
-        //     category: 'liuming',
-        //     action: 'test event'
-        // });
+        ReactGA.event({
+            category: 'open tap',
+            action: tap
+        });
 
         this.refBasic.current.style.display = 'none';
         this.refLaser.current.style.display = 'none';
