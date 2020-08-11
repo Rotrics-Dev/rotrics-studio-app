@@ -307,8 +307,8 @@ class GcodeSender extends EventEmitter {
             this.preStatus = "started";
             this.curStatus = "stopping";
             this.emitStatus();
-            //目前不区分前端头，laser off，move up 10mm，set 3dp front end temperature to 0
-            const gcode = ['M5', 'G91', 'G0 Z10', 'G90', 'M104 S0'].join("\n");
+            //目前不区分前端头，laser off，move up 10mm，set 3dp front end temperature to 0, turn off cover fan
+            const gcode = ['M5', 'G91', 'G0 Z10', 'G90', 'M104 S0', 'M888 P15'].join("\n");
             const linesNumberChecked = this.processGcode(gcode);
             this.lines = linesNumberChecked;
             this.lineCountTotal = this.lines.length;
@@ -398,7 +398,7 @@ class GcodeSender extends EventEmitter {
     emitStatus() {
         const {preStatus, curStatus} = this;
         console.log("gcode sender status: " + preStatus + " -> " + curStatus);
-        if (this.isTask){
+        if (this.isTask) {
             this.emit(GCODE_SENDER_STATUS_CHANGE, {
                 preStatus,
                 curStatus,

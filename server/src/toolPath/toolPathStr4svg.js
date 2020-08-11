@@ -64,36 +64,37 @@ const svg2toolPathStr = async (url, settings) => {
     });
 
     // second pass generate gcode
-    let content = '';
-    content += `G0 F${jog_speed_placeholder}\n`;
-    content += `G1 F${work_speed_placeholder}\n`;
+    let toolPathLines = [];
+    toolPathLines.push(`G0 F${jog_speed_placeholder}`);
+    toolPathLines.push(`G1 F${work_speed_placeholder}`);
+    toolPathLines.push('G0 Z0');
 
     let current = null;
     for (const segment of segments) {
         // G0 move to start
         if (!current || current && !(pointEqual(current, segment.start))) {
             if (current) {
-                content += 'M5\n';
+                toolPathLines.push('M5');
             }
 
             // Move to start point
-            content += `G0 X${normalizer.x(segment.start[0])} Y${normalizer.y(segment.start[1])}\n`;
-            content += `M3 S${power_placeholder}\n`;
+            toolPathLines.push(`G0 X${normalizer.x(segment.start[0])} Y${normalizer.y(segment.start[1])}`);
+            toolPathLines.push(`M3 S${power_placeholder}`);
         }
 
         // G0 move to end
-        content += `G1 X${normalizer.x(segment.end[0])} Y${normalizer.y(segment.end[1])}\n`;
+        toolPathLines.push(`G1 X${normalizer.x(segment.end[0])} Y${normalizer.y(segment.end[1])}`);
 
         current = segment.end;
     }
     // turn off
     if (current) {
-        content += 'M5\n';
+        toolPathLines.push('M5');
     }
 
     // move to work zero
-    content += 'G0 X0 Y0\n';
-    return content;
+    toolPathLines.push('G0 X0 Y0');
+    return toolPathLines.join('\n');
 };
 
 const getSvgStr = async (url) => {

@@ -102,13 +102,13 @@ const img2toolPathStrBw = (img, settings) => {
         return len;
     }
 
-    function genMovement(normalizer, start, end, power_placeholder) {
+    function genMovements(normalizer, start, end, power_placeholder) {
         return [
             `G0 X${normalizer.x(start.x)} Y${normalizer.y(start.y)}`,
             `M3 S${power_placeholder}`,
             `G1 X${normalizer.x(end.x)} Y${normalizer.y(end.y)}`,
             'M5'
-        ].join('\n') + '\n';
+        ];
     }
 
     function bitEqual(a, b) {
@@ -133,10 +133,10 @@ const img2toolPathStrBw = (img, settings) => {
         y: 1 / density
     });
 
-    let content = '';
-    content += `G0 F${jog_speed_placeholder}\n`;
-    content += `G1 F${work_speed_placeholder}\n`;
-
+    let toolPathLines = [];
+    toolPathLines.push(`G0 F${jog_speed_placeholder}`);
+    toolPathLines.push(`G1 F${work_speed_placeholder}`);
+    toolPathLines.push('G0 Z0');
     if (!line_direction || line_direction === 'Horizontal') {
         const direction = {x: 1, y: 0};
         for (let j = 0; j < height; j++) {
@@ -155,7 +155,7 @@ const img2toolPathStrBw = (img, settings) => {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
                     };
-                    content += genMovement(normalizer, start, end, power_placeholder);
+                    toolPathLines = toolPathLines.concat(genMovements(normalizer, start, end, power_placeholder));
                 } else {
                     len = 1;
                 }
@@ -179,7 +179,7 @@ const img2toolPathStrBw = (img, settings) => {
                         x: start.x + direction.x * len * sign,
                         y: start.y + direction.y * len * sign
                     };
-                    content += genMovement(normalizer, start, end, power_placeholder);
+                    toolPathLines = toolPathLines.concat(genMovements(normalizer, start, end, power_placeholder));
                 } else {
                     len = 1;
                 }
@@ -207,7 +207,7 @@ const img2toolPathStrBw = (img, settings) => {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
                         };
-                        content += genMovement(normalizer, start, end, power_placeholder);
+                        toolPathLines = toolPathLines.concat(genMovements(normalizer, start, end, power_placeholder));
                     } else {
                         len = 1;
                     }
@@ -236,7 +236,7 @@ const img2toolPathStrBw = (img, settings) => {
                             x: start.x + direction.x * len * sign,
                             y: start.y + direction.y * len * sign
                         };
-                        content += genMovement(normalizer, start, end, power_placeholder);
+                        toolPathLines = toolPathLines.concat(genMovements(normalizer, start, end, power_placeholder));
                     } else {
                         len = 1;
                     }
@@ -244,14 +244,13 @@ const img2toolPathStrBw = (img, settings) => {
             }
         }
     }
-    content += 'G0 X0 Y0\n';
-    return content;
+    toolPathLines.push('G0 X0 Y0');
+    return toolPathLines.join('\n');
 };
 
 const toolPathStr4bw = async (url, settings) => {
     const img = await file2img(url, settings);
     return img2toolPathStrBw(img, settings);
 };
-
 
 export {toolPathStr4bw, img2toolPathStrBw};
