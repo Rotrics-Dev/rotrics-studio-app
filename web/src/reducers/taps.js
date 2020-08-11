@@ -6,7 +6,7 @@ const ACTION_UPDATE_STATE = 'taps/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     tap: TAP_BASIC,
-    serialPortAssistantVisible: false
+    terminalVisible: false
 };
 
 export const actions = {
@@ -22,8 +22,8 @@ export const actions = {
             dispatch(actions._setTap(value));
         }
     },
-    setSerialPortAssistantVisible: (value) => (dispatch) => {
-        dispatch(actions._updateState({serialPortAssistantVisible: value}));
+    setTerminalVisible: (value) => (dispatch) => {
+        dispatch(actions._updateState({terminalVisible: value}));
     },
     _setTap: (value) => {
         return {

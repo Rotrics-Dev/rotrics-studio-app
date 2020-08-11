@@ -75,15 +75,15 @@ class Index extends React.Component {
         emergencyStop: () => {
             console.log("emergencyStop")
         },
-        setSerialPortAssistantVisible: (checked) => {
-            this.props.setSerialPortAssistantVisible(checked)
+        setTerminalVisible: (checked) => {
+            this.props.setTerminalVisible(checked)
         }
     };
 
     render() {
         const actions = this.actions;
         const state = this.state;
-        const {paths, path, serialPortAssistantVisible} = this.props;
+        const {paths, path, terminalVisible} = this.props;
         const {selectedPath} = state;
         const {t} = this.props;
         let statusDes = "";
@@ -130,8 +130,8 @@ class Index extends React.Component {
                     {path &&
                     <Switch
                         size="small"
-                        checked={serialPortAssistantVisible}
-                        onChange={actions.setSerialPortAssistantVisible}/>
+                        checked={terminalVisible}
+                        onChange={actions.setTerminalVisible}/>
                     }
                     <button
                         className={path ? styles.btn_connected : styles.btn_disconnected}
@@ -187,11 +187,11 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {paths, path} = state.serialPort;
-    const {serialPortAssistantVisible} = state.taps;
+    const {terminalVisible} = state.taps;
     return {
         paths,
         path,
-        serialPortAssistantVisible
+        terminalVisible
     };
 };
 
@@ -199,7 +199,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
-        setSerialPortAssistantVisible: (value) => dispatch(tapsActions.setSerialPortAssistantVisible(value))
+        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value))
     };
 };
 

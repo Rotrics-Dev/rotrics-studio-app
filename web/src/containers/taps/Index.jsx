@@ -11,7 +11,7 @@ import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
-import SerialPortAssistant from './serialPortAssistant/Index.jsx'
+import Terminal from './terminal/Index.jsx'
 
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
 
@@ -152,7 +152,7 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
-        const {tap, serialPortAssistantVisible} = this.props;
+        const {tap, terminalVisible} = this.props;
         const {t} = this.props;
         return (
             <div>
@@ -220,7 +220,7 @@ class Index extends React.Component {
                         <Settings/>
                     </div>
                 </div>
-                <SerialPortAssistant/>
+                <Terminal/>
                 <Footer/>
             </div>
         )

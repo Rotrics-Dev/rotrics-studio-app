@@ -58,7 +58,7 @@ class Index extends React.Component {
             this.setState({receivedLines4debug: [], receivedLines4normal: []})
         },
         close: () => {
-            this.props.setSerialPortAssistantVisible(false)
+            this.props.setTerminalVisible(false)
         },
         toggleAutoScroll: (e) => {
             this.setState({autoScroll: e.target.checked})
@@ -69,7 +69,7 @@ class Index extends React.Component {
     };
 
     render() {
-        if (!this.props.serialPortAssistantVisible) {
+        if (!this.props.terminalVisible) {
             return null;
         }
         const actions = this.actions;
@@ -137,16 +137,16 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {serialPortAssistantVisible} = state.taps;
+    const {terminalVisible} = state.taps;
     return {
-        serialPortAssistantVisible
+        terminalVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
-        setSerialPortAssistantVisible: (value) => dispatch(tapsActions.setSerialPortAssistantVisible(value))
+        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value))
     };
 };
 
