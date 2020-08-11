@@ -8,8 +8,6 @@
 /web/node_modules
 /web/build-web
 /web/package-lock.json
-#GA tracking id
-/web/src/containers/taps/GA-tracking-id.json
 
 #electron
 /electron/build-server
