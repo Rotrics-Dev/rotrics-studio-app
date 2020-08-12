@@ -177,24 +177,25 @@ const img2toolPathStrGs = (img, settings) => {
         y: 1 / density
     });
 
-    let content = '';
-    content += `G1 F${work_speed_placeholder}\n`;
-
+    let toolPathLines = [];
+    toolPathLines.push('G0 F1000'); //G0 default speed is 1000
+    toolPathLines.push(`G1 F${work_speed_placeholder}`);
+    toolPathLines.push('G0 Z0');
     for (let i = 0; i < width; ++i) {
         const isReverse = (i % 2 === 0);
         for (let j = (isReverse ? height : 0); isReverse ? j >= 0 : j < height; isReverse ? j-- : j++) {
             const idx = j * width * 4 + i * 4;
             if (img.bitmap.data[idx] < bw) {
-                content += `G1 X${normalizer.x(i)} Y${normalizer.y(j)}\n`;
-                content += `G4 P${engrave_time_placeholder}\n`;
-                content += `M3 S${power_placeholder}\n`;
-                content += `G4 P${dwell_time_placeholder}\n`;
-                content += 'M5\n';
+                toolPathLines.push(`G1 X${normalizer.x(i)} Y${normalizer.y(j)}`);
+                toolPathLines.push(`G4 P${engrave_time_placeholder}`);
+                toolPathLines.push(`M3 S${power_placeholder}`);
+                toolPathLines.push(`G4 P${dwell_time_placeholder}`);
+                toolPathLines.push('M5');
             }
         }
     }
-    content += 'G0 X0 Y0';
-    return content;
+    toolPathLines.push('G0 X0 Y0');
+    return toolPathLines.join('\n');
 };
 
 const toolPathStr4greyscale = async (url, settings) => {

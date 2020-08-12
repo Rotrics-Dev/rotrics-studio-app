@@ -1,4 +1,5 @@
 import socketClientManager from "../socket/socketClientManager";
+import ReactGA from 'react-ga';
 import {actions as serialPortActions} from './serialPort';
 import {
     FIRMWARE_UPGRADE_START,
@@ -60,6 +61,10 @@ export const actions = {
                         bootLoaderModalVisible: false,
                         isInBootLoader: false
                     }));
+                    ReactGA.event({
+                        category: 'firmwareVersion',
+                        action: firmwareVersion
+                    });
                 } else if (received.startsWith("Hardware ")) {
                     const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
                     dispatch(actions._updateState({
@@ -67,6 +72,10 @@ export const actions = {
                         bootLoaderModalVisible: false,
                         isInBootLoader: false
                     }));
+                    ReactGA.event({
+                        category: 'hardwareVersion',
+                        action: hardwareVersion
+                    });
                 }
             }
         });

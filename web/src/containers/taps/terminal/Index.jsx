@@ -19,18 +19,23 @@ class Index extends React.Component {
 
     state = {
         gcode: "",
-        receivedLines: [],
-        autoScroll: true
+        receivedLines4debug: [], //debug模式下，显示所有收到的数据
+        receivedLines4normal: [], //normal模式下，不显示ok，wait
+        autoScroll: true,
+        debug: false
     };
 
     componentDidMount() {
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
             //达到上限则删除部分数据
-            if (this.state.receivedLines.push(data.received) > MAX_LINE_COUNT) {
-                this.state.receivedLines.splice(0, MAX_LINE_COUNT / 3)
+            if (this.state.receivedLines4debug.push(data.received) > MAX_LINE_COUNT) {
+                this.state.receivedLines4debug.splice(0, MAX_LINE_COUNT / 3)
             }
-            const receivedLines = _.cloneDeep(this.state.receivedLines);
-            this.setState({receivedLines})
+            const receivedLines4debug = _.cloneDeep(this.state.receivedLines4debug);
+            const receivedLines4normal = receivedLines4debug.filter((value) => {
+                return !["ok", "wait"].includes(value);
+            });
+            this.setState({receivedLines4debug, receivedLines4normal});
             if (this.state.autoScroll) {
                 if (this.refTextArea.current) {
                     const textArea = this.refTextArea.current.resizableTextArea.textArea;
@@ -50,18 +55,21 @@ class Index extends React.Component {
             this.setState({gcode})
         },
         clearReceivedLines: () => {
-            this.setState({receivedLines: []})
+            this.setState({receivedLines4debug: [], receivedLines4normal: []})
         },
         close: () => {
-            this.props.setSerialPortAssistantVisible(false)
+            this.props.setTerminalVisible(false)
         },
         toggleAutoScroll: (e) => {
             this.setState({autoScroll: e.target.checked})
+        },
+        toggleDebug: (e) => {
+            this.setState({debug: e.target.checked})
         }
     };
 
     render() {
-        if (!this.props.serialPortAssistantVisible) {
+        if (!this.props.terminalVisible) {
             return null;
         }
         const actions = this.actions;
@@ -91,14 +99,20 @@ class Index extends React.Component {
                         className={styles.textarea_received}
                         size="small"
                         allowClear={true}
-                        value={state.receivedLines.join("\n")}
+                        value={state.debug ? state.receivedLines4debug.join("\n") : state.receivedLines4normal.join("\n")}
                         disabled={true}
                     />
                     <Checkbox
-                        style={{position: "absolute", bottom: "5px", left: "8px"}}
+                        style={{fontSize: "13px", position: "absolute", bottom: "1px", left: "8px"}}
                         onChange={actions.toggleAutoScroll}
                         checked={state.autoScroll}>
                         {t("Auto Scroll")}
+                    </Checkbox>
+                    <Checkbox
+                        style={{fontSize: "13px", position: "absolute", bottom: "22px", left: "0px"}}
+                        onChange={actions.toggleDebug}
+                        checked={state.debug}>
+                        {t("Debug")}
                     </Checkbox>
                     <Button
                         className={styles.btn_close}
@@ -123,16 +137,16 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {serialPortAssistantVisible} = state.taps;
+    const {terminalVisible} = state.taps;
     return {
-        serialPortAssistantVisible
+        terminalVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
-        setSerialPortAssistantVisible: (value) => dispatch(tapsActions.setSerialPortAssistantVisible(value))
+        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value))
     };
 };
 
