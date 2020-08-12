@@ -59,10 +59,6 @@ const actions = {
         }));
     },
     recordStep: () => (dispatch, getState) => {
-        console.log('recordStep')
-        console.log(this)
-        console.log(dispatch)
-        console.log(getState)
         serialPortActions.addPositionListener(
             (x, y, z) => {
                 const {currentFrontEnd, laserPower, currentFrontEndState, stepArray} = getState().teachAndPlay;
