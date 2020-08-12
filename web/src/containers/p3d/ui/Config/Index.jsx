@@ -17,84 +17,55 @@ class Index extends React.Component {
 
     actions = {
         generateGcode: () => {
-            if (this.actions._checkStatus4gcode("generateGcode")) {
-                this.props.startSlice();
+            if (this.props.modelCount === 0) {
+                messageI18n.warning('Load model first');
+                return;
             }
+            this.props.startSlice();
         },
         exportGcode: () => {
-            if (this.actions._checkStatus4gcode("exportGcode")) {
-                const date = new Date();
-                //https://blog.csdn.net/xu511739113/article/details/72764321
-                const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-                const fileName = arr.join("") + ".gcode";
-                const {gcodeUrl} = this.props.result;
-                console.log("gcodeUrl: " + gcodeUrl)
-
-                fetch(gcodeUrl)
-                    .then(resp => resp.blob())
-                    .then(blob => {
-                        FileSaver.saveAs(blob, fileName, true);
-                        messageI18n.success('Export G-code success', 1);
-                    })
-                    .catch(() => {
-                        console.error("down load err")
-                        messageI18n.error('Export G-code failed', 1);
-                    });
+            if (this.props.modelCount === 0) {
+                messageI18n.warning('Load model first');
+                return;
             }
-        },
-        startSendGcode: () => {
-            if (this.actions._checkStatus4gcode("startSendGcode")) {
-                const {gcodeUrl} = this.props.result;
-                fetch(gcodeUrl)
-                    .then(resp => resp.text())
-                    .then(text => {
-                        this.props.startSendGcode(text);
-                    })
-                    .catch(() => {
-                        console.error("down load err")
-                    });
+            if (!this.props.result) {
+                messageI18n.warning('Generate G-code first');
+                return;
             }
+            const date = new Date();
+            //https://blog.csdn.net/xu511739113/article/details/72764321
+            const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+            const fileName = arr.join("") + ".gcode";
+            const {gcodeUrl} = this.props.result;
+            fetch(gcodeUrl)
+                .then(resp => resp.blob())
+                .then(blob => {
+                    FileSaver.saveAs(blob, fileName, true);
+                    messageI18n.success('Export G-code success', 1);
+                })
+                .catch(() => {
+                    console.error("down load err");
+                    messageI18n.error('Export G-code failed', 1);
+                });
         },
-        stopSendGcode: () => {
-            if (this.actions._checkStatus4gcode("stopSendGcode")) {
-                this.props.stopSendGcode();
+        startTask: () => {
+            if (!this.props.result) {
+                messageI18n.warning('Generate G-code first', 1);
+                return;
             }
+            const {gcodeUrl} = this.props.result;
+            fetch(gcodeUrl)
+                .then(resp => resp.text())
+                .then(gcode => {
+                    this.props.start(gcode, true, false);
+                })
+                .catch(() => {
+                    console.error("down load err")
+                });
         },
-        _checkStatus4gcode: (type) => {
-            switch (type) {
-                case "generateGcode": {
-                    if (this.props.modelCount === 0) {
-                        messageI18n.warning('Load model first', 1);
-                        return false;
-                    }
-                    break;
-                }
-                case "exportGcode": {
-                    if (this.props.modelCount === 0) {
-                        messageI18n.warning('Load model first', 1);
-                        return false;
-                    }
-                    if (!this.props.result) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-                }
-                case "startSendGcode":
-                    if (!this.props.result) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-                case "stopSendGcode":
-                    if (!this.props.result) {
-                        messageI18n.warning('Generate G-code first', 1);
-                        return false;
-                    }
-                    break;
-            }
-            return true;
-        },
+        stopTask: () => {
+            this.props.stopTask();
+        }
     };
 
     render() {
@@ -107,9 +78,9 @@ class Index extends React.Component {
                     <ActionButton onClick={actions.generateGcode} text={t("Generate G-code")}/>
                     <ActionButton onClick={actions.exportGcode} text={t("Export G-code")}/>
                     <div style={{width: "100%"}}>
-                        <ActionButton onClick={actions.startSendGcode} text={t("Start Send")}
+                        <ActionButton onClick={actions.startTask} text={t("Start Send")}
                                       style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
-                        <ActionButton onClick={actions.stopSendGcode} text={t("Stop Send")}
+                        <ActionButton onClick={actions.stopTask} text={t("Stop Send")}
                                       style={{width: "calc(50% - 4px)"}}/>
                     </div>
                 </Space>
@@ -121,7 +92,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {result, modelCount} = state.p3dModel
+    const {result, modelCount} = state.p3dModel;
     return {
         result,
         modelCount
@@ -131,8 +102,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startSlice: () => dispatch(p3dModelActions.startSlice()),
-        startSendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode)),
-        stopSendGcode: () => dispatch(gcodeSendActions.stop()),
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        stopTask: () => dispatch(gcodeSendActions.stopTask()),
     };
 };
 

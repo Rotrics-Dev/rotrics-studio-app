@@ -476,7 +476,7 @@ class FirmwareUpgradeManager {
                         resolve(true);
                     }
                 });
-                this.write('M92 E408.16\nM500\nM2002\nM2003\n');
+                this.write('M203 X300 Y300 Z300 E100\nM205 X10 Y10 Z10 E20\nM92 E379.20\nM500\nM2002\nM2003\n');
             });
         };
         return await exe();

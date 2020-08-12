@@ -16,14 +16,13 @@ class Index extends React.Component {
         isLaserOn: false,
         laserPower: INIT_LASER_POWER
     };
-
     //M3: laser on
     //M5: laser off
     //M3 S${power, 0~255}: set laser power
     actions = {
         toggleLaser: (checked) => {
             this.setState({isLaserOn: checked, laserPower: INIT_LASER_POWER}, () => {
-                this.actions._sendGcode4laser();
+                this.actions._sendGcode();
             });
         },
         changeLaserPower: (value) => {
@@ -31,10 +30,10 @@ class Index extends React.Component {
         },
         afterChangeLaserPower: (value) => {
             this.setState({laserPower: value}, () => {
-                this.actions._sendGcode4laser();
+                this.actions._sendGcode();
             });
         },
-        _sendGcode4laser: () => {
+        _sendGcode: () => {
             const {isLaserOn, laserPower} = this.state;
             let gcode = "";
             if (isLaserOn) {
@@ -42,7 +41,7 @@ class Index extends React.Component {
             } else {
                 gcode = "M5"
             }
-            this.props.sendGcode(gcode);
+            this.props.start(gcode, false, false);
         }
     };
 
@@ -77,7 +76,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendGcode: (gcode) => dispatch(gcodeSendActions.start(gcode, false)),
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
     };
 };
 

@@ -78,8 +78,22 @@ export const actions = {
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
+            console.log("received line: " + data.received);
             processM894(data);
             processM114(data);
+            let {received} = data;
+            //存在单词拼写错误，fix it
+            if (received.indexOf("beyound limit..") !== -1) {
+                received = received.replace("beyound", "beyond");
+            }
+            if (
+                received.indexOf("beyond limit..") !== -1 ||
+                received.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
+                received.indexOf("Warning!Laser protection door opened") !== -1 ||
+                received.indexOf("Laser protection door closed") !== -1
+            ) {
+                messageI18n.warning(received);
+            }
         });
     },
     _updateState: (state) => {

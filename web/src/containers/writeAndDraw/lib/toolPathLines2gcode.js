@@ -28,6 +28,8 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
         Object.keys(lineObj).forEach((key) => {
             let value = lineObj[key];
             switch (key) {
+                case 'S':
+                    break;
                 case 'C':
                     // C: comment
                     comment = value;

@@ -12,6 +12,7 @@ import socket from "./socket";
 import taps from "./taps";
 import code from "./code";
 import settingsGeneral from "./settingsGeneral";
+import persistentData from "./persistentData";
 
 export default combineReducers({
     gcodeSend,
@@ -27,5 +28,6 @@ export default combineReducers({
     socket,
     taps,
     code,
-    settingsGeneral
+    settingsGeneral,
+    persistentData
 });

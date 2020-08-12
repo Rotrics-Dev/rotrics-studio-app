@@ -98,7 +98,6 @@ class Index extends React.Component {
                     <Level showLevel={showLevel}/>
                 </Space>
                 <div style={{padding: "0px 8px 8px 8px"}}>
-
                     <ConfigTitle text={t("Step length")} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>

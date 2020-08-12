@@ -54,7 +54,7 @@
     "win": {
       "icon": "electron-builder/icon.ico",
       "target": [
-        "zip"
+        "nsis"
       ]
     }
   },

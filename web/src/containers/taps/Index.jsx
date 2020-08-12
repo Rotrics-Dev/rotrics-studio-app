@@ -34,17 +34,17 @@ const notificationKey = getUuid();
 
 const tooltipId = getUuid();
 
-console.log("ReactGA.initialize('UA-173484896-1');")
+// console.log("ReactGA.initialize('UA-173484896-1');")
 // ReactGA.initialize('UA-173484896-1');
 
-ReactGA.initialize('UA-173484896-1', {
-    // debug: true,
-    titleCase: false,
-    gaOptions: {
-        userId: 123,
-        siteSpeedSampleRate: 100
-    }
-});
+// ReactGA.initialize('UA-173484896-1', {
+//     debug: true,
+//     titleCase: false,
+//     gaOptions: {
+//         userId: 123,
+//         siteSpeedSampleRate: 100
+//     }
+// });
 
 class Index extends React.Component {
     constructor(props) {
@@ -73,26 +73,36 @@ class Index extends React.Component {
         document.onselectstart = () => {
             return false;
         };
-
-        // setInterval(() => {
-        //     ReactGA.event({
-        //         category: 'Promotion',
-        //         action: 'Displayed Promotional Widget',
-        //         label: 'Homepage Thing',
-        //         nonInteraction: true
-        //     });
         //
-        //     // if (this.props.socketStatus === "disconnect") {
-        //     //     notificationI18n.error({
-        //     //         key: notificationKey,
-        //     //         message: 'Internal error occurred',
-        //     //         description: 'Please restart the app',
-        //     //         duration: 0
-        //     //     });
-        //     // } else if (this.props.socketStatus === "connect") {
-        //     //     notificationI18n.close(notificationKey);
-        //     // }
-        // }, 1000)
+        setInterval(() => {
+            // ReactGA.ga('set', 'dimension1', 'Sports1');
+            // ReactGA.ga('set', 'dimension2', 'Sports2');
+            // ReactGA.ga('set', 'dimension3', 'Sports3');
+            // ReactGA.ga('set', 'dimension4', 'Sports4');
+            //
+            // ReactGA.set({ dimension1: 'Sports1-1' });
+            // ReactGA.set({ dimension2: 'Sports1-2' });
+            // ReactGA.set({ dimension3: 'Sports1-3' });
+            // ReactGA.set({ dimension4: 'Sports1-4' });
+
+            // ReactGA.event({
+            //     category: 'Promotion',
+            //     action: 'Displayed Promotional Widget',
+            //     label: 'Homepage Thing',
+            //     nonInteraction: true
+            // });
+
+            if (this.props.socketStatus === "disconnect") {
+                notificationI18n.error({
+                    key: notificationKey,
+                    message: 'Internal error occurred',
+                    description: 'Please restart the app',
+                    duration: 0
+                });
+            } else if (this.props.socketStatus === "connect") {
+                notificationI18n.close(notificationKey);
+            }
+        }, 5000)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -104,13 +114,13 @@ class Index extends React.Component {
     // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
     // 如此写，可以实现，先计算parent element的size，再显示指定的tap
     displayTap = (tap) => {
-        ReactGA.pageview(tap)
-
-        console.log("GA veent")
-        ReactGA.event({
-            category: 'liuming',
-            action: 'test event'
-        });
+        // ReactGA.pageview(tap)
+        //
+        // console.log("GA event")
+        // ReactGA.event({
+        //     category: 'liuming',
+        //     action: 'test event'
+        // });
 
         this.refBasic.current.style.display = 'none';
         this.refLaser.current.style.display = 'none';

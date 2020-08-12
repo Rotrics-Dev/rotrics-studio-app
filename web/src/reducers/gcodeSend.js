@@ -2,9 +2,11 @@ import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
     GCODE_SENDER_STATUS_CHANGE,
-    GCODE_APPEND_SEND,
-    GCODE_START_SEND,
-    GCODE_STOP_SEND,
+    GCODE_SENDER_ACTION_REFUSE,
+    GCODE_SENDER_START,
+    GCODE_SENDER_STOP_TASK,
+    GCODE_SENDER_PAUSE_TASK,
+    GCODE_SENDER_RESUME_TASK,
     MSG_SERIAL_PORT_CLOSE_TOAST, SERIAL_PORT_WRITE
 } from "../constants";
 
@@ -23,21 +25,26 @@ export const actions = {
             socketClientManager.emitToServer(GCODE_SENDER_STATUS_CHANGE);
         });
         socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, (data) => {
-            //见: gcodeSender.js _emitStatus
-            //data: {status, lineCountTotal, lineCountSend, lineCountSkipped};
-            const {status} = data;
-            switch (status) {
-                case "start":
-                    messageI18n.success("Sending Start");
-                    break;
-                case "end":
-                    messageI18n.success("Sending End");
-                    break;
-                case "stopped":
-                    messageI18n.success("Sending Stopped");
-                    break;
+            //见: gcodeSender.js emitStatus
+            const {preStatus, curStatus} = data;
+            if (preStatus === "idle" && curStatus === "started") {
+                messageI18n.success("Task started");
+            } else if (preStatus === "started" && curStatus === "idle") {
+                messageI18n.success("Task completed");
+            } else if (preStatus === "started" && curStatus === "stopping") {
+                messageI18n.success("Task stopping");
+            } else if (preStatus === "stopping" && curStatus === "idle") {
+                messageI18n.success("Task stopped");
+            } else if (preStatus === "started" && curStatus === "paused") {
+                messageI18n.success("Task paused");
+            } else if (preStatus === "paused" && curStatus === "started") {
+                messageI18n.success("Task resumed");
+            } else if (preStatus === "paused" && curStatus === "stopping") {
+                messageI18n.success("Task stopping");
             }
-            dispatch(actions._updateState({...data}));
+        });
+        socketClientManager.addServerListener(GCODE_SENDER_ACTION_REFUSE, (data) => {
+            messageI18n.warning(data.msg);
         });
     },
     _updateState: (state) => {
@@ -46,28 +53,20 @@ export const actions = {
             state
         };
     },
-    start: (gcode, requireStatus = true) => (dispatch, getState) => {
-        if (getState().serialPort.path) {
-            socketClientManager.emitToServer(GCODE_START_SEND, {gcode: gcode + "\n", requireStatus});
-        } else {
-            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
-        }
+    start: (gcode, isTask, isLaser) => {
+        socketClientManager.emitToServer(GCODE_SENDER_START, {gcode, isTask, isLaser});
         return {type: null};
     },
-    append: (gcode) => (dispatch, getState) => {
-        if (getState().serialPort.path) {
-            socketClientManager.emitToServer(GCODE_APPEND_SEND, gcode);
-        } else {
-            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
-        }
+    stopTask: () => {
+        socketClientManager.emitToServer(GCODE_SENDER_STOP_TASK);
         return {type: null};
     },
-    stop: () => (dispatch, getState) => {
-        if (getState().serialPort.path) {
-            socketClientManager.emitToServer(GCODE_STOP_SEND);
-        } else {
-            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
-        }
+    pauseTask: () => {
+        socketClientManager.emitToServer(GCODE_SENDER_PAUSE_TASK);
+        return {type: null};
+    },
+    resumeTask: () => {
+        socketClientManager.emitToServer(GCODE_SENDER_RESUME_TASK);
         return {type: null};
     }
 };

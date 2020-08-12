@@ -2,24 +2,34 @@ import colornames from 'colornames';
 import * as THREE from 'three';
 
 const OFFSET_ARM = 12.5;
+const SAFE_BOUNDARY = 3;
 
-const OFFSET_LASER = 88.217 + OFFSET_ARM;
-const OFFSET_PUMP = 105 + OFFSET_ARM;
-const OFFSET_PEN = 101.5 + OFFSET_ARM;
-const OFFSET_P3D = 92.6 + OFFSET_ARM;
-const Offset_CAMERA = 107.7;
-const SAFE_BOUNDARY = 5;
+const FRONT_END = {
+    LASER: 'LASER',
+    PUMP: 'PUMP',
+    PEN: 'PEN',
+    P3D: 'P3D',
+    CAMERA: 'CAMERA'
+}
+const OFFSET = {
+    LASER: 88.217 + OFFSET_ARM,
+    PUMP: 105 + OFFSET_ARM,
+    PEN: 101.5 + OFFSET_ARM,
+    P3D: 92.6 + OFFSET_ARM,
+    CAMERA: 107.7 + OFFSET_ARM
+}
 
 class WorkArea {
     group = new THREE.Object3D();
 
-    constructor() {
+    constructor(frontEnd = FRONT_END.PEN) {
+        this.frontEndOffset = OFFSET[frontEnd];
         const red = colornames('red');
         const green = colornames('green');
 
         const curve1 = new THREE.EllipseCurve(
             0, 0,// ax, aY
-            70.9 + OFFSET_PEN, 70.9 + OFFSET_PEN,// xRadius, yRadius
+            70.9 + this.frontEndOffset, 70.9 + this.frontEndOffset,// xRadius, yRadius
             0, Math.PI,// aStartAngle, aEndAngle
             false,// aClockwise
             0// aRotation
@@ -32,7 +42,7 @@ class WorkArea {
 
         const curve2 = new THREE.EllipseCurve(
             0, 0,// ax, aY
-            300 + OFFSET_PEN, 300 + OFFSET_PEN,// xRadius, yRadius
+            300 + this.frontEndOffset, 300 + this.frontEndOffset,// xRadius, yRadius
             0, Math.PI,// aStartAngle, aEndAngle
             false,// aClockwise
             0// aRotation
