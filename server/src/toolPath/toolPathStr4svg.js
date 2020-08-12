@@ -4,12 +4,16 @@ import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 import {degree2radian} from '../utils/index.js';
 import http from "http";
+import {
+    TOOL_PATH_GENERATE_LASER,
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW,
+} from "../constants.js";
 
 function pointEqual(p1, p2) {
     return p1[0] === p2[0] && p1[1] === p2[1];
 }
 
-const svg2toolPathStr = async (url, settings) => {
+const svg2toolPathStr = async (url, settings, frontEnd) => {
     const {transformation, config, working_parameters} = settings;
 
     const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
@@ -67,7 +71,11 @@ const svg2toolPathStr = async (url, settings) => {
     let toolPathLines = [];
     toolPathLines.push(`G0 F${jog_speed_placeholder}`);
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
-    toolPathLines.push('G0 Z0');
+    if (frontEnd === TOOL_PATH_GENERATE_LASER) {
+        toolPathLines.push('G0 Z0');
+    } else if (frontEnd === TOOL_PATH_GENERATE_WRITE_AND_DRAW) {
+        toolPathLines.push('M5')//rise the pen
+    }
 
     let current = null;
     for (const segment of segments) {
@@ -113,8 +121,8 @@ const getSvgStr = async (url) => {
     return svg;
 };
 
-const toolPathStr4svg = async (url, settings) => {
-    return await svg2toolPathStr(url, settings);
+const toolPathStr4svg = async (url, settings, frontEnd) => {
+    return await svg2toolPathStr(url, settings, frontEnd);
 };
 
 export default toolPathStr4svg;
