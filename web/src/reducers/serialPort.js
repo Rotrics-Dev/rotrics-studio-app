@@ -70,7 +70,7 @@ export const actions = {
             dispatch(actions._updateState({path}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
-            dispatch(tapsActions.setSerialPortAssistantVisible(false))
+            dispatch(tapsActions.setTerminalVisible(false))
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ERROR, () => {

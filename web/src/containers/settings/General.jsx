@@ -2,6 +2,7 @@ import React from 'react';
 import {Row, Col, Button, Steps, Modal, Result} from 'antd';
 import {LoadingOutlined, SmileOutlined} from '@ant-design/icons';
 import {connect} from 'react-redux';
+import ReactGA from 'react-ga';
 import styles from './styles.css';
 import packageJson from "../../../../electron/package.json";
 import {actions as settingsGeneralActions} from '../../reducers/settingsGeneral.js';
@@ -24,7 +25,16 @@ class General extends React.Component {
     state = {
         firmwareUpgradeModalVisible: false,
     };
-
+    componentDidMount() {
+        ReactGA.event({
+            category: 'appVersion',
+            action: `V${packageJson.version}`
+        });
+        ReactGA.event({
+            category: 'language',
+            action: this.props.i18n.language
+        });
+    }
     actions = {
         closeFirmwareUpgradeModal: () => {
             this.setState({

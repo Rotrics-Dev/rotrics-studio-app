@@ -11,9 +11,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
     const translateY = y.default_value;
 
     const gcodeLines = [];
-    const header = [
-        'G0 Z' + jog_pen_offset + ' F' + jog_speed_value,
-    ];
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -84,6 +81,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
         gcodeLines.push(line);
     }
 
-    return header.join('\n') + '\n' + gcodeLines.join('\n') + '\n' + `G0 Z${jog_pen_offset}` + '\n';
+    return gcodeLines.join('\n') + '\n';
 };
 export default toolPathLines2gcode;

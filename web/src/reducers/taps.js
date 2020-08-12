@@ -22,8 +22,8 @@ export const actions = {
             dispatch(actions._setTap(value));
         }
     },
-    setSerialPortAssistantVisible: (value) => (dispatch) => {
-        dispatch(actions._updateState({serialPortAssistantVisible: value}));
+    setTerminalVisible: (value) => (dispatch) => {
+        dispatch(actions._updateState({terminalVisible: value}));
     },
     _setTap: (value) => {
         return {
