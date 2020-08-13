@@ -65,34 +65,31 @@ const svg2toolPathStr = async (url, settings) => {
 
     // second pass generate gcode
     let toolPathLines = [];
+    let current = null;
+
+    //if write&draw, move up z, set speed, move to start xy, move z to 0, then start
+    const segment0 = segments[0];
+    toolPathLines.push('M5');
     toolPathLines.push(`G0 F${jog_speed_placeholder}`);
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
+    toolPathLines.push(`G0 X${normalizer.x(segment0.start[0])} Y${normalizer.y(segment0.start[1])}`);
     toolPathLines.push('G0 Z0');
 
-    let current = null;
     for (const segment of segments) {
         // G0 move to start
         if (!current || current && !(pointEqual(current, segment.start))) {
             if (current) {
                 toolPathLines.push('M5');
             }
-
             // Move to start point
             toolPathLines.push(`G0 X${normalizer.x(segment.start[0])} Y${normalizer.y(segment.start[1])}`);
             toolPathLines.push(`M3 S${power_placeholder}`);
         }
-
         // G0 move to end
         toolPathLines.push(`G1 X${normalizer.x(segment.end[0])} Y${normalizer.y(segment.end[1])}`);
-
         current = segment.end;
     }
-    // turn off
-    if (current) {
-        toolPathLines.push('M5');
-    }
-
-    // move to work zero
+    toolPathLines.push('M5');
     toolPathLines.push('G0 X0 Y0');
     return toolPathLines.join('\n');
 };

@@ -2,13 +2,13 @@
   "start_gcode": {
     "label": "Start Gcode",
     "description": "Start Gcode description",
-    "default_value": ";----- Start Gcode Begin -----\nM2000;custom: line mode\nM888 P1;custom: header is laser\nM888 P14;custom: turn on cover fan\n;-----------------------------",
+    "default_value": ";----------- Start Gcode -----------\nM2000 ;custom:line mode\nM888 P1 ;custom:header is laser\nM888 P14 ;custom:turn on cover fan\n;-----------------------------------",
     "type": "str"
   },
   "end_gcode": {
     "label": "End Gcode",
     "description": "End Gcode description",
-    "default_value": ";----- End Gcode Begin -----\nM888 P15;custom: turn off cover fan\n;-----------------------------",
+    "default_value": ";----------- End Gcode -------------\nM888 P15 ;custom:turn off cover fan\n;-----------------------------------",
     "type": "str"
   },
   "transformation": {

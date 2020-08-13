@@ -11,9 +11,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
     const translateY = y.default_value;
 
     const gcodeLines = [];
-    const header = [
-        'G0 Z' + jog_pen_offset + ' F' + jog_speed_value,
-    ];
 
     for (let i = 0; i < toolPathLines.length; i++) {
         const lineObj = toolPathLines[i];
@@ -28,8 +25,6 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
         Object.keys(lineObj).forEach((key) => {
             let value = lineObj[key];
             switch (key) {
-                case 'S':
-                    break;
                 case 'C':
                     // C: comment
                     comment = value;
@@ -58,12 +53,14 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
                     break;
                 case 'M':
                     if (value === 3) {
-                        cmds.push('G1 Z0.00')
+                        cmds.push('G1 Z0')
                     } else if (value === 5) {
                         cmds.push(`G0 Z${jog_pen_offset}`)
                     } else {
                         cmds.push(key + value);
                     }
+                    break;
+                case 'S': //M3 S#power#, only for laser, ignore if others
                     break;
                 default:
                     cmds.push(key + value);
@@ -84,6 +81,7 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
         gcodeLines.push(line);
     }
 
-    return header.join('\n') + '\n' + gcodeLines.join('\n') + '\n' + `G0 Z${jog_pen_offset}` + '\n';
+    let gcodeStr = gcodeLines.join('\n') + '\n';
+    return gcodeStr;
 };
 export default toolPathLines2gcode;
