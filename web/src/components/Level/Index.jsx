@@ -102,19 +102,12 @@ class Index extends React.Component {
             // console.log('delayToConnectSerialPort' + Date.now());
             const {lastConnectSerialPort} = that.state;
             const {paths} = that.props;
-            if ((!paths) || (!paths.length)) {
+            if ((!paths) || (!paths.length) || (paths.indexOf(lastConnectSerialPort) === -1)) {
                 this.delayToConnectSerialPort(that, showModal, started, msg);
                 return;
             }
-            if (paths.indexOf(lastConnectSerialPort) === -1) {
-                messageI18n.error('Device not Found');
-                this.setState({showModal: false, showLoading: false});
-                //找不到之前的串口
-            } else {
-                //连接之前串口
-                this.props.openSerialPort(lastConnectSerialPort);
-                this.delayToM1112(that, showModal, started, msg);
-            }
+            this.props.openSerialPort(lastConnectSerialPort);
+            this.delayToM1112(that, showModal, started, msg);
         }, 1000);
     }
     delayToM1112 = (that, showModal, started, msg) => {
