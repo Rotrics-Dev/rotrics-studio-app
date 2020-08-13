@@ -54,7 +54,7 @@ class Transformation extends PureComponent {
                 <Tooltip
                     id={tooltipId}
                     place="left"
-                   />
+                />
                 <Line/>
                 <div style={{
                     padding: "8px",

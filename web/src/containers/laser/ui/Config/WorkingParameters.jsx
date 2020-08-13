@@ -137,8 +137,8 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setWorkSpeed}/>
                         </Col>
                     </Row>
-                    {jogSpeedVisible &&
                     <Row
+                        style={{display: jogSpeedVisible ? "" : "none"}}
                         data-for={tooltipId}
                         data-tip={t(jog_speed.description)}>
                         <Col span={19}>
@@ -152,9 +152,8 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setJogSpeed}/>
                         </Col>
                     </Row>
-                    }
-                    {dwellTimeVisible &&
                     <Row
+                        style={{display: dwellTimeVisible ? "" : "none"}}
                         data-for={tooltipId}
                         data-tip={t(dwell_time.description)}>
                         <Col span={19}>
@@ -168,9 +167,8 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setDwellTime}/>
                         </Col>
                     </Row>
-                    }
-                    {engraveTimeVisible &&
                     <Row
+                        style={{display: engraveTimeVisible ? "" : "none"}}
                         data-for={tooltipId}
                         data-tip={t(engrave_time.description)}>
                         <Col span={19}>
@@ -184,7 +182,6 @@ class WorkingParameters extends PureComponent {
                                 onAfterChange={actions.setEngraveTime}/>
                         </Col>
                     </Row>
-                    }
                     <Row
                         data-for={tooltipId}
                         data-tip={t(power.description)}>

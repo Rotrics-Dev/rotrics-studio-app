@@ -19,11 +19,11 @@ const xlsx2json = (xlsxPath, targetDir) => {
         }
         let workBook = xlsx.readFile(xlsxPath, {raw: true});
         if (!workBook) {
-            console.log(`${xlsxPath} 读取错误`)
+            console.log(`${xlsxPath} 读取错误`);
             return
         }
         if (workBook.SheetNames === 0) {
-            console.log(`${xlsxPath} 不含表格`)
+            console.log(`${xlsxPath} 不含表格`);
             return;
         }
 
@@ -36,13 +36,13 @@ const xlsx2json = (xlsxPath, targetDir) => {
         const table = {};
 
         for (const data of sheetJson) {
-            const enKey = data.en;
+            const enKey = data.en.trim();
             Object.keys(data).forEach((language) => {
                 if (language in table) {
-                    table[language][enKey] = data[language];
+                    table[language][enKey] = data[language].trim();
                 } else {
                     const translate = {};
-                    translate[enKey] = data[language];
+                    translate[enKey] = data[language].trim();
                     table[language] = translate;
                 }
             });

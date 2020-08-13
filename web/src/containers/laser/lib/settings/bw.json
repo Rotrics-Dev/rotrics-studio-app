@@ -156,7 +156,7 @@
         "label": "Dwell Time",
         "description": "Pause DexArm and wait before turning ON laser. It helps improve laser engraving quality.",
         "placeholder": "#dwell_time#",
-        "default_value": 5,
+        "default_value": 0,
         "type": "int",
         "unit": "ms",
         "minimum_value": 1,
@@ -170,7 +170,7 @@
         "default_value": 5,
         "type": "int",
         "unit": "ms",
-        "minimum_value": 0,
+        "minimum_value": 1,
         "maximum_value": 100,
         "hidden": "movement_mode === greyscale-line"
       },
