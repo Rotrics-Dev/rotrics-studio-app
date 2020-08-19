@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './styles.css';
 import {Radio, Space} from 'antd';
+import PositionMonitor from '../PositionMoniter/index.jsx'
 import Level from '../Level/Index.jsx'
 import {ConfigTitle} from "../Config";
 import {withTranslation} from 'react-i18next';
@@ -15,12 +16,14 @@ class Index extends React.Component {
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
-        const {setStep, setWorkOrigin, goToWorkOrigin} = this.props.actions;
+        const {setStep, setWorkHeight, goToWorkHeight} = this.props.actions;
         const {step} = this.props;
         const {showLevel} = this.props;
         const {t} = this.props;
         return (
             <div>
+                <PositionMonitor/>
+
                 <Space direction={"vertical"} style={{padding: "8px 8px 0px 8px"}}>
                     <Space direction={"horizontal"}>
                         <button
@@ -86,14 +89,14 @@ class Index extends React.Component {
                     </Space>
 
                     <button
-                        onClick={goToWorkOrigin}
+                        onClick={goToWorkHeight}
                         className={styles.btn_action_work}
-                    >{t("Go To Work Origin")}
+                    >{t("Go To Work Height")}
                     </button>
                     <button
-                        onClick={setWorkOrigin}
+                        onClick={setWorkHeight}
                         className={styles.btn_action_work}
-                    >{t("Set Work Origin")}
+                    >{t("Set Work Height")}
                     </button>
                     <Level showLevel={showLevel}/>
                 </Space>

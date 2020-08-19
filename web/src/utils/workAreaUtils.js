@@ -186,11 +186,13 @@ export const getLimit = (z, frontEnd) => {
 }
 export const getLathePoints = () => {
     const innerPoints = [];
-    const outterPoints = []
+    let outterPoints = []
     for (let z = Z_MIN; z <= Z_MAX; z += 2) {
         const {outterRadius, innerRadius} = getLimit(z, FRONT_END.P3D)
         innerPoints.push(new Vector2(innerRadius, z));
         outterPoints.push(new Vector2(outterRadius, z));
     }
-    return outterPoints.concat(innerPoints.reverse());
+    outterPoints = outterPoints.concat(innerPoints.reverse())
+    outterPoints.push(outterPoints[0])
+    return outterPoints;
 }

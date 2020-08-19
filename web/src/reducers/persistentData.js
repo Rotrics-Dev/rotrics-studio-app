@@ -1,31 +1,38 @@
 const ACTION_UPDATE_STATE = 'PERSISTENT_DATA/ACTION_UPDATE_STATE';
+const WORK_HEIGHT = {
+    P3D: 'WORK_HEIGHT_P3D',
+    LASER: 'WORK_HEIGHT_LASER',
+    PEN: 'WORK_HEIGHT_PEN'
+}
 
 const INITIAL_STATE = {
-    z_p3d: localStorage.getItem('z_p3d'),
-    z_write_and_draw: localStorage.getItem('z_write_and_draw'),
-    z_laser: localStorage.getItem('z_laser')
+    workHeightP3d: localStorage.getItem(WORK_HEIGHT.P3D),
+    workHeightPen: localStorage.getItem(WORK_HEIGHT.PEN),
+    workHeightLaser: localStorage.getItem(WORK_HEIGHT.LASER)
 };
 
 export const actions = {
     _updateState: (state) => {
+        console.log(state)
         return {
             type: ACTION_UPDATE_STATE,
             state
         };
     },
-    setP3dWorkZ: (value) => (dispatch, getState) => {
-        const key = 'z_p3d';
-        dispatch(actions._updateState('z_p3d', value));
+    setWorkHeightP3d: (value) => (dispatch, getState) => {
+        const key = WORK_HEIGHT.P3D;
+        dispatch(actions._updateState({workHeightP3d: value}));
         localStorage.setItem(key, value);
     },
-    setWriteAndDrawWorkZ: (value) => (dispatch, getState) => {
-        const key = 'z_write_and_draw';
-        dispatch(actions._updateState('z_write_and_draw', value));
+    setWorkHeightPen: (value) => (dispatch, getState) => {
+        const key = WORK_HEIGHT.PEN;
+        dispatch(actions._updateState({workHeightPen: value}));
         localStorage.setItem(key, value);
+        console.log('setWorkHeightPen' + value);
     },
-    setLaserWorkZ: (value) => (dispatch, getState) => {
-        const key = 'z_laser';
-        dispatch(actions._updateState('z_laser', value));
+    setWorkHeightLaser: (value) => (dispatch, getState) => {
+        const key = WORK_HEIGHT.LASER;
+        dispatch(actions._updateState({workHeightLaser: value}));
         localStorage.setItem(key, value);
     }
 

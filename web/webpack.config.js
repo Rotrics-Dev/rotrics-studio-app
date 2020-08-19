@@ -63,7 +63,7 @@ module.exports = {
     devServer: {
         port: 8080,
         compress: true,
-        open:true,
+        open:false,
         hot: true,
         contentBase: path.join(__dirname, "build-web")
     }

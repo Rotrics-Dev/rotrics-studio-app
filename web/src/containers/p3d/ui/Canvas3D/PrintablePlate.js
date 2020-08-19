@@ -130,39 +130,64 @@ class PrintablePlate extends THREE.Object3D {
         }
 
 
-        {//addLatheGeometry
+        {//add work area
 
             const points = getLathePoints();
 
-            var latheGeometry = new THREE.LatheGeometry(points, 50, Math.PI / 2, Math.PI * 2);
-            const latheMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
-            const lathe = new THREE.Mesh(latheGeometry, latheMaterial);
-            this.add(lathe);
+            var geometry = new THREE.LatheGeometry(points, 25, Math.PI / 2, Math.PI);
+            const slice1 = new THREE.Shape();
+            const slice2 = new THREE.Shape();
+            slice1.moveTo(points[0].x, points[0].y);
+            slice2.moveTo(-points[0].x, points[0].y);
+            for (let index = 1; index < points.length; index++) {
+                slice1.lineTo(points[index].x, points[index].y)
+                slice2.lineTo(-points[index].x, points[index].y)
+            }
+            const rightGeometry = new THREE.ShapeGeometry(slice1);
+            const leftGeometry = new THREE.ShapeGeometry(slice2);
+            geometry.merge(leftGeometry)
+            geometry.merge(rightGeometry);
 
-            // const torusGeometry = new THREE.TorusGeometry(10, 3, 16, 100);
-            // // const torusMaterial = new THREE.MeshBasicMaterial({color: 0xFFFF00});
-            // const torusMaterial = new THREE.LineBasicMaterial({
-            //     linewidth: 1,
-            //     color: 0xFFFF00,
-            //     opacity: 0.8,
-            //     transparent: true
-            // })
-            // const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-            // this.add(torus);
 
-            // for (var i = 0; i < 10; i++) {
-            //     points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, (i - 5) * 2));
-            // }
-            // var geometry = new THREE.LatheGeometry(points, 50, Math.PI / 2, Math.PI);
-            // var material = new THREE.MeshBasicMaterial({color: 0xffff00});
-            // var lathe = new THREE.Mesh(geometry, material);
-            // this.add(lathe);
+            {
+                // const material = new THREE.MeshBasicMaterial({
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x998877,
+                    specular: 0xb0b0b0,
+                    shininess: 30,
+                    transparent: true,
+                    opacity: 0.3,
+                    depthTest: false
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.rotateX(-Math.PI / 2);
+                mesh.translateY(127);
+                this.add(mesh);
+            }
 
-        }
-        {//test LocalStorage
-            console.log(localStorage.getItem("喵"));
-            localStorage.setItem("喵", "呀呀呀呀");
-            console.log(localStorage.getItem("喵"));
+            {//点线
+                // const line = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+                //     color: 0xb0b0b0,
+                //     shininess: 30,
+                //     transparent: true,
+                //     opacity: 0.1,
+                //     depthTest: false
+                // }));
+                // line.rotateX(-Math.PI / 2);
+                // this.add(line);
+            }
+            {//网格
+                // const wireframe = new THREE.WireframeGeometry(geometry);
+                // const line = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({
+                //     color: 0xb0b0b0,
+                //     shininess: 30,
+                //     transparent: true,
+                //     opacity: 0.1,
+                //     depthTest: false
+                // }));
+                // line.rotateX(-Math.PI / 2);
+                // this.add(line);
+            }
         }
     }
 

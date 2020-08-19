@@ -1,0 +1,31 @@
+.bkg {
+    padding: 8px;
+}
+
+.axes {
+    border: 1px solid #C0C0C0;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+
+
+.border_up_down {
+    border-top: 1px solid #C0C0C0;
+    border-bottom: 1px solid #C0C0C0;
+}
+
+.border_right {
+    height: 30px;
+    padding-top: 3px;
+    border-right: 1px solid #C0C0C0;
+}
+
+.value {
+    padding-top: 3px;
+    height: 30px;
+    text-align: right;
+}
+
+.text {
+    font-size: 12px;
+}

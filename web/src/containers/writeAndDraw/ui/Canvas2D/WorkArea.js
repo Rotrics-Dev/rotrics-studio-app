@@ -22,10 +22,10 @@ import {getLimit, FRONT_END} from './../../../../utils/workAreaUtils.js'
 class WorkArea {
     group = new THREE.Object3D();
 
-    constructor() {
+    constructor(z) {
         const red = colornames('red');
         const green = colornames('green');
-        let limit = getLimit(-127, FRONT_END.PEN);
+        let limit = getLimit(z, FRONT_END.PEN);
 
         const curve1 = new THREE.EllipseCurve(
             0, 0,// ax, aY
@@ -55,6 +55,7 @@ class WorkArea {
 
         return this.group;
     }
+
 }
 
 export default WorkArea;

@@ -23,6 +23,7 @@ class Index extends React.Component {
         //controls
         this.intersectDetector = null; // detect the intersected model with mouse
         this.panControls = null;
+        this.printablePlate = null;
     }
 
     state = {
@@ -36,7 +37,9 @@ class Index extends React.Component {
         this.setupPanControls();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.group.add(new PrintablePlate(new THREE.Vector2(450, 260)));
+        this.printablePlate = new PrintablePlate(new THREE.Vector2(450, 260), this.props.workHeightPen);
+        this.group.add(this.printablePlate);
+
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -173,6 +176,13 @@ class Index extends React.Component {
     }
 
     render() {
+        const {workHeightPen} = this.props
+        if (this.workHeightPen !== workHeightPen) {
+            if (this.printablePlate)
+                this.printablePlate.setUpWorkArea(workHeightPen)
+            this.workHeightPen = workHeightPen
+        }
+
         return (
             <div
                 ref={this.node}
@@ -182,9 +192,11 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    const {workHeightPen} = state.persistentData
     const {tap} = state.taps;
     const {model} = state.writeAndDraw;
     return {
+        workHeightPen,
         tap,
         model
     };

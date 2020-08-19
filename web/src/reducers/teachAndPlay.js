@@ -59,8 +59,9 @@ const actions = {
         }));
     },
     recordStep: () => (dispatch, getState) => {
-        serialPortActions.addPositionListener(
+        dispatch(serialPortActions.addOneShootGcodeResponseListener('M893',
             (x, y, z) => {
+                console.log('12231231231313')
                 const {currentFrontEnd, laserPower, currentFrontEndState, stepArray} = getState().teachAndPlay;
                 stepArray.push({
                     x,
@@ -71,20 +72,17 @@ const actions = {
                     currentFrontEndState,
                     laserPower
                 });
-
                 dispatch(actions._updateState({
                     stepArray: _.cloneDeep(stepArray)
                 }));
-            }
-        );
-        dispatch(serialPortActions.write("M893\n"))
-
+            }));
     },
     startPlayStep: (startIndex, doRepeat) => (dispatch, getState) => {
         const {currentFrontEnd, stepArray, laserPower, repeatCount} = getState().teachAndPlay;
         const gcode = actions.stepArray2Gcode(
             currentFrontEnd, stepArray, laserPower, startIndex, repeatCount, doRepeat
         );
+        console.log(gcode);
         dispatch(gcodeSendActions.start(gcode, false, false));
     },
     stopPlayStep: () => (dispatch, getState) => {
