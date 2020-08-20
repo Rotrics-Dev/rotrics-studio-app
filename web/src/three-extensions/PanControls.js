@@ -6,6 +6,8 @@ import ThreeUtils from './ThreeUtils';
  * 复杂坐标转换的一个解决思路：全部以世界坐标为参考系
  */
 class PanControls extends THREE.Object3D {
+
+
     constructor(camera, domElement) {
         super();
         this.camera = camera;
@@ -18,37 +20,39 @@ class PanControls extends THREE.Object3D {
         this.panPosEnd = new THREE.Vector3();
         this.panPosDelta = new THREE.Vector3();
 
+        this.initListener();
         this.addListeners();
     }
 
+    initListener() {//avoid 'this' confuse
+        this.listener = {
+            onMouseDown: event => this.onMouseDown(event),
+            onMouseMove: event => this.onMouseMove(event),
+            onMouseUp: event => this.onMouseUp(event),
+            onContextMenu: event => this.onContextMenu(event),
+        }
+    }
+
     addListeners() {
-        this.domElement.addEventListener('mousedown', (event) => {
-            this.onMouseDown(event)
-        });
+        this.domElement.addEventListener('mousedown', this.listener.onMouseDown);
+        this.domElement.addEventListener('mousemove', this.listener.onMouseMove);
+        this.domElement.addEventListener('mouseup', this.listener.onMouseUp);
+        this.domElement.addEventListener('contextmenu', this.listener.onContextMenu);
 
-        this.domElement.addEventListener('mousemove', (event) => {
-            this.onMouseMove(event)
-        });
-
-        this.domElement.addEventListener('mouseup', (event) => {
-            this.onMouseUp(event)
-        });
-
-        //离开domElement时触发
         //TODO: 将来再处理
-        this.domElement.addEventListener('mouseleave', (event) => {
-            // console.log("mouseleave")
-        });
-
-        this.domElement.addEventListener('mouseout', (event) => {
-            // console.log("mouseout")
-        });
+        // this.domElement.addEventListener('mouseleave', (event) => {
+        // console.log("mouseleave")
+        // });
+        // this.domElement.addEventListener('mouseout', (event) => {
+        // console.log("mouseout")
+        // });
     }
 
     removeListeners() {
-        this.domElement.removeEventListener('mousedown', () => {
-            this.onMouseDown()
-        });
+        this.domElement.removeEventListener('mousedown', this.listener.onMouseDown);
+        this.domElement.removeEventListener('mousemove', this.listener.onMouseMove);
+        this.domElement.removeEventListener('mouseup', this.listener.onMouseUp);
+        this.domElement.removeEventListener('contextmenu', this.listener.onContextMenu);
     }
 
     dispose() {
@@ -63,6 +67,7 @@ class PanControls extends THREE.Object3D {
 
     onMouseDown(event) {
         if (!this.object) return;
+        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -72,11 +77,17 @@ class PanControls extends THREE.Object3D {
                 this.panning = true;
                 this.panPosStart.copy(ThreeUtils.getEventWorldPosition(event, this.domElement, this.camera));
             }
+        } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
+            event.stopPropagation();
+
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseDown');
         }
     }
 
     onMouseMove(event) {
         if (!this.object) return;
+        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -94,11 +105,20 @@ class PanControls extends THREE.Object3D {
 
                 this.dispatchEvent({type: 'panning', object: this.object});
             }
+            console.log('event.button===THREE.MOUSE.LEFT onMouseMove');
+
+        } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
+            event.stopPropagation();
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseMove');
         }
     }
 
     onMouseUp(event) {
         if (!this.object) return;
+        console.log(event.button)
+
+        event.preventDefault();
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -108,7 +128,17 @@ class PanControls extends THREE.Object3D {
                 this.panning = false;
                 this.domElement.style.cursor = 'auto';
             }
+        } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
+            event.stopPropagation();
+
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseUp');
         }
+    }
+
+    onContextMenu(event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 }
 

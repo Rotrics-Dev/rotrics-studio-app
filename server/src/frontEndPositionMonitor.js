@@ -51,7 +51,6 @@ class FrontEndPositionMonitor extends EventEmitter {
         this.currentZ = Math.round((this.currentZ) * 10) / 10
 
         const position = {x: this.currentX, y: this.currentY, z: this.currentZ};
-        console.log(position)
         this.emit(FRONT_END_POSITION_MONITOR, position);
 
     }
@@ -108,9 +107,11 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     onWriteG92(line) {//设置原点可以带参数
+        //todo
     }
 
     onWriteG92_1(line) {//将原点设置为机器原点
+        //todo
     }
 
     onWriteM1112() {
@@ -164,5 +165,3 @@ class FrontEndPositionMonitor extends EventEmitter {
 
 const frontEndPositionMonitor = new FrontEndPositionMonitor();
 export default frontEndPositionMonitor;
-
-// console.log(Math.round((0.1+0.2)*10)/10);

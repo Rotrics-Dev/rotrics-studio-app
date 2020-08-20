@@ -17,6 +17,7 @@
     "default_value": 1000,
     "type": "int",
     "unit": "mm/min",
+    "step": 100,
     "minimum_value": 1,
     "maximum_value": 10000
   }
