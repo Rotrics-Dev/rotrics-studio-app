@@ -83,9 +83,9 @@ class Index extends React.Component {
                         <ActionButton onClick={actions.stopTask} text={t("Stop Send")}
                                       style={{width: "calc(50% - 4px)"}}/>
                     </div>
+                    <Material/>
+                    <Setting/>
                 </Space>
-                <Material/>
-                <Setting/>
             </div>
         )
     }
