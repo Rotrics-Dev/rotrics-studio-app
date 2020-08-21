@@ -71,7 +71,7 @@ class General extends React.Component {
             )
         }
         return (
-            <div className={styles.div_content}>
+            <div>
                 <div style={{width: "100%", height: "190px"}}>
                     <div className={styles.div_product_left}>
                         <button className={styles.btn_right_top}/>

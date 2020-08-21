@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './styles.css';
 import {withTranslation} from 'react-i18next';
 import ConfigSelect from '../../components/Config/ConfigSelect/Index.jsx';
 import language from "./lib/language.json";
@@ -21,7 +20,7 @@ class Config extends React.Component {
         });
 
         return (
-            <div className={styles.div_content}>
+            <div>
                 <h2>{t("Language")}</h2>
                 <ConfigSelect
                     style={{width: "200px"}}

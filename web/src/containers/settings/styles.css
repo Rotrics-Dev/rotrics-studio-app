@@ -9,17 +9,20 @@
 }
 
 .menu {
-    width: 150px;
-    height: 100%;
+    position: absolute;
+    width: 120px;
+    top: 0;
+    bottom: 0;
+    left: 0;
 }
 
-.div_content {
+.div_menu_item_container {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 120px;
-    padding: 30px 50px 0 50px;
+    padding: 30px 40px 0 40px;
 }
 
 .div_info {

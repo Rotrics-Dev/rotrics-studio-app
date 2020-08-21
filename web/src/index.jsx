@@ -8,7 +8,6 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
-
 import i18next from 'i18next'
 import language from './containers/settings/lib/language.json'
 import "antd/dist/antd.css";
