@@ -1,4 +1,4 @@
-const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
+const toolPathLines2gcode = (toolPathLines, settings, write_and_draw, workHeight) => {
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
@@ -53,9 +53,10 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
                     break;
                 case 'M':
                     if (value === 3) {
-                        cmds.push('G1 Z0')
+                        cmds.push(`G1 Z${workHeight}`)
                     } else if (value === 5) {
-                        cmds.push(`G0 Z${jog_pen_offset}`)
+                        //TODO
+                        cmds.push(`G0 Z${(workHeight - -jog_pen_offset)}`)
                     } else {
                         cmds.push(key + value);
                     }

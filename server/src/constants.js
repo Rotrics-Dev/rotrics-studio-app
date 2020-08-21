@@ -56,3 +56,6 @@ export const MSG_SERIAL_PORT_CLOSE_TOAST = 'Please connect DexArm first';
 //firmware upgrade
 export const FIRMWARE_UPGRADE_START = 'FIRMWARE_UPGRADE_START';
 export const FIRMWARE_UPGRADE_STEP_CHANGE = 'FIRMWARE_UPGRADE_STEP_CHANGE';
+
+// front end position
+export const FRONT_END_POSITION_MONITOR = 'FRONT_END_POSITION_MONITOR';

@@ -100,6 +100,7 @@ class Index extends React.Component {
                                     min={movement.speed.minimum_value}
                                     max={movement.speed.maximum_value}
                                     defaultValue={movement.speed.default_value}
+                                    step={movement.speed.step}
                                     value={this.state.currentSpeed}
                                     onAfterChange={this.actions.setSpeed}/>
                             </Col>

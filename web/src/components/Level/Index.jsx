@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 import styles from './styles.css';
 import {Radio, Space, Modal, Button,} from 'antd';
-import {actions as serialPortActions} from "../../reducers/serialPort";
+import {actions as serialPortAction, actions as serialPortActions} from "../../reducers/serialPort";
 import {withTranslation} from 'react-i18next';
 import messageI18n from "../../utils/messageI18n";
 
@@ -63,12 +63,13 @@ class Index extends React.Component {
             return;
         }
         const pointIndex = this.state.pointIndex;
-        this.props.addLevelPositionListener((x, y, z) => {
-            const zArray = _.cloneDeep(this.state.zArray);
-            zArray[pointIndex] = z;
-            this.setState({zArray});
-        });
-        this.props.serialPortWrite('M114\n');
+        this.props.addOneShootGcodeResponseListener(
+            'M114',
+            (x, y, z) => {
+                const zArray = _.cloneDeep(this.state.zArray);
+                zArray[pointIndex] = z;
+                this.setState({zArray});
+            });
         messageI18n.success(`Point ${POINT_NAME[pointIndex]} was saved.`);
     }
     onClickStart = () => {
@@ -268,8 +269,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        addLevelPositionListener: (listener) => {
-            serialPortActions.addLevelPositionListener(listener);
+        addOneShootGcodeResponseListener: (gcode, listener) => {
+            dispatch(serialPortAction.addOneShootGcodeResponseListener(gcode, listener))
         },
         serialPortWrite: (gcode) => {
             dispatch(serialPortActions.write(gcode));

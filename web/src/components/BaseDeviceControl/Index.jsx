@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './styles.css';
 import {Radio, Space, Row, Col} from 'antd';
+import PositionMonitor from '../PositionMoniter/index.jsx'
 import Level from '../Level/Index.jsx'
 import {ConfigTitle} from "../Config";
 import {withTranslation} from 'react-i18next';
@@ -15,13 +16,14 @@ class Index extends React.Component {
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
-        const {setStep, setWorkOrigin, goToWorkOrigin} = this.props.actions;
+        const {setStep, setWorkHeight, goToWorkHeight} = this.props.actions;
         const {step} = this.props;
         const {showLevel} = this.props;
         const {t} = this.props;
         const gutter = 8;
         return (
             <div style={{padding: "8px"}}>
+                <PositionMonitor/>
                 <Row gutter={[gutter, gutter]}>
                     <Col span={6}>
                         <input type="button" onClick={leftTop} className={styles.btn_left_top}/>
@@ -66,12 +68,12 @@ class Index extends React.Component {
                 </Row>
                 <Row gutter={[gutter, gutter]}>
                     <Col span={12}>
-                        <input type="button" onClick={goToWorkOrigin} className={styles.btn_action_work}
-                               value={t("Go To Work Origin")}/>
+                        <input type="button" onClick={goToWorkHeight} className={styles.btn_action_work}
+                               value={t("Go To Work Height")}/>
                     </Col>
                     <Col span={12}>
-                        <input type="button" onClick={setWorkOrigin} className={styles.btn_action_work}
-                               value={t("Set Work Origin")}/>
+                        <input type="button" onClick={setWorkHeight} className={styles.btn_action_work}
+                               value={t("Set Work Height")}/>
                     </Col>
                 </Row>
                 <Row gutter={[gutter, gutter]}>

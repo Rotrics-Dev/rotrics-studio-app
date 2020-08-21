@@ -6,10 +6,12 @@ import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
 import WorkArea from './WorkArea'
+import {FRONT_END, getLimit} from "../../../../utils/workAreaUtils";
+
 const METRIC_GRID_SPACING = 10; // 10 mm
 
 class PrintablePlate extends THREE.Object3D {
-    constructor(size) {
+    constructor(size, z) {
         super();
         this.isPrintPlane = true;
         this.type = 'PrintPlane';
@@ -17,6 +19,7 @@ class PrintablePlate extends THREE.Object3D {
         // this.coordinateVisible = true;
         this.coordinateSystem = null;
         this.size = size;
+        this.z = z;
         this._setup();
     }
 
@@ -62,7 +65,7 @@ class PrintablePlate extends THREE.Object3D {
             { // Axis Labels
                 const axisXLabel = new TextSprite({
                     x: axisXLength + 10,
-                    y: 0,
+                    y: 200,
                     z: 0,
                     size: 10,
                     text: 'X',
@@ -70,7 +73,7 @@ class PrintablePlate extends THREE.Object3D {
                 });
                 const axisYLabel = new TextSprite({
                     x: 0,
-                    y: axisYLength + 10,
+                    y: axisYLength + 10 + 200,
                     z: 0,
                     size: 10,
                     text: 'Y',
@@ -85,7 +88,7 @@ class PrintablePlate extends THREE.Object3D {
                     if (x !== 0) {
                         const textLabel = new TextSprite({
                             x: x,
-                            y: -4,
+                            y: -4 + 200,
                             z: 0,
                             size: textSize,
                             text: x,
@@ -101,10 +104,10 @@ class PrintablePlate extends THREE.Object3D {
                     if (y !== 0) {
                         const textLabel = new TextSprite({
                             x: -4,
-                            y: y,
+                            y: y + 200,
                             z: 0,
                             size: textSize,
-                            text: y,
+                            text: y + 200,
                             textAlign: 'center',
                             textBaseline: 'bottom',
                             color: colornames('green'),
@@ -114,13 +117,9 @@ class PrintablePlate extends THREE.Object3D {
                     }
                 }
             }
-            {//working area
-                // const workArea = new WorkArea();
-                // workArea.name = 'WorkArea';
-                // group.add(workArea);
-            }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
+            this.setUpWorkArea(this.z)
             this.add(group);
         }
 
@@ -138,6 +137,35 @@ class PrintablePlate extends THREE.Object3D {
     changeCoordinateVisibility(value) {
         // this.coordinateVisible = value;
         this.coordinateSystem && (this.coordinateSystem.visible = value);
+    }
+
+    setUpWorkArea(z) {
+        let workArea = this.coordinateSystem.getObjectByName('workArea')
+        if (workArea) {
+            this.coordinateSystem.remove(workArea);
+            workArea.geometry.dispose();
+            workArea.material.dispose();
+            console.log('--------dispose work area)--------')
+        }
+        const green = colornames('green');
+        let limit = getLimit(z, FRONT_END.PEN);
+        if (!limit) {
+            return;
+        }
+        const path = new THREE.Path();
+        path.moveTo(-limit.outterRadius, 0)
+            .arc(limit.outterRadius, 0, limit.outterRadius, -Math.PI, 0, true)
+            .lineTo(limit.innerRadius, 0)
+            .arc(-limit.innerRadius, 0, limit.innerRadius, 0, -Math.PI, false)
+            .closePath();
+        workArea = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(path.getPoints(100)),
+            new THREE.LineBasicMaterial({color: green})
+        )
+        workArea.name = 'workArea';
+        this.coordinateSystem.add(workArea);
+        console.log('--------setUpWorkArea(z)--------')
+        console.log(workArea.type)
     }
 }
 

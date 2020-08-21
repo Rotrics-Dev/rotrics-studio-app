@@ -259,9 +259,10 @@ const actions = {
     //g-code
     generateGcode: (write_and_draw) => (dispatch, getState) => {
         const gcodeArr = [];
+        const {workHeightPen} = getState().persistentData
         for (let i = 0; i < rendererParent.children.length; i++) {
             const model = rendererParent.children[i];
-            gcodeArr.push(model.generateGcode(write_and_draw));
+            gcodeArr.push(model.generateGcode(write_and_draw,workHeightPen));
         }
         const gcode = gcodeArr.join("\n");
         dispatch(actions._updateState({

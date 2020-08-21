@@ -5,6 +5,7 @@ import GridLine from './GridLine';
 import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
+import {getLathePoints} from './../../../../utils/workAreaUtils.js'
 
 const METRIC_GRID_SPACING = 10; // 10 mm
 
@@ -126,6 +127,67 @@ class PrintablePlate extends THREE.Object3D {
             this.targetPoint.name = 'TargetPoint';
             this.targetPoint.visible = true;
             this.add(this.targetPoint);
+        }
+
+
+        {//add work area
+
+            const points = getLathePoints();
+
+            var geometry = new THREE.LatheGeometry(points, 25, Math.PI / 2, Math.PI);
+            const slice1 = new THREE.Shape();
+            const slice2 = new THREE.Shape();
+            slice1.moveTo(points[0].x, points[0].y);
+            slice2.moveTo(-points[0].x, points[0].y);
+            for (let index = 1; index < points.length; index++) {
+                slice1.lineTo(points[index].x, points[index].y)
+                slice2.lineTo(-points[index].x, points[index].y)
+            }
+            const rightGeometry = new THREE.ShapeGeometry(slice1);
+            const leftGeometry = new THREE.ShapeGeometry(slice2);
+            geometry.merge(leftGeometry)
+            geometry.merge(rightGeometry);
+
+
+            {
+                // const material = new THREE.MeshBasicMaterial({
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x998877,
+                    specular: 0xb0b0b0,
+                    shininess: 30,
+                    transparent: true,
+                    opacity: 0.3,
+                    depthTest: false
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.rotateX(-Math.PI / 2);
+                mesh.translateY(127);
+                this.add(mesh);
+            }
+
+            {//点线
+                // const line = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+                //     color: 0xb0b0b0,
+                //     shininess: 30,
+                //     transparent: true,
+                //     opacity: 0.1,
+                //     depthTest: false
+                // }));
+                // line.rotateX(-Math.PI / 2);
+                // this.add(line);
+            }
+            {//网格
+                // const wireframe = new THREE.WireframeGeometry(geometry);
+                // const line = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({
+                //     color: 0xb0b0b0,
+                //     shininess: 30,
+                //     transparent: true,
+                //     opacity: 0.1,
+                //     depthTest: false
+                // }));
+                // line.rotateX(-Math.PI / 2);
+                // this.add(line);
+            }
         }
     }
 

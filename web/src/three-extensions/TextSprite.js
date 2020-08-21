@@ -36,6 +36,8 @@ class TextSprite {
         let texture = new THREE.Texture(canvas);
         texture.needsUpdate = true;
         texture.minFilter = THREE.LinearFilter;
+        // texture.magFilter = THREE.NearestFilter; // 提高清晰度，不加这两句画布会变模糊
+        // texture.minFilter = THREE.NearestFilter;
 
         let material = new THREE.SpriteMaterial({
             map: texture,

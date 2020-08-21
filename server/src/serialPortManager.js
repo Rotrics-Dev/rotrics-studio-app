@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
+import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import {
     SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
@@ -72,23 +73,27 @@ class SerialPortManager extends EventEmitter {
             // console.log("--------------------------------- ");
             // console.log("received line: " + data.trim());
             this.emit(SERIAL_PORT_DATA, {received: data.trim()});
+            frontEndPositionMonitor.positionFilteringRead(data.trim());
         });
 
         this.serialPort.on("open", () => {
             console.log("serial port -> open: " + this.serialPort.path);
             this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
+            frontEndPositionMonitor.onOpen();
         });
 
         this.serialPort.on("close", () => {
             console.log("serial port -> close: " + this.serialPort.path);
             this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
             this.serialPort = null;
+            frontEndPositionMonitor.onClose();
         });
 
         this.serialPort.on("error", () => {
             console.log("serial port -> error: " + this.serialPort.path);
             this.emit(SERIAL_PORT_ERROR);
             this.serialPort = null;
+            frontEndPositionMonitor.onError();
         });
 
         this.serialPort.open((error) => {
@@ -166,7 +171,8 @@ class SerialPortManager extends EventEmitter {
                 } else {
                     // console.log("write ok: " + data);
                 }
-            })
+            });
+            frontEndPositionMonitor.positionFilteringWrite(data)
         } else {
             console.warn("Port is closed");
         }

@@ -10,6 +10,7 @@ import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_WRITE_AND_DRAW} from "../../../constants.js"
+import inWorkArea2D from "../../../utils/inWorkArea2D";
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -78,6 +79,7 @@ class Model2D extends THREE.Group {
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
+        this.position.y = this.settings.transformation.children.y.default_value;//获取默认threeObj的位置
     }
 
     //url: 支持svg，raster
@@ -155,7 +157,6 @@ class Model2D extends THREE.Group {
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
     updateTransformation(key, value, preview) {
-        console.log(key + " -> " + value)
         switch (key) {
             case "width": {
                 const mWidth = value;
@@ -199,6 +200,16 @@ class Model2D extends THREE.Group {
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+
+        console.log("2D越界检测:" +
+            inWorkArea2D(
+                184.9, 414,
+                this.position.x, this.position.y,
+                this.settings.transformation.children.width.default_value,
+                this.settings.transformation.children.height.default_value,
+                this.settings.transformation.children.rotation.default_value
+            ));
+
 
         this._display("edge");
 
@@ -259,8 +270,8 @@ class Model2D extends THREE.Group {
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode(write_and_draw) {
-        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw);
+    generateGcode(write_and_draw,workHeight) {
+        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw,workHeight);
     }
 
     clone() {

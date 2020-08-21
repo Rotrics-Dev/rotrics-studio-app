@@ -11,6 +11,7 @@ import {getImageSize, getUniqueFilename} from './utils/index.js';
 import serialPortManager from './serialPortManager.js';
 import generateToolPathLines from './toolPath/generateToolPathLines.js';
 import gcodeSender from './gcode/gcodeSender.js';
+import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import p3dStartSlice from './p3dStartSlice.js';
 import {
     SERIAL_PORT_PATH_UPDATE,
@@ -39,6 +40,7 @@ import {
     P3D_SLICE_STATUS,
     FIRMWARE_UPGRADE_START,
     FIRMWARE_UPGRADE_STEP_CHANGE,
+    FRONT_END_POSITION_MONITOR,
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
@@ -157,6 +159,7 @@ const setupSocket = () => {
                 socket.removeAllListeners();
                 serialPortManager.removeAllListeners();
                 gcodeSender.removeAllListeners();
+                frontEndPositionMonitor.removeAllListeners();
             });
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
@@ -164,7 +167,9 @@ const setupSocket = () => {
             serialPortManager.on(SERIAL_PORT_PATH_UPDATE, (paths) => {
                 socket.emit(SERIAL_PORT_PATH_UPDATE, paths);
             });
-
+            frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
+                socket.emit(FRONT_END_POSITION_MONITOR, position);
+            })
             socket.on(SERIAL_PORT_GET_OPENED, () => {
                 const path = serialPortManager.getOpened();
                 socket.emit(SERIAL_PORT_GET_OPENED, path);

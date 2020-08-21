@@ -18,37 +18,59 @@ const INITIAL_STATE = {
     paths: [],
     path: null //当前已连接的serial port的path; path为空，则表示serial port close；否则open
 };
-let onPositionListener = null;//用于M893位置查询的回调
-let onLevelPositionListener = null;
-const processM894 = (data) => {
-    if (!onPositionListener) return;
+
+let gcodeResponseListenType = null;
+let gcodeResponseListener = null;
+
+const processGcodeResponseListen = (data) => {
+    if (!gcodeResponseListenType) return;
     if (!data) return;
     if (!data.received) return;
-    if (!data.received.startsWith("M894")) return;
-    console.log(data.received);
-    const split = data.received.trim().split(' ');
-    onPositionListener(
+
+    let needClearListener;
+    switch (gcodeResponseListenType) {
+        case 'M893':
+            needClearListener = processM894(data.received);
+            break;
+        case 'M114':
+            needClearListener = processM114(data.received);
+            break;
+        default:
+            console.log('add unsupported gcode listener')
+            needClearListener = true;
+            break;
+    }
+    if (needClearListener) {
+        gcodeResponseListenType = null;
+        gcodeResponseListener = null;
+    }
+}
+
+const processM894 = (received) => {
+    if (!received.startsWith("M894")) return false;
+    console.log(received);
+
+    const split = received.trim().split(' ');
+    gcodeResponseListener && gcodeResponseListener(
         parseInt(split[1].slice(1, split[1].length)),//X
         parseInt(split[2].slice(1, split[2].length)),//Y
         parseInt(split[3].slice(1, split[3].length)),//Z
     );
-    onPositionListener = null;
+    return true;
 }
-const processM114 = (data) => {
-    if (!onLevelPositionListener) return;
-    if (!data) return;
-    if (!data.received) return;
-    if (!data.received.startsWith('X:')) return;
-    const dataArray = data.received.split(' ');
-    if (!dataArray[1].startsWith('Y:')) return;
-    if (!dataArray[2].startsWith('Z:')) return;
+const processM114 = (received) => {
+    if (!received.startsWith('X:')) return false;
+    const split = received.trim().split(' ');
+    if (!split[1].startsWith('Y:')) return false;
+    if (!split[2].startsWith('Z:')) return false;
+    console.log(received);
 
-    let x = dataArray[0].split(':')[1];
-    let y = dataArray[1].split(':')[1];
-    let z = dataArray[2].split(':')[1];
-
-    onLevelPositionListener(x, y, z);
-    onLevelPositionListener = null;
+    gcodeResponseListener && gcodeResponseListener(
+        split[0].split(':')[1],
+        split[1].split(':')[1],
+        split[2].split(':')[1]
+    );
+    return true;
 }
 
 export const actions = {
@@ -78,9 +100,7 @@ export const actions = {
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            console.log("received line: " + data.received);
-            processM894(data);
-            processM114(data);
+            processGcodeResponseListen(data);
             let {received} = data;
             //存在单词拼写错误，fix it
             if (received.indexOf("beyound limit..") !== -1) {
@@ -121,11 +141,16 @@ export const actions = {
         }
         return {type: null};
     },
-    addPositionListener: (onPosition) => {
-        onPositionListener = onPosition;
-    },
-    addLevelPositionListener: (onLevelPosition) => {
-        onLevelPositionListener = onLevelPosition;
+
+    /**
+     * 添加查询回调
+     * @param gcode M114 M893，等用于查询的Gcode
+     * @param listener
+     */
+    addOneShootGcodeResponseListener: (gcode, listener) => (dispatch, getState) => {
+        gcodeResponseListenType = gcode;
+        gcodeResponseListener = listener;
+        dispatch(actions.write(gcode + '\n'));
     }
 };
 
