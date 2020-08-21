@@ -2,7 +2,7 @@ import React from 'react';
 import {Radio, Checkbox, Row, Col, Button, Collapse} from 'antd';
 import fdmPrinter from "./fdmprinter.def.json";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Tooltip from "../../../../components/Tooltip/Index.jsx";
+import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from "../../../../utils";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigSelect} from '../../../../components/Config';

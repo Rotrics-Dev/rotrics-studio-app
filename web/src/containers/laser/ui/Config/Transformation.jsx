@@ -8,7 +8,7 @@ import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../../components/Tooltip/Index.jsx';
+import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 
 const tooltipId = getUuid();

@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import ReactTooltip from "react-tooltip";
 import styles from './styles.css';
+import {connect} from 'react-redux';
 
 //https://stackoverflow.com/questions/57803271/displaying-text-on-multiple-lines-in-react-tooltip
 class Index extends PureComponent {
@@ -16,6 +17,7 @@ class Index extends PureComponent {
 
     render() {
         const {...rest} = this.props;
+        const {isTooltipDisplayed} = this.props;
         return (
             <ReactTooltip
                 className={styles.style_default}
@@ -28,9 +30,20 @@ class Index extends PureComponent {
                 // getContent={this.getContent}
                 delayShow={200}
                 html={true}
+                disable={!isTooltipDisplayed}
                 {...rest}/>
         );
     }
 }
 
-export default Index;
+
+const mapStateToProps = (state) => {
+    const {isTooltipDisplayed} = state.persistentData;
+    return {
+        isTooltipDisplayed
+    };
+};
+
+export default connect(mapStateToProps)((Index));
+
+

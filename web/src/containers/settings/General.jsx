@@ -77,12 +77,12 @@ class General extends React.Component {
                         <button className={styles.btn_right_top}/>
                     </div>
                     <div className={styles.div_product_right}>
-                        <h2>{t('The Modular All-in-1 Desktop Robot Arm For Everyone')}</h2>
+                        <h3>{t('The Modular All-in-1 Desktop Robot Arm For Everyone')}</h3>
                         <h4>{t('The most versatile robot arm with interchangeable modules, easily do laser cutting and 3D printing.')}</h4>
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "20px"}}>
-                    <h2>{t('Device Info')}</h2>
+                    <h3>{t('Device Info')}</h3>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>
                             <Col span={spanCol1}>{t('Product Name')}</Col>
@@ -107,7 +107,7 @@ class General extends React.Component {
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "30px", marginBottom: "30px"}}>
-                    <h2>{t("Rotrics Studio Info")}</h2>
+                    <h3>{t("Rotrics Studio Info")}</h3>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>
                             <Col span={spanCol1}>{t("Version")}</Col>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from '../../components/Tooltip/Index.jsx';
+import Tooltip from '../Tooltip/Index.jsx';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import ReactGA from 'react-ga';

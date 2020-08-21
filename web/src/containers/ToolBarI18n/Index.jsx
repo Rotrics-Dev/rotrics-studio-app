@@ -1,5 +1,5 @@
 import React from 'react';
-import ToolBar from '../../components/ToolBar/Index.jsx'
+import ToolBar from '../ToolBar/Index.jsx';
 import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {

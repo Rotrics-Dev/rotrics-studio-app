@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {Select, Row, Col, Button} from 'antd';
 import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Tooltip from '../../../../components/Tooltip/Index.jsx';
+import Tooltip from '../../../Tooltip/Index.jsx';
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
 import {connect} from 'react-redux';

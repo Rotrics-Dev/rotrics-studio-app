@@ -11,7 +11,7 @@ class Index extends React.Component {
 
     render() {
         return (
-            <div style={{backgroundColor: "#ee000000", width: "400px"}} tabBarStyle={{width: "120px", backgroundColor: "ff0000"}}>
+            <div style={{backgroundColor: "#ee000000", width: "400px"}} >
                 <Tabs defaultActiveKey="1" centered={true}>
                     <TabPane tab="G-code" key="1">
                         Content of Tab Pane 1
