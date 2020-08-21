@@ -41,6 +41,8 @@ class IntersectDetector extends THREE.EventDispatcher {
             event.preventDefault();
             this.raycaster.setFromCamera(this.getMousePosition(event), this.camera);
             const intersects = this.raycaster.intersectObjects(this.objects, this.recursiveDetect);
+            console.log(this.objects.length)
+            console.log(intersects.length)
             if (intersects.length > 0) {
                 const detectedObject = intersects[0].object;
                 this.dispatchEvent({type: 'detected', object: detectedObject});

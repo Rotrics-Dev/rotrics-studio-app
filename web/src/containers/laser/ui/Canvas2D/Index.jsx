@@ -71,7 +71,7 @@ class Index extends React.Component {
 
     setupPanControls() {
         this.panControls = new PanControls(this.camera, this.renderer.domElement);
-        this.group.add(this.panControls);
+        // this.group.add(this.panControls);
 
         this.panControls.addEventListener(
             'panning',
