@@ -8,9 +8,12 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
-import styles from './styles.css';
+
 import i18next from 'i18next'
 import language from './containers/settings/lib/language.json'
+import "antd/dist/antd.css";
+import './global_styles.css';
+
 const i18nOptions = {
     // lng: "zh-CN",
     backend: {

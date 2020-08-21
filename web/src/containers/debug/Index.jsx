@@ -1,12 +1,8 @@
 import React from 'react';
-import { Select } from 'antd';
-import styles from './TestPage.less';
-const Option = Select.Option;
+import styles from './styles.less';
+import { Tabs } from 'antd';
 
-const children = [];
-for (let i = 10; i < 36; i++) {
-    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-}
+const { TabPane } = Tabs;
 
 class Index extends React.Component {
     constructor(props) {
@@ -15,14 +11,19 @@ class Index extends React.Component {
 
     render() {
         return (
-            <Select
-                mode="multiple"
-                style={{ width: 300 }}
-                placeholder="Please select"
-                className={styles.customSelect}
-            >
-                {children}
-            </Select>
+            <div style={{backgroundColor: "#ee000000", width: "400px"}} tabBarStyle={{width: "120px", backgroundColor: "ff0000"}}>
+                <Tabs defaultActiveKey="1" centered={true}>
+                    <TabPane tab="G-code" key="1">
+                        Content of Tab Pane 1
+                    </TabPane>
+                    <TabPane tab="Control" key="2">
+                        Content of Tab Pane 2
+                    </TabPane>
+                    <TabPane tab="Tab 3dasdsa" key="3">
+                        Content of Tab Pane 3
+                    </TabPane>
+                </Tabs>
+            </div>
         )
     }
 }

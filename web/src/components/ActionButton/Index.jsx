@@ -8,7 +8,7 @@ class Index extends PureComponent {
         return (
             <Button
                 block
-                size="small"
+                size="middle"
                 className={styles.style_default}
                 {...rest}
                 onClick={onClick}

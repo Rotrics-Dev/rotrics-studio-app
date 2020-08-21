@@ -1,0 +1,26 @@
+.div_canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 410px;
+}
+
+.div_tool_bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 375px;
+    width: 35px;
+}
+
+.div_right_panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 375px;
+    background-color: #F2F2F2;
+    overflow-y: scroll;
+}
+

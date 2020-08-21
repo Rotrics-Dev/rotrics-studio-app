@@ -4,15 +4,10 @@ import FileSaver from 'file-saver';
 import styles from './styles.css';
 import {Button, Space, List} from 'antd';
 import messageI18n from "../../../../utils/messageI18n";
-import "antd/dist/antd.css";
-
 import Transformation from './Transformation.jsx';
-
 import ConfigSvg from './ConfigSvg.jsx';
 import ConfigSvgText from './ConfigSvgText.jsx';
-
 import WorkingParameters from './WorkingParameters.jsx';
-
 import Line from '../../../../components/Line/Index.jsx'
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";

@@ -77,7 +77,7 @@ class Index extends React.Component {
                        style={{width: "100%", padding: "8px"}}>
                     <ActionButton onClick={actions.generateGcode} text={t("Generate G-code")}/>
                     <ActionButton onClick={actions.exportGcode} text={t("Export G-code")}/>
-                    <div style={{width: "100%"}}>
+                    <div>
                         <ActionButton onClick={actions.startTask} text={t("Start Send")}
                                       style={{width: "calc(50% - 4px)", marginRight: "8px"}}/>
                         <ActionButton onClick={actions.stopTask} text={t("Stop Send")}
