@@ -2,7 +2,7 @@
   "name": "PLA",
   "filename": "material_pla.def.json",
   "isOfficial": true,
-  "isSelected": true,
+  "isDefaultSelected": true,
   "material": {
     "label": "Material",
     "icon": "category_material",
@@ -14,7 +14,7 @@
         "description": "The default temperature used for printing. This should be the \"base\" temperature of a material. All other print temperatures should use offsets based on this value",
         "unit": "°C",
         "type": "float",
-        "default_value": 211,
+        "default_value": 210,
         "minimum_value_warning": "0",
         "maximum_value_warning": "285",
         "maximum_value": "365",

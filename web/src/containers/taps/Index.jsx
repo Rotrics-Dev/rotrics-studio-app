@@ -23,8 +23,8 @@ import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 import {actions as tapsActions} from "../../reducers/taps"
 
-import {actions as p3dSettingActions} from "../../reducers/p3dSetting";
-import {actions as p3dMaterialActions} from "../../reducers/p3dMaterial";
+import {actions as p3dConfigOthersActions} from "../../reducers/p3dConfigOthers";
+import {actions as p3dConfigMaterialActions} from "../../reducers/p3dConfigMaterial";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
 import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
@@ -256,8 +256,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(codeActions.init());
             dispatch(settingsGeneralActions.init());
             //3dp
-            dispatch(p3dMaterialActions.init());
-            dispatch(p3dSettingActions.init());
+            dispatch(p3dConfigMaterialActions.init());
+            dispatch(p3dConfigOthersActions.init());
         }
     };
 };

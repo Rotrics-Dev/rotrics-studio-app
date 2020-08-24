@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
-import {P3D_SETTING_UPDATE, P3D_SETTING_FETCH} from "../constants";
+import {P3D_CONFIG_OTHERS_UPDATE, P3D_CONFIG_OTHERS_FETCH} from "../constants";
 
-const ACTION_UPDATE_STATE = 'p3dSettings/ACTION_UPDATE_STATE';
+const ACTION_UPDATE_STATE = 'p3dConfigOthers/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    settings: [], //all settings
-    setting: null, //the selected setting
+    configs: [],
+    selected: null,
 };
 
 const actions = {
@@ -19,23 +19,23 @@ const actions = {
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
-                settings: [],
-                setting: null
+                configs: [],
+                selected: null
             }));
         });
-        socketClientManager.addServerListener(P3D_SETTING_FETCH, (settings) => {
-            let {setting} = getState().p3dSetting;
-            if (!setting) {
-                for (let i = 0; i < settings.length; i++) {
-                    const item = settings[i];
-                    if (item.isSelected) {
-                        setting = item;
+        socketClientManager.addServerListener(P3D_CONFIG_OTHERS_FETCH, (configs) => {
+            let {selected} = getState().p3dConfigOthers;
+            if (!selected) {
+                for (let i = 0; i < configs.length; i++) {
+                    const item = configs[i];
+                    if (item.isDefaultSelected) {
+                        selected = item;
                         break;
                     }
                 }
             }
             //Official放在前面
-            settings.sort((a, b) => {
+            configs.sort((a, b) => {
                 if (a.isOfficial && !b.isOfficial) {
                     return -1;
                 }
@@ -46,13 +46,13 @@ const actions = {
                 return 0;
             });
             dispatch(actions._updateState({
-                settings,
-                setting
+                configs,
+                selected
             }));
         });
     },
     fetch: () => {
-        socketClientManager.emitToServer(P3D_SETTING_FETCH);
+        socketClientManager.emitToServer(P3D_CONFIG_OTHERS_FETCH);
         return {type: null};
     },
     /**
@@ -61,15 +61,15 @@ const actions = {
      * @param value
      */
     update: (keyChain, value) => (dispatch, getState) => {
-        const {settings, setting} = getState().p3dSetting;
-        if (!setting || !settings || settings.length === 0) {
-            console.error("settings or setting is null");
+        const {configs, selected} = getState().p3dConfigOthers;
+        if (!configs || configs.length === 0 || !selected) {
+            console.error("config is null");
             return {type: null};
         }
-        _.set(setting, keyChain, value);
+        _.set(selected, keyChain, value);
         //更新server
-        const {filename} = setting;
-        socketClientManager.emitToServer(P3D_SETTING_UPDATE, {filename, keyChain, value});
+        const {filename} = selected;
+        socketClientManager.emitToServer(P3D_CONFIG_OTHERS_UPDATE, {filename, keyChain, value});
         return {type: null};
     },
     rename: (newName) => {
@@ -82,19 +82,19 @@ const actions = {
         return {type: null};
     },
     select: (name) => (dispatch, getState) => {
-        const {settings, setting} = getState().p3dSetting;
-        let settingSelected = null;
-        for (let i = 0; i < settings.length; i++) {
-            const item = settings[i];
+        const {configs,  selected} = getState().p3dConfigOthers;
+        let selectedNew = null;
+        for (let i = 0; i < configs.length; i++) {
+            const item = configs[i];
             if (item.name === name) {
-                settingSelected = item;
+                selectedNew = item;
                 break;
             }
         }
-        if (setting === settingSelected) {
+        if (selected === selectedNew) {
             return {type: null};
         } else {
-            dispatch(actions._updateState({setting: settingSelected}));
+            dispatch(actions._updateState({selected: selectedNew}));
         }
     }
 };

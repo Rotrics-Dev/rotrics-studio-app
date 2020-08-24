@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
-import {P3D_MATERIAL_FETCH, P3D_MATERIAL_UPDATE} from "../constants";
+import {P3D_CONFIG_MATERIAL_FETCH, P3D_CONFIG_MATERIAL_UPDATE} from "../constants";
 
-const ACTION_UPDATE_STATE = 'p3dMaterial/ACTION_UPDATE_STATE';
+const ACTION_UPDATE_STATE = 'p3dConfigMaterial/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    materials: [], //all materials
-    material: null, //the selected material
+    materials: [],
+    selected: null,
 };
 
 const actions = {
@@ -20,16 +20,16 @@ const actions = {
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
                 materials: [],
-                material: null
+                selected: null
             }));
         });
-        socketClientManager.addServerListener(P3D_MATERIAL_FETCH, (materials) => {
-            let {material} = getState().p3dMaterial;
-            if (!material) {
+        socketClientManager.addServerListener(P3D_CONFIG_MATERIAL_FETCH, (materials) => {
+            let {selected} = getState().p3dConfigMaterial;
+            if (!selected) {
                 for (let i = 0; i < materials.length; i++) {
                     const item = materials[i];
-                    if (item.isSelected) {
-                        material = item;
+                    if (item.isDefaultSelected) {
+                        selected = item;
                         break;
                     }
                 }
@@ -47,12 +47,12 @@ const actions = {
             });
             dispatch(actions._updateState({
                 materials,
-                material
+                selected
             }));
         });
     },
     fetch: () => {
-        socketClientManager.emitToServer(P3D_MATERIAL_FETCH);
+        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_FETCH);
         return {type: null};
     },
     /**
@@ -61,15 +61,15 @@ const actions = {
      * @param value
      */
     update: (keyChain, value) => (dispatch, getState) => {
-        const {materials, material} = getState().p3dMaterial;
-        if (!material || !materials || materials.length === 0) {
-            console.error("material or materials is null");
+        const {materials, selected} = getState().p3dConfigMaterial;
+        if (!materials || materials.length === 0 || !selected) {
+            console.error("config materials is null");
             return {type: null};
         }
-        _.set(material, keyChain, value);
+        _.set(selected, keyChain, value);
         //更新server
-        const {filename} = material;
-        socketClientManager.emitToServer(P3D_MATERIAL_UPDATE, {filename, keyChain, value});
+        const {filename} = selected;
+        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_UPDATE, {filename, keyChain, value});
         return {type: null};
     },
     rename: (newName) => {
@@ -82,20 +82,19 @@ const actions = {
         return {type: null};
     },
     select: (name) => (dispatch, getState) => {
-        console.log("selected: " + name)
-        const {materials, material} = getState().p3dMaterial;
-        let materialSelected = null;
+        const {materials, selected} = getState().p3dConfigMaterial;
+        let selectedNew = null;
         for (let i = 0; i < materials.length; i++) {
             const item = materials[i];
             if (item.name === name) {
-                materialSelected = item;
+                selectedNew = item;
                 break;
             }
         }
-        if (material === materialSelected) {
+        if (selected === selectedNew) {
             return {type: null};
         } else {
-            dispatch(actions._updateState({material: materialSelected}));
+            dispatch(actions._updateState({selected: selectedNew}));
         }
     }
 };

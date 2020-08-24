@@ -1,11 +1,11 @@
 import React from 'react';
-import {Radio} from 'antd';
+import {Radio, Collapse} from 'antd';
 import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from "../../../../utils";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
-import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
+import {actions as p3dConfigOthersActions} from "../../../../reducers/p3dConfigOthers";
 
 const tooltipId = getUuid();
 
@@ -36,21 +36,19 @@ const parameter_all = [];
 
 const displayedCategories = category_all;
 
-class Setting extends React.Component {
+class ConfigOthers extends React.Component {
     actions = {
         updateParameter: (keyChain, value) => {
-            console.log(keyChain, value)
             this.props.update(`settings.${keyChain}.default_value`, value);
         },
         onChange: (e) => {
-            console.log("onChange: " + e.target.value)
             this.props.select(e.target.value)
         }
     };
 
     render() {
-        const {settings, setting} = this.props;
-        if (!settings || settings.length === 0 || !setting) {
+        const {configs, selected} = this.props;
+        if (!configs || configs.length === 0 || !selected) {
             return null;
         }
 
@@ -59,37 +57,37 @@ class Setting extends React.Component {
             return this.props.t("cura#" + key);
         };
 
-        const nameSelected = setting.name;
+        const {name, isOfficial, settings} = selected;
         const elements4Radio =
             <Radio.Group
-                style={{margin: "3px 0 0 3px"}}
+                style={{margin: "3px 0 0 3px", backgroundColor: "#eeeeee"}}
                 key="2"
                 size="small"
                 defaultValue={nameSelected}
                 onChange={actions.onChange}
             >
-                {settings.map(item => {
-                    const {name} = item;
+                {configs.map(item => {
+                    const {name: itemName} = item;
                     return (
                         <Radio.Button
-                            key={name}
+                            key={itemName}
                             size="small"
-                            checked={nameSelected === name}
-                            value={name}>
-                            {name}
+                            checked={itemName === name}
+                            value={itemName}>
+                            {itemName}
                         </Radio.Button>
                     );
                 })}
             </Radio.Group>;
 
         let panels = [];
-        for (let key in setting.settings) {
+        for (let key in settings) {
             if (displayedCategories.includes(key)) {
-                const category = setting.settings[key];
+                const category = settings[key];
                 const header = tCura(category.label);
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
-                const allowUpdateParameter = !setting.isOfficial;
+                const allowUpdateParameter = !isOfficial;
                 const elements = renderCategoryChildren(category.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
                 panels = panels.concat(wrapCollapsePanel(header, icon, elements));
             }
@@ -104,7 +102,17 @@ class Setting extends React.Component {
                     place="left"
                 />
                 <div>
-                    {collapse}
+                    <Collapse expandIconPosition="right">
+                        <Collapse.Panel
+                            key="1"
+                            header="Printing Settings"
+                            style={{
+                                fontSize: "13px",
+                                background: "#eeeeee"
+                            }}>
+                            {collapse}
+                        </Collapse.Panel>
+                    </Collapse>
                 </div>
             </div>
         )
@@ -112,23 +120,23 @@ class Setting extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {settings, setting} = state.p3dSetting;
+    const {configs, selected} = state.p3dConfigOthers;
     return {
-        settings,
-        setting
+        configs,
+        selected
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        update: (keyChain, value) => dispatch(p3dSettingActions.update(keyChain, value)),
-        rename: (newName) => dispatch(p3dSettingActions.rename(newName)),
-        delete: (name) => dispatch(p3dSettingActions.delete(name)),
-        clone: (name) => dispatch(p3dSettingActions.clone(name)),
-        select: (name) => dispatch(p3dSettingActions.select(name)),
+        update: (keyChain, value) => dispatch(p3dConfigOthersActions.update(keyChain, value)),
+        rename: (newName) => dispatch(p3dConfigOthersActions.rename(newName)),
+        delete: (name) => dispatch(p3dConfigOthersActions.delete(name)),
+        clone: (name) => dispatch(p3dConfigOthersActions.clone(name)),
+        select: (name) => dispatch(p3dConfigOthersActions.select(name)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Setting));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(ConfigOthers));
 
 

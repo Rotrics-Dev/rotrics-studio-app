@@ -4,9 +4,9 @@ import hotKeys from "./hotKeys";
 import teachAndPlay from "./teachAndPlay";
 import laser from "./laser";
 import writeAndDraw from "./writeAndDraw";
-import p3dMaterial from "./p3dMaterial";
 import p3dModel from "./p3dModel";
-import p3dSetting from "./p3dSetting";
+import p3dConfigMaterial from "./p3dConfigMaterial";
+import p3dConfigOthers from "./p3dConfigOthers";
 import serialPort from "./serialPort";
 import socket from "./socket";
 import taps from "./taps";
@@ -20,10 +20,10 @@ export default combineReducers({
     teachAndPlay,
     laser,
     writeAndDraw,
-    // p3d,
-    p3dMaterial,
+    // p3d
     p3dModel,
-    p3dSetting,
+    p3dConfigMaterial,
+    p3dConfigOthers,
     serialPort,
     socket,
     taps,

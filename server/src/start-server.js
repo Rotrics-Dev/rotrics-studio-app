@@ -31,12 +31,12 @@ import {
     GCODE_SENDER_PAUSE_TASK,
     GCODE_SENDER_RESUME_TASK,
     GCODE_SENDER_ACTION_REFUSE,
-    P3D_MATERIAL_FETCH,
-    P3D_MATERIAL_UPDATE,
-    P3D_MATERIAL_DELETE,
-    P3D_MATERIAL_CLONE,
-    P3D_SETTING_FETCH,
-    P3D_SETTING_UPDATE,
+    P3D_CONFIG_MATERIAL_FETCH,
+    P3D_CONFIG_MATERIAL_UPDATE,
+    P3D_CONFIG_MATERIAL_DELETE,
+    P3D_CONFIG_MATERIAL_CLONE,
+    P3D_CONFIG_OTHERS_FETCH,
+    P3D_CONFIG_OTHERS_UPDATE,
     P3D_SLICE_START,
     P3D_SLICE_STATUS,
     FIRMWARE_UPGRADE_START,
@@ -44,7 +44,7 @@ import {
     FRONT_END_POSITION_MONITOR,
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
-import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR} from './init.js';
+import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_ALL_DIR, P3D_CONFIG_MATERIAL_DIR} from './init.js';
 import SVGParser from './SVGParser/index.js';
 
 let serverCacheAddress; //获取端口后，再初始化
@@ -110,7 +110,7 @@ const setupHttpServer = () => {
     app.use(router.allowedMethods());
 };
 
-const readP3dMaterialsSync = () => {
+const readP3dConfigMaterialsSync = () => {
     const contents = [];
     const filenames = fs.readdirSync(P3D_CONFIG_MATERIAL_DIR);
     filenames.forEach((filename) => {
@@ -121,11 +121,11 @@ const readP3dMaterialsSync = () => {
     return contents;
 };
 
-const readP3dSettingSync = () => {
+const readP3dConfigOthersSync = () => {
     const contents = [];
-    const filenames = fs.readdirSync(P3D_CONFIG_SETTING_DIR);
+    const filenames = fs.readdirSync(P3D_CONFIG_ALL_DIR);
     filenames.forEach((filename) => {
-        const filePath = path.join(P3D_CONFIG_SETTING_DIR, filename);
+        const filePath = path.join(P3D_CONFIG_ALL_DIR, filename);
         const content = fs.readFileSync(filePath, 'utf8');
         contents.push(JSON.parse(content))
     });
@@ -213,14 +213,13 @@ const setupSocket = () => {
                 }
             );
 
-            // p3d material
-            socket.on(P3D_MATERIAL_FETCH, () => {
-                const materials = readP3dMaterialsSync();
-                socket.emit(P3D_MATERIAL_FETCH, materials);
+            // p3d config material
+            socket.on(P3D_CONFIG_MATERIAL_FETCH, () => {
+                const contents = readP3dConfigMaterialsSync();
+                socket.emit(P3D_CONFIG_MATERIAL_FETCH, contents);
             });
-            socket.on(P3D_MATERIAL_UPDATE, (data) => {
+            socket.on(P3D_CONFIG_MATERIAL_UPDATE, (data) => {
                 const {filename, keyChain, value} = data;
-                console.log(data)
                 const filePath = path.join(P3D_CONFIG_MATERIAL_DIR, filename);
                 const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 _.set(content, keyChain, value);
@@ -228,26 +227,25 @@ const setupSocket = () => {
                 fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
                 //全部读出来
                 //TODO
-                const contentNew = readP3dMaterialsSync();
-                socket.emit(P3D_MATERIAL_FETCH, contentNew);
+                const contentNew = readP3dConfigMaterialsSync();
+                socket.emit(P3D_CONFIG_MATERIAL_FETCH, contentNew);
             });
 
-            // p3d setting
-            socket.on(P3D_SETTING_FETCH, () => {
-                const settings = readP3dSettingSync();
-                socket.emit(P3D_SETTING_FETCH, settings);
+            // p3d config others
+            socket.on(P3D_CONFIG_OTHERS_FETCH, () => {
+                const contents = readP3dConfigOthersSync();
+                socket.emit(P3D_CONFIG_OTHERS_FETCH, contents);
             });
-            socket.on(P3D_SETTING_UPDATE, (data) => {
+            socket.on(P3D_CONFIG_OTHERS_UPDATE, (data) => {
                 const {filename, keyChain, value} = data;
-                console.log(data)
-                const filePath =  path.join(P3D_CONFIG_SETTING_DIR, filename);
+                const filePath =  path.join(P3D_CONFIG_ALL_DIR, filename);
                 const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 _.set(content, keyChain, value);
                 //写回去
                 fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
                 //全部读出来
-                const contentNew = readP3dSettingSync();
-                socket.emit(P3D_SETTING_FETCH, contentNew);
+                const contentNew = readP3dConfigOthersSync();
+                socket.emit(P3D_CONFIG_OTHERS_FETCH, contentNew);
             });
 
             // p3d slice

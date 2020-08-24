@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Radio} from 'antd';
-import {actions as p3dMaterialActions} from "../../../../reducers/p3dMaterial";
+import {actions as p3dConfigMaterialActions} from "../../../../reducers/p3dConfigMaterial";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../Tooltip/Index.jsx';
@@ -9,21 +9,19 @@ import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderU
 
 const tooltipId = getUuid();
 
-class Material extends PureComponent {
+class ConfigMaterial extends PureComponent {
     actions = {
         updateParameter: (keyChain, value) => {
-            console.log(keyChain, value)
             this.props.update(`${keyChain}.default_value`, value);
         },
         onChange: (e) => {
-            console.log("onChange: " + e.target.value)
             this.props.select(e.target.value)
         }
     };
 
     render() {
-        const {materials, material} = this.props;
-        if (!materials || materials.length === 0 || !material) {
+        const {materials, selected} = this.props;
+        if (!materials || materials.length === 0 || !selected) {
             return null;
         }
 
@@ -32,7 +30,8 @@ class Material extends PureComponent {
             return this.props.t("cura#" + key);
         };
 
-        const nameSelected = material.name;
+        const {name, isOfficial, settings} = selected;
+
         const elements4Radio =
             <Radio.Group
                 style={{margin: "3px 0 0 3px"}}
@@ -42,24 +41,24 @@ class Material extends PureComponent {
                 onChange={actions.onChange}
             >
                 {materials.map(item => {
-                    const {name} = item;
+                    const {name: itemName} = item;
                     return (
                         <Radio.Button
-                            key={name}
+                            key={itemName}
                             size="small"
-                            checked={nameSelected === name}
-                            value={name}>
-                            {name}
+                            checked={itemName === name}
+                            value={itemName}>
+                            {itemName}
                         </Radio.Button>
                     );
                 })}
             </Radio.Group>;
 
-        const header = tCura(material.material.label);
+        const header = tCura(selected.material.label);
         const icon = null;
         const categoryKey = "material.children";
-        const allowUpdateParameter = !material.isOfficial;
-        const elements4categoryChildren = renderCategoryChildren(material.material.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+        const allowUpdateParameter = !selected.isOfficial;
+        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
 
         const elements = [elements4Radio, ...elements4categoryChildren];
         const panels = wrapCollapsePanel(header, icon, elements);
@@ -79,21 +78,21 @@ class Material extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {materials, material} = state.p3dMaterial;
+    const {materials, selected} = state.p3dConfigMaterial;
     return {
         materials,
-        material
+        selected
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        update: (keyChain, value) => dispatch(p3dMaterialActions.update(keyChain, value)),
-        rename: (newName) => dispatch(p3dMaterialActions.rename(newName)),
-        delete: (name) => dispatch(p3dMaterialActions.delete(name)),
-        clone: (name) => dispatch(p3dMaterialActions.clone(name)),
-        select: (name) => dispatch(p3dMaterialActions.select(name)),
+        update: (keyChain, value) => dispatch(p3dConfigMaterialActions.update(keyChain, value)),
+        rename: (newName) => dispatch(p3dConfigMaterialActions.rename(newName)),
+        delete: (name) => dispatch(p3dConfigMaterialActions.delete(name)),
+        clone: (name) => dispatch(p3dConfigMaterialActions.clone(name)),
+        select: (name) => dispatch(p3dConfigMaterialActions.select(name)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Material));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(ConfigMaterial));
