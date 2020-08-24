@@ -11,6 +11,7 @@ import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_WRITE_AND_DRAW} from "../../../constants.js"
 import inWorkArea2D from "../../../utils/inWorkArea2D";
+import {FRONT_END, getLimit} from "../../../utils/workAreaUtils";
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -156,7 +157,7 @@ class Model2D extends THREE.Group {
 
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
-    updateTransformation(key, value, preview) {
+    updateTransformation(key, value, preview, workHeight) {
         switch (key) {
             case "width": {
                 const mWidth = value;
@@ -201,15 +202,15 @@ class Model2D extends THREE.Group {
                 break;
         }
 
+        const {outerRadius, innerRadius} = getLimit(workHeight, FRONT_END.PEN)
         console.log("2D越界检测:" +
             inWorkArea2D(
-                184.9, 414,
+                innerRadius, outerRadius,
                 this.position.x, this.position.y,
                 this.settings.transformation.children.width.default_value,
                 this.settings.transformation.children.height.default_value,
                 this.settings.transformation.children.rotation.default_value
             ));
-
 
         this._display("edge");
 
@@ -270,8 +271,8 @@ class Model2D extends THREE.Group {
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode(write_and_draw,workHeight) {
-        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw,workHeight);
+    generateGcode(write_and_draw, workHeight) {
+        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw, workHeight);
     }
 
     clone() {
@@ -284,6 +285,13 @@ class Model2D extends THREE.Group {
         instance.loadImg(url, img_width, img_height)
 
         return instance;
+    }
+
+    dispose() {
+        if (this.imgObj3d)
+            this.imgObj3d.dispose();
+        if (this.edgeObj3d)
+            this.imgObj3d.dispose();
     }
 }
 

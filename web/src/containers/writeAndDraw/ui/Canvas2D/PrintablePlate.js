@@ -5,13 +5,12 @@ import GridLine from './GridLine';
 import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
-import WorkArea from './WorkArea'
 import {FRONT_END, getLimit} from "../../../../utils/workAreaUtils";
 
 const METRIC_GRID_SPACING = 10; // 10 mm
 
 class PrintablePlate extends THREE.Object3D {
-    constructor(size, z) {
+    constructor(size, workHeight, frontEnd) {
         super();
         this.isPrintPlane = true;
         this.type = 'PrintPlane';
@@ -19,7 +18,8 @@ class PrintablePlate extends THREE.Object3D {
         // this.coordinateVisible = true;
         this.coordinateSystem = null;
         this.size = size;
-        this.z = z;
+        this.workHeight = workHeight;
+        this.frontEnd = frontEnd;
         this._setup();
     }
 
@@ -119,7 +119,8 @@ class PrintablePlate extends THREE.Object3D {
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
-            this.setUpWorkArea(this.z)
+
+            this.setUpWorkArea(this.workHeight)
             this.add(group);
         }
 
@@ -139,22 +140,22 @@ class PrintablePlate extends THREE.Object3D {
         this.coordinateSystem && (this.coordinateSystem.visible = value);
     }
 
-    setUpWorkArea(z) {
+    setUpWorkArea(workHeight) {
+        this.workHeight = workHeight;
         let workArea = this.coordinateSystem.getObjectByName('workArea')
         if (workArea) {
             this.coordinateSystem.remove(workArea);
             workArea.geometry.dispose();
             workArea.material.dispose();
-            console.log('--------dispose work area)--------')
         }
         const green = colornames('green');
-        let limit = getLimit(z, FRONT_END.PEN);
+        let limit = getLimit(this.workHeight, this.frontEnd);
         if (!limit) {
             return;
         }
         const path = new THREE.Path();
-        path.moveTo(-limit.outterRadius, 0)
-            .arc(limit.outterRadius, 0, limit.outterRadius, -Math.PI, 0, true)
+        path.moveTo(-limit.outerRadius, 0)
+            .arc(limit.outerRadius, 0, limit.outerRadius, -Math.PI, 0, true)
             .lineTo(limit.innerRadius, 0)
             .arc(-limit.innerRadius, 0, limit.innerRadius, 0, -Math.PI, false)
             .closePath();
@@ -164,8 +165,6 @@ class PrintablePlate extends THREE.Object3D {
         )
         workArea.name = 'workArea';
         this.coordinateSystem.add(workArea);
-        console.log('--------setUpWorkArea(z)--------')
-        console.log(workArea.type)
     }
 }
 

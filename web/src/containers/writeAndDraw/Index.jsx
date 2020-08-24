@@ -2,7 +2,7 @@ import React from 'react';
 import {Tabs} from 'antd';
 import "antd/dist/antd.css";
 
-import Canvas2D from './ui/Canvas2D/Index.jsx'
+import {Canvas2dPen as Canvas2D} from './ui/Canvas2D/Index.jsx'
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";

@@ -153,6 +153,7 @@ const actions = {
         }
 
         rendererParent.remove(selected);
+        selected.dispose()
         dispatch(actions._updateState({
             model: null,
             transformation: null,
@@ -190,11 +191,12 @@ const actions = {
     //update settings
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const selected = getState().writeAndDraw.model;
+        const {workHeightPen} = getState().persistentData
         if (!selected) {
             return {type: null};
         }
         //TODO: 是否有更？
-        selected.updateTransformation(key, value, preview);
+        selected.updateTransformation(key, value, preview, workHeightPen);
         dispatch(actions._updateState({
             transformation: _.cloneDeep(selected.settings.transformation),
             gcode: null
@@ -262,7 +264,7 @@ const actions = {
         const {workHeightPen} = getState().persistentData
         for (let i = 0; i < rendererParent.children.length; i++) {
             const model = rendererParent.children[i];
-            gcodeArr.push(model.generateGcode(write_and_draw,workHeightPen));
+            gcodeArr.push(model.generateGcode(write_and_draw, workHeightPen));
         }
         const gcode = gcodeArr.join("\n");
         dispatch(actions._updateState({

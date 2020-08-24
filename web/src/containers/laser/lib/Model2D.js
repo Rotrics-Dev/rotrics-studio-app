@@ -91,6 +91,7 @@ class Model2D extends THREE.Group {
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
+        this.position.y = this.settings.transformation.children.y.default_value;//获取默认threeObj的位置
     }
 
     //url: 支持svg，raster

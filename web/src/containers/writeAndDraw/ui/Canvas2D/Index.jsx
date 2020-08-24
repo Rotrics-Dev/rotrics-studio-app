@@ -4,12 +4,13 @@ import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
 import MouseController from '../../../../three-extensions/MouseController';
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
+import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import {FRONT_END} from "../../../../utils/workAreaUtils";
 
 class Index extends React.Component {
     constructor(props) {
         super(props);
-
         this.node = React.createRef();
 
         // three
@@ -24,18 +25,13 @@ class Index extends React.Component {
         this.printablePlate = null;
     }
 
-    state = {
-        current: "basic" // basic, function, g-code
-    };
-
     componentDidMount() {
         this.setupThree();
         this.setupMouseController();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.printablePlate = new PrintablePlate(new THREE.Vector2(450, 260), this.props.workHeightPen);
+        this.printablePlate = new PrintablePlate(new THREE.Vector2(450, 260), this.props.workHeight, this.props.frontEnd);
         this.group.add(this.printablePlate);
-
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -99,8 +95,11 @@ class Index extends React.Component {
         this.node.current.appendChild(this.renderer.domElement);
     }
 
+    renderFlag = true;
     animate = () => {
-        this.renderer.render(this.scene, this.camera);
+        if (this.renderFlag)//我们软件本身对帧率不敏感，这里选择降低一半的帧率，可以将                18%的CPU占用降低到10%，GPU从30%降低到15%，
+            this.renderer.render(this.scene, this.camera);
+        this.renderFlag = !this.renderFlag;
         requestAnimationFrame(this.animate);
     };
 
@@ -128,24 +127,46 @@ class Index extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {workHeightPen} = state.persistentData
-    const {tap} = state.taps;
-    const {model} = state.writeAndDraw;
-    return {
-        workHeightPen,
-        tap,
-        model
-    };
-};
+const Canvas2dPen = connect(
+    (state) => {
+        const {workHeightPen} = state.persistentData
+        const {tap} = state.taps;
+        const {model} = state.writeAndDraw;
+        return {
+            model,
+            tap,
+            workHeight: workHeightPen,
+            frontEnd: FRONT_END.PEN
+        };
+    },
+    (dispatch) => {
+        return {
+            setRendererParent: (modelsParent) => dispatch(writeAndDrawActions.setRendererParent(modelsParent)),
+            selectModel: (model) => dispatch(writeAndDrawActions.selectModel(model)),
+            updateTransformation: (key, value, preview) => dispatch(writeAndDrawActions.updateTransformation(key, value, preview)),
+        };
+    }
+)(Index);
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setRendererParent: (modelsParent) => dispatch(writeAndDrawActions.setRendererParent(modelsParent)),
-        selectModel: (model) => dispatch(writeAndDrawActions.selectModel(model)),
-        updateTransformation: (key, value, preview) => dispatch(writeAndDrawActions.updateTransformation(key, value, preview)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
-
+const Canvas2dLaser = connect(
+    (state) => {
+        const {workHeightLaser} = state.persistentData
+        const {tap} = state.taps;
+        const {model} = state.laser;
+        return {
+            model,
+            tap,
+            workHeight: workHeightLaser,
+            frontEnd: FRONT_END.LASER
+        };
+    },
+    (dispatch) => {
+        return {
+            setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
+            selectModel: (model) => dispatch(laserActions.selectModel(model)),
+            updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
+        };
+    }
+)(Index);
+export default Canvas2dPen
+export {Canvas2dPen, Canvas2dLaser}

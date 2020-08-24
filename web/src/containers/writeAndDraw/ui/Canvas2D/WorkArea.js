@@ -42,7 +42,7 @@ class WorkArea {
 
         const curve2 = new THREE.EllipseCurve(
             0, 0,// ax, aY
-            limit.outterRadius, limit.outterRadius,// xRadius, yRadius
+            limit.outerRadius, limit.outerRadius,// xRadius, yRadius
             0, Math.PI,// aStartAngle, aEndAngle
             false,// aClockwise
             0// aRotation

@@ -149,12 +149,11 @@ class PrintablePlate extends THREE.Object3D {
             geometry.merge(rightGeometry);
 
 
-            {
-                // const material = new THREE.MeshBasicMaterial({
+            {//
                 const material = new THREE.MeshPhongMaterial({
                     color: 0x998877,
                     specular: 0xb0b0b0,
-                    shininess: 30,
+                    shininess: 1000,
                     transparent: true,
                     opacity: 0.3,
                     depthTest: false
@@ -170,7 +169,7 @@ class PrintablePlate extends THREE.Object3D {
                 //     color: 0xb0b0b0,
                 //     shininess: 30,
                 //     transparent: true,
-                //     opacity: 0.1,
+                //     opacity: 0.3,
                 //     depthTest: false
                 // }));
                 // line.rotateX(-Math.PI / 2);
@@ -182,7 +181,7 @@ class PrintablePlate extends THREE.Object3D {
                 //     color: 0xb0b0b0,
                 //     shininess: 30,
                 //     transparent: true,
-                //     opacity: 0.1,
+                //     opacity: 0.2,
                 //     depthTest: false
                 // }));
                 // line.rotateX(-Math.PI / 2);
