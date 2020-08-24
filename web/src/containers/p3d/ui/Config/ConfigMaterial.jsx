@@ -30,14 +30,13 @@ class ConfigMaterial extends PureComponent {
             return this.props.t("cura#" + key);
         };
 
-        const {name, isOfficial, settings} = selected;
-
+        const {name, isOfficial} = selected;
         const elements4Radio =
             <Radio.Group
                 style={{margin: "3px 0 0 3px"}}
                 key="2"
                 size="small"
-                defaultValue={nameSelected}
+                defaultValue={name}
                 onChange={actions.onChange}
             >
                 {materials.map(item => {
@@ -57,7 +56,7 @@ class ConfigMaterial extends PureComponent {
         const header = tCura(selected.material.label);
         const icon = null;
         const categoryKey = "material.children";
-        const allowUpdateParameter = !selected.isOfficial;
+        const allowUpdateParameter = !isOfficial;
         const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
 
         const elements = [elements4Radio, ...elements4categoryChildren];

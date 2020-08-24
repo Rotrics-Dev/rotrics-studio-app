@@ -63,7 +63,7 @@ class ConfigOthers extends React.Component {
                 style={{margin: "3px 0 0 3px", backgroundColor: "#eeeeee"}}
                 key="2"
                 size="small"
-                defaultValue={nameSelected}
+                defaultValue={name}
                 onChange={actions.onChange}
             >
                 {configs.map(item => {
