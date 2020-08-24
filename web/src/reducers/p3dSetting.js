@@ -1,101 +1,75 @@
+import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
-import {P3D_SETTING_UPDATE, P3D_SETTING_FETCH_ALL} from "../constants";
+import {P3D_SETTING_UPDATE, P3D_SETTING_FETCH} from "../constants";
 
 const ACTION_UPDATE_STATE = 'p3dSettings/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    settings: [],
-    name: null,
-};
-
-const _getAvailableOfficialName = (settings) => {
-    for (let i = 0; i < settings.length; i++) {
-        const item = settings[i];
-        if (item.isOfficial && item.isDefault) {
-            return item.name;
-        }
-    }
-    return null;
-};
-
-const _getByName = (settings, name) => {
-    for (let i = 0; i < settings.length; i++) {
-        const item = settings[i];
-        if (item.name === name) {
-            return item;
-        }
-    }
-    return null;
-};
-
-const _containName = (settings, name) => {
-    for (let i = 0; i < settings.length; i++) {
-        const item = settings[i];
-        if (item.name === name) {
-            return true;
-        }
-    }
-    return false;
+    settings: [], //all settings
+    setting: null, //the selected setting
 };
 
 const actions = {
     _updateState: (state) => {
-        return {
-            type: ACTION_UPDATE_STATE,
-            state
-        };
+        return {type: ACTION_UPDATE_STATE, state};
     },
     init: () => (dispatch, getState) => {
         socketClientManager.addServerListener("connect", () => {
-            dispatch(actions.fetchAll());
+            dispatch(actions.fetch());
         });
-
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
-                name: null,
-                settings: []
+                settings: [],
+                setting: null
             }));
         });
-
-        socketClientManager.addServerListener(P3D_SETTING_FETCH_ALL, (settings) => {
-            //TODO: 判断是否有变化，有变化才emit
-            if (!_containName(settings, getState().p3dSetting.name)) {
-                const name = _getAvailableOfficialName(settings);
-                dispatch(actions._updateState({
-                    name,
-                    settings
-                }));
-            } else {
-                dispatch(actions._updateState({
-                    settings
-                }));
+        socketClientManager.addServerListener(P3D_SETTING_FETCH, (settings) => {
+            let {setting} = getState().p3dSetting;
+            if (!setting) {
+                for (let i = 0; i < settings.length; i++) {
+                    const item = settings[i];
+                    if (item.isSelected) {
+                        setting = item;
+                        break;
+                    }
+                }
             }
+            //Official放在前面
+            settings.sort((a, b) => {
+                if (a.isOfficial && !b.isOfficial) {
+                    return -1;
+                }
+                if (!a.isOfficial && b.isOfficial) {
+                    return 1;
+                }
+                //a.isOfficial && b.isOfficial or !a.isOfficial && !b.isOfficial
+                return 0;
+            });
+            dispatch(actions._updateState({
+                settings,
+                setting
+            }));
         });
     },
-    fetchAll: () => {
-        socketClientManager.emitToServer(P3D_SETTING_FETCH_ALL);
+    fetch: () => {
+        socketClientManager.emitToServer(P3D_SETTING_FETCH);
         return {type: null};
     },
-    update: (key, value) => (dispatch, getState) => {
-        const {settings, name} = getState().p3dSetting;
-
-        const keys = key.split('.');
-        if (keys.length !== 3) {
-            console.error("keys.length !== 3");
+    /**
+     * update value of the selected setting
+     * @param keyChain example: material_flow.default_value
+     * @param value
+     */
+    update: (keyChain, value) => (dispatch, getState) => {
+        const {settings, setting} = getState().p3dSetting;
+        if (!setting || !settings || settings.length === 0) {
+            console.error("settings or setting is null");
             return {type: null};
         }
-
-        const setting = _getByName(settings, name);
-        if (!setting) {
-            console.error("setting is null");
-            return {type: null};
-        }
-
-        //更新内存
-        setting[keys[0]][keys[1]][keys[2]] = value;
+        _.set(setting, keyChain, value);
         //更新server
-        socketClientManager.emitToServer(P3D_SETTING_UPDATE, {name, key, value});
-
+        const {filename} = setting;
+        socketClientManager.emitToServer(P3D_SETTING_UPDATE, {filename, keyChain, value});
         return {type: null};
     },
     rename: (newName) => {
@@ -107,18 +81,20 @@ const actions = {
     clone: (name) => {
         return {type: null};
     },
-    select: (newName) => (dispatch, getState) => {
-        const {settings, name} = getState().p3dSetting;
-
-        if (!_containName(settings, name)) {
-            console.error("name is not contained");
-            return;
+    select: (name) => (dispatch, getState) => {
+        const {settings, setting} = getState().p3dSetting;
+        let settingSelected = null;
+        for (let i = 0; i < settings.length; i++) {
+            const item = settings[i];
+            if (item.name === name) {
+                settingSelected = item;
+                break;
+            }
         }
-
-        if (newName !== name) {
-            dispatch(actions._updateState({name: newName}));
-        } else {
+        if (setting === settingSelected) {
             return {type: null};
+        } else {
+            dispatch(actions._updateState({setting: settingSelected}));
         }
     }
 };

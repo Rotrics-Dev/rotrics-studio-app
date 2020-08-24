@@ -1,7 +1,6 @@
 import React from 'react';
 import {Checkbox, Row, Col, Collapse} from 'antd';
 import {ConfigText, ConfigSelect} from '../../../../components/Config';
-import styles from './styles.css';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 
 //only display the following types
@@ -32,10 +31,11 @@ const convertOptions = (options, t) => {
  * @param separator        分隔符
  * @param t                i18n
  * @param tooltipId
- * @param updateParameter  function
+ * @param updateParameterFunc  function
+ * @param allowUpdateParameter bool: 是否允许修改parameter
  * @returns {Array}
  */
-const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, updateParameter) => {
+const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
     let result = [];
     for (let key in children) {
         let keyChain = categoryKey + separator + key; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
@@ -60,7 +60,7 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                         </Row>
                     </div>
                 );
-                result = result.concat(renderCategoryChildren(child.children, keyChain, separator, t, tooltipId, updateParameter))
+                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, separator, t, tooltipId, updateParameterFunc, allowUpdateParameter))
             } else {
                 //叶节点
                 let {label, description, unit, type, default_value, minimum_value, maximum_value, options} = child;
@@ -86,13 +86,13 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                             {type === "float" &&
                             <Col span={7}>
                                 <NumberInput
+                                    disabled={!allowUpdateParameter}
                                     precision={1}
-                                    disabled={false}
                                     min={minimum_value}
                                     max={maximum_value}
                                     value={default_value}
                                     onAfterChange={(value) => {
-                                        updateParameter(keyChain, value)
+                                        updateParameterFunc(keyChain, value)
                                     }}
                                 />
                             </Col>
@@ -100,13 +100,13 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                             {type === "int" &&
                             <Col span={7}>
                                 <NumberInput
+                                    disabled={!allowUpdateParameter}
                                     precision={0}
-                                    disabled={false}
                                     min={minimum_value}
                                     max={maximum_value}
                                     value={default_value}
                                     onAfterChange={(value) => {
-                                        updateParameter(keyChain, value)
+                                        updateParameterFunc(keyChain, value)
                                     }}
                                 />
                             </Col>
@@ -114,9 +114,10 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                             {type === "bool" &&
                             <Col span={7}>
                                 <Checkbox
+                                    disabled={!allowUpdateParameter}
                                     checked={default_value}
                                     onChange={(e) => {
-                                        updateParameter(keyChain, e.target.checked)
+                                        updateParameterFunc(keyChain, e.target.checked)
                                     }}
                                 />
                             </Col>
@@ -124,10 +125,11 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                             {type === "enum" &&
                             <Col span={7}>
                                 <ConfigSelect
+                                    disabled={!allowUpdateParameter}
                                     options={convertOptions(options, t)}
                                     value={default_value}
                                     onChange={(value) => {
-                                        updateParameter(keyChain, value)
+                                        updateParameterFunc(keyChain, value)
                                     }}
                                 />
                             </Col>
@@ -151,7 +153,7 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
 const wrapCollapsePanel = (header, icon, elements) => {
     const result = [];
     let extra = null;
-    if (icon){
+    if (icon) {
         extra = <img style={{width: "18px", height: "18px"}} src={require(`./images/${icon}.svg`)}/>
     }
     result.push(

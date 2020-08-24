@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import http from "http";
+import _ from 'lodash';
 import SocketIoServer from 'socket.io';
 import Koa from 'koa';
 import koaBody from 'koa-body';
@@ -30,11 +31,11 @@ import {
     GCODE_SENDER_PAUSE_TASK,
     GCODE_SENDER_RESUME_TASK,
     GCODE_SENDER_ACTION_REFUSE,
-    P3D_MATERIAL_FETCH_ALL,
+    P3D_MATERIAL_FETCH,
     P3D_MATERIAL_UPDATE,
     P3D_MATERIAL_DELETE,
     P3D_MATERIAL_CLONE,
-    P3D_SETTING_FETCH_ALL,
+    P3D_SETTING_FETCH,
     P3D_SETTING_UPDATE,
     P3D_SLICE_START,
     P3D_SLICE_STATUS,
@@ -43,7 +44,7 @@ import {
     FRONT_END_POSITION_MONITOR,
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
-import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
+import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR} from './init.js';
 import SVGParser from './SVGParser/index.js';
 
 let serverCacheAddress; //获取端口后，再初始化
@@ -109,42 +110,26 @@ const setupHttpServer = () => {
     app.use(router.allowedMethods());
 };
 
-// p3d material
-// 以material_开头的文件
 const readP3dMaterialsSync = () => {
     const contents = [];
-    const fileNames = fs.readdirSync(P3D_CONFIG_DIR);
-    fileNames.forEach((filename) => {
-        if (filename.indexOf("material_") === 0) {
-            const filePath = path.join(P3D_CONFIG_DIR, filename);
-            const content = fs.readFileSync(filePath, 'utf8');
-            contents.push(JSON.parse(content))
-        }
+    const filenames = fs.readdirSync(P3D_CONFIG_MATERIAL_DIR);
+    filenames.forEach((filename) => {
+        const filePath = path.join(P3D_CONFIG_MATERIAL_DIR, filename);
+        const content = fs.readFileSync(filePath, 'utf8');
+        contents.push(JSON.parse(content))
     });
     return contents;
 };
 
-const getP3dMaterialPath = (name) => {
-    return path.join(P3D_CONFIG_DIR, `material_${name}.def.json`);
-};
-
-// p3d setting
-// 以setting_开头的文件
 const readP3dSettingSync = () => {
     const contents = [];
-    const fileNames = fs.readdirSync(P3D_CONFIG_DIR);
-    fileNames.forEach((filename) => {
-        if (filename.indexOf("setting_") !== -1) {
-            const filePath = path.join(P3D_CONFIG_DIR, filename);
-            const content = fs.readFileSync(filePath, 'utf8');
-            contents.push(JSON.parse(content))
-        }
+    const filenames = fs.readdirSync(P3D_CONFIG_SETTING_DIR);
+    filenames.forEach((filename) => {
+        const filePath = path.join(P3D_CONFIG_SETTING_DIR, filename);
+        const content = fs.readFileSync(filePath, 'utf8');
+        contents.push(JSON.parse(content))
     });
     return contents;
-};
-
-const getP3dSettingPath = (name) => {
-    return path.join(P3D_CONFIG_DIR, `setting_${name}.def.json`);
 };
 
 const setupSocket = () => {
@@ -169,7 +154,7 @@ const setupSocket = () => {
             });
             frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
                 socket.emit(FRONT_END_POSITION_MONITOR, position);
-            })
+            });
             socket.on(SERIAL_PORT_GET_OPENED, () => {
                 const path = serialPortManager.getOpened();
                 socket.emit(SERIAL_PORT_GET_OPENED, path);
@@ -229,57 +214,40 @@ const setupSocket = () => {
             );
 
             // p3d material
-            socket.on(P3D_MATERIAL_FETCH_ALL, () => {
+            socket.on(P3D_MATERIAL_FETCH, () => {
                 const materials = readP3dMaterialsSync();
-                socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
+                socket.emit(P3D_MATERIAL_FETCH, materials);
             });
             socket.on(P3D_MATERIAL_UPDATE, (data) => {
-                //为了方便，文件名和name对应
-                const {name, key, value} = data;
-                //读出来
-                const filePath = getP3dMaterialPath(name);
-                const material = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                const keys = key.split('.');
-                switch (keys.length) {
-                    case 1:
-                        material[keys[0]] = value;
-                        break;
-                    case 3:
-                        material[keys[0]][keys[1]][keys[2]] = value;
-                        break;
-                }
+                const {filename, keyChain, value} = data;
+                console.log(data)
+                const filePath = path.join(P3D_CONFIG_MATERIAL_DIR, filename);
+                const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                _.set(content, keyChain, value);
                 //写回去
-                fs.writeFileSync(filePath, JSON.stringify(material, null, 2));
+                fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
                 //全部读出来
-                const materials = readP3dMaterialsSync();
-                socket.emit(P3D_MATERIAL_FETCH_ALL, materials);
+                //TODO
+                const contentNew = readP3dMaterialsSync();
+                socket.emit(P3D_MATERIAL_FETCH, contentNew);
             });
 
             // p3d setting
-            socket.on(P3D_SETTING_FETCH_ALL, () => {
+            socket.on(P3D_SETTING_FETCH, () => {
                 const settings = readP3dSettingSync();
-                socket.emit(P3D_SETTING_FETCH_ALL, settings);
+                socket.emit(P3D_SETTING_FETCH, settings);
             });
             socket.on(P3D_SETTING_UPDATE, (data) => {
-                //为了方便，文件名和name对应
-                const {name, key, value} = data;
-                //读出来
-                const filePath = getP3dSettingPath(name);
-                const setting = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                const keys = key.split('.');
-                switch (keys.length) {
-                    case 1:
-                        setting[keys[0]] = value;
-                        break;
-                    case 3:
-                        setting[keys[0]][keys[1]][keys[2]] = value;
-                        break;
-                }
+                const {filename, keyChain, value} = data;
+                console.log(data)
+                const filePath =  path.join(P3D_CONFIG_SETTING_DIR, filename);
+                const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                _.set(content, keyChain, value);
                 //写回去
-                fs.writeFileSync(filePath, JSON.stringify(setting, null, 2));
+                fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
                 //全部读出来
-                const settings = readP3dSettingSync();
-                socket.emit(P3D_SETTING_FETCH_ALL, settings);
+                const contentNew = readP3dSettingSync();
+                socket.emit(P3D_SETTING_FETCH, contentNew);
             });
 
             // p3d slice

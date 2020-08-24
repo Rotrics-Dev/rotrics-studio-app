@@ -1,103 +1,75 @@
+import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
-import {P3D_MATERIAL_FETCH_ALL, P3D_MATERIAL_UPDATE} from "../constants";
+import {P3D_MATERIAL_FETCH, P3D_MATERIAL_UPDATE} from "../constants";
 
 const ACTION_UPDATE_STATE = 'p3dMaterial/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    materials: [], //所有material
-    name: null, //选中的material的name
-};
-
-const _getAvailableOfficialName = (materials) => {
-    for (let i = 0; i < materials.length; i++) {
-        const item = materials[i];
-        if (item.isOfficial) {
-            return item.name;
-        }
-    }
-    return null;
-};
-
-const _getByName = (materials, name) => {
-    for (let i = 0; i < materials.length; i++) {
-        const item = materials[i];
-        if (item.name === name) {
-            return item;
-        }
-    }
-    return null;
-};
-
-const _containName = (materials, name) => {
-    for (let i = 0; i < materials.length; i++) {
-        const item = materials[i];
-        if (item.name === name) {
-            return true;
-        }
-    }
-    return false;
+    materials: [], //all materials
+    material: null, //the selected material
 };
 
 const actions = {
     _updateState: (state) => {
-        return {
-            type: ACTION_UPDATE_STATE,
-            state
-        };
+        return {type: ACTION_UPDATE_STATE, state};
     },
     init: () => (dispatch, getState) => {
         socketClientManager.addServerListener("connect", () => {
-            dispatch(actions.fetchAll());
+            dispatch(actions.fetch());
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
-                name: null,
-                materials: []
+                materials: [],
+                material: null
             }));
         });
-        socketClientManager.addServerListener(P3D_MATERIAL_FETCH_ALL, (materials) => {
-            //TODO: 判断是否有变化，有变化才emit
-            if (!_containName(materials, getState().p3dMaterial.name)) {
-                const name = _getAvailableOfficialName(materials);
-                dispatch(actions._updateState({
-                    name,
-                    materials
-                }));
-            } else {
-                dispatch(actions._updateState({
-                    materials
-                }));
+        socketClientManager.addServerListener(P3D_MATERIAL_FETCH, (materials) => {
+            let {material} = getState().p3dMaterial;
+            if (!material) {
+                for (let i = 0; i < materials.length; i++) {
+                    const item = materials[i];
+                    if (item.isSelected) {
+                        material = item;
+                        break;
+                    }
+                }
             }
+            //Official放在前面
+            materials.sort((a, b) => {
+                if (a.isOfficial && !b.isOfficial) {
+                    return -1;
+                }
+                if (!a.isOfficial && b.isOfficial) {
+                    return 1;
+                }
+                //a.isOfficial && b.isOfficial or !a.isOfficial && !b.isOfficial
+                return 0;
+            });
+            dispatch(actions._updateState({
+                materials,
+                material
+            }));
         });
     },
-    fetchAll: () => {
-        socketClientManager.emitToServer(P3D_MATERIAL_FETCH_ALL);
+    fetch: () => {
+        socketClientManager.emitToServer(P3D_MATERIAL_FETCH);
         return {type: null};
     },
     /**
-     * @param key 例子: overrides.material_flow.default_value 或 name
+     * update value of the selected material
+     * @param keyChain example: material_flow.default_value
      * @param value
      */
-    update: (key, value) => (dispatch, getState) => {
-        const {materials, name} = getState().p3dMaterial;
-
-        const keys = key.split('.');
-        if (keys.length !== 3) {
-            console.error("keys.length !== 3");
+    update: (keyChain, value) => (dispatch, getState) => {
+        const {materials, material} = getState().p3dMaterial;
+        if (!material || !materials || materials.length === 0) {
+            console.error("material or materials is null");
             return {type: null};
         }
-
-        const material = _getByName(materials, name);
-        if (!material) {
-            console.error("material is null");
-            return {type: null};
-        }
-
-        //更新内存
-        material[keys[0]][keys[1]][keys[2]] = value;
+        _.set(material, keyChain, value);
         //更新server
-        socketClientManager.emitToServer(P3D_MATERIAL_UPDATE, {name, key, value});
-
+        const {filename} = material;
+        socketClientManager.emitToServer(P3D_MATERIAL_UPDATE, {filename, keyChain, value});
         return {type: null};
     },
     rename: (newName) => {
@@ -109,20 +81,23 @@ const actions = {
     clone: (name) => {
         return {type: null};
     },
-    select: (newName) => (dispatch, getState) => {
-        const {materials, name} = getState().p3dMaterial;
-
-        if (!_containName(materials, name)) {
-            console.error("name is not contained");
-            return;
+    select: (name) => (dispatch, getState) => {
+        console.log("selected: " + name)
+        const {materials, material} = getState().p3dMaterial;
+        let materialSelected = null;
+        for (let i = 0; i < materials.length; i++) {
+            const item = materials[i];
+            if (item.name === name) {
+                materialSelected = item;
+                break;
+            }
         }
-
-        if (newName !== name) {
-            dispatch(actions._updateState({name: newName}));
-        } else {
+        if (material === materialSelected) {
             return {type: null};
+        } else {
+            dispatch(actions._updateState({material: materialSelected}));
         }
-    },
+    }
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

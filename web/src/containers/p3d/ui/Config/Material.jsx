@@ -1,65 +1,67 @@
 import React, {PureComponent} from 'react';
-import {Radio, Row, Col, Button} from 'antd';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
-
-import Line from '../../../../components/Line/Index.jsx'
+import {Radio} from 'antd';
 import {actions as p3dMaterialActions} from "../../../../reducers/p3dMaterial";
 import {connect} from 'react-redux';
-import {ConfigText} from '../../../../components/Config';
 import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from "../../../../utils";
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
-import fdmPrinter from "./fdmprinter.def.json";
 
 const tooltipId = getUuid();
-
-const getMaterialByName = (materials, name) => {
-    for (let i = 0; i < materials.length; i++) {
-        const item = materials[i];
-        if (item.name === name) {
-            return item;
-        }
-    }
-    return null;
-};
 
 class Material extends PureComponent {
     actions = {
         updateParameter: (keyChain, value) => {
             console.log(keyChain, value)
+            this.props.update(`${keyChain}.default_value`, value);
         },
         onChange: (e) => {
-            console.log(`radio checked:${e.target.value}`);
+            console.log("onChange: " + e.target.value)
+            this.props.select(e.target.value)
         }
     };
 
     render() {
-        let {materials, name} = this.props;
-        if (!name || materials.length === 0) {
+        const {materials, material} = this.props;
+        if (!materials || materials.length === 0 || !material) {
             return null;
         }
-        let {t} = this.props;
-        const tCura = (key) => {
-            return t("cura#" + key);
-        };
+
         const actions = this.actions;
+        const tCura = (key) => {
+            return this.props.t("cura#" + key);
+        };
 
-        const {settings} = fdmPrinter;
-        const key = "material";
-        const category = settings[key];
-        const header = tCura(category.label);
-        // const icon = category.icon;
-        const icon = null;
-
-        const elements4categoryChildren = renderCategoryChildren(category.children, key, ".", tCura, tooltipId, actions.updateParameter);
-        const elements4materialRadio =
-            <Radio.Group key="2" onChange={actions.onChange} size="small" defaultValue="a">
-                <Radio.Button value="a">PLA</Radio.Button>
-                <Radio.Button value="b">ABS</Radio.Button>
-                <Radio.Button value="c">Custom</Radio.Button>
+        const nameSelected = material.name;
+        const elements4Radio =
+            <Radio.Group
+                style={{margin: "3px 0 0 3px"}}
+                key="2"
+                size="small"
+                defaultValue={nameSelected}
+                onChange={actions.onChange}
+            >
+                {materials.map(item => {
+                    const {name} = item;
+                    return (
+                        <Radio.Button
+                            key={name}
+                            size="small"
+                            checked={nameSelected === name}
+                            value={name}>
+                            {name}
+                        </Radio.Button>
+                    );
+                })}
             </Radio.Group>;
-        const elements = [elements4materialRadio, ...elements4categoryChildren];
+
+        const header = tCura(material.material.label);
+        const icon = null;
+        const categoryKey = "material.children";
+        const allowUpdateParameter = !material.isOfficial;
+        const elements4categoryChildren = renderCategoryChildren(material.material.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+
+        const elements = [elements4Radio, ...elements4categoryChildren];
         const panels = wrapCollapsePanel(header, icon, elements);
         const collapse = wrapCollapse(panels);
         return (
@@ -77,16 +79,16 @@ class Material extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {materials, name} = state.p3dMaterial;
+    const {materials, material} = state.p3dMaterial;
     return {
         materials,
-        name
+        material
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        update: (key, value) => dispatch(p3dMaterialActions.update(key, value)),
+        update: (keyChain, value) => dispatch(p3dMaterialActions.update(keyChain, value)),
         rename: (newName) => dispatch(p3dMaterialActions.rename(newName)),
         delete: (name) => dispatch(p3dMaterialActions.delete(name)),
         clone: (name) => dispatch(p3dMaterialActions.clone(name)),
@@ -95,8 +97,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Material));
-
-
-
-
-

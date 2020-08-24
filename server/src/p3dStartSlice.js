@@ -1,16 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import childProcess from 'child_process';
-import {CURA_ENGINE_PATH, CACHE_DIR, P3D_CONFIG_DIR} from './init.js';
+import {CURA_ENGINE_PATH, CACHE_DIR, P3D_CONFIG_SETTING_DIR} from './init.js';
 
 const preHandle = (data) => {
     // stlUrl: http://localhost:9000/cache/1591695065752.stl
     const {stlUrl, materialName, settingName} = data;
-    const materialPath = path.join(P3D_CONFIG_DIR, `material_${materialName}.def.json`);
-    const settingPath = path.join(P3D_CONFIG_DIR, `setting_${settingName}.def.json`);
+    const materialPath = path.join(P3D_CONFIG_SETTING_DIR, `material_${materialName}.def.json`);
+    const settingPath = path.join(P3D_CONFIG_SETTING_DIR, `setting_${settingName}.def.json`);
 
-    const activatedMaterialPath = path.join(P3D_CONFIG_DIR, `activated_material.def.json`);
-    const activatedSettingPath = path.join(P3D_CONFIG_DIR, `activated_setting.def.json`);
+    const activatedMaterialPath = path.join(P3D_CONFIG_SETTING_DIR, `activated_material.def.json`);
+    const activatedSettingPath = path.join(P3D_CONFIG_SETTING_DIR, `activated_setting.def.json`);
 
     fs.existsSync(materialPath) && fs.writeFileSync(activatedMaterialPath, fs.readFileSync(materialPath));
     fs.existsSync(settingPath) && fs.writeFileSync(activatedSettingPath, fs.readFileSync(settingPath));

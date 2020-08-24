@@ -40,7 +40,7 @@ class Setting extends React.Component {
     actions = {
         updateParameter: (keyChain, value) => {
             console.log(keyChain, value)
-            this.props.update(`settings.${keyChain}.default_value`, value);
+            this.props.update(`${keyChain}.default_value`, value);
         },
         onChange: (e) => {
             console.log("onChange: " + e.target.value)
@@ -83,13 +83,13 @@ class Setting extends React.Component {
             </Radio.Group>;
 
         let panels = [];
-        for (let key in setting.settings) {
+        for (let key in settings) {
             if (displayedCategories.includes(key)) {
-                const category = setting.settings[key];
+                const category = settings[key];
                 const header = tCura(category.label);
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
-                const allowUpdateParameter = !setting.isOfficial;
+                const allowUpdateParameter = !material.isOfficial;
                 const elements = renderCategoryChildren(category.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
                 panels = panels.concat(wrapCollapsePanel(header, icon, elements));
             }

@@ -115,13 +115,12 @@ class Index extends React.Component {
                 </div>
                 <div className={layout_styles.div_right_panel}>
                     <Tabs centered={true} size="small">
-                        <TabPane tab={t('Control')} key="1">
-                            <Control/>
-                        </TabPane>
                         <TabPane tab={t('G-code')} key="2">
                             <Config/>
                         </TabPane>
-
+                        <TabPane tab={t('Control')} key="1">
+                            <Control/>
+                        </TabPane>
                     </Tabs>
                 </div>
             </div>

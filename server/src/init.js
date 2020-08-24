@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 let CURA_ENGINE_PATH;
-const curaEngineBasePath = path.join(__dirname, '..', 'CuraEngine', '2.7');
+const curaEngineBasePath = path.join(__dirname, '..', 'CuraEngine', '4.6.2');
 const STATIC_DIR = path.join(__dirname, '..', 'static');
 const CACHE_DIR = path.join(__dirname, '..', 'static', 'cache');
-const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'Config');
+const P3D_CONFIG_SETTING_DIR = path.join(__dirname, '..', 'CuraEngine', 'config', 'setting');
+const P3D_CONFIG_MATERIAL_DIR = path.join(__dirname, '..', 'CuraEngine', 'config', 'material');
 
 (() => {
     switch (process.platform) {
@@ -24,4 +25,4 @@ const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'Config');
     }
 })();
 
-export {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_CONFIG_DIR};
+export {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR};
