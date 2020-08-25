@@ -1,5 +1,5 @@
 .bkg {
-    padding: 8px;
+    padding: 0px 1px 10px 1px;
 }
 
 .axes {
@@ -7,7 +7,6 @@
     border-radius: 5px;
     vertical-align: middle;
 }
-
 
 .border_up_down {
     border-top: 1px solid #C0C0C0;
