@@ -44,7 +44,7 @@ import {
     FRONT_END_POSITION_MONITOR,
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
-import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_ALL_DIR, P3D_CONFIG_MATERIAL_DIR} from './init.js';
+import {STATIC_DIR, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR} from './init.js';
 import SVGParser from './SVGParser/index.js';
 
 let serverCacheAddress; //获取端口后，再初始化
@@ -123,9 +123,9 @@ const readP3dConfigMaterialsSync = () => {
 
 const readP3dConfigOthersSync = () => {
     const contents = [];
-    const filenames = fs.readdirSync(P3D_CONFIG_ALL_DIR);
+    const filenames = fs.readdirSync(P3D_CONFIG_SETTING_DIR);
     filenames.forEach((filename) => {
-        const filePath = path.join(P3D_CONFIG_ALL_DIR, filename);
+        const filePath = path.join(P3D_CONFIG_SETTING_DIR, filename);
         const content = fs.readFileSync(filePath, 'utf8');
         contents.push(JSON.parse(content))
     });
@@ -238,7 +238,7 @@ const setupSocket = () => {
             });
             socket.on(P3D_CONFIG_OTHERS_UPDATE, (data) => {
                 const {filename, keyChain, value} = data;
-                const filePath =  path.join(P3D_CONFIG_ALL_DIR, filename);
+                const filePath =  path.join(P3D_CONFIG_SETTING_DIR, filename);
                 const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 _.set(content, keyChain, value);
                 //写回去
@@ -250,7 +250,7 @@ const setupSocket = () => {
 
             // p3d slice
             socket.on(P3D_SLICE_START, (data) => {
-                //data: {stlUrl, materialName, settingName, id}
+                //data: {stlUrl, filenameConfigMaterial, filenameConfigOther, id}
                 const {id} = data;
                 p3dStartSlice(
                     data,

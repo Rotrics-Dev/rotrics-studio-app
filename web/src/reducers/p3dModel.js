@@ -350,14 +350,14 @@ const actions = {
         //导出数据并上传到server
         const file = exportModelsToFile();
         const response = await uploadFile(file);
-        const {url} = response;
+        const {url: stlUrl} = response;
 
         //设置初始状态
         dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
 
         //异步切片
-        const materialName = getState().p3dMaterial.name;
-        const settingName = getState().p3dSetting.name;
+        const filenameConfigMaterial = getState().p3dConfigMaterial.selected.filename;
+        const filenameConfigOther = getState().p3dConfigOthers.selected.filename;
         const id = getUuid();
         socketClientManager.removeAllServerListener(P3D_SLICE_STATUS);
         socketClientManager.addServerListener(P3D_SLICE_STATUS, (data) => {
@@ -377,7 +377,7 @@ const actions = {
                 dispatch(actions._renderGcode(gcodeUrl));
             }
         });
-        socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl: url, materialName, settingName, id})
+        socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, filenameConfigMaterial, filenameConfigOther, id})
     },
     _renderGcode: (gcodeUrl) => (dispatch) => {
         dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));

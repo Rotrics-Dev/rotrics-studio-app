@@ -92,22 +92,10 @@ class Index extends React.Component {
                 <div className={styles.div_gcode_preview_control}>
                     <GcodePreviewControl/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    left: 0,
-                    right: "351px",
-                    bottom: "-3px",
-                    height: "38px",
-                }}>
+                <div className={styles.div_progress}>
                     <Progress/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    bottom: "15px",
-                    right: "351px",
-                    height: "45px",
-                    width: "100px",
-                }}>
+                <div className={styles.div_info}>
                     <Info/>
                 </div>
                 <div className={layout_styles.div_tool_bar}>

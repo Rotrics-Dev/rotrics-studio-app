@@ -124,7 +124,7 @@
         "machine_width": {
           "label": "Machine Width",
           "description": "The width (X-direction) of the printable area.",
-          "default_value": 220,
+          "default_value": 100,
           "type": "float",
           "minimum_value": "0.001",
           "maximum_value": "2000000",
@@ -135,7 +135,7 @@
         "machine_depth": {
           "label": "Machine Depth",
           "description": "The depth (Y-direction) of the printable area.",
-          "default_value": 220,
+          "default_value": 100,
           "type": "float",
           "minimum_value": "0.001",
           "maximum_value": "2000000",
@@ -172,7 +172,7 @@
         "machine_height": {
           "label": "Machine Height",
           "description": "The height (Z-direction) of the printable area.",
-          "default_value": 220,
+          "default_value": 100,
           "type": "float",
           "settable_per_mesh": false,
           "settable_per_extruder": false,

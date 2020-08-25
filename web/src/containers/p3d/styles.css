@@ -10,8 +10,24 @@
 .div_gcode_preview_control {
     position: absolute;
     top: 50%;
-    right: 351px;
+    right: 410px;
     width: 30px;
     height: 300px;
     -webkit-transform: translateY(-50%);
+}
+
+.div_progress {
+    position: absolute;
+    left: 0;
+    right: 410px;
+    bottom: -3px;
+    height: 38px;
+}
+
+.div_info {
+    position: absolute;
+    bottom: 15px;
+    right: 410px;
+    height: 45px;
+    width: 100px;
 }
