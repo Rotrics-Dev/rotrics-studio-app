@@ -1,17 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import childProcess from 'child_process';
-import {CURA_ENGINE_PATH, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR, P3D_CONFIG_DIR} from './init.js';
+import {CURA_ENGINE_PATH, CACHE_DIR, P3D_DIR_CONFIG_SETTING_PRINT, P3D_DIR_CONFIG_SETTING_MATERIAL, P3D_DIR_CONFIG} from './init.js';
 
 const preHandle = (data) => {
     // data: {stlUrl, filenameConfigMaterial, filenameConfigOther, id}
     // stlUrl: http://localhost:9000/cache/1591695065752.stl
     const {stlUrl, filenameConfigMaterial, filenameConfigOther} = data;
-    const materialPath = path.join(P3D_CONFIG_MATERIAL_DIR, filenameConfigMaterial);
-    const settingPath = path.join(P3D_CONFIG_SETTING_DIR, filenameConfigOther);
+    const materialPath = path.join(P3D_DIR_CONFIG_SETTING_MATERIAL, filenameConfigMaterial);
+    const settingPath = path.join(P3D_DIR_CONFIG_SETTING_PRINT, filenameConfigOther);
 
     const configFilename = "fdmprinter.def.json";
-    const configPath = path.join(P3D_CONFIG_DIR, configFilename);
+    const configPath = path.join(P3D_DIR_CONFIG, configFilename);
 
     const contentMaterial = JSON.parse(fs.readFileSync(materialPath, 'utf8'));
     const contentSetting = JSON.parse(fs.readFileSync(settingPath, 'utf8'));

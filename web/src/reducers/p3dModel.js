@@ -356,8 +356,8 @@ const actions = {
         dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
 
         //异步切片
-        const filenameConfigMaterial = getState().p3dConfigMaterial.selected.filename;
-        const filenameConfigOther = getState().p3dConfigOthers.selected.filename;
+        const filenameConfigMaterial = getState().p3dMaterialSettings.selected.filename;
+        const filenameConfigOther = getState().p3dPrintSettings.selected.filename;
         const id = getUuid();
         socketClientManager.removeAllServerListener(P3D_SLICE_STATUS);
         socketClientManager.addServerListener(P3D_SLICE_STATUS, (data) => {

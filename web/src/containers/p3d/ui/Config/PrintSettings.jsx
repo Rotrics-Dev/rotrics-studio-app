@@ -5,7 +5,7 @@ import {getUuid} from "../../../../utils";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
-import {actions as p3dConfigOthersActions} from "../../../../reducers/p3dConfigOthers";
+import {actions as p3dPrintSettingsActions} from "../../../../reducers/p3dPrintSettings";
 
 const tooltipId = getUuid();
 
@@ -27,7 +27,7 @@ const category_all = [
 
 const displayedCategories = category_all;
 
-class ConfigOthers extends React.Component {
+class PrintSettings extends React.Component {
     actions = {
         updateParameter: (keyChain, value) => {
             this.props.update(`settings.${keyChain}.default_value`, value);
@@ -38,12 +38,12 @@ class ConfigOthers extends React.Component {
     };
 
     render() {
-        const {configs, selected} = this.props;
-        if (!configs || configs.length === 0 || !selected) {
+        const {settings, selected} = this.props;
+        if (!settings || settings.length === 0 || !selected) {
             return null;
         }
 
-        const {configOthersParameter} = this.props;
+        const {printSettingsFilter} = this.props;
         const actions = this.actions;
         const tCura = (key) => {
             return this.props.t("cura#" + key);
@@ -55,7 +55,7 @@ class ConfigOthers extends React.Component {
             lineHeight: '30px',
         };
 
-        const {name, isOfficial, settings} = selected;
+        const {name, isOfficial} = selected;
         const elements4Radio =
             <Radio.Group
                 style={{padding: "3px 0 0 8px"}}
@@ -64,7 +64,7 @@ class ConfigOthers extends React.Component {
                 defaultValue={name}
                 onChange={actions.onChange}
             >
-                {configs.map(item => {
+                {settings.map(item => {
                     const {name: itemName} = item;
                     return (
                         <Radio
@@ -80,14 +80,14 @@ class ConfigOthers extends React.Component {
             </Radio.Group>;
 
         let panels = [];
-        for (let key in settings) {
+        for (let key in selected.settings) {
             if (displayedCategories.includes(key)) {
-                const category = settings[key];
+                const category = selected.settings[key];
                 const header = tCura(category.label);
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
                 const allowUpdateParameter = !isOfficial;
-                const elements = renderCategoryChildren(category.children, categoryKey, configOthersParameter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+                const elements = renderCategoryChildren(category.children, categoryKey, printSettingsFilter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
                 panels = panels.concat(wrapCollapsePanel(header, icon, elements));
             }
         }
@@ -104,7 +104,7 @@ class ConfigOthers extends React.Component {
                     <Collapse expandIconPosition="right">
                         <Collapse.Panel
                             key="1"
-                            header="Printing Settings"
+                            header="Print Settings"
                             style={{
                                 fontSize: "13px",
                             }}>
@@ -118,25 +118,25 @@ class ConfigOthers extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {configs, selected} = state.p3dConfigOthers;
-    const {configOthersParameter} = state.p3dConfigVisibility;
+    const {settings, selected} = state.p3dPrintSettings;
+    const {printSettingsFilter} = state.p3dSettingVisibility;
     return {
-        configs,
+        settings,
         selected,
-        configOthersParameter
+        printSettingsFilter
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        update: (keyChain, value) => dispatch(p3dConfigOthersActions.update(keyChain, value)),
-        rename: (newName) => dispatch(p3dConfigOthersActions.rename(newName)),
-        delete: (name) => dispatch(p3dConfigOthersActions.delete(name)),
-        clone: (name) => dispatch(p3dConfigOthersActions.clone(name)),
-        select: (name) => dispatch(p3dConfigOthersActions.select(name)),
+        update: (keyChain, value) => dispatch(p3dPrintSettingsActions.update(keyChain, value)),
+        rename: (newName) => dispatch(p3dPrintSettingsActions.rename(newName)),
+        delete: (name) => dispatch(p3dPrintSettingsActions.delete(name)),
+        clone: (name) => dispatch(p3dPrintSettingsActions.clone(name)),
+        select: (name) => dispatch(p3dPrintSettingsActions.select(name)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(ConfigOthers));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(PrintSettings));
 
 

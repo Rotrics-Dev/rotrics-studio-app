@@ -1,10 +1,10 @@
 import React from 'react';
 import {Radio, Collapse} from 'antd';
-import {actions as p3dConfigVisibilityActions} from "../../../../reducers/p3dConfigVisibility";
+import {actions as p3dSettingVisibilityActions} from "../../../../reducers/p3dSettingVisibility";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 
-class ConfigVisibility extends React.Component {
+class SettingVisibility extends React.Component {
     actions = {
         onChange: (e) => {
             this.props.changeVisibility(e.target.value)
@@ -46,7 +46,7 @@ class ConfigVisibility extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {visibility} = state.p3dConfigVisibility;
+    const {visibility} = state.p3dSettingVisibility;
     return {
         visibility
     };
@@ -54,9 +54,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeVisibility: (visibility) => dispatch(p3dConfigVisibilityActions.changeVisibility(visibility))
+        changeVisibility: (visibility) => dispatch(p3dSettingVisibilityActions.changeVisibility(visibility))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigVisibility));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(SettingVisibility));
 

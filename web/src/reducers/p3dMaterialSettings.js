@@ -2,10 +2,10 @@ import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
 import {P3D_CONFIG_MATERIAL_FETCH, P3D_CONFIG_MATERIAL_UPDATE} from "../constants";
 
-const ACTION_UPDATE_STATE = 'p3dConfigMaterial/ACTION_UPDATE_STATE';
+const ACTION_UPDATE_STATE = 'p3dMaterialSettings/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    materials: [],
+    settings: [],
     selected: null,
 };
 
@@ -19,15 +19,15 @@ const actions = {
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
-                materials: [],
+                settings: [],
                 selected: null
             }));
         });
-        socketClientManager.addServerListener(P3D_CONFIG_MATERIAL_FETCH, (materials) => {
-            let {selected} = getState().p3dConfigMaterial;
+        socketClientManager.addServerListener(P3D_CONFIG_MATERIAL_FETCH, (settings) => {
+            let {selected} = getState().p3dMaterialSettings;
             if (!selected) {
-                for (let i = 0; i < materials.length; i++) {
-                    const item = materials[i];
+                for (let i = 0; i < settings.length; i++) {
+                    const item = settings[i];
                     if (item.isDefaultSelected) {
                         selected = item;
                         break;
@@ -35,7 +35,7 @@ const actions = {
                 }
             }
             //Official放在前面
-            materials.sort((a, b) => {
+            settings.sort((a, b) => {
                 if (a.isOfficial && !b.isOfficial) {
                     return -1;
                 }
@@ -46,7 +46,7 @@ const actions = {
                 return 0;
             });
             dispatch(actions._updateState({
-                materials,
+                settings,
                 selected
             }));
         });
@@ -61,9 +61,9 @@ const actions = {
      * @param value
      */
     update: (keyChain, value) => (dispatch, getState) => {
-        const {materials, selected} = getState().p3dConfigMaterial;
-        if (!materials || materials.length === 0 || !selected) {
-            console.error("config materials is null");
+        const {settings, selected} = getState().p3dMaterialSettings;
+        if (!settings || settings.length === 0 || !selected) {
+            console.error("material settings is null");
             return {type: null};
         }
         _.set(selected, keyChain, value);
@@ -82,10 +82,10 @@ const actions = {
         return {type: null};
     },
     select: (name) => (dispatch, getState) => {
-        const {materials, selected} = getState().p3dConfigMaterial;
+        const {settings, selected} = getState().p3dMaterialSettings;
         let selectedNew = null;
-        for (let i = 0; i < materials.length; i++) {
-            const item = materials[i];
+        for (let i = 0; i < settings.length; i++) {
+            const item = settings[i];
             if (item.name === name) {
                 selectedNew = item;
                 break;

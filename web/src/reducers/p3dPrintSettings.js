@@ -2,10 +2,10 @@ import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
 import {P3D_CONFIG_OTHERS_UPDATE, P3D_CONFIG_OTHERS_FETCH} from "../constants";
 
-const ACTION_UPDATE_STATE = 'p3dConfigOthers/ACTION_UPDATE_STATE';
+const ACTION_UPDATE_STATE = 'p3dPrintSettings/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    configs: [],
+    settings: [],
     selected: null,
 };
 
@@ -19,15 +19,15 @@ const actions = {
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({
-                configs: [],
+                settings: [],
                 selected: null
             }));
         });
-        socketClientManager.addServerListener(P3D_CONFIG_OTHERS_FETCH, (configs) => {
-            let {selected} = getState().p3dConfigOthers;
+        socketClientManager.addServerListener(P3D_CONFIG_OTHERS_FETCH, (settings) => {
+            let {selected} = getState().p3dPrintSettings;
             if (!selected) {
-                for (let i = 0; i < configs.length; i++) {
-                    const item = configs[i];
+                for (let i = 0; i < settings.length; i++) {
+                    const item = settings[i];
                     if (item.isDefaultSelected) {
                         selected = item;
                         break;
@@ -35,7 +35,7 @@ const actions = {
                 }
             }
             //Official放在前面
-            configs.sort((a, b) => {
+            settings.sort((a, b) => {
                 if (a.isOfficial && !b.isOfficial) {
                     return -1;
                 }
@@ -46,7 +46,7 @@ const actions = {
                 return 0;
             });
             dispatch(actions._updateState({
-                configs,
+                settings,
                 selected
             }));
         });
@@ -61,8 +61,8 @@ const actions = {
      * @param value
      */
     update: (keyChain, value) => (dispatch, getState) => {
-        const {configs, selected} = getState().p3dConfigOthers;
-        if (!configs || configs.length === 0 || !selected) {
+        const {settings, selected} = getState().p3dPrintSettings;
+        if (!settings || settings.length === 0 || !selected) {
             console.error("config is null");
             return {type: null};
         }
@@ -82,10 +82,10 @@ const actions = {
         return {type: null};
     },
     select: (name) => (dispatch, getState) => {
-        const {configs,  selected} = getState().p3dConfigOthers;
+        const {settings,  selected} = getState().p3dPrintSettings;
         let selectedNew = null;
-        for (let i = 0; i < configs.length; i++) {
-            const item = configs[i];
+        for (let i = 0; i < settings.length; i++) {
+            const item = settings[i];
             if (item.name === name) {
                 selectedNew = item;
                 break;

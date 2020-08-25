@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Radio} from 'antd';
-import {actions as p3dConfigMaterialActions} from "../../../../reducers/p3dConfigMaterial";
+import {actions as p3dMaterialSettingsActions} from "../../../../reducers/p3dMaterialSettings";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../Tooltip/Index.jsx';
@@ -9,7 +9,7 @@ import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderU
 
 const tooltipId = getUuid();
 
-class ConfigMaterial extends PureComponent {
+class MaterialSettings extends PureComponent {
     actions = {
         updateParameter: (keyChain, value) => {
             this.props.update(`${keyChain}.default_value`, value);
@@ -20,12 +20,12 @@ class ConfigMaterial extends PureComponent {
     };
 
     render() {
-        const {materials, selected} = this.props;
-        if (!materials || materials.length === 0 || !selected) {
+        const {settings, selected} = this.props;
+        if (!settings || settings.length === 0 || !selected) {
             return null;
         }
 
-        const {configMaterialParameter} = this.props;
+        const {materialSettingsFilter} = this.props;
 
         const actions = this.actions;
         const tCura = (key) => {
@@ -47,7 +47,7 @@ class ConfigMaterial extends PureComponent {
                 defaultValue={name}
                 onChange={actions.onChange}
             >
-                {materials.map(item => {
+                {settings.map(item => {
                     const {name: itemName} = item;
                     return (
                         <Radio
@@ -62,11 +62,11 @@ class ConfigMaterial extends PureComponent {
                 })}
             </Radio.Group>;
 
-        const header = tCura(selected.material.label);
+        const header = tCura("Material Settings");
         const icon = null;
         const categoryKey = "material.children";
         const allowUpdateParameter = !isOfficial;
-        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, configMaterialParameter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
 
         const elements = [elements4Radio, ...elements4categoryChildren];
         const panels = wrapCollapsePanel(header, icon, elements);
@@ -86,23 +86,23 @@ class ConfigMaterial extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {materials, selected} = state.p3dConfigMaterial;
-    const {configMaterialParameter} = state.p3dConfigVisibility;
+    const {settings, selected} = state.p3dMaterialSettings;
+    const {materialSettingsFilter} = state.p3dSettingVisibility;
     return {
-        materials,
+        settings,
         selected,
-        configMaterialParameter
+        materialSettingsFilter
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        update: (keyChain, value) => dispatch(p3dConfigMaterialActions.update(keyChain, value)),
-        rename: (newName) => dispatch(p3dConfigMaterialActions.rename(newName)),
-        delete: (name) => dispatch(p3dConfigMaterialActions.delete(name)),
-        clone: (name) => dispatch(p3dConfigMaterialActions.clone(name)),
-        select: (name) => dispatch(p3dConfigMaterialActions.select(name)),
+        update: (keyChain, value) => dispatch(p3dMaterialSettingsActions.update(keyChain, value)),
+        rename: (newName) => dispatch(p3dMaterialSettingsActions.rename(newName)),
+        delete: (name) => dispatch(p3dMaterialSettingsActions.delete(name)),
+        clone: (name) => dispatch(p3dMaterialSettingsActions.clone(name)),
+        select: (name) => dispatch(p3dMaterialSettingsActions.select(name)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(ConfigMaterial));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(MaterialSettings));

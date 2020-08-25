@@ -5,9 +5,11 @@ let CURA_ENGINE_PATH;
 const curaEngineBasePath = path.join(__dirname, '..', 'CuraEngine', '4.6.2');
 const STATIC_DIR = path.join(__dirname, '..', 'static');
 const CACHE_DIR = path.join(__dirname, '..', 'static', 'cache');
-const P3D_CONFIG_SETTING_DIR = path.join(__dirname, '..', 'CuraEngine', 'config', 'setting');
-const P3D_CONFIG_MATERIAL_DIR = path.join(__dirname, '..', 'CuraEngine', 'config', 'material');
-const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'config');
+
+const P3D_DIR_CONFIG = path.join(__dirname, '..', 'CuraEngine', 'config');
+const P3D_DIR_CONFIG_SETTING_PRINT = path.join(__dirname, '..', 'CuraEngine', 'config', 'settings_print');
+const P3D_DIR_CONFIG_SETTING_MATERIAL = path.join(__dirname, '..', 'CuraEngine', 'config', 'settings_material');
+
 
 (() => {
     switch (process.platform) {
@@ -26,4 +28,4 @@ const P3D_CONFIG_DIR = path.join(__dirname, '..', 'CuraEngine', 'config');
     }
 })();
 
-export {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_CONFIG_SETTING_DIR, P3D_CONFIG_MATERIAL_DIR, P3D_CONFIG_DIR};
+export {CURA_ENGINE_PATH, STATIC_DIR, CACHE_DIR, P3D_DIR_CONFIG_SETTING_PRINT, P3D_DIR_CONFIG_SETTING_MATERIAL, P3D_DIR_CONFIG};
