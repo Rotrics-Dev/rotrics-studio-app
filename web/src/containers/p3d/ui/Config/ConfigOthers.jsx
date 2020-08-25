@@ -43,6 +43,7 @@ class ConfigOthers extends React.Component {
             return null;
         }
 
+        const {configOthersParameter} = this.props;
         const actions = this.actions;
         const tCura = (key) => {
             return this.props.t("cura#" + key);
@@ -86,7 +87,7 @@ class ConfigOthers extends React.Component {
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
                 const allowUpdateParameter = !isOfficial;
-                const elements = renderCategoryChildren(category.children, categoryKey, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+                const elements = renderCategoryChildren(category.children, categoryKey, configOthersParameter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
                 panels = panels.concat(wrapCollapsePanel(header, icon, elements));
             }
         }
@@ -118,9 +119,11 @@ class ConfigOthers extends React.Component {
 
 const mapStateToProps = (state) => {
     const {configs, selected} = state.p3dConfigOthers;
+    const {configOthersParameter} = state.p3dConfigVisibility;
     return {
         configs,
-        selected
+        selected,
+        configOthersParameter
     };
 };
 

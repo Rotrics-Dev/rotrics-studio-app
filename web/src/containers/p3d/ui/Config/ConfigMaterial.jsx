@@ -25,6 +25,8 @@ class ConfigMaterial extends PureComponent {
             return null;
         }
 
+        const {configMaterialParameter} = this.props;
+
         const actions = this.actions;
         const tCura = (key) => {
             return this.props.t("cura#" + key);
@@ -64,7 +66,7 @@ class ConfigMaterial extends PureComponent {
         const icon = null;
         const categoryKey = "material.children";
         const allowUpdateParameter = !isOfficial;
-        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, configMaterialParameter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
 
         const elements = [elements4Radio, ...elements4categoryChildren];
         const panels = wrapCollapsePanel(header, icon, elements);
@@ -85,11 +87,11 @@ class ConfigMaterial extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {materials, selected} = state.p3dConfigMaterial;
-    const {parameter} = state.p3dConfigVisibility;
+    const {configMaterialParameter} = state.p3dConfigVisibility;
     return {
         materials,
         selected,
-        parameter
+        configMaterialParameter
     };
 };
 

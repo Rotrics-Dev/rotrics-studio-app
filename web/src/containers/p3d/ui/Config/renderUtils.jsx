@@ -28,16 +28,21 @@ const convertOptions = (options, t) => {
  * 将category的children渲染为react elements
  * @param children         category的children
  * @param categoryKey      category的key
+ * @param keyChainFilter   根据keyChain过滤；如果是null，则不过滤，显示全部
  * @param t                i18n
  * @param tooltipId
  * @param updateParameterFunc  function
  * @param allowUpdateParameter bool: 是否允许修改parameter
  * @returns {Array}
  */
-const renderCategoryChildren = (children, categoryKey, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
+const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
     let result = [];
     for (let key in children) {
         let keyChain = `${categoryKey}.${key}`; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
+
+        if (keyChainFilter && keyChainFilter.length > 0 && !keyChainFilter.includes(keyChain)) {
+            continue;
+        }
         const offset = keyChain.split(".").length - 2; //随层级缩进
         const child = children[key];
         if (child instanceof Object) {
@@ -55,11 +60,12 @@ const renderCategoryChildren = (children, categoryKey, t, tooltipId, updateParam
                         >
                             <Col span={24 - offset} offset={offset}>
                                 <ConfigText text={t(label)}/>
+                                <ConfigText text={"##"+keyChain}/>
                             </Col>
                         </Row>
                     </div>
                 );
-                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, t, tooltipId, updateParameterFunc, allowUpdateParameter))
+                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, keyChainFilter, t, tooltipId, updateParameterFunc, allowUpdateParameter))
             } else {
                 //叶节点
                 let {label, description, unit, type, default_value, minimum_value, maximum_value, options} = child;
@@ -80,6 +86,7 @@ const renderCategoryChildren = (children, categoryKey, t, tooltipId, updateParam
                             <Col span={16 - offset} offset={offset}>
                                 <ConfigText text={t(label)}/>
                                 {unit && <ConfigText text={`(${unit})`}/>}
+                                <ConfigText text={"##"+keyChain}/>
                             </Col>
                             <Col span={1}/>
                             {type === "float" &&

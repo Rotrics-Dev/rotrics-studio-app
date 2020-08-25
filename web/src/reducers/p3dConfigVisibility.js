@@ -1,34 +1,32 @@
 const ACTION_UPDATE_STATE = 'p3dConfigVisibility/ACTION_UPDATE_STATE';
 
-const CATEGORY_BASIC = ["resolution", "shell", "infill"];
-const PARAMETER_BASIC = [
-    "resolution.layer_height", "resolution.layer_height_0",
-    "resolution.line_width", "resolution.line_width.wall_line_width.wall_line_width_0", "resolution.line_width.wall_line_width.wall_line_width_x",
-    "resolution.layer_height",
-    "shell",
-    "infill"];
+const CONFIG_OTHERS_PARAMETER_ALL = null;
+const CONFIG_OTHERS_PARAMETER_BASIC = [
+    //resolution
+    "resolution.children.layer_height",
+    "resolution.children.layer_height_0",
+    "resolution.children.line_width",
 
-const CATEGORY_ALL = [
-    "resolution",
-    "shell",
-    "infill",
-    // "material",
-    "speed",
-    "travel",
-    "cooling",
-    "support",
-    "platform_adhesion",
-    "dual",
-    "meshfix",
-    "blackmagic",
-    "experimental"
+    "resolution.children.line_width.children.wall_line_width.children.wall_line_width_0",
+    "resolution.children.line_width.children.wall_line_width.children.wall_line_width_x",
 ];
-const PARAMETER_ALL = [];
+
+const CONFIG_MATERIAL_PARAMETER_ALL = null;
+const CONFIG_MATERIAL_PARAMETER_BASIC = [
+    "material.children.default_material_print_temperature",
+    "material.children.build_volume_temperature",
+    "material.children.material_print_temperature",
+    "material.children.material_print_temperature_layer_0",
+
+    "material.children.material_flow",
+    "material.children.material_flow.children.wall_material_flow",
+    "material.children.material_flow.children.wall_material_flow.children.wall_0_material_flow",
+];
 
 const INITIAL_STATE = {
     visibility: "Basic", //Basic, All
-    category: CATEGORY_BASIC,
-    parameter: PARAMETER_BASIC
+    configOthersParameter: CONFIG_OTHERS_PARAMETER_BASIC,
+    configMaterialParameter: CONFIG_MATERIAL_PARAMETER_BASIC
 };
 
 const actions = {
@@ -40,15 +38,15 @@ const actions = {
             case "Basic":
                 dispatch(actions._updateState({
                     visibility,
-                    category: CATEGORY_BASIC,
-                    parameter: PARAMETER_BASIC
+                    configOthersParameter: CONFIG_OTHERS_PARAMETER_BASIC,
+                    configMaterialParameter: CONFIG_MATERIAL_PARAMETER_BASIC
                 }));
                 break;
             case "All":
                 dispatch(actions._updateState({
                     visibility,
-                    category: CATEGORY_ALL,
-                    parameter: PARAMETER_ALL
+                    configOthersParameter: CONFIG_OTHERS_PARAMETER_ALL,
+                    configMaterialParameter: CONFIG_MATERIAL_PARAMETER_ALL
                 }));
                 break;
         }
