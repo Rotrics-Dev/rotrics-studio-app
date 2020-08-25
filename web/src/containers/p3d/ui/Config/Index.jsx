@@ -4,6 +4,7 @@ import {Space, Button} from 'antd';
 import messageI18n from "../../../../utils/messageI18n";
 import ConfigMaterial from './ConfigMaterial.jsx';
 import ConfigOthers from './ConfigOthers.jsx';
+import ConfigVisibility from "./ConfigVisibility.jsx";
 import FileSaver from 'file-saver';
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
@@ -83,6 +84,7 @@ class Index extends React.Component {
                         <ActionButton onClick={actions.stopTask} text={t("Stop Send")}
                                       style={{width: "calc(50% - 4px)"}}/>
                     </div>
+                    <ConfigVisibility/>
                     <ConfigMaterial/>
                     <ConfigOthers/>
                 </Space>

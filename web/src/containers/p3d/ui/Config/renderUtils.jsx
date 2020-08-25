@@ -28,18 +28,17 @@ const convertOptions = (options, t) => {
  * 将category的children渲染为react elements
  * @param children         category的children
  * @param categoryKey      category的key
- * @param separator        分隔符
  * @param t                i18n
  * @param tooltipId
  * @param updateParameterFunc  function
  * @param allowUpdateParameter bool: 是否允许修改parameter
  * @returns {Array}
  */
-const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
+const renderCategoryChildren = (children, categoryKey, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
     let result = [];
     for (let key in children) {
-        let keyChain = categoryKey + separator + key; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
-        const offset = keyChain.split(separator).length - 2; //随层级缩进
+        let keyChain = `${categoryKey}.${key}`; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
+        const offset = keyChain.split(".").length - 2; //随层级缩进
         const child = children[key];
         if (child instanceof Object) {
             if (!PARAMETER_TYPES_DISPLAYED.includes(child.type)) {
@@ -60,7 +59,7 @@ const renderCategoryChildren = (children, categoryKey, separator, t, tooltipId, 
                         </Row>
                     </div>
                 );
-                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, separator, t, tooltipId, updateParameterFunc, allowUpdateParameter))
+                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, t, tooltipId, updateParameterFunc, allowUpdateParameter))
             } else {
                 //叶节点
                 let {label, description, unit, type, default_value, minimum_value, maximum_value, options} = child;
@@ -164,7 +163,6 @@ const wrapCollapsePanel = (header, icon, elements) => {
             extra={extra}
             style={{
                 fontSize: "13px",
-                background: "#eeeeee"
             }}
         >
             {elements}

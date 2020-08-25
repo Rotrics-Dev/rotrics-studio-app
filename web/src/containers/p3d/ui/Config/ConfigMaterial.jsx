@@ -30,10 +30,16 @@ class ConfigMaterial extends PureComponent {
             return this.props.t("cura#" + key);
         };
 
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
+
         const {name, isOfficial} = selected;
         const elements4Radio =
             <Radio.Group
-                style={{margin: "3px 0 0 3px"}}
+                style={{padding: "3px 0 0 8px"}}
                 key="2"
                 size="small"
                 defaultValue={name}
@@ -42,13 +48,14 @@ class ConfigMaterial extends PureComponent {
                 {materials.map(item => {
                     const {name: itemName} = item;
                     return (
-                        <Radio.Button
+                        <Radio
+                            style={radioStyle}
                             key={itemName}
                             size="small"
                             checked={itemName === name}
                             value={itemName}>
                             {itemName}
-                        </Radio.Button>
+                        </Radio>
                     );
                 })}
             </Radio.Group>;
@@ -57,7 +64,7 @@ class ConfigMaterial extends PureComponent {
         const icon = null;
         const categoryKey = "material.children";
         const allowUpdateParameter = !isOfficial;
-        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
 
         const elements = [elements4Radio, ...elements4categoryChildren];
         const panels = wrapCollapsePanel(header, icon, elements);
@@ -78,9 +85,11 @@ class ConfigMaterial extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {materials, selected} = state.p3dConfigMaterial;
+    const {parameter} = state.p3dConfigVisibility;
     return {
         materials,
-        selected
+        selected,
+        parameter
     };
 };
 

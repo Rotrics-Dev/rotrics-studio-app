@@ -9,14 +9,6 @@ import {actions as p3dConfigOthersActions} from "../../../../reducers/p3dConfigO
 
 const tooltipId = getUuid();
 
-const category_basic = ["resolution", "shell", "infill"];
-const parameter_basic = [
-    "resolution.layer_height", "resolution.layer_height_0",
-    "resolution.line_width", "resolution.line_width.wall_line_width.wall_line_width_0", "resolution.line_width.wall_line_width.wall_line_width_x",
-    "resolution.layer_height",
-    "shell",
-    "infill"];
-
 const category_all = [
     "resolution",
     "shell",
@@ -32,7 +24,6 @@ const category_all = [
     "blackmagic",
     "experimental"
 ];
-const parameter_all = [];
 
 const displayedCategories = category_all;
 
@@ -57,10 +48,16 @@ class ConfigOthers extends React.Component {
             return this.props.t("cura#" + key);
         };
 
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
+
         const {name, isOfficial, settings} = selected;
         const elements4Radio =
             <Radio.Group
-                style={{margin: "3px 0 0 3px", backgroundColor: "#eeeeee"}}
+                style={{padding: "3px 0 0 8px"}}
                 key="2"
                 size="small"
                 defaultValue={name}
@@ -69,13 +66,14 @@ class ConfigOthers extends React.Component {
                 {configs.map(item => {
                     const {name: itemName} = item;
                     return (
-                        <Radio.Button
+                        <Radio
+                            style={radioStyle}
                             key={itemName}
                             size="small"
                             checked={itemName === name}
                             value={itemName}>
                             {itemName}
-                        </Radio.Button>
+                        </Radio>
                     );
                 })}
             </Radio.Group>;
@@ -88,7 +86,7 @@ class ConfigOthers extends React.Component {
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
                 const allowUpdateParameter = !isOfficial;
-                const elements = renderCategoryChildren(category.children, categoryKey, ".", tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+                const elements = renderCategoryChildren(category.children, categoryKey, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
                 panels = panels.concat(wrapCollapsePanel(header, icon, elements));
             }
         }
@@ -96,7 +94,7 @@ class ConfigOthers extends React.Component {
         const collapse = wrapCollapse(elements);
 
         return (
-            <div style={{backgroundColor: "#e0e0e0", width: "100%"}}>
+            <div>
                 <Tooltip
                     id={tooltipId}
                     place="left"
@@ -108,7 +106,6 @@ class ConfigOthers extends React.Component {
                             header="Printing Settings"
                             style={{
                                 fontSize: "13px",
-                                background: "#eeeeee"
                             }}>
                             {collapse}
                         </Collapse.Panel>
