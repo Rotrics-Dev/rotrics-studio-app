@@ -4,9 +4,15 @@ import {actions as p3dSettingVisibilityActions} from "../../../../reducers/p3dSe
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 
+const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px',
+};
+
 class SettingVisibility extends React.Component {
     actions = {
-        onChange: (e) => {
+        changeVisibility: (e) => {
             this.props.changeVisibility(e.target.value)
         }
     };
@@ -15,21 +21,16 @@ class SettingVisibility extends React.Component {
         const {t} = this.props;
         const {visibility} = this.props;
         const actions = this.actions;
-        const radioStyle = {
-            display: 'block',
-            height: '30px',
-            lineHeight: '30px',
-        };
         return (
             <div>
                 <Collapse defaultActiveKey={['1']} expandIconPosition="right">
-                    <Collapse.Panel header="Setting Visibility" key="1">
+                    <Collapse.Panel header={t("Setting Visibility")} key="1">
                         <Radio.Group
                             style={{padding: "3px 0 0 8px"}}
                             key="2"
                             size="small"
                             defaultValue={visibility}
-                            onChange={actions.onChange}
+                            onChange={actions.changeVisibility}
                         >
                             <Radio style={radioStyle} value={"Basic"} checked={visibility === "Basic"}>
                                 {"Basic"}

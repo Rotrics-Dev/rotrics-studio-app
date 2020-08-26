@@ -1,21 +1,17 @@
 import React from 'react';
-import styles from './styles.css';
-import {Space, Button} from 'antd';
+import {connect} from 'react-redux';
+import {Space} from 'antd';
 import messageI18n from "../../../../utils/messageI18n";
 import SettingVisibility from "./SettingVisibility.jsx";
 import MaterialSettings from './MaterialSettings.jsx';
 import PrintSettings from './PrintSettings.jsx';
 import FileSaver from 'file-saver';
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
-import {connect} from 'react-redux';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {withTranslation} from 'react-i18next';
-
 import ActionButton from '../../../../components/ActionButton/Index.jsx';
 
 class Index extends React.Component {
-    state = {};
-
     actions = {
         generateGcode: () => {
             if (this.props.modelCount === 0) {
@@ -33,9 +29,9 @@ class Index extends React.Component {
                 messageI18n.warning('Generate G-code first');
                 return;
             }
-            const date = new Date();
+            const d = new Date();
             //https://blog.csdn.net/xu511739113/article/details/72764321
-            const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+            const arr = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()];
             const fileName = arr.join("") + ".gcode";
             const {gcodeUrl} = this.props.result;
             fetch(gcodeUrl)

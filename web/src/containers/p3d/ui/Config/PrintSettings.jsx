@@ -8,8 +8,12 @@ import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderU
 import {actions as p3dPrintSettingsActions} from "../../../../reducers/p3dPrintSettings";
 
 const tooltipId = getUuid();
-
-const category_all = [
+const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px',
+};
+const displayedCategories = [
     "resolution",
     "shell",
     "infill",
@@ -25,14 +29,12 @@ const category_all = [
     "experimental"
 ];
 
-const displayedCategories = category_all;
-
 class PrintSettings extends React.Component {
     actions = {
-        updateParameter: (keyChain, value) => {
+        updateSetting: (keyChain, value) => {
             this.props.update(`settings.${keyChain}.default_value`, value);
         },
-        onChange: (e) => {
+        selectSettings: (e) => {
             this.props.select(e.target.value)
         }
     };
@@ -43,26 +45,19 @@ class PrintSettings extends React.Component {
             return null;
         }
 
-        const {printSettingsFilter} = this.props;
         const actions = this.actions;
         const tCura = (key) => {
             return this.props.t("cura#" + key);
         };
 
-        const radioStyle = {
-            display: 'block',
-            height: '30px',
-            lineHeight: '30px',
-        };
-
         const {name, isOfficial} = selected;
-        const elements4Radio =
+        const radioGroup =
             <Radio.Group
                 style={{padding: "3px 0 0 8px"}}
                 key="2"
                 size="small"
                 defaultValue={name}
-                onChange={actions.onChange}
+                onChange={actions.selectSettings}
             >
                 {settings.map(item => {
                     const {name: itemName} = item;
@@ -79,39 +74,37 @@ class PrintSettings extends React.Component {
                 })}
             </Radio.Group>;
 
-        let panels = [];
+        const {printSettingsFilter} = this.props;
+        let collapsePanels = [];
         for (let key in selected.settings) {
             if (displayedCategories.includes(key)) {
                 const category = selected.settings[key];
                 const header = tCura(category.label);
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
-                const allowUpdateParameter = !isOfficial;
-                const elements = renderCategoryChildren(category.children, categoryKey, printSettingsFilter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
-                panels = panels.concat(wrapCollapsePanel(header, icon, elements));
+                const editable = !isOfficial;
+                const elements4settings = renderCategoryChildren(category.children, categoryKey, printSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
+                collapsePanels = collapsePanels.concat(wrapCollapsePanel(header, icon, elements4settings));
             }
         }
-        const elements = [elements4Radio, ...panels];
+        const elements = [radioGroup, ...collapsePanels];
         const collapse = wrapCollapse(elements);
-
         return (
             <div>
                 <Tooltip
                     id={tooltipId}
                     place="left"
                 />
-                <div>
-                    <Collapse expandIconPosition="right">
-                        <Collapse.Panel
-                            key="1"
-                            header="Print Settings"
-                            style={{
-                                fontSize: "13px",
-                            }}>
-                            {collapse}
-                        </Collapse.Panel>
-                    </Collapse>
-                </div>
+                <Collapse expandIconPosition="right">
+                    <Collapse.Panel
+                        key="1"
+                        header="Print Settings"
+                        style={{
+                            fontSize: "13px",
+                        }}>
+                        {collapse}
+                    </Collapse.Panel>
+                </Collapse>
             </div>
         )
     }

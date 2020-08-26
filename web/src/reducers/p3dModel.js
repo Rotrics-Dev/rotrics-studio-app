@@ -356,8 +356,8 @@ const actions = {
         dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
 
         //异步切片
-        const filenameConfigMaterial = getState().p3dMaterialSettings.selected.filename;
-        const filenameConfigOther = getState().p3dPrintSettings.selected.filename;
+        const materialSettingFilename = getState().p3dMaterialSettings.selected.filename;
+        const printSettingFilename = getState().p3dPrintSettings.selected.filename;
         const id = getUuid();
         socketClientManager.removeAllServerListener(P3D_SLICE_STATUS);
         socketClientManager.addServerListener(P3D_SLICE_STATUS, (data) => {
@@ -377,7 +377,7 @@ const actions = {
                 dispatch(actions._renderGcode(gcodeUrl));
             }
         });
-        socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, filenameConfigMaterial, filenameConfigOther, id})
+        socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, materialSettingFilename, printSettingFilename, id})
     },
     _renderGcode: (gcodeUrl) => (dispatch) => {
         dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));
@@ -502,7 +502,7 @@ const destoryGcodeObj3d = () => {
     rendererParent4gcode.remove(...rendererParent4gcode.children);
 };
 
-const addGcodeObj3d  = (object3d) => {
+const addGcodeObj3d = (object3d) => {
     rendererParent4gcode.remove(...rendererParent4gcode.children);
     rendererParent4gcode.add(object3d);
 };

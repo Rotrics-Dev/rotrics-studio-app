@@ -26,16 +26,16 @@ const convertOptions = (options, t) => {
 
 /**
  * 将category的children渲染为react elements
- * @param children         category的children
- * @param categoryKey      category的key
- * @param keyChainFilter   根据keyChain过滤；如果是null，则不过滤，显示全部
- * @param t                i18n
+ * @param children           category的children
+ * @param categoryKey        category的key
+ * @param keyChainFilter     根据keyChain过滤；如果是null，则不过滤，显示全部
+ * @param t                  i18n
  * @param tooltipId
- * @param updateParameterFunc  function
- * @param allowUpdateParameter bool: 是否允许修改parameter
+ * @param updateSettingFunc  function
+ * @param editable           bool: 是否允许修改parameter
  * @returns {Array}
  */
-const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, tooltipId, updateParameterFunc, allowUpdateParameter = false) => {
+const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, tooltipId, updateSettingFunc, editable = false) => {
     let result = [];
     for (let key in children) {
         let keyChain = `${categoryKey}.${key}`; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
@@ -65,7 +65,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                         </Row>
                     </div>
                 );
-                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, keyChainFilter, t, tooltipId, updateParameterFunc, allowUpdateParameter))
+                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, keyChainFilter, t, tooltipId, updateSettingFunc, editable))
             } else {
                 //叶节点
                 let {label, description, unit, type, default_value, minimum_value, maximum_value, options} = child;
@@ -92,13 +92,13 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             {type === "float" &&
                             <Col span={7}>
                                 <NumberInput
-                                    disabled={!allowUpdateParameter}
+                                    disabled={!editable}
                                     precision={1}
                                     min={minimum_value}
                                     max={maximum_value}
                                     value={default_value}
                                     onAfterChange={(value) => {
-                                        updateParameterFunc(keyChain, value)
+                                        updateSettingFunc(keyChain, value)
                                     }}
                                 />
                             </Col>
@@ -106,13 +106,13 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             {type === "int" &&
                             <Col span={7}>
                                 <NumberInput
-                                    disabled={!allowUpdateParameter}
+                                    disabled={!editable}
                                     precision={0}
                                     min={minimum_value}
                                     max={maximum_value}
                                     value={default_value}
                                     onAfterChange={(value) => {
-                                        updateParameterFunc(keyChain, value)
+                                        updateSettingFunc(keyChain, value)
                                     }}
                                 />
                             </Col>
@@ -120,10 +120,10 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             {type === "bool" &&
                             <Col span={7}>
                                 <Checkbox
-                                    disabled={!allowUpdateParameter}
+                                    disabled={!editable}
                                     checked={default_value}
                                     onChange={(e) => {
-                                        updateParameterFunc(keyChain, e.target.checked)
+                                        updateSettingFunc(keyChain, e.target.checked)
                                     }}
                                 />
                             </Col>
@@ -131,11 +131,11 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             {type === "enum" &&
                             <Col span={7}>
                                 <ConfigSelect
-                                    disabled={!allowUpdateParameter}
+                                    disabled={!editable}
                                     options={convertOptions(options, t)}
                                     value={default_value}
                                     onChange={(value) => {
-                                        updateParameterFunc(keyChain, value)
+                                        updateSettingFunc(keyChain, value)
                                     }}
                                 />
                             </Col>

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
-import {P3D_CONFIG_MATERIAL_FETCH, P3D_CONFIG_MATERIAL_UPDATE} from "../constants";
+import {P3D_CONFIG_MATERIAL_SETTINGS_FETCH, P3D_CONFIG_MATERIAL_SETTING_UPDATE} from "../constants";
 
 const ACTION_UPDATE_STATE = 'p3dMaterialSettings/ACTION_UPDATE_STATE';
 
@@ -23,7 +23,7 @@ const actions = {
                 selected: null
             }));
         });
-        socketClientManager.addServerListener(P3D_CONFIG_MATERIAL_FETCH, (settings) => {
+        socketClientManager.addServerListener(P3D_CONFIG_MATERIAL_SETTINGS_FETCH, (settings) => {
             let {selected} = getState().p3dMaterialSettings;
             if (!selected) {
                 for (let i = 0; i < settings.length; i++) {
@@ -52,7 +52,7 @@ const actions = {
         });
     },
     fetch: () => {
-        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_FETCH);
+        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_SETTINGS_FETCH);
         return {type: null};
     },
     /**
@@ -69,7 +69,7 @@ const actions = {
         _.set(selected, keyChain, value);
         //更新server
         const {filename} = selected;
-        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_UPDATE, {filename, keyChain, value});
+        socketClientManager.emitToServer(P3D_CONFIG_MATERIAL_SETTING_UPDATE, {filename, keyChain, value});
         return {type: null};
     },
     rename: (newName) => {

@@ -8,13 +8,18 @@ import {getUuid} from "../../../../utils";
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
 
 const tooltipId = getUuid();
+const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px',
+};
 
 class MaterialSettings extends PureComponent {
     actions = {
-        updateParameter: (keyChain, value) => {
+        updateSetting: (keyChain, value) => {
             this.props.update(`${keyChain}.default_value`, value);
         },
-        onChange: (e) => {
+        selectSettings: (e) => {
             this.props.select(e.target.value)
         }
     };
@@ -25,27 +30,19 @@ class MaterialSettings extends PureComponent {
             return null;
         }
 
-        const {materialSettingsFilter} = this.props;
-
         const actions = this.actions;
         const tCura = (key) => {
             return this.props.t("cura#" + key);
         };
 
-        const radioStyle = {
-            display: 'block',
-            height: '30px',
-            lineHeight: '30px',
-        };
-
         const {name, isOfficial} = selected;
-        const elements4Radio =
+        const radioGroup =
             <Radio.Group
                 style={{padding: "3px 0 0 8px"}}
                 key="2"
                 size="small"
                 defaultValue={name}
-                onChange={actions.onChange}
+                onChange={actions.selectSettings}
             >
                 {settings.map(item => {
                     const {name: itemName} = item;
@@ -62,15 +59,16 @@ class MaterialSettings extends PureComponent {
                 })}
             </Radio.Group>;
 
-        const header = tCura("Material Settings");
-        const icon = null;
         const categoryKey = "material.children";
-        const allowUpdateParameter = !isOfficial;
-        const elements4categoryChildren = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateParameter, allowUpdateParameter);
+        const {materialSettingsFilter} = this.props;
+        const header = tCura("Material Settings");
+        const editable = !isOfficial;
+        const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
+        const elements = [radioGroup, ...elements4settings];
 
-        const elements = [elements4Radio, ...elements4categoryChildren];
-        const panels = wrapCollapsePanel(header, icon, elements);
-        const collapse = wrapCollapse(panels);
+        const icon = null;
+        const collapsePanel = wrapCollapsePanel(header, icon, elements);
+        const collapse = wrapCollapse(collapsePanel);
         return (
             <div>
                 <Tooltip

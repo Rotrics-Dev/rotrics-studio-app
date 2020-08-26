@@ -1,30 +1,38 @@
 import fs from 'fs';
 import path from 'path';
 import childProcess from 'child_process';
-import {CURA_ENGINE_PATH, CACHE_DIR, P3D_DIR_CONFIG_SETTING_PRINT, P3D_DIR_CONFIG_SETTING_MATERIAL, P3D_DIR_CONFIG} from './init.js';
+import {
+    CURA_ENGINE_PATH,
+    CACHE_DIR,
+    P3D_DIR_CONFIG_PRINT_SETTINGS,
+    P3D_DIR_CONFIG_MATERIAL_SETTINGS,
+    P3D_DIR_CONFIG
+} from './init.js';
 
+// data: {stlUrl, materialSettingFilename, printSettingFilename, id}
+// stlUrl: http://localhost:9000/cache/1591695065752.stl
 const preHandle = (data) => {
-    // data: {stlUrl, filenameConfigMaterial, filenameConfigOther, id}
-    // stlUrl: http://localhost:9000/cache/1591695065752.stl
-    const {stlUrl, filenameConfigMaterial, filenameConfigOther} = data;
-    const materialPath = path.join(P3D_DIR_CONFIG_SETTING_MATERIAL, filenameConfigMaterial);
-    const settingPath = path.join(P3D_DIR_CONFIG_SETTING_PRINT, filenameConfigOther);
+    const {stlUrl, materialSettingFilename, printSettingFilename} = data;
+    const materialSettingFilePath = path.join(P3D_DIR_CONFIG_MATERIAL_SETTINGS, materialSettingFilename);
+    const printSettingFilePath = path.join(P3D_DIR_CONFIG_PRINT_SETTINGS, printSettingFilename);
 
     const configFilename = "fdmprinter.def.json";
-    const configPath = path.join(P3D_DIR_CONFIG, configFilename);
+    const configFilePath = path.join(P3D_DIR_CONFIG, configFilename);
 
-    const contentMaterial = JSON.parse(fs.readFileSync(materialPath, 'utf8'));
-    const contentSetting = JSON.parse(fs.readFileSync(settingPath, 'utf8'));
-    contentSetting.settings.material = contentMaterial.material;
+    const contentMaterialSetting = JSON.parse(fs.readFileSync(materialSettingFilePath, 'utf8'));
+    const contentPrintSetting = JSON.parse(fs.readFileSync(printSettingFilePath, 'utf8'));
+    contentPrintSetting.settings.material = contentMaterialSetting.material;
 
-    if (!fs.existsSync(materialPath)) {
-        console.log("materialPath not exist")
+    if (!fs.existsSync(materialSettingFilePath)) {
+        console.log("materialSettingFilePath not exist")
+        return;
     }
-    if (!fs.existsSync(settingPath)) {
-        console.log("settingPath not exist")
+    if (!fs.existsSync(printSettingFilePath)) {
+        console.log("printSettingFilePath not exist")
+        return;
     }
 
-    fs.existsSync(materialPath) && fs.existsSync(settingPath) && fs.writeFileSync(configPath, JSON.stringify(contentSetting, null, 2));
+    fs.writeFileSync(configFilePath, JSON.stringify(contentPrintSetting, null, 2));
 
     const items = stlUrl.split("/");
     const modelName = items[items.length - 1];
@@ -34,7 +42,7 @@ const preHandle = (data) => {
     const gcodeName = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].join("") + ".gcode";
     const gcodePath = path.join(CACHE_DIR, gcodeName);
 
-    return {configPath, modelPath, gcodePath, gcodeName}
+    return {configPath: configFilePath, modelPath, gcodePath, gcodeName}
 };
 
 const callCuraEngine = (modelPath, activatedSettingPath, gcodePath) => {
@@ -44,11 +52,10 @@ const callCuraEngine = (modelPath, activatedSettingPath, gcodePath) => {
     );
 };
 
+// data: {stlUrl, materialSettingFilename, printSettingFilename, id}
 const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
-    let progress, filamentLength, filamentWeight, printTime;
-
     const {configPath, modelPath, gcodePath, gcodeName} = preHandle(data);
-
+    let progress, filamentLength, filamentWeight, printTime;
     if (!fs.existsSync(CURA_ENGINE_PATH)) {
         onError(`Slice Error: Cura Engine not exist -> ${CURA_ENGINE_PATH}`);
         return;
@@ -65,11 +72,8 @@ const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
     const process = callCuraEngine(modelPath, configPath, gcodePath);
 
     process.stderr.on('data', (data) => {
-        // console.log(data.toString())
         let array = data.toString().split('\n');
-
         array.map((item) => {
-            console.log("### " + item)
             if (item.length < 10) {
                 return null;
             }
@@ -83,7 +87,6 @@ const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
                 filamentWeight = Math.PI * (1.75 / 2) * (1.75 / 2) * filamentLength * 1.24;
             } else if (item.indexOf('Print time (s):') === 0) {
                 // add empirical parameter : 1.07
-                console.log("printTime: " + printTime)
                 printTime = Number(item.replace('Print time (s):', '').trim()) * 1.07;
             }
             return null;
