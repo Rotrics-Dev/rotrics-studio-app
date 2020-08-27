@@ -97,6 +97,7 @@ class PrintSettings extends React.Component {
                 />
                 <Collapse expandIconPosition="right">
                     <Collapse.Panel
+                        forceRender={true}
                         key="1"
                         header="Print Settings"
                         style={{

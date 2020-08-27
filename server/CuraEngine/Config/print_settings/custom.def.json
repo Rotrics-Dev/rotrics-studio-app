@@ -286,7 +286,7 @@
         "machine_nozzle_heat_up_speed": {
           "label": "Heat Up Speed",
           "description": "The speed (°C/s) by which the nozzle heats up averaged over the window of normal printing temperatures and the standby temperature.",
-          "default_value": 2.0,
+          "default_value": 2,
           "unit": "°C/s",
           "type": "float",
           "enabled": "machine_nozzle_temp_enabled",
@@ -296,7 +296,7 @@
         "machine_nozzle_cool_down_speed": {
           "label": "Cool Down Speed",
           "description": "The speed (°C/s) by which the nozzle cools down averaged over the window of normal printing temperatures and the standby temperature.",
-          "default_value": 2.0,
+          "default_value": 2,
           "unit": "°C/s",
           "type": "float",
           "enabled": "machine_nozzle_temp_enabled",
@@ -306,7 +306,7 @@
         "machine_min_cool_heat_time_window": {
           "label": "Minimal Time Standby Temperature",
           "description": "The minimal time an extruder has to be inactive before the nozzle is cooled. Only when an extruder is not used for longer than this time will it be allowed to cool down to the standby temperature.",
-          "default_value": 50.0,
+          "default_value": 50,
           "unit": "s",
           "type": "float",
           "enabled": "machine_nozzle_temp_enabled",
@@ -356,8 +356,7 @@
           "label": "Disallowed Areas",
           "description": "A list of polygons with areas the print head is not allowed to enter.",
           "type": "polygons",
-          "default_value": [
-          ],
+          "default_value": [],
           "settable_per_mesh": false,
           "settable_per_extruder": false,
           "settable_per_meshgroup": false
@@ -366,8 +365,7 @@
           "label": "Nozzle Disallowed Areas",
           "description": "A list of polygons with areas the nozzle is not allowed to enter.",
           "type": "polygons",
-          "default_value": [
-          ],
+          "default_value": [],
           "settable_per_mesh": false,
           "settable_per_extruder": false,
           "settable_per_meshgroup": false
@@ -550,7 +548,7 @@
           "description": "Default jerk for movement in the horizontal plane.",
           "unit": "mm/s",
           "type": "float",
-          "default_value": 20.0,
+          "default_value": 20,
           "minimum_value": "0",
           "settable_per_mesh": false,
           "settable_per_extruder": false,
@@ -572,7 +570,7 @@
           "description": "Default jerk for the motor of the filament.",
           "unit": "mm/s",
           "type": "float",
-          "default_value": 5.0,
+          "default_value": 5,
           "minimum_value": "0",
           "settable_per_mesh": false,
           "settable_per_extruder": false,
@@ -643,7 +641,7 @@
           "description": "The minimal movement speed of the print head.",
           "unit": "mm/s",
           "type": "float",
-          "default_value": 0.0,
+          "default_value": 0,
           "settable_per_mesh": false,
           "settable_per_extruder": false,
           "settable_per_meshgroup": false
@@ -653,7 +651,7 @@
           "description": "The diameter of the wheel that drives the material in the feeder.",
           "unit": "mm",
           "type": "float",
-          "default_value": 10.0,
+          "default_value": 10,
           "settable_per_mesh": false,
           "settable_per_extruder": true
         }
@@ -5586,7 +5584,7 @@
             "surface": "Surface",
             "both": "Both"
           },
-          "default_value": "normal",
+          "default_value": "both",
           "settable_per_mesh": true
         },
         "magic_spiralize": {

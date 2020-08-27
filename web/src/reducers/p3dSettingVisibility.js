@@ -24,9 +24,9 @@ const PRINT_SETTINGS_BASIC = [
 ];
 
 const INITIAL_STATE = {
-    visibility: "Basic", //Basic, All
-    materialSettingsFilter: MATERIAL_SETTINGS_BASIC,
-    printSettingsFilter: PRINT_SETTINGS_BASIC
+    visibility: "All", //Basic, All
+    materialSettingsFilter: MATERIAL_SETTINGS_ALL,
+    printSettingsFilter: PRINT_SETTINGS_ALL
 };
 
 const actions = {

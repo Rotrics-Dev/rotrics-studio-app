@@ -16,9 +16,12 @@ const extract = (filePathIn, filePathOutput) => {
                 line1.indexOf("msgid ") === 0 &&
                 line2.indexOf("msgstr ") === 0
             ) {
-                const msgctxt = line0.replace("msgctxt", "").replace(/\"/g, "").trim();
-                const msgid = line1.replace("msgid", "").replace(/\"/g, "").trim();
-                const msgstr = line2.replace("msgstr", "").replace(/\"/g, "").trim();
+                let msgid = line1.replace("msgid", "").trim();
+                let msgstr = line2.replace("msgstr", "").trim();
+                //去除前后的"引号"，并去除转义
+                //因为jsObj[msgid] = msgid; 最后变成json文件，会自动转义
+                msgid = msgid.substr(1, msgid.length - 2).replace(/\\/g, "").trim();
+                msgstr = msgstr.substr(1, msgstr.length - 2).replace(/\\/g, "").trim();
                 if (msgstr.length === 0) {
                     jsObj[msgid] = msgid;
                 } else {
@@ -30,18 +33,20 @@ const extract = (filePathIn, filePathOutput) => {
     fs.writeFileSync(filePathOutput, JSON.stringify(jsObj, null, 2));
 };
 
+/**
+ * 从i18n_cura目录中，抽取需要的翻译字段
+ * 并写到/build-web/asset/i18n/cura/中
+ */
 const extract_i18n_cura = () => {
-    //从i18n_cura目录中，抽取需要的翻译字段
-    //并写到/build-web/asset/i18n/cura/中
     const dirIn = "./i18n_cura/";
     const dirOutput = "./build-web/asset/i18n/cura/";
     const fdmJsonFilename = "fdmprinter.def.json.po";
 
     fs.mkdirSync(dirOutput, {recursive: true});
 
-    const fileNames = fs.readdirSync(dirIn);
+    const filenames = fs.readdirSync(dirIn);
     const subDirNames = []; //i18n_cura下文件夹名字
-    fileNames.forEach((filename) => {
+    filenames.forEach((filename) => {
         const stats = fs.statSync(`${dirIn}${filename}`);
         if (stats.isDirectory()) {
             subDirNames.push(filename)
@@ -52,7 +57,9 @@ const extract_i18n_cura = () => {
         const filePathIn = `${dirIn}${subDirName}/${fdmJsonFilename}`;
         //下划线变中线
         const filePathOut = `${dirOutput}${subDirName.replace("_", "-")}.json`;
-        extract(filePathIn, filePathOut);
+        if (fs.existsSync(filePathIn)) {
+            extract(filePathIn, filePathOut);
+        }
     });
 
     //english
