@@ -26,7 +26,7 @@
       "machine_start_gcode": {
         "label": "Start G-code",
         "description": "G-code commands to be executed at the very start - separated by \\n.",
-        "default_value": "G28 ;Home\nG1 Z15.0 F6000 ;Move the platform down 15mm\n;Prime the extruder\nG92 E0\nG1 F200 E3\nG92 E0",
+        "default_value": ";---------- start gcode ----------\nM2000 ;custom: set to line-mode\nM888 P3 ;custom: current is p3d\n;move header up 10mm\nG1 Z10 F1000\nG92 E0\nG1 F200 E3\nG92 E0\n;---------------------------------",
         "type": "str",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
@@ -35,7 +35,7 @@
       "machine_end_gcode": {
         "label": "End G-code",
         "description": "G-code commands to be executed at the very end - separated by \\n.",
-        "default_value": "M104 S0\nM140 S0\n;Retract the filament\nG92 E1\nG1 E-1 F300\nG28 X0 Y0\nM84",
+        "default_value": ";----------- end gcode -----------\n;move header up 10mm\nG91\nG0 Z10\nG90\nM104 S0\n;retract the filament\nG92 E1\nG1 E-1 F300\n;---------------------------------",
         "type": "str",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
@@ -53,7 +53,7 @@
         "description": "Adjusts the diameter of the filament used. Match this value with the diameter of the used filament.",
         "unit": "mm",
         "type": "float",
-        "default_value": 2.85,
+        "default_value": 1.75,
         "minimum_value": "0.0001",
         "minimum_value_warning": "0.4",
         "maximum_value_warning": "3.5",
@@ -64,7 +64,7 @@
       "material_bed_temp_wait": {
         "label": "Wait for Build Plate Heatup",
         "description": "Whether to insert a command to wait until the build plate temperature is reached at the start.",
-        "default_value": true,
+        "default_value": false,
         "type": "bool",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
@@ -93,7 +93,7 @@
       "material_bed_temp_prepend": {
         "label": "Include Build Plate Temperature",
         "description": "Whether to include build plate temperature commands at the start of the gcode. When the start_gcode already contains build plate temperature commands Cura frontend will automatically disable this setting.",
-        "default_value": true,
+        "default_value": false,
         "type": "bool",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
@@ -474,7 +474,7 @@
         "description": "Maximum acceleration for the motor of the X-direction",
         "unit": "mm/s²",
         "type": "float",
-        "default_value": 9000,
+        "default_value": 200,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
         "settable_per_meshgroup": false
@@ -484,7 +484,7 @@
         "description": "Maximum acceleration for the motor of the Y-direction.",
         "unit": "mm/s²",
         "type": "float",
-        "default_value": 9000,
+        "default_value": 200,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
         "settable_per_meshgroup": false
@@ -494,7 +494,7 @@
         "description": "Maximum acceleration for the motor of the Z-direction.",
         "unit": "mm/s²",
         "type": "float",
-        "default_value": 100,
+        "default_value": 200,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
         "settable_per_meshgroup": false
@@ -504,7 +504,7 @@
         "description": "Maximum acceleration for the motor of the filament.",
         "unit": "mm/s²",
         "type": "float",
-        "default_value": 10000,
+        "default_value": 200,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
         "settable_per_meshgroup": false
@@ -514,7 +514,7 @@
         "description": "The default acceleration of print head movement.",
         "unit": "mm/s²",
         "type": "float",
-        "default_value": 4000,
+        "default_value": 200,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
         "settable_per_meshgroup": false
