@@ -18,10 +18,14 @@ const preHandle = (data) => {
 
     const configFilename = "fdmprinter.def.json";
     const configFilePath = path.join(P3D_DIR_CONFIG, configFilename);
+    const machineSettingFilePath = path.join(P3D_DIR_CONFIG, "machine_setting.def.json");
 
     const contentMaterialSetting = JSON.parse(fs.readFileSync(materialSettingFilePath, 'utf8'));
     const contentPrintSetting = JSON.parse(fs.readFileSync(printSettingFilePath, 'utf8'));
+    const contentMachineSetting = JSON.parse(fs.readFileSync(machineSettingFilePath, 'utf8'));
+
     contentPrintSetting.settings.material = contentMaterialSetting.material;
+    contentPrintSetting.settings.machine_settings = contentMachineSetting.machine_settings;
 
     if (!fs.existsSync(materialSettingFilePath)) {
         console.log("materialSettingFilePath not exist")
