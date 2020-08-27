@@ -60,7 +60,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                         >
                             <Col span={24 - offset} offset={offset}>
                                 <ConfigText text={t(label)}/>
-                                <ConfigText text={"##"+keyChain}/>
+                                {/*<ConfigText text={"  "+keyChain}/>*/}
                             </Col>
                         </Row>
                     </div>
@@ -86,7 +86,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             <Col span={16 - offset} offset={offset}>
                                 <ConfigText text={t(label)}/>
                                 {unit && <ConfigText text={`(${unit})`}/>}
-                                <ConfigText text={"##"+keyChain}/>
+                                {/*<ConfigText text={"  "+keyChain}/>*/}
                             </Col>
                             <Col span={1}/>
                             {type === "float" &&

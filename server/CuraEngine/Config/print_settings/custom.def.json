@@ -5584,7 +5584,7 @@
             "surface": "Surface",
             "both": "Both"
           },
-          "default_value": "both",
+          "default_value": "normal",
           "settable_per_mesh": true
         },
         "magic_spiralize": {

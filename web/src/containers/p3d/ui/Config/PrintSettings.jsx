@@ -13,21 +13,6 @@ const radioStyle = {
     height: '30px',
     lineHeight: '30px',
 };
-const displayedCategories = [
-    "resolution",
-    "shell",
-    "infill",
-    // "material",
-    "speed",
-    "travel",
-    "cooling",
-    "support",
-    "platform_adhesion",
-    "dual",
-    "meshfix",
-    "blackmagic",
-    "experimental"
-];
 
 class PrintSettings extends React.Component {
     actions = {
@@ -40,7 +25,7 @@ class PrintSettings extends React.Component {
     };
 
     render() {
-        const {settings, selected} = this.props;
+        const {settings, selected, printSettingsFilter, printSettingsCategoryFilter} = this.props;
         if (!settings || settings.length === 0 || !selected) {
             return null;
         }
@@ -74,10 +59,9 @@ class PrintSettings extends React.Component {
                 })}
             </Radio.Group>;
 
-        const {printSettingsFilter} = this.props;
         let collapsePanels = [];
         for (let key in selected.settings) {
-            if (displayedCategories.includes(key)) {
+            if (printSettingsCategoryFilter.includes(key)) {
                 const category = selected.settings[key];
                 const header = tCura(category.label);
                 const icon = category.icon;
@@ -113,11 +97,13 @@ class PrintSettings extends React.Component {
 
 const mapStateToProps = (state) => {
     const {settings, selected} = state.p3dPrintSettings;
-    const {printSettingsFilter} = state.p3dSettingVisibility;
+    const {printSettingsFilter, printSettingsCategoryFilter} = state.p3dSettingVisibility;
+    console.log(printSettingsCategoryFilter)
     return {
         settings,
         selected,
-        printSettingsFilter
+        printSettingsFilter,
+        printSettingsCategoryFilter
     };
 };
 
