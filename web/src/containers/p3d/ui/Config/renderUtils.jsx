@@ -93,7 +93,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             <Col span={7}>
                                 <NumberInput
                                     disabled={!editable}
-                                    precision={1}
+                                    precision={2}
                                     min={minimum_value}
                                     max={maximum_value}
                                     value={default_value}
