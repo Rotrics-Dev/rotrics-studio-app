@@ -12,13 +12,13 @@
     border-radius: 3px;
 }
 
-.btn_clear {
+.div_clear {
     position: absolute;
     right: 10px;
     bottom: 8px;
 }
 
-.btn_close {
+.div_close {
     position: absolute;
     right: 70px;
     bottom: 8px;

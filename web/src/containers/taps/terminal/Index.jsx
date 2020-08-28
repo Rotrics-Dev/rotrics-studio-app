@@ -114,22 +114,25 @@ class Index extends React.Component {
                         checked={state.debug}>
                         {t("Debug")}
                     </Checkbox>
-                    <Button
-                        className={styles.btn_close}
-                        ghost
-                        type="primary"
-                        size="small"
-                        onClick={actions.close}>
-                        {t("Close")}
-                    </Button>
-                    <Button
-                        ghost
-                        className={styles.btn_clear}
-                        type="primary"
-                        size="small"
-                        onClick={actions.clearReceivedLines}>
-                        {t("Clear")}
-                    </Button>
+                    <div className={styles.div_close}>
+                        <Button
+                            ghost
+                            type="primary"
+                            size="small"
+                            onClick={actions.close}>
+                            {t("Close")}
+                        </Button>
+                    </div>
+                    <div className={styles.div_clear}>
+                        <Button
+                            ghost
+                            type="primary"
+                            size="small"
+                            onClick={actions.clearReceivedLines}>
+                            {t("Clear")}
+                        </Button>
+                    </div>
+
                 </div>
             </Draggable>
         )
