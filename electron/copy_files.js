@@ -34,19 +34,19 @@ copyDirectorySync("../server/CuraEngine/Config", "./CuraEngine/Config");
 const os = process.argv[2];
 switch (os) {
     case "mac":
-        copyDirectorySync("../server/CuraEngine/2.7/macOS", "./CuraEngine/2.7/macOS");
-        fs.chmodSync("./CuraEngine/2.7/macOS/CuraEngine", 511);
+        copyDirectorySync("../server/CuraEngine/4.6.2/macOS", "./CuraEngine/4.6.2/macOS");
+        fs.chmodSync("./CuraEngine/4.6.2/macOS/CuraEngine", 511);
         break;
     case "windows":
-        copyDirectorySync("../server/CuraEngine/2.7/Win-x64", "./CuraEngine/2.7/Win-x64");
-        fs.chmodSync("./CuraEngine/2.7/Win-x64/CuraEngine.exe", 511);
+        copyDirectorySync("../server/CuraEngine/4.6.2/Win-x64", "./CuraEngine/4.6.2/Win-x64");
+        fs.chmodSync("./CuraEngine/4.6.2/Win-x64/CuraEngine.exe", 511);
         break;
     case "linux":
-        copyDirectorySync("../server/CuraEngine/2.7/Linux-x64", "./CuraEngine/2.7/Linux-x64");
-        fs.chmodSync("./CuraEngine/2.7/Linux-x64/CuraEngine", 511);
+        copyDirectorySync("../server/CuraEngine/4.6.2/Linux-x64", "./CuraEngine/4.6.2/Linux-x64");
+        fs.chmodSync("./CuraEngine/4.6.2/Linux-x64/CuraEngine", 511);
         break;
     default:
-        copyDirectorySync("../server/CuraEngine/2.7", "./CuraEngine/2.7");
+        copyDirectorySync("../server/CuraEngine/4.6.2", "./CuraEngine/4.6.2");
         break;
 }
 
