@@ -98,7 +98,6 @@ class PrintSettings extends React.Component {
 const mapStateToProps = (state) => {
     const {settings, selected} = state.p3dPrintSettings;
     const {printSettingsFilter, printSettingsCategoryFilter} = state.p3dSettingVisibility;
-    console.log(printSettingsCategoryFilter)
     return {
         settings,
         selected,
