@@ -52,9 +52,9 @@ const processM894 = (received) => {
 
     const split = received.trim().split(' ');
     gcodeResponseListener && gcodeResponseListener(
-        parseInt(split[1].slice(1, split[1].length)),//X
-        parseInt(split[2].slice(1, split[2].length)),//Y
-        parseInt(split[3].slice(1, split[3].length)),//Z
+        parseFloat(split[1].slice(1, split[1].length)),//X
+        parseFloat(split[2].slice(1, split[2].length)),//Y
+        parseFloat(split[3].slice(1, split[3].length)),//Z
     );
     return true;
 }
@@ -66,9 +66,9 @@ const processM114 = (received) => {
     console.log(received);
 
     gcodeResponseListener && gcodeResponseListener(
-        split[0].split(':')[1],
-        split[1].split(':')[1],
-        split[2].split(':')[1]
+        parseFloat(split[0].split(':')[1]),
+        parseFloat(split[1].split(':')[1]),
+        parseFloat(split[2].split(':')[1])
     );
     return true;
 }

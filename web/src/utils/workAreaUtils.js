@@ -178,19 +178,18 @@ export const getLimit = (z, frontEnd) => {
 
     const zHalfIndex = parseInt((parseInt(z + 0.5) + Math.abs(Z_MIN)) / 2 + 0.5);//copy from firmware code
     let offset = OFFSET[frontEnd];
-    console.log(offset)
     return {
-        outterRadius: LIMIT[zHalfIndex * 2] + offset - SAFE_BOUNDARY,
+        outerRadius: LIMIT[zHalfIndex * 2] + offset - SAFE_BOUNDARY,
         innerRadius: LIMIT[zHalfIndex * 2 + 1] + offset + SAFE_BOUNDARY
     }
 }
-export const getLathePoints = () => {
+export const getLathePoints = (workHeight) => {
     const innerPoints = [];
     let outterPoints = []
-    for (let z = Z_MIN; z <= Z_MAX; z += 2) {
-        const {outterRadius, innerRadius} = getLimit(z, FRONT_END.P3D)
+    for (let z = workHeight; z <= Z_MAX; z += 2) {
+        const {outerRadius, innerRadius} = getLimit(z, FRONT_END.P3D)
         innerPoints.push(new Vector2(innerRadius, z));
-        outterPoints.push(new Vector2(outterRadius, z));
+        outterPoints.push(new Vector2(outerRadius, z));
     }
     outterPoints = outterPoints.concat(innerPoints.reverse())
     outterPoints.push(outterPoints[0])

@@ -24,7 +24,7 @@ let rendererParent = null;
  * @returns {Array}
  */
 const getGcode4runBoundary = () => {
-    const min = Number.MIN_VALUE;
+    const min = -Number.MAX_VALUE;
     const max = Number.MAX_VALUE;
     let _minX = max, _minY = max;
     let _maxX = min, _maxY = min;
@@ -37,14 +37,13 @@ const getGcode4runBoundary = () => {
         _minY = Math.min(minY, _minY);
         _maxY = Math.max(maxY, _maxY);
     }
-
     const p1 = {x: _minX.toFixed(1), y: _minY.toFixed(1)};
     const p2 = {x: _maxX.toFixed(1), y: _minY.toFixed(1)};
     const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
     const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
     const gcodeArr = [];
     gcodeArr.push("M2000");
-    gcodeArr.push("G0 F800");
+    gcodeArr.push("G0 F2000");
     gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
     // gcodeArr.push("M3 S255");
     gcodeArr.push(`G0 X${p2.x} Y${p2.y}`);
@@ -188,11 +187,12 @@ const actions = {
     //update settings
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const selected = getState().laser.model;
+        const {workHeightLaser} = getState().persistentData
         if (!selected) {
             return {type: null};
         }
         //TODO: 是否有更？
-        selected.updateTransformation(key, value, preview);
+        selected.updateTransformation(key, value, preview, workHeightLaser);
         dispatch(actions._updateState({
             transformation: _.cloneDeep(selected.settings.transformation),
             gcode: null

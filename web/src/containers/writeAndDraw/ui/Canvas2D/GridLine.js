@@ -22,8 +22,8 @@ class GridLine {
             const color = (x === 0) ? colorCenterLine : colorGrid;
 
             geometry.vertices.push(
-                new THREE.Vector3(x, -sizeY + 200, 0),
-                new THREE.Vector3(x, sizeY + 200, 0),
+                new THREE.Vector3(x, -sizeY, 0),
+                new THREE.Vector3(x, sizeY, 0),
             );
             geometry.colors.push(color, color);
 
@@ -38,8 +38,8 @@ class GridLine {
             const color = (y === 0) ? colorCenterLine : colorGrid;
 
             geometry.vertices.push(
-                new THREE.Vector3(-sizeX, y + 200, 0),
-                new THREE.Vector3(sizeX, y + 200, 0),
+                new THREE.Vector3(-sizeX, y, 0),
+                new THREE.Vector3(sizeX, y, 0),
             );
             geometry.colors.push(color, color);
 

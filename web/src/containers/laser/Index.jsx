@@ -1,6 +1,6 @@
 import React from 'react';
 import {Tabs} from 'antd';
-import Canvas2D from './ui/Canvas2D/Index.jsx'
+import {Canvas2dLaser as Canvas2D} from './../writeAndDraw/ui/Canvas2D/Index.jsx'
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";

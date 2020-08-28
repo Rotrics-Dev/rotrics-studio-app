@@ -52,9 +52,9 @@ class CoordinateAxes {
 
         this.group.add(
             buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(width, 0, 0), red, false), // +X
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-width, 0, 0), red, true), // -X
+            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-width, 0, 0), red, false), // -X
             buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, height, 0), green, false), // +Y
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -height, 0), green, true), // -Y
+            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -height, 0), green, false), // -Y
         );
 
         return this.group;

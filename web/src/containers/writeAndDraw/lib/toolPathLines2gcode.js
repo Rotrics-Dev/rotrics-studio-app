@@ -1,10 +1,15 @@
-const toolPathLines2gcode = (toolPathLines, settings, write_and_draw, workHeight) => {
+// import {GO_TO_WORK_HEIGHT} from "../../../constants";
+// import {persistents, WORK_HEIGHT_PLACE_HOLDER} from "../../../reducers/persistentData";
+// import {FRONT_END} from "../../../utils/workAreaUtils";
+
+const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
     const work_speed_value = settings.working_parameters.children.work_speed.default_value;
     const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
     const jog_pen_offset = write_and_draw.jog_pen_offset.default_value;//空闲抬笔高度
+    // const workHeight = persistents.getFloat(FRONT_END.PEN);
 
     const {x, y} = settings.transformation.children;
     const translateX = x.default_value;
@@ -53,10 +58,12 @@ const toolPathLines2gcode = (toolPathLines, settings, write_and_draw, workHeight
                     break;
                 case 'M':
                     if (value === 3) {
-                        cmds.push(`G1 Z${workHeight}`)
+                        // cmds.push(`G1 Z${workHeight}`)
+                        cmds.push(`G1 Z0`)
                     } else if (value === 5) {
                         //TODO
-                        cmds.push(`G0 Z${(workHeight - -jog_pen_offset)}`)
+                        // cmds.push(`G0 Z${(workHeight - -jog_pen_offset)}`)
+                        cmds.push(`G0 Z${jog_pen_offset}`)
                     } else {
                         cmds.push(key + value);
                     }

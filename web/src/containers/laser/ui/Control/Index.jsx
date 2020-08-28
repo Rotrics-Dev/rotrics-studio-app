@@ -6,6 +6,7 @@ import DeviceControl from "../../../_deviceControl/Index.jsx"
 import Line from "../../../../components/Line/Index.jsx";
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {withTranslation} from 'react-i18next';
+import {FRONT_END} from "../../../../utils/workAreaUtils";
 
 const INIT_LASER_POWER = 1;
 
@@ -51,7 +52,8 @@ class Index extends React.Component {
         const state = this.state;
         return (
             <div>
-                <DeviceControl/>
+                <DeviceControl
+                    frontEnd={FRONT_END.LASER}/>
                 <Line/>
                 <div style={{padding: "5px"}}>
                     <span>{t('Laser')}</span>

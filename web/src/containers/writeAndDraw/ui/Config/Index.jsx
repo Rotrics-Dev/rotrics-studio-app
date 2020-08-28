@@ -50,6 +50,7 @@ class Index extends React.Component {
             const filename = "select.svg";
             const blob = base64ToBlob(event.target.src.toString());
             const file = new File([blob], filename);
+            console.log(`before:this.props.addModel('svg', ${file});`)
             this.props.addModel('svg', file);
         },
         onChangeFile: async (event) => {

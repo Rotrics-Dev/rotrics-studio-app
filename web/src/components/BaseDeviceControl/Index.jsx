@@ -16,7 +16,8 @@ class Index extends React.Component {
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
-        const {setStep, setWorkHeight, goToWorkHeight} = this.props.actions;
+        const {setStep, setWorkOrigin, goToWorkOrigin} = this.props.actions;
+        const {frontEnd} = this.props;
         const {step} = this.props;
         const {showLevel} = this.props;
         const {t} = this.props;
@@ -68,11 +69,11 @@ class Index extends React.Component {
                 </Row>
                 <Row gutter={[gutter, gutter]}>
                     <Col span={12}>
-                        <input type="button" onClick={goToWorkHeight} className={styles.btn_action_work}
+                        <input type="button" onClick={goToWorkOrigin} className={styles.btn_action_work}
                                value={t("Go To Work Height")}/>
                     </Col>
                     <Col span={12}>
-                        <input type="button" onClick={setWorkHeight} className={styles.btn_action_work}
+                        <input type="button" onClick={setWorkOrigin} className={styles.btn_action_work}
                                value={t("Set Work Height")}/>
                     </Col>
                 </Row>

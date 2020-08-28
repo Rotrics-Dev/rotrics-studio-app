@@ -94,7 +94,6 @@ class MouseController extends THREE.EventDispatcher {
 
     onMouseDown = (event) => {
         event.preventDefault();
-        console.log('MouseController_onMouseDown')
         this.startWorldPosition.copy(ThreeUtils.getEventWorldPosition(event, this.domElement, this.camera));
         if (event.button === THREE.MOUSE.LEFT) {
             if (this.handleObjectSelection(event)) {

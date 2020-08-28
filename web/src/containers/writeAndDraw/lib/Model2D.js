@@ -11,6 +11,7 @@ import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_WRITE_AND_DRAW} from "../../../constants.js"
 import inWorkArea2D from "../../../utils/inWorkArea2D";
+import {FRONT_END, getLimit} from "../../../utils/workAreaUtils";
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -56,7 +57,7 @@ class Model2D extends THREE.Group {
         this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
 
         this.isPreviewed = false;
-
+        this.inWorkArea = true;
         //需要deep clone
         switch (this.fileType) {
             case "svg":
@@ -75,7 +76,6 @@ class Model2D extends THREE.Group {
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
                 this.isPreviewed = true;
-                console.log("previewwd")
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
@@ -89,6 +89,7 @@ class Model2D extends THREE.Group {
         this.img_height = img_height;
 
         const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
+
         // loader.setCrossOrigin("anonymous");
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
@@ -115,8 +116,6 @@ class Model2D extends THREE.Group {
 
         this._display('img');
         this._display('edge');
-
-        // this.preview();
     }
 
     loadToolPath(toolPathLines) {
@@ -145,7 +144,8 @@ class Model2D extends THREE.Group {
                 if (this._isSelected) {
                     this.remove(this.edgeObj3d);
                     const geometry = new THREE.EdgesGeometry(this.imgObj3d.geometry);
-                    this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: 0xff0000}));
+                    const color = this.inWorkArea ? 0x007700 : 0xFF0000;
+                    this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: color}));
                     this.add(this.edgeObj3d);
                 } else {
                     this.edgeObj3d && (this.edgeObj3d.visible = false);
@@ -156,7 +156,7 @@ class Model2D extends THREE.Group {
 
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
-    updateTransformation(key, value, preview) {
+    updateTransformation(key, value, preview, workHeight) {
         switch (key) {
             case "width": {
                 const mWidth = value;
@@ -201,15 +201,17 @@ class Model2D extends THREE.Group {
                 break;
         }
 
-        console.log("2D越界检测:" +
-            inWorkArea2D(
-                184.9, 414,
-                this.position.x, this.position.y,
-                this.settings.transformation.children.width.default_value,
-                this.settings.transformation.children.height.default_value,
-                this.settings.transformation.children.rotation.default_value
-            ));
+        const {outerRadius, innerRadius} = getLimit(workHeight, FRONT_END.PEN)
 
+        this.inWorkArea = inWorkArea2D(
+            innerRadius, outerRadius,
+            this.position.x, this.position.y,
+            this.settings.transformation.children.width.default_value,
+            this.settings.transformation.children.height.default_value,
+            this.settings.transformation.children.rotation.default_value
+        )
+
+        console.log("2D越界检测:" + this.inWorkArea);
 
         this._display("edge");
 
@@ -270,8 +272,8 @@ class Model2D extends THREE.Group {
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode(write_and_draw,workHeight) {
-        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw,workHeight);
+    generateGcode(write_and_draw) {
+        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw);
     }
 
     clone() {
@@ -284,6 +286,19 @@ class Model2D extends THREE.Group {
         instance.loadImg(url, img_width, img_height)
 
         return instance;
+    }
+
+    dispose() {
+        if (this.imgObj3d) {
+            this.imgObj3d.geometry.dispose();
+            this.imgObj3d.material.dispose();
+        }
+        if (this.edgeObj3d) {
+            this.edgeObj3d.geometry.dispose();
+            this.edgeObj3d.material.dispose();
+        }
+        this.imgObj3d = null;
+        this.edgeObj3d = null;
     }
 }
 

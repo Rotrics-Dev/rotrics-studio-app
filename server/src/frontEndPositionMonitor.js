@@ -108,6 +108,8 @@ class FrontEndPositionMonitor extends EventEmitter {
 
     onWriteG92(line) {//设置原点可以带参数
         //todo
+        this.currentZ = this.nextZ = 0;
+        this.sendPosition();
     }
 
     onWriteG92_1(line) {//将原点设置为机器原点
@@ -121,7 +123,7 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     onWriteM114() {
-        this.needProcessM114 = true;
+        // this.needProcessM114 = true;
     }
 
     processM114(line) {
