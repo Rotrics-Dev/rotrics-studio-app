@@ -1,254 +1,106 @@
-import React, {PureComponent} from 'react';
-import {Select, Row, Col, Button} from 'antd';
-import styles from './styles.css';
+import React from 'react';
+import {Radio, Checkbox, Row, Col, Button, Collapse} from 'antd';
+import fdmPrinter from "./fdmprinter.def.json";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Tooltip from '../../../../components/Tooltip/Index.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as p3dSettingActions} from "../../../../reducers/p3dSetting";
-import {connect} from 'react-redux';
-import ActionButton from "../../../../components/ActionButton/Index.jsx";
-import {ConfigText} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
+import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from "../../../../utils";
-
+import {connect} from 'react-redux';
+import {ConfigText, ConfigSelect} from '../../../../components/Config';
+import {withTranslation} from 'react-i18next';
+import styles from './styles.css';
+import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
 
 const tooltipId = getUuid();
 
-const getSettingByName = (settings, name) => {
-    for (let i = 0; i < settings.length; i++) {
-        const item = settings[i];
-        if (item.name === name) {
-            return item;
-        }
-    }
-    return null;
-};
+const category_basic = ["resolution", "shell", "infill"];
+const parameter_basic = [
+    "resolution.layer_height", "resolution.layer_height_0",
+    "resolution.line_width", "resolution.line_width.wall_line_width.wall_line_width_0", "resolution.line_width.wall_line_width.wall_line_width_x",
+    "resolution.layer_height",
+    "shell",
+    "infill"];
 
-class Setting extends PureComponent {
+const category_all = [
+    "resolution",
+    "shell",
+    "infill",
+    // "material",
+    "speed",
+    "travel",
+    "cooling",
+    "support",
+    "platform_adhesion",
+    "dual",
+    "meshfix",
+    "blackmagic",
+    "experimental"
+];
+const parameter_all = [];
+
+const displayedCategories = category_all;
+
+class Index extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+
+    }
+
     actions = {
-        _update: (key, value) => {
-            this.props.update(key, value)
-        },
-        rename: (newName) => {
-            console.log("rename: " + newName)
-        },
-        delete: (name) => {
-            console.log("delete: " + name)
-        },
-        clone: (name) => {
-            console.log("clone: " + name)
-        },
-        select: (name) => {
-            this.props.select(name);
-        },
-        layer_height: (value) => {
-            this.actions._update('overrides.layer_height.default_value', value);
-        },
-        top_thickness: (value) => {
-            this.actions._update('overrides.top_thickness.default_value', value);
-        },
-        infill_sparse_density: (value) => {
-            this.actions._update('overrides.infill_sparse_density.default_value', value);
-        },
-        speed_infill: (value) => {
-            this.actions._update('overrides.speed_infill.default_value', value);
-        },
-        speed_wall_0: (value) => {
-            this.actions._update('overrides.speed_wall_0.default_value', value);
-        },
-        speed_wall_x: (value) => {
-            this.actions._update('overrides.speed_wall_x.default_value', value);
-        },
-        speed_travel: (value) => {
-            this.actions._update('overrides.speed_travel.default_value', value);
+        updateParameter: (keyChain, value) => {
+            console.log(keyChain, value)
         },
     };
 
     render() {
-        let {settings, name} = this.props;
-        if (!name || settings.length === 0) {
-            return null;
-        }
+        const actions = this.actions;
         let {t} = this.props;
         const tCura = (key) => {
-            return t("cura#" + key)
+            return t("cura#" + key);
         };
-        const actions = this.actions;
-        const selected = getSettingByName(settings, name);
-        let {isOfficial = false, overrides} = selected;
-        const {layer_height, top_thickness, infill_sparse_density, speed_infill, speed_wall_0, speed_wall_x, speed_travel} = overrides;
 
-        const settingsButtons = [];
-        for (let i = settings.length - 1; i > -1; i--) {
-            const item = settings[i];
-            settingsButtons.push(
-                <ActionButton
-                    key={i}
-                    style={{width: "100%", marginTop: "3px"}}
-                    type={name === item.name ? 'primary' : ''}
-                    onClick={() => actions.select(item.name)}
-                    text={t("common#" + item.label)}/>)
+        const {settings} = fdmPrinter;
+        let panels = [];
+        for (let key in settings) {
+            if (displayedCategories.includes(key)) {
+                const category = settings[key];
+                const header = tCura(category.label);
+                const icon = category.icon;
+                const elements = renderCategoryChildren(category.children, key, ".", tCura, tooltipId, actions.updateParameter);
+                panels = panels.concat(wrapCollapsePanel(header, icon, elements));
+            }
         }
+        const collapse = wrapCollapse(panels);
 
         return (
-            <div>
+            <div style={{backgroundColor: "#e0e0e0", width: "100%"}}>
                 <Tooltip
                     id={tooltipId}
                     place="left"
                 />
-                <Line/>
-                <div style={{
-                    padding: "8px 8px 0 8px"
-                }}>
-                    {settingsButtons}
-                    <Row
-                        style={{marginTop: "8px"}}
-                        data-for={tooltipId}
-                        data-tip={tCura(layer_height.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(layer_height.label)}/>
-                            <ConfigText text={`(${layer_height.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                precision={2}
-                                disabled={isOfficial}
-                                min={layer_height.minimum_value}
-                                max={layer_height.maximum_value}
-                                value={layer_height.default_value}
-                                onAfterChange={actions.layer_height}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(top_thickness.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(top_thickness.label)}/>
-                            <ConfigText text={`(${top_thickness.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                precision={2}
-                                disabled={isOfficial}
-                                min={top_thickness.minimum_value}
-                                max={top_thickness.maximum_value}
-                                value={top_thickness.default_value}
-                                onAfterChange={actions.top_thickness}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(infill_sparse_density.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(infill_sparse_density.label)}/>
-                            <ConfigText text={`(${infill_sparse_density.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                disabled={isOfficial}
-                                min={infill_sparse_density.minimum_value}
-                                max={infill_sparse_density.maximum_value}
-                                value={infill_sparse_density.default_value}
-                                onAfterChange={actions.infill_sparse_density}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(speed_infill.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(speed_infill.label)}/>
-                            <ConfigText text={`(${speed_infill.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                disabled={isOfficial}
-                                min={speed_infill.minimum_value}
-                                max={speed_infill.maximum_value}
-                                value={speed_infill.default_value}
-                                onAfterChange={actions.speed_infill}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(speed_wall_0.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(speed_wall_0.label)}/>
-                            <ConfigText text={`(${speed_wall_0.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                disabled={isOfficial}
-                                min={speed_wall_0.minimum_value}
-                                max={speed_wall_0.maximum_value}
-                                value={speed_wall_0.default_value}
-                                onAfterChange={actions.speed_wall_0}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(speed_wall_x.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(speed_wall_x.label)}/>
-                            <ConfigText text={`(${speed_wall_x.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                disabled={isOfficial}
-                                min={speed_wall_x.minimum_value}
-                                max={speed_wall_x.maximum_value}
-                                value={speed_wall_x.default_value}
-                                onAfterChange={actions.speed_wall_x}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={tCura(speed_travel.description)}
-                    >
-                        <Col span={19}>
-                            <ConfigText text={tCura(speed_travel.label)}/>
-                            <ConfigText text={`(${speed_travel.unit})`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                disabled={isOfficial}
-                                min={speed_travel.minimum_value}
-                                max={speed_travel.maximum_value}
-                                value={speed_travel.default_value}
-                                onAfterChange={actions.speed_travel}/>
-                        </Col>
-                    </Row>
-                </div>
+                <Collapse expandIconPosition="right">
+                    <Collapse.Panel
+
+                        key="1"
+                        header="Printing Settings"
+                        style={{
+                            fontSize: "13px",
+                            background: "#eeeeee"
+                        }}>
+                        <Radio.Group key="2" onChange={actions.onChange} size="small" defaultValue="a">
+                            <Radio.Button value="a">PLA</Radio.Button>
+                            <Radio.Button value="b">ABS</Radio.Button>
+                            <Radio.Button value="c">Custom</Radio.Button>
+                        </Radio.Group>
+                        {collapse}
+                    </Collapse.Panel>
+                </Collapse>
             </div>
-        );
+        )
     }
 }
 
-const mapStateToProps = (state) => {
-    const {settings, name} = state.p3dSetting;
-    return {
-        settings,
-        name
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        update: (key, value) => dispatch(p3dSettingActions.update(key, value)),
-        rename: (newName) => dispatch(p3dSettingActions.rename(newName)),
-        delete: (name) => dispatch(p3dSettingActions.delete(name)),
-        clone: (name) => dispatch(p3dSettingActions.clone(name)),
-        select: (name) => dispatch(p3dSettingActions.select(name)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(Setting));
-
-
-
+export default (withTranslation(['cura'])(Index));
 

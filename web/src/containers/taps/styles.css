@@ -206,3 +206,37 @@
     background-position: center;
     background-image: url(./images/p3d-hover.svg);
 }
+
+.btn_debug {
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid transparent;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/debug.svg);
+    position: absolute;
+    bottom: 60px;
+}
+
+.btn_debug:active {
+    opacity: 0.4;
+}
+
+.btn_debug_selected {
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid dodgerblue;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/debug.svg);
+    position: absolute;
+    bottom: 60px;
+}

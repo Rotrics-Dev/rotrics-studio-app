@@ -3,7 +3,6 @@ import _ from 'lodash';
 import styles from './styles.css';
 import {Button, Modal, Select, Space, Switch} from 'antd';
 import notificationI18n from "../../utils/notificationI18n";
-import "antd/dist/antd.css";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';

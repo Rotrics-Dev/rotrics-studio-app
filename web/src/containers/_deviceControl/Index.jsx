@@ -54,8 +54,10 @@ class Index extends React.Component {
         rightBottom: () => {
             this.actions._move(`G0 X${this.state.step} Y${-this.state.step}`)
         },
-        setWorkHeight: () => {
+        setWorkOrigin: () => {
             const {frontEnd} = this.props;
+
+            this.props.serialPortWrite('G92.1\n')
             this.props.addOneShootGcodeResponseListener(
                 'M114', (x, y, z) => {
                     console.log(` 'M114', (${x}, ${y}, ${z})`)
@@ -72,30 +74,32 @@ class Index extends React.Component {
                     }
                 }
             );
-
+            this.props.serialPortWrite('G92 Z0\n')
+            this.props.serialPortWrite('M114\n')
         },
-        goToWorkHeight: () => {
-            console.log('goToWorkHeight');
-            const {frontEnd} = this.props;
-            let workHeight = 0;
-            switch (frontEnd) {
-                case FRONT_END.P3D :
-                    workHeight = this.props.workHeightP3d;
-                    break;
-                case FRONT_END.PEN :
-                    workHeight = this.props.workHeightPen;
-                    break;
-                case FRONT_END.LASER :
-                    workHeight = this.props.workHeightLaser;
-                    break;
-            }
-            this.props.start(`G0 Z${workHeight}\n`, false, false)
+        goToWorkOrigin: () => {
+            // console.log('goToWorkOrigin'+JSON.stringify(this.props));
+            // const {frontEnd} = this.props;
+            // let workHeight = 0;
+            // switch (frontEnd) {
+            //     case FRONT_END.P3D :
+            //         workHeight = this.props.workHeightP3d;
+            //         break;
+            //     case FRONT_END.PEN :
+            //         workHeight = this.props.workHeightPen;
+            //         break;
+            //     case FRONT_END.LASER :
+            //         workHeight = this.props.workHeightLaser;
+            //         break;
+            // }
+            // this.props.start(`G0 Z${workHeight}\n`, false, false)
+            this.props.start(`G0 Z0\n`, false, false)
         },
         //G90: absolute position
         //G91: relative position
         //G92: set position
         _move: (moveCmd) => {
-            const gcode = ['G91', moveCmd, 'G90','M114'].join("\n");
+            const gcode = ['G91', moveCmd, 'G90', 'M114'].join("\n");
             this.props.start(gcode, false, false)
         }
     };
@@ -126,7 +130,8 @@ const mapDispatchToProps = (dispatch) => {
         setWorkHeightP3d: (value) => dispatch(persistentDataActions.setWorkHeightP3d(value)),
         setWorkHeightPen: (value) => dispatch(persistentDataActions.setWorkHeightPen(value)),
         setWorkHeightLaser: (value) => dispatch(persistentDataActions.setWorkHeightLaser(value)),
-        addOneShootGcodeResponseListener: (gcode, listener) => dispatch(serialPortAction.addOneShootGcodeResponseListener(gcode, listener))
+        addOneShootGcodeResponseListener: (gcode, listener) => dispatch(serialPortAction.addOneShootGcodeResponseListener(gcode, listener)),
+        serialPortWrite: (gcode) => dispatch(serialPortAction.write(gcode))
     };
 };
 

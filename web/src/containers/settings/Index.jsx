@@ -24,27 +24,22 @@ class Index extends React.Component {
         return (
             <div className={styles.div_container}>
                 <Menu
-                    onClick={actions.changeKey}
                     className={styles.menu}
+                    onClick={actions.changeKey}
                     defaultSelectedKeys={[state.key]}
-                    mode="inline"
                 >
                     <Menu.Item key="General">{t('General')}</Menu.Item>
                     <Menu.Item key="Config">{t('Config')}</Menu.Item>
-                    {/*<Menu.Item key="About">About</Menu.Item>*/}
-                    {/*<Menu.Item key="Console">About</Menu.Item>*/}
                 </Menu>
-                {key === 'General' &&
-                <General/>
-                }
-                {key === 'Config' &&
-                <Config/>
-                }
-                {key === 'About' &&
-                <div className={styles.div_content}>
-                    About
+                <div className={styles.div_menu_item_container}>
+                    {key === 'General' &&
+                    <General/>
+                    }
+                    {key === 'Config' &&
+                    <Config/>
+                    }
                 </div>
-                }
+
             </div>
         )
     }

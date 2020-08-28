@@ -68,7 +68,6 @@ class Index extends React.Component {
             movementModeOptions.push({value: key, label: t(movement.mode[key].label)})
         });
 
-
         const frontEndOptionsObj = teach_and_play.front_end.options;
         const frontEndOptions = [];
         Object.keys(teach_and_play.front_end.options).forEach((key) => {
@@ -108,8 +107,6 @@ class Index extends React.Component {
                         </Row>
                     </Space>
                 </div>
-
-
                 <Line/>
                 <div style={{padding: "6px", width: "100%"}}>
                     <ConfigTitle text={t("Front end")}/>

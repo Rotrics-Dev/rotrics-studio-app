@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import ReactTooltip from "react-tooltip";
-import Tooltip from '../../components/Tooltip/Index.jsx';
+import Tooltip from '../Tooltip/Index.jsx';
 import noop from 'lodash/noop';
 import {Space, Popconfirm} from 'antd';
 import styles from './styles.css';

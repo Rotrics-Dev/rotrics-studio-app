@@ -1,24 +1,21 @@
 import React from 'react';
 import {Tabs} from 'antd';
 import messageI18n from "../../utils/messageI18n";
-import "antd/dist/antd.css";
 import FileSaver from 'file-saver';
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
-
 import Upload from "./ui/Upload/Index.jsx";
 import Transformation from "./ui/Transformation/Index.jsx";
 import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
 import Info from "./ui/Info/Index.jsx";
 import GcodePreviewControl from "./ui/GcodePreviewControl/Index.jsx";
-
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
-
-import styles from './styles.css';
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
+import styles from './styles.css';
+import layout_styles from '../layout_styles.css';
 
 const {TabPane} = Tabs;
 
@@ -43,7 +40,6 @@ class Index extends React.Component {
             this.props.removeAll();
         },
         exportModels: () => {
-            console.log("exportModels")
             if (this.props.modelCount === 0) {
                 messageI18n.warning('Load model first', 1);
                 return;
@@ -79,18 +75,8 @@ class Index extends React.Component {
         };
         const actions = this.actions;
         return (
-            <div style={{
-                width: "100%",
-                height: "100%",
-            }}>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: "351px",
-                    backgroundColor: "#e0e0e0"
-                }}>
+            <div>
+                <div className={layout_styles.div_canvas}>
                     <Canvas3D/>
                 </div>
                 <div style={{
@@ -124,40 +110,18 @@ class Index extends React.Component {
                 }}>
                     <Info/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    right: "315px",
-                    width: "36px"
-                }}>
+                <div className={layout_styles.div_tool_bar}>
                     <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "315px",
-                    backgroundColor: "#F2F2F2",
-                    overflowY: "scroll"
-                }}>
-                    <Tabs type="card" centered={true} size="small" tabBarGutter={0}
-                          tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
-                        <TabPane tab={
-                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                {t('G-code')}
-                            </div>
-                        } key="1">
-                            <Config/>
-                        </TabPane>
-                        <TabPane tab={
-                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                {t('Control')}
-                            </div>
-                        } key="2">
+                <div className={layout_styles.div_right_panel}>
+                    <Tabs centered={true} size="small">
+                        <TabPane tab={t('Control')} key="1">
                             <Control/>
                         </TabPane>
+                        <TabPane tab={t('G-code')} key="2">
+                            <Config/>
+                        </TabPane>
+
                     </Tabs>
                 </div>
             </div>

@@ -12,6 +12,8 @@ import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
 import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
+import inWorkArea2D from "../../../utils/inWorkArea2D";
+import {FRONT_END, getLimit} from "../../../utils/workAreaUtils";
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -63,7 +65,7 @@ class Model2D extends THREE.Group {
         this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
 
         this.isPreviewed = false;
-
+        this.inWorkArea = true;
         //需要deep clone
         switch (this.fileType) {
             case "bw":
@@ -156,7 +158,8 @@ class Model2D extends THREE.Group {
                 if (this._isSelected) {
                     this.remove(this.edgeObj3d);
                     const geometry = new THREE.EdgesGeometry(this.imgObj3d.geometry);
-                    this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: 0xff0000}));
+                    const color = this.inWorkArea ? 0x007700 : 0xFF0000;
+                    this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: color}));
                     this.add(this.edgeObj3d);
                 } else {
                     this.edgeObj3d && (this.edgeObj3d.visible = false);
@@ -167,8 +170,7 @@ class Model2D extends THREE.Group {
 
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
-    updateTransformation(key, value, preview) {
-        // console.log(key + " -> " + value)
+    updateTransformation(key, value, preview, workHeight) {
         switch (key) {
             case "width": {
                 const mWidth = value;
@@ -212,6 +214,18 @@ class Model2D extends THREE.Group {
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+
+        const {outerRadius, innerRadius} = getLimit(workHeight, FRONT_END.LASER)
+
+        this.inWorkArea = inWorkArea2D(
+            innerRadius, outerRadius,
+            this.position.x, this.position.y,
+            this.settings.transformation.children.width.default_value,
+            this.settings.transformation.children.height.default_value,
+            this.settings.transformation.children.rotation.default_value
+        )
+
+        console.log("2D越界检测:" + this.inWorkArea);
 
         this._display("edge");
 

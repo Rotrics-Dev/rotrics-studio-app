@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from '../../components/Tooltip/Index.jsx';
+import Tooltip from '../Tooltip/Index.jsx';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import ReactGA from 'react-ga';
@@ -12,8 +12,9 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
 import Terminal from './terminal/Index.jsx'
+import Debug from '../debug/Index.jsx'
 
-import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../../constants.js";
+import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
 
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
@@ -54,6 +55,7 @@ class Index extends React.Component {
         this.refWriteAndDraw = React.createRef();
         this.refCode = React.createRef();
         this.refSettings = React.createRef();
+        this.refDebug = React.createRef();
     }
 
     actions = {
@@ -122,6 +124,7 @@ class Index extends React.Component {
         this.refWriteAndDraw.current.style.display = 'none';
         this.refCode.current.style.display = 'none';
         this.refSettings.current.style.display = 'none';
+        this.refDebug.current.style.display = 'none';
         switch (tap) {
             case TAP_BASIC:
                 this.refBasic.current.style.display = 'block';
@@ -141,12 +144,15 @@ class Index extends React.Component {
             case TAP_SETTINGS:
                 this.refSettings.current.style.display = 'block';
                 break;
+            case TAP_DEBUG:
+                this.refDebug.current.style.display = 'block';
+                break;
         }
     };
 
     render() {
         const actions = this.actions;
-        const {tap, terminalVisible} = this.props;
+        const {tap} = this.props;
         const {t} = this.props;
         return (
             <div>
@@ -193,6 +199,12 @@ class Index extends React.Component {
                         onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
+                    <button
+                        data-for={tooltipId}
+                        data-tip={t("Debug")}
+                        onClick={() => actions.setTap(TAP_DEBUG)}
+                        className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
+                    />
                 </div>
                 <div className={styles.div_workspace}>
                     <div ref={this.refBasic}>
@@ -212,6 +224,9 @@ class Index extends React.Component {
                     </div>
                     <div ref={this.refSettings}>
                         <Settings/>
+                    </div>
+                    <div ref={this.refDebug}>
+                        <Debug/>
                     </div>
                 </div>
                 <Terminal/>

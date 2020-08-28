@@ -65,7 +65,7 @@ class PrintablePlate extends THREE.Object3D {
             { // Axis Labels
                 const axisXLabel = new TextSprite({
                     x: axisXLength + 10,
-                    y: 200,
+                    y: 0,
                     z: 0,
                     size: 10,
                     text: 'X',
@@ -73,7 +73,7 @@ class PrintablePlate extends THREE.Object3D {
                 });
                 const axisYLabel = new TextSprite({
                     x: 0,
-                    y: axisYLength + 10 + 200,
+                    y: axisYLength + 10,
                     z: 0,
                     size: 10,
                     text: 'Y',
@@ -88,7 +88,7 @@ class PrintablePlate extends THREE.Object3D {
                     if (x !== 0) {
                         const textLabel = new TextSprite({
                             x: x,
-                            y: -4 + 200,
+                            y: -4,
                             z: 0,
                             size: textSize,
                             text: x,
@@ -104,7 +104,7 @@ class PrintablePlate extends THREE.Object3D {
                     if (y !== 0) {
                         const textLabel = new TextSprite({
                             x: -4,
-                            y: y + 200,
+                            y: y,
                             z: 0,
                             size: textSize,
                             text: y + 200,
@@ -119,9 +119,10 @@ class PrintablePlate extends THREE.Object3D {
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
+            group.translateY(200);
 
-            this.setUpWorkArea(this.workHeight)
             this.add(group);
+            this.setUpWorkArea(this.workHeight)
         }
 
         { // Target Point
@@ -142,9 +143,9 @@ class PrintablePlate extends THREE.Object3D {
 
     setUpWorkArea(workHeight) {
         this.workHeight = workHeight;
-        let workArea = this.coordinateSystem.getObjectByName('workArea')
+        let workArea = this.getObjectByName('workArea')
         if (workArea) {
-            this.coordinateSystem.remove(workArea);
+            this.remove(workArea);
             workArea.geometry.dispose();
             workArea.material.dispose();
         }
@@ -153,6 +154,7 @@ class PrintablePlate extends THREE.Object3D {
         if (!limit) {
             return;
         }
+
         const path = new THREE.Path();
         path.moveTo(-limit.outerRadius, 0)
             .arc(limit.outerRadius, 0, limit.outerRadius, -Math.PI, 0, true)
@@ -164,7 +166,7 @@ class PrintablePlate extends THREE.Object3D {
             new THREE.LineBasicMaterial({color: green})
         )
         workArea.name = 'workArea';
-        this.coordinateSystem.add(workArea);
+        this.add(workArea);
     }
 }
 

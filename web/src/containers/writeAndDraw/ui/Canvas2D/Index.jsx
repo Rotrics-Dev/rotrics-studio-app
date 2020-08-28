@@ -112,13 +112,12 @@ class Index extends React.Component {
     }
 
     render() {
-        const {workHeightPen} = this.props
-        if (this.workHeightPen !== workHeightPen) {
+        const {workHeight} = this.props
+        if (this.workHeight !== workHeight) {
             if (this.printablePlate)
-                this.printablePlate.setUpWorkArea(workHeightPen)
-            this.workHeightPen = workHeightPen
+                this.printablePlate.setUpWorkArea(workHeight)
+            this.workHeight = workHeight
         }
-
         return (
             <div
                 ref={this.node}

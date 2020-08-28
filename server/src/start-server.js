@@ -214,7 +214,7 @@ const setupSocket = () => {
                 async (data) => {
                     console.log(TOOL_PATH_GENERATE_LASER)
                     const {url, settings, toolPathId, fileType} = data;
-                    const toolPathLines = await generateToolPathLines(fileType, url, settings, TOOL_PATH_GENERATE_LASER);
+                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
                     socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
                 }
             );
@@ -223,7 +223,7 @@ const setupSocket = () => {
                 async (data) => {
                     console.log(TOOL_PATH_GENERATE_WRITE_AND_DRAW)
                     const {url, settings, toolPathId, fileType} = data;
-                    const toolPathLines = await generateToolPathLines(fileType, url, settings, TOOL_PATH_GENERATE_WRITE_AND_DRAW);
+                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
                     socket.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {toolPathLines, toolPathId});
                 }
             );

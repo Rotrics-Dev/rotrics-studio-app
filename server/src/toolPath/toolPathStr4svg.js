@@ -4,16 +4,12 @@ import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
 import {degree2radian} from '../utils/index.js';
 import http from "http";
-import {
-    TOOL_PATH_GENERATE_LASER,
-    TOOL_PATH_GENERATE_WRITE_AND_DRAW,
-} from "../constants.js";
 
 function pointEqual(p1, p2) {
     return p1[0] === p2[0] && p1[1] === p2[1];
 }
 
-const svg2toolPathStr = async (url, settings, frontEnd) => {
+const svg2toolPathStr = async (url, settings) => {
     const {transformation, config, working_parameters} = settings;
 
     const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
@@ -69,38 +65,31 @@ const svg2toolPathStr = async (url, settings, frontEnd) => {
 
     // second pass generate gcode
     let toolPathLines = [];
+    let current = null;
+
+    //if write&draw, move up z, set speed, move to start xy, move z to 0, then start
+    const segment0 = segments[0];
+    toolPathLines.push('M5');
     toolPathLines.push(`G0 F${jog_speed_placeholder}`);
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
-    if (frontEnd === TOOL_PATH_GENERATE_LASER) {
-        toolPathLines.push('G0 Z0');
-    } else if (frontEnd === TOOL_PATH_GENERATE_WRITE_AND_DRAW) {
-        toolPathLines.push('M5')//rise the pen
-    }
+    toolPathLines.push(`G0 X${normalizer.x(segment0.start[0])} Y${normalizer.y(segment0.start[1])}`);
+    toolPathLines.push('G0 Z0');
 
-    let current = null;
     for (const segment of segments) {
         // G0 move to start
         if (!current || current && !(pointEqual(current, segment.start))) {
             if (current) {
                 toolPathLines.push('M5');
             }
-
             // Move to start point
             toolPathLines.push(`G0 X${normalizer.x(segment.start[0])} Y${normalizer.y(segment.start[1])}`);
             toolPathLines.push(`M3 S${power_placeholder}`);
         }
-
         // G0 move to end
         toolPathLines.push(`G1 X${normalizer.x(segment.end[0])} Y${normalizer.y(segment.end[1])}`);
-
         current = segment.end;
     }
-    // turn off
-    if (current) {
-        toolPathLines.push('M5');
-    }
-
-    // move to work zero
+    toolPathLines.push('M5');
     toolPathLines.push('G0 X0 Y0');
     return toolPathLines.join('\n');
 };
@@ -121,8 +110,8 @@ const getSvgStr = async (url) => {
     return svg;
 };
 
-const toolPathStr4svg = async (url, settings, frontEnd) => {
-    return await svg2toolPathStr(url, settings, frontEnd);
+const toolPathStr4svg = async (url, settings) => {
+    return await svg2toolPathStr(url, settings);
 };
 
 export default toolPathStr4svg;

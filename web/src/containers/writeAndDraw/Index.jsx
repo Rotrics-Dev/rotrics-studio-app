@@ -1,16 +1,13 @@
 import React from 'react';
 import {Tabs} from 'antd';
-import "antd/dist/antd.css";
-
 import {Canvas2dPen as Canvas2D} from './ui/Canvas2D/Index.jsx'
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import Config from "./ui/Config/Index.jsx";
 import Control from "./ui/Control/Index.jsx";
-
-import styles from './styles.css';
 import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
+import layout_styles from '../layout_styles.css';
 
 const {TabPane} = Tabs;
 
@@ -41,51 +38,19 @@ class Index extends React.Component {
         const visibleInfo = {undo: false, redo: false, layFlat: false, duplicate: false, del: true, clear: true};
         const actions = this.actions;
         return (
-            <div style={{
-                width: "100%",
-                height: "100%",
-            }}>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: "351px"
-                }}>
+            <div>
+                <div className={layout_styles.div_canvas}>
                     <Canvas2D/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    right: "315px",
-                    width: "36px"
-                }}>
+                <div className={layout_styles.div_tool_bar}>
                     <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
-                <div style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "315px",
-                    backgroundColor: "#F2F2F2",
-                    overflowY: "scroll"
-                }}>
-                    <Tabs type="card" centered={true} size="small" tabBarGutter={0}
-                          tabBarStyle={{height: "30px", width: "100%", marginBottom: "8px"}}>
-                        <TabPane tab={
-                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                {t("G-code")}
-                            </div>
-                        } key="1">
+                <div className={layout_styles.div_right_panel}>
+                    <Tabs centered={true} size="small">
+                        <TabPane tab={t('G-code')} key="1">
                             <Config/>
                         </TabPane>
-                        <TabPane tab={
-                            <div style={{textAlign: "center", fontSize: "15px", width: "107px", height: "100%"}}>
-                                {t('Control')}
-                            </div>
-                        } key="2">
+                        <TabPane tab={t('Control')} key="2">
                             <Control/>
                         </TabPane>
                     </Tabs>

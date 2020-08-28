@@ -63,7 +63,7 @@ class Index extends React.Component {
         const rxDegree = radian2degree(rx);
         const ryDegree = radian2degree(ry);
         const rzDegree = radian2degree(rz);
-
+        console.log()
         const sliderCss = {width: "120px"};
         const content4move = (
             <div>
@@ -71,8 +71,8 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>X</span>
                         <Slider
-                            min={-75}
-                            max={75}
+                            min={-400}
+                            max={400}
                             step={1}
                             value={x}
                             disabled={disabled}
@@ -85,8 +85,8 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>Y</span>
                         <Slider
-                            min={-75}
-                            max={75}
+                            min={0}
+                            max={400}
                             step={1}
                             value={y}
                             disabled={disabled}

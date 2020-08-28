@@ -3,6 +3,7 @@ import {computeBoundary} from "../containers/writeAndDraw/lib/toolPathUtils";
 import {uploadImage, generateSvg} from "../api";
 import Model2D from "../containers/writeAndDraw/lib/Model2D";
 import write_and_draw from '../containers/writeAndDraw/lib/settings/write_and_draw.json'
+import {persistents, WORK_HEIGHT} from "./persistentData";
 
 const ACTION_UPDATE_STATE = 'writeAndDraw/ACTION_UPDATE_STATE';
 
@@ -27,7 +28,7 @@ let rendererParent = null;
  * @returns {Array}
  */
 const getGcode4runBoundary = () => {
-    const min = Number.MIN_VALUE;
+    const min = -Number.MAX_VALUE;
     const max = Number.MAX_VALUE;
     let _minX = max, _minY = max;
     let _maxX = min, _maxY = min;
@@ -46,8 +47,9 @@ const getGcode4runBoundary = () => {
     const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
     const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
     const gcodeArr = [];
+    const jogHeightPen = persistents.getFloat(WORK_HEIGHT.PEN) + 10;
     gcodeArr.push('M2000')
-    gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + 'Z10 F4000');
+    gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + `Z${jogHeightPen} F2000`);
     gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);
     gcodeArr.push(`G1 X${p2.x} Y${p2.y}`);
     gcodeArr.push(`G1 X${p3.x} Y${p3.y}`);
@@ -73,7 +75,6 @@ const actions = {
         if (!["svg", "text"].includes(fileType)) {
             return {type: null};
         }
-
         const model = new Model2D(fileType);
         if (fileType === "text") {
             const svg = await generateSvg(model.config_text);
@@ -261,10 +262,9 @@ const actions = {
     //g-code
     generateGcode: (write_and_draw) => (dispatch, getState) => {
         const gcodeArr = [];
-        const {workHeightPen} = getState().persistentData
         for (let i = 0; i < rendererParent.children.length; i++) {
             const model = rendererParent.children[i];
-            gcodeArr.push(model.generateGcode(write_and_draw, workHeightPen));
+            gcodeArr.push(model.generateGcode(write_and_draw));
         }
         const gcode = gcodeArr.join("\n");
         dispatch(actions._updateState({

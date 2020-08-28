@@ -6,7 +6,7 @@ import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw"
 import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../../components/Tooltip/Index.jsx';
+import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 
 const tooltipId = getUuid();

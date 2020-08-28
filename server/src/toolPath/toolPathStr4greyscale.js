@@ -187,9 +187,9 @@ const img2toolPathStrGs = (img, settings) => {
             const idx = j * width * 4 + i * 4;
             if (img.bitmap.data[idx] < bw) {
                 toolPathLines.push(`G1 X${normalizer.x(i)} Y${normalizer.y(j)}`);
-                toolPathLines.push(`G4 P${engrave_time_placeholder}`);
-                toolPathLines.push(`M3 S${power_placeholder}`);
                 toolPathLines.push(`G4 P${dwell_time_placeholder}`);
+                toolPathLines.push(`M3 S${power_placeholder}`);
+                toolPathLines.push(`G4 P${engrave_time_placeholder}`);
                 toolPathLines.push('M5');
             }
         }

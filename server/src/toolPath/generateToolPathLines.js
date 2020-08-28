@@ -4,7 +4,7 @@ import toolPathStr2toolPathLines from "./toolPathStr2toolPathLines.js";
 import toolPathStr4greyscale from "./toolPathStr4greyscale.js";
 import {TOOL_PATH_RENDER_METHOD_POINT, TOOL_PATH_RENDER_METHOD_LINE} from "../constants.js"
 
-const generateToolPathLines = async (fileType, url, settings, frontEnd) => {
+const generateToolPathLines = async (fileType, url, settings) => {
     let toolPathStr = null;
     switch (fileType) {
         case "bw":
@@ -15,7 +15,7 @@ const generateToolPathLines = async (fileType, url, settings, frontEnd) => {
             break;
         case "svg":
         case "text":
-            toolPathStr = await toolPathStr4svg(url, settings, frontEnd);
+            toolPathStr = await toolPathStr4svg(url, settings);
             break;
     }
     toolPathStr = preHandle(toolPathStr, settings);

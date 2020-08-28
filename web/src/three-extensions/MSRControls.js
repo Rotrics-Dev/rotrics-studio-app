@@ -142,7 +142,7 @@ const MSRControls = function (object, camera, domElement, size) {
         panEnd.copy(getEventWorldPosition(event));
         panDelta.subVectors(panEnd, panStart);
         // pan object
-        scope.object.position.add(new THREE.Vector3(panDelta.x, panDelta.y));
+        scope.object.position.add(new THREE.Vector3(panDelta.x,panDelta.y/1.414, -panDelta.y/1.414));
         // may need to apply object.matrix when object.matrix does not equal object.matrixWorld
         panStart.copy(panEnd);
     }
@@ -171,11 +171,14 @@ const MSRControls = function (object, camera, domElement, size) {
                 return;
             }
             scope.camera.position.z -= 20;
+            scope.camera.position.y -= 20;
         } else if (event.deltaY > 0) {
             if (scope.camera.position.z >= cameraMaxZ) {
                 return;
             }
             scope.camera.position.z += 20;
+            scope.camera.position.y += 20;
+
         }
     }
 

@@ -4,7 +4,7 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend.js";
 import Line from '../../../../components/Line/Index.jsx'
 import {Space, Button, Select} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
-import Tooltip from '../../../../components/Tooltip/Index.jsx';
+import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from '../../../../utils';
 import {withTranslation} from 'react-i18next';
 

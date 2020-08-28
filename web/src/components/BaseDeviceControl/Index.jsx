@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles.css';
-import {Radio, Space} from 'antd';
+import {Radio, Space, Row, Col} from 'antd';
 import PositionMonitor from '../PositionMoniter/index.jsx'
 import Level from '../Level/Index.jsx'
 import {ConfigTitle} from "../Config";
@@ -16,92 +16,74 @@ class Index extends React.Component {
     render() {
         const {home, leftTop, leftBottom, rightTop, rightBottom} = this.props.actions;
         const {xPlus, xMinus, yPlus, yMinus, zPlus, zMinus, z0} = this.props.actions;
-        const {setStep, setWorkHeight, goToWorkHeight} = this.props.actions;
+        const {setStep, setWorkOrigin, goToWorkOrigin} = this.props.actions;
+        const {frontEnd} = this.props;
         const {step} = this.props;
         const {showLevel} = this.props;
         const {t} = this.props;
+        const gutter = 8;
         return (
-            <div>
+            <div style={{padding: "8px"}}>
                 <PositionMonitor/>
-
-                <Space direction={"vertical"} style={{padding: "8px 8px 0px 8px"}}>
-                    <Space direction={"horizontal"}>
-                        <button
-                            onClick={leftTop}
-                            className={styles.btn_left_top}
-                        />
-                        <button
-                            onClick={yPlus}
-                            className={styles.btn_xyz}
-                        >Y+
-                        </button>
-                        <button
-                            onClick={rightTop}
-                            className={styles.btn_right_top}
-                        />
-                        <button
-                            onClick={zPlus}
-                            className={styles.btn_xyz}
-                        >Z+
-                        </button>
-                    </Space>
-                    <Space direction={"horizontal"}>
-                        <button
-                            onClick={xMinus}
-                            className={styles.btn_xyz}
-                        >X-
-                        </button>
-                        <button
-                            onClick={home}
-                            className={styles.btn_xyz}
-                        >Home
-                        </button>
-                        <button
-                            onClick={xPlus}
-                            className={styles.btn_xyz}
-                        >X+
-                        </button>
-                        <button
-                            onClick={z0}
-                            className={styles.btn_xyz}
-                        >Z0
-                        </button>
-                    </Space>
-                    <Space direction={"horizontal"}>
-                        <button
-                            onClick={leftBottom}
-                            className={styles.btn_left_bottom}
-                        />
-                        <button
-                            onClick={yMinus}
-                            className={styles.btn_xyz}
-                        >Y-
-                        </button>
-                        <button
-                            onClick={rightBottom}
-                            className={styles.btn_right_bottom}
-                        />
-                        <button
-                            onClick={zMinus}
-                            className={styles.btn_xyz}
-                        >Z-
-                        </button>
-                    </Space>
-
-                    <button
-                        onClick={goToWorkHeight}
-                        className={styles.btn_action_work}
-                    >{t("Go To Work Height")}
-                    </button>
-                    <button
-                        onClick={setWorkHeight}
-                        className={styles.btn_action_work}
-                    >{t("Set Work Height")}
-                    </button>
-                    <Level showLevel={showLevel}/>
-                </Space>
-                <div style={{padding: "0px 8px 8px 8px"}}>
-                    <ConfigTitle text={t("Step length")} sytle={{marginBottom: "0px", paddingBottom: "0px"}}/>
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={6}>
+                        <input type="button" onClick={leftTop} className={styles.btn_left_top}/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={yPlus} className={styles.btn_xyz} value="Y+"/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={rightTop} className={styles.btn_right_top}/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={zPlus} className={styles.btn_xyz} value="Z+"/>
+                    </Col>
+                </Row>
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={6}>
+                        <input type="button" onClick={xMinus} className={styles.btn_xyz} value="X-"/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={home} className={styles.btn_xyz} value="Home"/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={xPlus} className={styles.btn_xyz} value="X+"/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={z0} className={styles.btn_xyz} value="Z0"/>
+                    </Col>
+                </Row>
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={6}>
+                        <input type="button" onClick={leftBottom} className={styles.btn_left_bottom}/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={yMinus} className={styles.btn_xyz} value="Y-"/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={rightBottom} className={styles.btn_right_bottom}/>
+                    </Col>
+                    <Col span={6}>
+                        <input type="button" onClick={zMinus} className={styles.btn_xyz} value="Z-"/>
+                    </Col>
+                </Row>
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={12}>
+                        <input type="button" onClick={goToWorkOrigin} className={styles.btn_action_work}
+                               value={t("Go To Work Height")}/>
+                    </Col>
+                    <Col span={12}>
+                        <input type="button" onClick={setWorkOrigin} className={styles.btn_action_work}
+                               value={t("Set Work Height")}/>
+                    </Col>
+                </Row>
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={12}>
+                        <Level showLevel={showLevel}/>
+                    </Col>
+                </Row>
+                <div>
+                    <ConfigTitle text={`${t("Step length")}(mm)`}/>
                     <Radio.Group value={step} buttonStyle="solid" onChange={setStep}>
                         <Radio.Button value={20} className={styles.btn_step}>20</Radio.Button>
                         <Radio.Button value={10} className={styles.btn_step}>10</Radio.Button>
