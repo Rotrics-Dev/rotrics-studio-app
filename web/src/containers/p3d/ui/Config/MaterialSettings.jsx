@@ -6,6 +6,7 @@ import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../Tooltip/Index.jsx';
 import {getUuid} from "../../../../utils";
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
+import Line from "../../../../components/Line/Index.jsx";
 
 const tooltipId = getUuid();
 const radioStyle = {
@@ -64,7 +65,8 @@ class MaterialSettings extends PureComponent {
         const header = tCura("Material Settings");
         const editable = !isOfficial;
         const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
-        const elements = [radioGroup, ...elements4settings];
+        const line = <Line/>;
+        const elements = [radioGroup, line, ...elements4settings];
 
         const icon = null;
         const collapsePanel = wrapCollapsePanel(header, icon, elements);

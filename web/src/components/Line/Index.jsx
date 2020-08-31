@@ -5,9 +5,8 @@ class Index extends PureComponent {
         return (
             <div style={{
                 width: "100%",
-                opacity:0.5,
                 height: "1px",
-                backgroundColor: "grey"
+                backgroundColor: "#d9d9d9"
             }}/>
         );
     }

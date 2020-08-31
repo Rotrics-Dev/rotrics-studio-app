@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
 import {actions as p3dPrintSettingsActions} from "../../../../reducers/p3dPrintSettings";
+import Line from "../../../../components/Line/Index.jsx";
 
 const tooltipId = getUuid();
 const radioStyle = {
@@ -71,7 +72,8 @@ class PrintSettings extends React.Component {
                 collapsePanels = collapsePanels.concat(wrapCollapsePanel(header, icon, elements4settings));
             }
         }
-        const elements = [radioGroup, ...collapsePanels];
+        const line = <Line/>;
+        const elements = [radioGroup, line, ...collapsePanels];
         const collapse = wrapCollapse(elements);
         return (
             <div>
