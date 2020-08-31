@@ -72,7 +72,7 @@ class PrintSettings extends React.Component {
                 collapsePanels = collapsePanels.concat(wrapCollapsePanel(header, icon, elements4settings));
             }
         }
-        const line = <Line/>;
+        const line = <Line key="line"/>;
         const elements = [radioGroup, line, ...collapsePanels];
         const collapse = wrapCollapse(elements);
         return (

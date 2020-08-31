@@ -65,7 +65,7 @@ class MaterialSettings extends PureComponent {
         const header = tCura("Material Settings");
         const editable = !isOfficial;
         const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
-        const line = <Line/>;
+        const line = <Line key="line"/>;
         const elements = [radioGroup, line, ...elements4settings];
 
         const icon = null;
