@@ -47,7 +47,7 @@ const getGcode4runBoundary = () => {
     const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
     const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
     const gcodeArr = [];
-    const jogHeightPen = persistents.getFloat(WORK_HEIGHT.PEN) + 10;
+    const jogHeightPen = /*persistents.getFloat(WORK_HEIGHT.PEN) +*/ 10;
     gcodeArr.push('M2000')
     gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + `Z${jogHeightPen} F2000`);
     gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);

@@ -6,6 +6,7 @@ import {Radio, Space, Modal, Button,} from 'antd';
 import {actions as serialPortAction, actions as serialPortActions} from "../../reducers/serialPort";
 import {withTranslation} from 'react-i18next';
 import messageI18n from "../../utils/messageI18n";
+import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 
 const INIT_Z_ARRAY = [
     undefined,
@@ -143,7 +144,8 @@ class Index extends React.Component {
             cmd,
             'G90'//absolute position
         ];
-        this.props.serialPortWrite(gcode.join("\n") + '\n');
+        this.props.start(gcode.join("\n") + '\n', false, false);
+        // this.props.serialPortWrite(gcode.join("\n") + '\n');
     }
 
     showModal = () => {
@@ -272,6 +274,7 @@ const mapDispatchToProps = (dispatch) => {
         addOneShootGcodeResponseListener: (gcode, listener) => {
             dispatch(serialPortAction.addOneShootGcodeResponseListener(gcode, listener))
         },
+        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
         serialPortWrite: (gcode) => {
             dispatch(serialPortActions.write(gcode));
         },

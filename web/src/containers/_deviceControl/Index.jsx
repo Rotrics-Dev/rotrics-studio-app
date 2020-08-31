@@ -40,7 +40,8 @@ class Index extends React.Component {
         },
         //others
         home: () => {
-            this.props.start("M1112", false, false)
+            const gcode = ['M1112', 'M114'].join("\n");
+            this.props.start(gcode, false, false)
         },
         leftTop: () => {
             this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
@@ -74,8 +75,8 @@ class Index extends React.Component {
                     }
                 }
             );
-            this.props.serialPortWrite('G92 Z0\n')
             this.props.serialPortWrite('M114\n')
+            this.props.serialPortWrite('G92 Z0\n')
         },
         goToWorkOrigin: () => {
             // console.log('goToWorkOrigin'+JSON.stringify(this.props));
