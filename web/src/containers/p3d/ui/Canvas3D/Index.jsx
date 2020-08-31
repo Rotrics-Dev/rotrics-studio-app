@@ -149,8 +149,8 @@ class Index extends React.Component {
 
         this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
         // this.camera.position.copy(new THREE.Vector3(0, this.size.y / 2, 450));
-        this.camera.position.copy(new THREE.Vector3(0, 328, 128));
-        this.camera.lookAt(new THREE.Vector3(0, 200, 0));
+        this.camera.position.copy(new THREE.Vector3(0, 150, 500));
+        this.camera.lookAt(new THREE.Vector3(0, 150, 0));
         // this.camera.lookAt(new THREE.Vector3(0, this.size.y / 2, 0));
 
         this.renderer = new THREE.WebGLRenderer({antialias: true});

@@ -35,6 +35,8 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     positionFilteringRead(line) {
+        console.log('frontEndPositionMonitor:' + line)
+
         if (!line) {
             return;
         }
@@ -42,6 +44,7 @@ class FrontEndPositionMonitor extends EventEmitter {
             this.onReadOk();
         } else if (this.needProcessM114) {
             this.processM114(line);
+        } else {
         }
     }
 
@@ -109,6 +112,9 @@ class FrontEndPositionMonitor extends EventEmitter {
     onWriteG92(line) {//设置原点可以带参数
         //todo
         this.currentZ = this.nextZ = 0;
+        //设置工作高度前会发送M114,由于数据传输是基于事件的，整个过程不是同步的，
+        // M114和上面设置的值会相互覆盖，引起UI显示不正常，这是上位机和下位机没有一个合理的传输协议引起的混乱
+        this.needProcessM114 = false;
         this.sendPosition();
     }
 
@@ -117,13 +123,13 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     onWriteM1112() {
-        this.nextX = 0;
-        this.nextY = 300;
-        this.nextZ = 0;
+        // this.nextX = 0;
+        // this.nextY = 300;
+        // this.nextZ = 0;
     }
 
     onWriteM114() {
-        // this.needProcessM114 = true;
+        this.needProcessM114 = true;
     }
 
     processM114(line) {
@@ -146,10 +152,14 @@ class FrontEndPositionMonitor extends EventEmitter {
         line.split(' ').forEach((value) => {
             if (value.startsWith('X')) {
                 x = parseFloat(value.slice(1, value.length));
+                console.log("X:" + x);
             } else if (value.startsWith('Y')) {
                 y = parseFloat(value.slice(1, value.length));
+                console.log("Y:" + y);
+
             } else if (value.startsWith('Z')) {
                 z = parseFloat(value.slice(1, value.length));
+                console.log("Z:" + z);
             }
         });
 
