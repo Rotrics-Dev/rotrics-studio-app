@@ -21,7 +21,8 @@ const MSRControls = function (object, camera, domElement, size) {
     var isMoving = false;
     let lastScrollDate = 0;
 
-    var cameraMinZ = -30;
+    // var cameraMinZ = -30;
+    var cameraMinZ = 20;
     var cameraMaxZ = Math.max(size.x, size.y, size.z) * 6;
 
     var panStart = new THREE.Vector2();
@@ -33,7 +34,7 @@ const MSRControls = function (object, camera, domElement, size) {
     var rotateDelta = new THREE.Vector2();
 
     var scope = this;
-    var STATE = { NONE: -1, DOWN_LEFT: 0, DOWN_RIGHT: 1 };
+    var STATE = {NONE: -1, DOWN_LEFT: 0, DOWN_RIGHT: 1};
     var state = STATE.NONE;
 
     scope.domElement.addEventListener('mousedown', onMouseDown, false);
@@ -72,7 +73,7 @@ const MSRControls = function (object, camera, domElement, size) {
     function onMouseDown(event) {
         if (scope.enabled === false) return;
         event.preventDefault();
-        scope.dispatchEvent({ type: "mouseDown", event: event });
+        scope.dispatchEvent({type: "mouseDown", event: event});
         switch (event.button) {
             case THREE.MOUSE.LEFT:
                 //rotate
@@ -96,11 +97,11 @@ const MSRControls = function (object, camera, domElement, size) {
 
     function onMouseUp(event) {
         if (scope.enabled === false) return;
-        isMoving && scope.dispatchEvent({ type: "moveEnd", event: event });
+        isMoving && scope.dispatchEvent({type: "moveEnd", event: event});
         isMoving = false;
         state = STATE.NONE;
 
-        scope.dispatchEvent({ type: "mouseUp", event: event });
+        scope.dispatchEvent({type: "mouseUp", event: event});
 
         document.removeEventListener('mousemove', onMouseMove, true);
         document.removeEventListener('mouseup', onMouseUp, false);
@@ -122,10 +123,10 @@ const MSRControls = function (object, camera, domElement, size) {
         if (scope.enabled === false) return;
         event.preventDefault();
         if (!isMoving) {
-            scope.dispatchEvent({ type: "moveStart", event: event });
+            scope.dispatchEvent({type: "moveStart", event: event});
             isMoving = true;
         }
-        scope.dispatchEvent({ type: "move" });
+        scope.dispatchEvent({type: "move"});
         switch (state) {
             case STATE.DOWN_LEFT:
                 handleMouseMoveRotate(event);
@@ -142,7 +143,7 @@ const MSRControls = function (object, camera, domElement, size) {
         panEnd.copy(getEventWorldPosition(event));
         panDelta.subVectors(panEnd, panStart);
         // pan object
-        scope.object.position.add(new THREE.Vector3(panDelta.x,panDelta.y, 0));
+        scope.object.position.add(new THREE.Vector3(panDelta.x, panDelta.y, 0));
         // may need to apply object.matrix when object.matrix does not equal object.matrixWorld
         panStart.copy(panEnd);
     }
@@ -177,9 +178,10 @@ const MSRControls = function (object, camera, domElement, size) {
             }
             scope.camera.position.z += 20;
         }
+
     }
 
-   /**
+    /**
      * Transform event position in window to world position.
      *
      * Reference: https://github.com/mrdoob/three.js/blob/dev/src/core/Raycaster.js#L81
