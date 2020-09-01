@@ -123,7 +123,8 @@
         "enabled": false,
         "settable_per_mesh": false,
         "settable_per_extruder": false,
-        "settable_per_meshgroup": false
+        "settable_per_meshgroup": false,
+        "visible": false
       },
       "material_bed_temperature": {
         "label": "Build Plate Temperature",
@@ -140,7 +141,8 @@
         "enabled": "machine_heated_bed and machine_gcode_flavor != \"UltiGCode\"",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
-        "settable_per_meshgroup": false
+        "settable_per_meshgroup": false,
+        "visible": false
       },
       "material_bed_temperature_layer_0": {
         "label": "Build Plate Temperature Initial Layer",
@@ -157,7 +159,8 @@
         "enabled": "machine_heated_bed and machine_gcode_flavor != \"UltiGCode\"",
         "settable_per_mesh": false,
         "settable_per_extruder": false,
-        "settable_per_meshgroup": false
+        "settable_per_meshgroup": false,
+        "visible": false
       },
       "material_adhesion_tendency": {
         "label": "Adhesion Tendency",

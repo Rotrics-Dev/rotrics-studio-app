@@ -39,12 +39,14 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
     let result = [];
     for (let key in children) {
         let keyChain = `${categoryKey}.${key}`; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
-
         if (keyChainFilter && keyChainFilter.length > 0 && !keyChainFilter.includes(keyChain)) {
             continue;
         }
         const offset = keyChain.split(".").length - 2; //随层级缩进
         const child = children[key];
+        if (child.visible === false) {
+            continue;
+        }
         if (child instanceof Object) {
             if (!PARAMETER_TYPES_DISPLAYED.includes(child.type)) {
                 continue;
@@ -76,6 +78,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                 if (!maximum_value) {
                     maximum_value = 1000;
                 }
+
                 result.push(
                     <div key={keyChain}>
                         <Row
