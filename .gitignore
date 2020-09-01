@@ -3,7 +3,7 @@
 /server/build-server
 /server/package-lock.json
 /server/static/cache
-/server/CuraEngine/config/fdmprinter.def.json
+/server/CuraEngine/config/active.def.json
 
 #web
 /web/node_modules

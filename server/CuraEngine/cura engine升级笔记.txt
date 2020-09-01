@@ -1,0 +1,82 @@
+1. Terminal中调用cura engine：
+mac: ./CuraEngine slice -v -p -j "xx.def.json" -o "mac.gcode" -l "test.stl"
+win: CuraEngine.exe slice -v -p -j "xx.def.json" -o "win.gcode" -l "test.stl"
+
+
+2. 升级步骤
+
+-1 复制cura的多语言文件：mac下是：Cura.app/Contents/Resources/resources/i18n -> /Users/liuming/Documents/github/rotrics/rotrics-studio-app/web/i18n_cura
+
+-2 替换cura engine文件
+mac：替换CuraEngine
+win：替换CuraEngine，以及4个dll文件（libgcc_s_seh-1.dll，libgomp-1.dll，libstdc++-6.dll，libwinpthread-1.dll）；并保证在一个文件夹下
+linux：TODO
+
+-3 替换新的配置文件
+fdmextruder.def.json -> CuraEngine/config/fdmextruder.def.json
+
+fdmprinter.def.json中的settings.machine_settings字段 -> CuraEngine/config/machine_setting/machine_setting.def.json
+
+fdmprinter.def.json中的settings.material字段 -> CuraEngine/config/material_settings/material_pla.def.json
+fdmprinter.def.json中的settings.material字段 -> CuraEngine/config/material_settings/material_custom.def.json
+
+fdmprinter.def.json -> CuraEngine/config/print_settings/fast_print.def.json
+fdmprinter.def.json -> CuraEngine/config/print_settings/high_quality.def.json
+fdmprinter.def.json -> CuraEngine/config/print_settings/normal_quality.def.json
+fdmprinter.def.json -> CuraEngine/config/print_settings/custom.def.json
+
+-4 修改配置文件
+CuraEngine/config/fdmextruder.def.json中，settings.material.children.material_diameter.default_value -> 1.75
+
+CuraEngine/config/machine_setting/machine_setting.def.json
+修改参数
+
+CuraEngine/config/material_settings/material_pla.def.json
+修改参数
+增加：
+  "name": "PLA",
+  "filename": "material_pla.def.json",
+  "isOfficial": true,
+  "isDefaultSelected": true,
+
+CuraEngine/config/material_settings/material_custom.def.json
+修改参数
+增加：
+  "name": "Custom",
+  "filename": "material_custom.def.json",
+  "isOfficial": false,
+
+CuraEngine/config/print_settings/fast_print.def.json
+修改参数
+增加：
+  "name": "Fast Print",
+  "filename": "fast_print.def.json",
+  "isOfficial": true,
+
+
+CuraEngine/config/print_settings/high_quality.def.json
+修改参数
+增加：
+  "name": "High Quality",
+  "filename": "high_quality.def.json",
+  "isOfficial": true,
+
+CuraEngine/config/print_settings/normal_quality.def.json
+修改参数
+增加：
+ "name": "Normal Quality",
+  "filename": "normal_quality.def.json",
+  "isOfficial": true,
+  "isDefaultSelected": true,
+
+CuraEngine/config/print_settings/custom.def.json
+修改参数
+增加：
+ "name": "Custom",
+  "filename": "custom.def.json",
+  "isOfficial": false,
+
+
+-5 修改源码
+rotrics-studio-app/server/src/init.js
+rotrics-studio-app/server/src/p3dStartSlice.js

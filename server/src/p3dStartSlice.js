@@ -6,7 +6,8 @@ import {
     CACHE_DIR,
     P3D_DIR_CONFIG_PRINT_SETTINGS,
     P3D_DIR_CONFIG_MATERIAL_SETTINGS,
-    P3D_DIR_CONFIG
+    P3D_DIR_CONFIG,
+    P3D_FILE_CONFIG_MACHINE_SETTING
 } from './init.js';
 
 // data: {stlUrl, materialSettingFilename, printSettingFilename, id}
@@ -16,23 +17,22 @@ const preHandle = (data) => {
     const materialSettingFilePath = path.join(P3D_DIR_CONFIG_MATERIAL_SETTINGS, materialSettingFilename);
     const printSettingFilePath = path.join(P3D_DIR_CONFIG_PRINT_SETTINGS, printSettingFilename);
 
-    const configFilename = "fdmprinter.def.json";
+    const configFilename = "active.def.json";
     const configFilePath = path.join(P3D_DIR_CONFIG, configFilename);
-    const machineSettingFilePath = path.join(P3D_DIR_CONFIG, "machine_setting.def.json");
 
     const contentMaterialSetting = JSON.parse(fs.readFileSync(materialSettingFilePath, 'utf8'));
     const contentPrintSetting = JSON.parse(fs.readFileSync(printSettingFilePath, 'utf8'));
-    const contentMachineSetting = JSON.parse(fs.readFileSync(machineSettingFilePath, 'utf8'));
+    const contentMachineSetting = JSON.parse(fs.readFileSync(P3D_FILE_CONFIG_MACHINE_SETTING, 'utf8'));
 
     contentPrintSetting.settings.material = contentMaterialSetting.material;
     contentPrintSetting.settings.machine_settings = contentMachineSetting.machine_settings;
 
     if (!fs.existsSync(materialSettingFilePath)) {
-        console.log("materialSettingFilePath not exist")
+        console.log("materialSettingFilePath not exist");
         return;
     }
     if (!fs.existsSync(printSettingFilePath)) {
-        console.log("printSettingFilePath not exist")
+        console.log("printSettingFilePath not exist");
         return;
     }
 
