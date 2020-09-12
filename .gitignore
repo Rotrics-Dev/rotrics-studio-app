@@ -4,6 +4,7 @@
 /server/package-lock.json
 /server/static/cache
 /server/CuraEngine/config/active.def.json
+/server/static/code/my_projects
 
 #web
 /web/node_modules
