@@ -1,7 +1,7 @@
 import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
 import {actions as gcodeSendActions} from './gcodeSend';
-import ScratchBlocks from "rotrics-scratch-blocks";
+import {actions as codeProjectActions} from "./codeProject";
 
 const INIT_VM = 'code/INIT_VM';
 const SET_RUNNING = "code/SET_RUNNING";
@@ -63,6 +63,13 @@ export const actions = {
             'PROJECT_RUN_STOP',
             () => {
                 dispatch(actions._setRunning(false));
+            }
+        );
+        vm.on(
+            'PROJECT_CHANGED',
+            () => {
+                //TODO: move to codeProject
+                dispatch(codeProjectActions._updateState({isSaved: false}));
             }
         );
         //自定义block发送消息

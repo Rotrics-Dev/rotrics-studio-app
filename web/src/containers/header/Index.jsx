@@ -8,6 +8,8 @@ import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';
 import {actions as tapsActions} from "../../reducers/taps";
 import {withTranslation} from 'react-i18next';
+import {TAP_CODE} from "../../constants.js";
+import Menu4code from '../code/ui/Menu.jsx';
 
 const notificationKeyConnected = getUuid();
 const notificationKeyDisconnected = getUuid();
@@ -82,7 +84,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const state = this.state;
-        const {paths, path, terminalVisible} = this.props;
+        const {paths, path, terminalVisible, tap} = this.props;
         const {selectedPath} = state;
         const {t} = this.props;
         let statusDes = "";
@@ -122,6 +124,9 @@ class Index extends React.Component {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
+                {tap === TAP_CODE &&
+                <Menu4code/>
+                }
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
                     <label>{t("Terminal")}</label>
@@ -186,11 +191,12 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {paths, path} = state.serialPort;
-    const {terminalVisible} = state.taps;
+    const {terminalVisible, tap} = state.taps;
     return {
         paths,
         path,
-        terminalVisible
+        terminalVisible,
+        tap
     };
 };
 

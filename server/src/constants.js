@@ -5,6 +5,7 @@ export const TAP_CODE = "TAP_CODE";
 export const TAP_SETTINGS = "TAP_SETTINGS";
 export const TAP_BASIC = "TAP_BASIC";
 export const TAB_WRITE_AND_DRAW = "TAB_WRITE_AND_DRAW";
+export const TAP_DEBUG = "TAP_DEBUG";
 
 // tool path渲染方式，line or point
 // default line
@@ -59,3 +60,7 @@ export const FIRMWARE_UPGRADE_STEP_CHANGE = 'FIRMWARE_UPGRADE_STEP_CHANGE';
 
 // front end position
 export const FRONT_END_POSITION_MONITOR = 'FRONT_END_POSITION_MONITOR';
+
+// code
+export const CODE_PROJECT_EXTENSION = '.json';
+

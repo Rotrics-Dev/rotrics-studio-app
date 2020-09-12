@@ -1,4 +1,5 @@
 import {v4 as uuidv4} from 'uuid';
+import path from 'path';
 
 // epsilon
 const EPS = 1e-6;
@@ -126,6 +127,26 @@ const getAvailableSize = (width, height, sizeRestriction) => {
     return {width, height}
 };
 
+const timestamp2date = (timestamp) => {
+    const d = new Date(timestamp),
+        year = d.getFullYear(),
+        month = d.getMonth() + 1,
+        day = d.getDate(),
+        hour = d.getHours(),
+        minute = d.getMinutes();
+    return year + "-" +
+        (month < 10 ? "0" + month : month) + "-" +
+        (day < 10 ? "0" + day : day) + " " +
+        (hour < 10 ? "0" + hour : hour) + ":" +
+        (minute < 10 ? "0" + minute : minute);
+};
+
+const getFilename = (filePath) => {
+    const extname = path.extname(filePath)
+    const name = path.basename(filePath, path.extname(filePath));
+    return name;
+};
+
 export {
     EPS,
     ensureRange,
@@ -133,6 +154,8 @@ export {
     radian2degree,
     degree2radian,
     getUuid,
-    getAvailableSize
+    getAvailableSize,
+    timestamp2date,
+    getFilename
 };
 

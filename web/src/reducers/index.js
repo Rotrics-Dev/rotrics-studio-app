@@ -12,6 +12,7 @@ import serialPort from "./serialPort";
 import socket from "./socket";
 import taps from "./taps";
 import code from "./code";
+import codeProject from "./codeProject";
 import settingsGeneral from "./settingsGeneral";
 import persistentData from "./persistentData";
 
@@ -30,6 +31,7 @@ export default combineReducers({
     socket,
     taps,
     code,
+    codeProject,
     settingsGeneral,
     persistentData
 });

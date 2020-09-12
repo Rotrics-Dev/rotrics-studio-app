@@ -46,6 +46,7 @@ import {
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_DIR_CONFIG_PRINT_SETTINGS, P3D_DIR_CONFIG_MATERIAL_SETTINGS} from './init.js';
 import SVGParser from './SVGParser/index.js';
+import {CODE_DIR_EXAMPLE_PROJECT, CODE_DIR_MY_PROJECT} from "./init";
 
 let serverCacheAddress; //获取端口后，再初始化
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
@@ -68,10 +69,13 @@ const saveFileToCacheDir = (file) => {
     return {url: serverCacheAddress + filename, filePath};
 };
 
+const getFilename = (filePath) => {
+    return path.basename(filePath, path.extname(filePath));
+};
+
 const setupHttpServer = () => {
     //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
     router.post('/uploadFile', async (ctx) => {
-        // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
         const {url} = saveFileToCacheDir(file);
         console.log("upload file ok: " + file.name + " -> " + url)
@@ -79,7 +83,6 @@ const setupHttpServer = () => {
     });
 
     router.post('/uploadImage', async (ctx) => {
-        // ctx.set('Access-Control-Allow-Origin', '*');
         const file = ctx.request.files.file;
         const {url, filePath} = saveFileToCacheDir(file);
         let width = 0, height = 0;
@@ -99,11 +102,87 @@ const setupHttpServer = () => {
         return ctx.body = {url, width, height};
     });
 
+    // code project
+    router
+        .get('/code/project/fetch/infos/my', async (ctx) => {
+            const data = [];
+            const filenames = fs.readdirSync(CODE_DIR_MY_PROJECT);
+            filenames.forEach((filename) => {
+                const filePath = path.join(CODE_DIR_MY_PROJECT, filename);
+                const {ctimeMs, mtimeMs} = fs.statSync(filePath);
+                const info = {
+                    name: getFilename(filePath),
+                    filePath,
+                    location: "my",
+                    created: ctimeMs,
+                    modified: mtimeMs
+                };
+                data.push(info)
+            });
+            return ctx.body = {status: "ok", data};
+        })
+        .get('/code/project/fetch/infos/example', async (ctx) => {
+            const data = [];
+            const filenames = fs.readdirSync(CODE_DIR_EXAMPLE_PROJECT);
+            filenames.forEach((filename) => {
+                const filePath = path.join(CODE_DIR_EXAMPLE_PROJECT, filename);
+                const {ctimeMs, mtimeMs} = fs.statSync(filePath);
+                const info = {
+                    name: getFilename(filePath),
+                    filePath,
+                    location: "example",
+                    created: ctimeMs,
+                    modified: mtimeMs
+                };
+                data.push(info)
+            });
+            return ctx.body = {status: "ok", data};
+        })
+        .post('/code/project/fetch/content', async (ctx) => {
+            const {projectInfo} = JSON.parse(ctx.request.body);
+            const {filePath} = projectInfo;
+            const content = fs.readFileSync(filePath, 'utf8');
+            return ctx.body = {status: "ok", data: content};
+        })
+        .post('/code/project/rename', async (ctx) => {
+            const {projectInfo, name, extension} = JSON.parse(ctx.request.body);
+            const {filePath: oldPath} = projectInfo;
+            const newPath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+            fs.renameSync(oldPath, newPath);
+            return ctx.body = {status: "ok"};
+        })
+        .post('/code/project/delete', async (ctx) => {
+            const {projectInfo} = JSON.parse(ctx.request.body);
+            const {filePath} = projectInfo;
+            fs.unlinkSync(filePath);
+            return ctx.body = {status: "ok"};
+        })
+        .post('/code/project/save', async (ctx) => {
+            const {projectInfo, content} = JSON.parse(ctx.request.body);
+            console.log(JSON.stringify(projectInfo, null, 2))
+            let {filePath, name, extension} = projectInfo;
+            if (!filePath) {
+                filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+            }
+            fs.writeFileSync(filePath, content);
+            return ctx.body = {status: "ok"};
+        })
+        .post('/code/project/save-as', async (ctx) => {
+            const {content, name, extension} = JSON.parse(ctx.request.body);
+            const filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+            fs.writeFileSync(filePath, content);
+            return ctx.body = {status: "ok"};
+        })
+    ;
+
     app.use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');
         await next();
     });
-
+    app.use(async (ctx, next) => {
+        console.log(`${ctx.request.method} ${ctx.request.url}`); // 打印URL
+        await next(); // 调用下一个middleware
+    });
     app.use(koaBody({multipart: true}));
     app.use(serve(STATIC_DIR));
     app.use(router.routes());
@@ -238,7 +317,7 @@ const setupSocket = () => {
             });
             socket.on(P3D_CONFIG_PRINT_SETTING_UPDATE, (data) => {
                 const {filename, keyChain, value} = data;
-                const filePath =  path.join(P3D_DIR_CONFIG_PRINT_SETTINGS, filename);
+                const filePath = path.join(P3D_DIR_CONFIG_PRINT_SETTINGS, filename);
                 const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
                 _.set(content, keyChain, value);
                 //写回去
@@ -277,12 +356,6 @@ const setupSocket = () => {
 };
 
 const startListen = () => {
-    //清除缓存
-    if (fs.existsSync(CACHE_DIR)) {
-        fs.rmdirSync(CACHE_DIR, {recursive: true})
-    }
-    fs.mkdirSync(CACHE_DIR, {recursive: true});
-
     //electron环境下: 动态获取可用端口
     //dev环境下：http://localhost:9000
     if (isElectron()) {

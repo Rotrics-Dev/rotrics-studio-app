@@ -60,3 +60,7 @@ export const FIRMWARE_UPGRADE_STEP_CHANGE = 'FIRMWARE_UPGRADE_STEP_CHANGE';
 
 // front end position
 export const FRONT_END_POSITION_MONITOR = 'FRONT_END_POSITION_MONITOR';
+
+// code
+export const CODE_PROJECT_EXTENSION = '.json';
+
