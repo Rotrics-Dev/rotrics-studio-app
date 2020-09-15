@@ -3,7 +3,7 @@
     "label": "Jog Pen Offset",
     "description": "Jog Pen Offset description",
     "placeholder": "#jog_pen_offset#",
-    "default_value": 10,
+    "default_value": 2,
     "type": "int",
     "unit": "mm",
     "minimum_value": 1,

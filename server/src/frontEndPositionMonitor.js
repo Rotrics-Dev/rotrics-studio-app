@@ -2,10 +2,17 @@ import {FRONT_END_POSITION_MONITOR} from "./constants";
 import EventEmitter from "events";
 
 class FrontEndPositionMonitor extends EventEmitter {
+
     positionFilteringWrite(line) {
         if (!line) {
             return;
         }
+        // if (line.startsWith('xxxx')) {//forTest
+        //     console.log(this.xxxx);
+        //     this.xxxx = '';
+        // }
+        this.logWrite(line);
+
         if (line.startsWith('N')) {
             const indexOfSpace = line.indexOf(' ');
             line = line.slice(indexOfSpace + 1, line.length)
@@ -35,17 +42,33 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     positionFilteringRead(line) {
-        console.log('frontEndPositionMonitor:' + line)
-
         if (!line) {
             return;
         }
+
+        this.logRead(line);
+
         if (line.startsWith('ok')) {
             this.onReadOk();
         } else if (this.needProcessM114) {
             this.processM114(line);
         } else {
         }
+    }
+
+    logWrite(line) {
+        this.log('logWrite', line)
+    }
+
+    logRead(line) {
+        // this.log('logRead', line);
+    }
+
+    log(tag, line) {
+        // if (!this.xxxx) {
+        //     this.xxxx = '';
+        // }
+        // this.xxxx += line.trim() + '\t' + new Date().valueOf() + 'xxxx'
     }
 
     sendPosition() {
@@ -152,14 +175,11 @@ class FrontEndPositionMonitor extends EventEmitter {
         line.split(' ').forEach((value) => {
             if (value.startsWith('X')) {
                 x = parseFloat(value.slice(1, value.length));
-                console.log("X:" + x);
             } else if (value.startsWith('Y')) {
                 y = parseFloat(value.slice(1, value.length));
-                console.log("Y:" + y);
 
             } else if (value.startsWith('Z')) {
                 z = parseFloat(value.slice(1, value.length));
-                console.log("Z:" + z);
             }
         });
 

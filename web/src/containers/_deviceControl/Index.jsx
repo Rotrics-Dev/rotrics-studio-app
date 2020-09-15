@@ -44,7 +44,7 @@ class Index extends React.Component {
             this.props.start(gcode, false, false)
         },
         leftTop: () => {
-            this.actions._move(`G0 Y${this.state.step} Z${this.state.step}`)
+            this.actions._move(`G0 X${-this.state.step} Y${this.state.step}`)
         },
         leftBottom: () => {
             this.actions._move(`G0 X${-this.state.step} Y${-this.state.step}`)

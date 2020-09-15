@@ -59,3 +59,5 @@ export const FIRMWARE_UPGRADE_STEP_CHANGE = 'FIRMWARE_UPGRADE_STEP_CHANGE';
 
 // front end position
 export const FRONT_END_POSITION_MONITOR = 'FRONT_END_POSITION_MONITOR';
+// task time monitor
+export const TASK_TIME_MONITOR = 'TASK_TIME_MONITOR';
