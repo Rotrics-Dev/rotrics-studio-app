@@ -12,8 +12,9 @@ const INITIAL_STATE = {
 };
 
 export const actions = {
-    init: () => (dispatch, getState) => {
+    init: () => (dispatch) => {
         dispatch(actions._init());
+        dispatch(actions.loadEmptyProject());
         dispatch(actions._setupListener());
     },
     _init: () => {
@@ -23,7 +24,6 @@ export const actions = {
     },
     _setupListener: () => (dispatch, getState) => {
         const vm = getState().code.vm;
-
         //参考：scratch-gui/lib/vm-listener-hoc.jsx
         document.addEventListener('keydown', (e) => {
             // Don't capture keys intended for Blockly inputs.
@@ -52,7 +52,6 @@ export const actions = {
                 e.preventDefault();
             }
         });
-
         vm.on(
             'PROJECT_RUN_START',
             () => {
@@ -69,7 +68,7 @@ export const actions = {
             'PROJECT_CHANGED',
             () => {
                 //TODO: move to codeProject
-                dispatch(codeProjectActions._updateState({isSaved: false}));
+                dispatch(codeProjectActions.onProjectChanged());
             }
         );
         //自定义block发送消息
@@ -105,6 +104,10 @@ export const actions = {
             type: SET_RUNNING,
             value
         };
+    },
+    loadEmptyProject: () => (dispatch, getState) => {
+        getState().code.vm.loadProject(defaultProjectJson);
+        return {type: null};
     }
 };
 
@@ -116,7 +119,6 @@ export default function reducer(state = INITIAL_STATE, action) {
             // 为了正常使用blocks，至少load一个project，保证至少有一个target
             // 为了方便，直接生成一个默认的项目，json格式，加载即可
             // default_sc_project.json的生成：使用官方的scratch-gui，const json = vm.toJSON();
-            vm.loadProject(defaultProjectJson);
             return Object.assign({}, state, {vm});
         case SET_RUNNING:
             const {value} = action;

@@ -35,17 +35,17 @@ const del = async (projectInfo) => {
     }).then(response => response.json());
 };
 
-const save = async (projectInfo, content) => {
+const save = async (projectInfo, content, extension) => {
     return await fetch(`${getBase()}/save`, {
         method: 'POST',
-        body: JSON.stringify({projectInfo, content})
+        body: JSON.stringify({projectInfo, content, extension})
     }).then(response => response.json());
 };
 
-const saveAs = async (projectInfo, content, extension) => {
+const saveAs = async (content, name, extension) => {
     return await fetch(`${getBase()}/save-as`, {
         method: 'POST',
-        body: JSON.stringify({projectInfo, content, extension})
+        body: JSON.stringify({content, name, extension})
     }).then(response => response.json());
 };
 

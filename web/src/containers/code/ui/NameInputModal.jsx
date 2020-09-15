@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Modal, Input, Row, Col} from 'antd';
 
-//props: title, onOk, onCancel, defaultValue
+//props: title, onOk, onCancel, defaultValue, visible
 class Index extends React.Component {
     state = {
         name: "",
@@ -20,11 +20,11 @@ class Index extends React.Component {
     render() {
         const state = this.state;
         const actions = this.actions;
-        const {title, onOk, onCancel} = this.props;
+        const {title, onOk, onCancel, visible} = this.props;
         return (
             <Modal
                 title={title}
-                visible={true}
+                visible={visible}
                 onCancel={onCancel}
                 footer={[
                     <Button

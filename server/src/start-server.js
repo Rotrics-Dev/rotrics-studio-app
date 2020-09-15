@@ -158,9 +158,8 @@ const setupHttpServer = () => {
             return ctx.body = {status: "ok"};
         })
         .post('/code/project/save', async (ctx) => {
-            const {projectInfo, content} = JSON.parse(ctx.request.body);
-            console.log(JSON.stringify(projectInfo, null, 2))
-            let {filePath, name, extension} = projectInfo;
+            const {projectInfo, content, extension} = JSON.parse(ctx.request.body);
+            let {filePath, name} = projectInfo;
             if (!filePath) {
                 filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
             }

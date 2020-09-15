@@ -147,6 +147,20 @@ const getFilename = (filePath) => {
     return name;
 };
 
+
+// const d = new Date(),
+//     year = d.getFullYear(),
+//     month = d.getMonth() + 1,
+//     day = d.getDate(),
+//     hour = d.getHours(),
+//     minute = d.getMinutes(),
+//     second = d.getSeconds();
+// return year + "-" +
+//     (month < 10 ? "0" + month : month) + "-" +
+//     (day < 10 ? "0" + day : day) + "-" +
+//     (hour < 10 ? "0" + hour : hour) + "-" +
+//     (minute < 10 ? "0" + minute : minute) + "-" +
+//     (second < 10 ? "0" + second : second);
 export {
     EPS,
     ensureRange,

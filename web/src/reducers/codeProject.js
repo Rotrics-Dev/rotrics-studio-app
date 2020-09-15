@@ -1,4 +1,5 @@
 import path from 'path';
+import {actions as codeActions} from "./code";
 import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
 import messageI18n from "../utils/messageI18n";
@@ -15,14 +16,12 @@ import {
 
 const ACTION_UPDATE_STATE = 'codeProject/ACTION_UPDATE_STATE';
 const INITIAL_STATE = {
-    isModalShow4new: false,
-    isModalShow4saveAs: false,
     isModalShow4exampleProjects: false,
     isModalShow4myProjects: false,
-    isModalShow4save: false,
-
-    projectInfo: null, //{name, filePath, created, modified, location}, location: my/example/your-computer/create
-    isSaved: false,
+    // {name, filePath, created, modified, location, isSaved}
+    // location: my/example/pc/null(null表示是new project)
+    // isSaved: 是否已经保存，即是否workspace和文件存储一致
+    projectInfo: null,
     myProjectInfos: [],
     exampleProjectInfos: []
 };
@@ -31,7 +30,7 @@ const getFilename = (filePath) => {
     return path.basename(filePath, path.extname(filePath));
 };
 
-const isNameExist = (projectInfos, name) => {
+const isProjectNameExist = (projectInfos, name) => {
     for (let i = 0; i < projectInfos.length; i++) {
         if (projectInfos[i].name === name) {
             return true;
@@ -40,39 +39,44 @@ const isNameExist = (projectInfos, name) => {
     return false;
 };
 
-const getAvailableName = () => {
-    const d = new Date(),
-        year = d.getFullYear(),
-        month = d.getMonth() + 1,
-        day = d.getDate(),
-        hour = d.getHours(),
-        minute = d.getMinutes(),
-        second = d.getSeconds();
-    return year + "-" +
-        (month < 10 ? "0" + month : month) + "-" +
-        (day < 10 ? "0" + day : day) + "-" +
-        (hour < 10 ? "0" + hour : hour) + "-" +
-        (minute < 10 ? "0" + minute : minute) + "-" +
-        (second < 10 ? "0" + second : second);
+const getProjectInfoByName = (projectInfos, name) => {
+    for (let i = 0; i < projectInfos.length; i++) {
+        if (projectInfos[i].name === name) {
+            return projectInfos[i];
+        }
+    }
+    return null
+};
+
+const getAvailableName = (myProjectInfos) => {
+    let name = "new-1";
+    for (let i = 0; i < myProjectInfos.length; i++) {
+        if (isProjectNameExist(myProjectInfos, name)) {
+            name = `new-${i + 1}`;
+        } else {
+            return name;
+        }
+    }
+    name = `new-${myProjectInfos.length + 1}`;
+    return name;
 };
 
 const actions = {
     init: () => (dispatch, getState) => {
         socketClientManager.addServerListener("connect", async () => {
-            console.log("##connect")
             const {status: status4my, data: myProjectInfos} = await fetchMyProjectInfos();
             const {status: status4example, data: exampleProjectInfos} = await fetchExampleProjectInfos();
             dispatch(actions._updateState({myProjectInfos, exampleProjectInfos}));
             //无项目，则creat one
             if (!getState().codeProject.projectInfo) {
                 dispatch(actions._updateState({
-                    isSaved: true,
                     projectInfo: {
-                        name: getAvailableName(),
+                        name: getAvailableName(myProjectInfos),
                         filePath: null,
                         created: null,
                         modified: null,
-                        location: 'create'
+                        location: null,
+                        isSaved: false
                     }
                 }));
             }
@@ -90,104 +94,100 @@ const actions = {
             state
         };
     },
+    create: () => async (dispatch, getState) => {
+        dispatch(codeActions.loadEmptyProject());
+        const {myProjectInfos} = getState().codeProject;
+        dispatch(actions._updateState({
+            projectInfo: {
+                name: getAvailableName(myProjectInfos),
+                filePath: null,
+                created: null,
+                modified: null,
+                location: null,
+                isSaved: false
+            }
+        }));
+    },
     //open project located "my projects" and "example projects"
-    openLocal: (newProjectInfo) => async (dispatch, getState) => {
-        const {projectInfo, isSaved} = getState().codeProject;
-        if (projectInfo.filePath === newProjectInfo.filePath) {
-            messageI18n.success("already opened");
+    openLocal: (projectInfo) => async (dispatch, getState) => {
+        const {vm} = getState().code;
+        const {status, data: content} = await fetchProjectContent(projectInfo);
+        if (status === "ok") {
+            vm.loadProject(content)
+                .then(() => {
+                    messageI18n.success("Open project success.");
+                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true},}));
+                    dispatch(actions.closeModal4exampleProjects());
+                    dispatch(actions.closeModal4myProjects());
+                })
+                .catch(error => {
+                    messageI18n.error("Can not parse the project.");
+                    return {type: null};
+                });
+        } else {
+            messageI18n.error("Fetch project content failed");
             return {type: null};
         }
-        if (projectInfo.filePath !== newProjectInfo.filePath && !isSaved) {
-            dispatch(actions.openModal4save());
-        }
-        if (projectInfo && projectInfo.filePath !== newProjectInfo.filePath && isSaved) {
-            const {vm} = getState().code;
-            const {status, data: content} = await fetchProjectContent(newProjectInfo);
-            if (status === "ok") {
-                vm.loadProject(content)
-                    .then(() => {
-                        messageI18n.success("open project success");
-                        dispatch(actions._updateState({
-                            projectInfo: newProjectInfo,
-                            isSaved: true,
-                            isModalShow4exampleProjects: false,
-                            isModalShow4myProjects: false,
-                        }));
-                    })
-                    .catch(error => {
-                        messageI18n.error("open project failed");
-                        return {type: null};
-                    });
-            } else {
-                messageI18n.error("fetch project content failed");
-                return {type: null};
-            }
-        }
+
     },
     // get file abs path, only available in electron:
     // https://github.com/electron/electron/blob/master/docs/api/file-object.md
     openFromYourComputer: (file) => async (dispatch, getState) => {
-        const {projectInfo, isSaved} = getState().codeProject;
-        if (projectInfo.filePath === file.path) {
-            messageI18n.success("already opened");
-            return {type: null};
-        }
-        if (projectInfo.filePath !== file.path && !isSaved) {
-            dispatch(actions.openModal4save());
-        }
-        if (projectInfo.filePath !== file.path && isSaved) {
-            const {vm} = getState().code;
-            const content = await file.text();
-            vm.loadProject(content)
-                .then(() => {
-                    messageI18n.success("open project success");
-                    dispatch(actions._updateState({
-                        projectInfo: {
-                            name: getFilename(file.path),
-                            filePath: file.path,
-                            created: 0,
-                            modified: 0,
-                            location: "your-computer"
-                        },
+        const {vm} = getState().code;
+        const content = await file.text();
+        vm.loadProject(content)
+            .then(() => {
+                messageI18n.success("Open project success.");
+                dispatch(actions._updateState({
+                    projectInfo: {
+                        name: getFilename(file.path),
+                        filePath: file.path,
+                        created: 0,
+                        modified: 0,
+                        location: "pc",
                         isSaved: true,
-                        isModalShow4exampleProjects: false,
-                        isModalShow4myProjects: false,
-                    }));
-                })
-                .catch(error => {
-                    messageI18n.error("open project failed");
-                    return {type: null};
-                });
-        }
+                    }
+                }));
+            })
+            .catch(error => {
+                messageI18n.error("Can not parse the project.");
+                return {type: null};
+            });
     },
     save: () => async (dispatch, getState) => {
-        const {isSaved} = getState().codeProject;
-        if (isSaved) {
-            messageI18n.success("already saved");
+        const {projectInfo} = getState().codeProject;
+        if (projectInfo.isSaved) {
+            messageI18n.success("Already saved.");
             return {type: null};
         }
         const {vm} = getState().code;
         const content = vm.toJSON();
-        const {projectInfo} = getState().codeProject;
-        const {status} = await save(projectInfo, content);
+        const extension = CODE_PROJECT_EXTENSION;
+        const {status} = await save(projectInfo, content, extension);
         if (status === "ok") {
-            if (projectInfo.location === "your-computer") {
-                messageI18n.success(`save success to ${projectInfo.filePath}`);
-            } else {
-                messageI18n.success("save success");
+
+
+
+
+            
+
+            switch (projectInfo.location) {
+                case null:
+                    //save new project to my
+                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true, location: "my"}}));
+                    return {type: null};
+                case "pc":
+                    messageI18n.success(`Save success to ${projectInfo.filePath}`);
+                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
+                    return {type: null};
+                case "my":
+                    messageI18n.success("Save success");
+                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
+                    return {type: null};
             }
-            const {status: status4example, data: exampleProjectInfos} = await fetchExampleProjectInfos();
-            dispatch(actions._updateState({
-                isSaved: true,
-                isModalShow4save: true,
-                exampleProjectInfos
-            }));
         } else {
-            messageI18n.error("save failed");
-            dispatch(actions._updateState({
-                isSaved: false,
-                isModalShow4save: true
-            }));
+            messageI18n.error("Save failed");
+            dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: false}}));
         }
     },
     saveAs: (name) => async (dispatch, getState) => {
@@ -196,97 +196,84 @@ const actions = {
         const extension = CODE_PROJECT_EXTENSION;
         const {status} = await saveAs(content, name, extension);
         if (status === "ok") {
-            messageI18n.success("save as success");
+            messageI18n.success("Save as success");
+            const {status, data: myProjectInfos} = await fetchMyProjectInfos();
+            const projectInfo = getProjectInfoByName(myProjectInfos, name)
+            dispatch(actions._updateState({projectInfo, myProjectInfos}));
         } else {
-            messageI18n.error("save as failed");
+            messageI18n.error("Save as failed");
         }
         return {type: null};
     },
     rename: (projectInfo, name) => async (dispatch, getState) => {
         name = name.trim();
         if (name.length === 0) {
-            messageI18n.error("rename failed: name is empty");
+            messageI18n.error("Name is empty");
             return {type: null};
         }
-
         const {location} = projectInfo;
-        if (["create", "my"].includes(location) && isNameExist(getState().codeProject.myProjectInfos, name)) {
-            messageI18n.error("rename failed: name is exist");
-            return {type: null};
-        }
-
         switch (location) {
-            case "create":
+            case null:
                 dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
-                break;
-            case "my": {
-                const extension = CODE_PROJECT_EXTENSION;
-                const {status} = await rename(projectInfo, name, extension);
-                if (status === "ok") {
-                    messageI18n.success("rename success");
-                    dispatch(actions.fetchMyProjectInfos());
-                    const curProjectInfo = getState().codeProject.projectInfo;
-                    if (projectInfo.filePath === curProjectInfo.filePath) {
-                        dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
-                    }
+                return {type: null};
+            case "example":
+                messageI18n.error("Example project can not be renamed.");
+                return {type: null};
+            case "pc":
+                messageI18n.error("The project from your computer can not be renamed.");
+                return {type: null};
+            case "my":
+                if (isProjectNameExist(getState().codeProject.myProjectInfos, name)) {
+                    messageI18n.error("Name already occupied");
                 } else {
-                    messageI18n.error("rename failed");
-                }
-                break;
-            }
-            case "your-computer": { //TODO: 测试
-                const extension = CODE_PROJECT_EXTENSION;
-                const {status} = await rename(projectInfo, name, extension);
-                if (status === "ok") {
-                    messageI18n.success("rename success");
-                    const curProjectInfo = getState().codeProject.projectInfo;
-                    if (projectInfo.filePath === curProjectInfo.filePath) {
-                        dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
+                    const extension = CODE_PROJECT_EXTENSION;
+                    const {status} = await rename(projectInfo, name, extension);
+                    if (status === "ok") {
+                        messageI18n.success("Rename success");
+                        dispatch(actions.updateMyProjectInfos());
+                        const curProjectInfo = getState().codeProject.projectInfo;
+                        if (projectInfo.filePath === curProjectInfo.filePath) {
+                            dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
+                        }
+                    } else {
+                        messageI18n.error("Rename failed");
                     }
-                } else {
-                    messageI18n.error("rename your-computer failed");
                 }
-                break;
-            }
+                return {type: null};
         }
         return {type: null};
     },
     del: (projectInfo) => async (dispatch, getState) => {
         const {status} = await del(projectInfo);
         if (status === "ok") {
-            messageI18n.success("delete success");
-            dispatch(actions.fetchMyProjectInfos());
-            const curProjectInfo = getState().codeProject.projectInfo;
+            messageI18n.success("Delete success");
+            dispatch(actions.updateMyProjectInfos());
+            const {projectInfo: curProjectInfo, myProjectInfos} = getState().codeProject;
             if (projectInfo.filePath === curProjectInfo.filePath) {
                 dispatch(actions._updateState({
-                    isSaved: false,
                     projectInfo: {
-                        name: getAvailableName(),
+                        name: getAvailableName(myProjectInfos),
                         filePath: null,
                         created: null,
                         modified: null,
-                        location: 'create'
+                        location: null,
+                        isSaved: false
                     }
                 }));
             }
         } else {
-            messageI18n.error("delete failed");
+            messageI18n.error("Delete failed");
         }
         return {type: null};
     },
-    fetchMyProjectInfos: () => async (dispatch) => {
+    updateMyProjectInfos: () => async (dispatch) => {
         const {status, data: myProjectInfos} = await fetchMyProjectInfos();
         dispatch(actions._updateState({myProjectInfos}));
     },
-    openModal4new: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4new: true
-        }));
-    },
-    openModal4saveAs: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4saveAs: true
-        }));
+    // only called by redux.code
+    onProjectChanged: () => (dispatch, getState) => {
+        const {projectInfo} = getState().codeProject;
+        dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: false}}));
     },
     openModal4exampleProjects: () => (dispatch) => {
         dispatch(actions._updateState({
@@ -298,21 +285,6 @@ const actions = {
             isModalShow4myProjects: true
         }));
     },
-    openModal4save: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4save: true
-        }));
-    },
-    closeModal4new: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4new: false
-        }));
-    },
-    closeModal4saveAs: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4saveAs: false
-        }));
-    },
     closeModal4exampleProjects: () => (dispatch) => {
         dispatch(actions._updateState({
             isModalShow4exampleProjects: false
@@ -322,12 +294,7 @@ const actions = {
         dispatch(actions._updateState({
             isModalShow4myProjects: false
         }));
-    },
-    closeModal4save: () => (dispatch) => {
-        dispatch(actions._updateState({
-            isModalShow4save: false
-        }));
-    },
+    }
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -340,5 +307,5 @@ const reducer = (state = INITIAL_STATE, action) => {
     }
 };
 
-export {actions};
+export {actions, isProjectNameExist};
 export default reducer;

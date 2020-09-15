@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {timestamp2date, getFilename} from '../../../../utils/index.js';
 import styles from './styles.css';
-import NameInputModal from "./NameInputModal.jsx";
+import NameInputModal from "../NameInputModal.jsx";
 
 //TODO: double-click to open project
 class Index extends React.Component {
@@ -61,10 +61,9 @@ class Index extends React.Component {
                 {state.nameInputModalVisible &&
                 <NameInputModal
                     title={t('Rename')}
-                    visible={state.nameInputModalVisible}
+                    visible={true}
                     defaultValue={state.selected ? state.selected.name : ""}
                     onOk={(name) => {
-                        console.log("onok: " + name)
                         this.setState({nameInputModalVisible: false});
                         actions.renameProject(name);
                     }}
