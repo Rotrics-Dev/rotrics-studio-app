@@ -1,11 +1,25 @@
-const {app, BrowserWindow, shell, Menu} = require('electron');
+const {app, BrowserWindow, shell, Menu, MenuItem} = require('electron');
 const path = require('path');
 
 function setUpMenu() {
-    const menu = Menu.getApplicationMenu()
-    menu.items.forEach(item => {
-        if (item.role === 'viewmenu') Menu.setApplicationMenu(Menu.buildFromTemplate([item]));
-    });
+    Menu.getApplicationMenu().items.forEach(item => {
+            if (item.role === 'viewmenu') {
+                let submenu = [];
+                item.submenu.items.forEach(item => {
+                    if (item.role === 'forcereload' || item.role === 'toggledevtools') {
+                        submenu.push(new MenuItem({
+                            role: item.role, type: item.type, label: item.label, click: item.click
+                        }));
+                    }
+                });
+
+                Menu.setApplicationMenu(Menu.buildFromTemplate([new MenuItem({
+                    role: item.role, type: item.type, label: item.label, click: item.click,
+                    submenu: Menu.buildFromTemplate(submenu)
+                })]));
+            }
+        }
+    );
 }
 
 function createWindow() {
