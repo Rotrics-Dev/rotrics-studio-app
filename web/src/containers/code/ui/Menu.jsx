@@ -116,9 +116,7 @@ class Index extends React.Component {
                     break;
                 case "Save to your computer":
                     const content = this.props.vm.toJSON();
-                    const date = new Date();
-                    const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-                    const filename = `${arr.join("")}${CODE_PROJECT_EXTENSION}`;
+                    const filename = `${name}${CODE_PROJECT_EXTENSION}`;
                     const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
                     FileSaver.saveAs(blob, filename, true);
                     break;
@@ -131,8 +129,9 @@ class Index extends React.Component {
         onChangeProjectName: (e) => {
             this.setState({name: e.target.value});
         },
-        changeProjectName: (e) => {
-            this.props.rename(this.props.projectInfo, e.target.value)
+        rename: (e) => {
+            e.stopPropagation();
+            this.props.rename(this.props.projectInfo, e.target.value);
             e.target.blur();
         },
     };
@@ -161,7 +160,7 @@ class Index extends React.Component {
                 <input
                     ref={this.fileInput}
                     type="file"
-                    accept={'.json'}
+                    accept={CODE_PROJECT_EXTENSION}
                     style={{display: 'none'}}
                     multiple={false}
                     onChange={actions.openFromYourComputer}
@@ -169,13 +168,15 @@ class Index extends React.Component {
                 <Dropdown overlay={this.menu4file} placement="bottomCenter">
                     <Button size="small" type="primary" ghost icon={<FolderOutlined/>}>File</Button>
                 </Dropdown>
-                <Button size="small" type="primary" onClick={save} ghost icon={<SaveOutlined/>}>Save</Button>
+                <Button size="small" type="primary" onClick={save}
+                        disabled={projectInfo.isSaved || projectInfo.location === 'example'} ghost
+                        icon={<SaveOutlined/>}>Save</Button>
                 <Input
                     value={state.name}
                     size="small"
                     onChange={actions.onChangeProjectName}
-                    onBlur={actions.changeProjectName}
-                    onPressEnter={actions.changeProjectName}
+                    onBlur={actions.rename}
+                    onPressEnter={(e) => e.target.blur()}
                     allowClear={true}
                     disabled={["example", "pc"].includes(projectInfo.location)}
                 />

@@ -42,6 +42,7 @@ import {
     FIRMWARE_UPGRADE_START,
     FIRMWARE_UPGRADE_STEP_CHANGE,
     FRONT_END_POSITION_MONITOR,
+    CODE_PROJECT_EXTENSION
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_DIR_CONFIG_PRINT_SETTINGS, P3D_DIR_CONFIG_MATERIAL_SETTINGS} from './init.js';
@@ -105,7 +106,7 @@ const setupHttpServer = () => {
     // code project
     router
         .get('/code/project/fetch/infos/my', async (ctx) => {
-            const data = [];
+            let data = [];
             const filenames = fs.readdirSync(CODE_DIR_MY_PROJECT);
             filenames.forEach((filename) => {
                 const filePath = path.join(CODE_DIR_MY_PROJECT, filename);
@@ -115,14 +116,18 @@ const setupHttpServer = () => {
                     filePath,
                     location: "my",
                     created: ctimeMs,
-                    modified: mtimeMs
+                    modified: mtimeMs,
+                    isSaved: true
                 };
                 data.push(info)
+            });
+            data = data.filter((info) => {
+                return path.extname(info.filePath) === CODE_PROJECT_EXTENSION;
             });
             return ctx.body = {status: "ok", data};
         })
         .get('/code/project/fetch/infos/example', async (ctx) => {
-            const data = [];
+            let data = [];
             const filenames = fs.readdirSync(CODE_DIR_EXAMPLE_PROJECT);
             filenames.forEach((filename) => {
                 const filePath = path.join(CODE_DIR_EXAMPLE_PROJECT, filename);
@@ -132,9 +137,13 @@ const setupHttpServer = () => {
                     filePath,
                     location: "example",
                     created: ctimeMs,
-                    modified: mtimeMs
+                    modified: mtimeMs,
+                    isSaved: true
                 };
                 data.push(info)
+            });
+            data = data.filter((info) => {
+                return path.extname(info.filePath) === CODE_PROJECT_EXTENSION;
             });
             return ctx.body = {status: "ok", data};
         })

@@ -1,18 +1,21 @@
 import React from 'react';
-import {Button, Dropdown, Menu, Row, Col, Modal, Empty, Popconfirm} from 'antd';
+import FileSaver from 'file-saver';
+import {Button, Dropdown, Menu, Row, Col, Modal, Empty} from 'antd';
 import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {actions as codeProjectActions} from "../../../../reducers/codeProject";
+import {actions as codeProjectActions, compareProject, isProjectNameExist} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {timestamp2date, getFilename} from '../../../../utils/index.js';
 import styles from './styles.css';
-import NameInputModal from "../NameInputModal.jsx";
+import messageI18n from "../../../../utils/messageI18n";
+import showSaveConfirm from "../showSaveConfirm.jsx";
+import showNameInput from "../showNameInput.jsx";
+import {fetchProjectContent} from "../../../../api/codeProject";
+import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 
-//TODO: double-click to open project
 class Index extends React.Component {
     state = {
         selected: null, //selected project info
-        nameInputModalVisible: false
     };
 
     actions = {
@@ -23,19 +26,67 @@ class Index extends React.Component {
             this.setState({selected: null});
             this.props.closeModal4myProjects();
         },
-        openProject: () => {
-            this.props.openLocal(this.state.selected);
-            this.setState({selected: null})
-        },
-        renameProject: (name) => {
-            const projectInfo = this.state.selected;
-            this.props.rename(projectInfo, name);
+        openProject: (projectInfo) => {
+            if (compareProject(projectInfo, this.props.projectInfo)) {
+                messageI18n.warning("Project already opened.");
+                return;
+            }
+            const target = projectInfo ? projectInfo : this.state.selected;
+            const {name, location, isSaved} = this.props.projectInfo;
+            if (!isSaved) {
+                if (location === "example") {
+                    showSaveConfirm({
+                        title: 'The example project has been modified. Save as it?',
+                        doNotSaveText: "Don't save as",
+                        onDoNotSave: () => {
+                            this.props.openLocal(target);
+                            this.setState({selected: null})
+                        },
+                        onSave: () => {
+                            showNameInput({
+                                title: 'Save as',
+                                defaultValue: name,
+                                onOk: (inputName) => {
+                                    return new Promise(async (resolve, reject) => {
+                                        inputName = inputName.trim();
+                                        if (inputName.length === 0) {
+                                            messageI18n.error("Name is empty");
+                                            reject();
+                                        } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
+                                            messageI18n.error("Name already occupied");
+                                            reject();
+                                        } else {
+                                            await this.props.saveAs(inputName);
+                                            this.props.openLocal(target);
+                                            this.setState({selected: null});
+                                            resolve();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    showSaveConfirm({
+                        title: 'The project has been modified. Save it?',
+                        doNotSaveText: "Don't save",
+                        onDoNotSave: () => {
+                            this.props.openLocal(target);
+                            this.setState({selected: null})
+                        },
+                        onSave: async () => {
+                            await this.props.save();
+                            this.props.openLocal(target);
+                            this.setState({selected: null})
+                        }
+                    });
+                }
+            } else {
+                this.props.openLocal(target);
+                this.setState({selected: null})
+            }
         },
         delProject: (projectInfo) => {
-            this.setState({selected: null});
-            this.props.del(projectInfo);
-        },
-        showDelConfirm: (projectInfo) => {
             Modal.confirm({
                 title: 'Are you sure delete this project?',
                 icon: <ExclamationCircleOutlined/>,
@@ -43,35 +94,54 @@ class Index extends React.Component {
                 okType: 'danger',
                 cancelText: 'No',
                 onOk: () => {
-                    this.actions.delProject(projectInfo);
+                    this.setState({selected: null});
+                    this.props.del(projectInfo);
                 },
                 onCancel: () => {
                 },
             })
-        }
+        },
+        renameProject: (projectInfo) => {
+            showNameInput({
+                title: 'Rename',
+                defaultValue: projectInfo.name,
+                onOk: (inputName) => {
+                    return new Promise(async (resolve, reject) => {
+                        inputName = inputName.trim();
+                        if (inputName.length === 0) {
+                            messageI18n.error("Name is empty");
+                            reject();
+                        } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
+                            messageI18n.error("Name already occupied");
+                            reject();
+                        } else {
+                            await this.props.rename(projectInfo, inputName);
+                            this.setState({selected: null});
+                            resolve();
+                        }
+                    });
+                }
+            });
+        },
+        exportProject: async (projectInfo) => {
+            const {status, data: content} = await fetchProjectContent(projectInfo);
+            if (status === "ok") {
+                const filename = `${projectInfo.name}${CODE_PROJECT_EXTENSION}`;
+                const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
+                FileSaver.saveAs(blob, filename, true);
+            } else {
+                messageI18n.error("Export project failed");
+            }
+        },
     };
 
     render() {
         const state = this.state;
         const actions = this.actions;
         const {t} = this.props;
-        const {isModalShow4myProjects, myProjectInfos} = this.props;
+        const {isModalShow4myProjects, myProjectInfos, openLocal} = this.props;
         return (
             <div>
-                {state.nameInputModalVisible &&
-                <NameInputModal
-                    title={t('Rename')}
-                    visible={true}
-                    defaultValue={state.selected ? state.selected.name : ""}
-                    onOk={(name) => {
-                        this.setState({nameInputModalVisible: false});
-                        actions.renameProject(name);
-                    }}
-                    onCancel={() => {
-                        this.setState({nameInputModalVisible: false});
-                    }}
-                />
-                }
                 <Modal
                     title={t("My projects")}
                     visible={isModalShow4myProjects}
@@ -112,21 +182,30 @@ class Index extends React.Component {
                                         className={state.selected === projectInfo ? styles.div_project_selected : styles.div_project}
                                         onClick={() => {
                                             actions.selectProject(projectInfo)
-                                        }}>
+                                        }}
+                                        onDoubleClick={() => {
+                                            actions.openProject(projectInfo)
+                                        }}
+                                    >
                                         <Dropdown
                                             trigger={['click']}
                                             placement="bottomCenter"
                                             overlay={() => {
                                                 return <Menu>
                                                     <Menu.Item>
-                                                        <Button size="small" onClick={(e) => {
-                                                            this.setState({nameInputModalVisible: true})
+                                                        <Button size="small" onClick={() => {
+                                                            actions.renameProject(projectInfo)
                                                         }}>Rename</Button>
                                                     </Menu.Item>
                                                     <Menu.Item>
                                                         <Button size="small" onClick={() => {
-                                                            actions.showDelConfirm(projectInfo)
+                                                            actions.delProject(projectInfo)
                                                         }}>Delete</Button>
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        <Button size="small" onClick={() => {
+                                                            actions.exportProject(projectInfo)
+                                                        }}>Export</Button>
                                                     </Menu.Item>
                                                 </Menu>
                                             }}>
@@ -152,10 +231,12 @@ const mapStateToProps = (state) => {
     const {
         isModalShow4myProjects,
         myProjectInfos,
+        projectInfo
     } = state.codeProject;
     return {
         isModalShow4myProjects,
         myProjectInfos,
+        projectInfo
     };
 };
 
@@ -165,6 +246,8 @@ const mapDispatchToProps = (dispatch) => {
         openLocal: (projectInfo) => dispatch(codeProjectActions.openLocal(projectInfo)),
         del: (projectInfo) => dispatch(codeProjectActions.del(projectInfo)),
         rename: (projectInfo, name) => dispatch(codeProjectActions.rename(projectInfo, name)),
+        saveAs: (name) => dispatch(codeProjectActions.saveAs(name)),
+        save: () => dispatch(codeProjectActions.save()),
     };
 };
 

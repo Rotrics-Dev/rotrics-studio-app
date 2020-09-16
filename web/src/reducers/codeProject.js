@@ -1,6 +1,5 @@
 import path from 'path';
 import {actions as codeActions} from "./code";
-import _ from 'lodash';
 import socketClientManager from "../socket/socketClientManager";
 import messageI18n from "../utils/messageI18n";
 import {CODE_PROJECT_EXTENSION} from "../constants";
@@ -18,8 +17,8 @@ const ACTION_UPDATE_STATE = 'codeProject/ACTION_UPDATE_STATE';
 const INITIAL_STATE = {
     isModalShow4exampleProjects: false,
     isModalShow4myProjects: false,
-    // {name, filePath, created, modified, location, isSaved}
-    // location: my/example/pc/null(null表示是new project)
+    // projectInfo = {name, filePath, created, modified, location, isSaved}
+    // location: my/example/pc/null; null表示是new project, pc表示from your computer
     // isSaved: 是否已经保存，即是否workspace和文件存储一致
     projectInfo: null,
     myProjectInfos: [],
@@ -39,6 +38,10 @@ const isProjectNameExist = (projectInfos, name) => {
     return false;
 };
 
+const compareProject = (p1, p2) => {
+    return (p1.location === p2.location && p1.filePath === p2.filePath && p1.name === p2.name);
+};
+
 const getProjectInfoByName = (projectInfos, name) => {
     for (let i = 0; i < projectInfos.length; i++) {
         if (projectInfos[i].name === name) {
@@ -48,17 +51,16 @@ const getProjectInfoByName = (projectInfos, name) => {
     return null
 };
 
-const getAvailableName = (myProjectInfos) => {
-    let name = "new-1";
-    for (let i = 0; i < myProjectInfos.length; i++) {
-        if (isProjectNameExist(myProjectInfos, name)) {
-            name = `new-${i + 1}`;
-        } else {
+const getAvailableName = (projectInfos) => {
+    console.log("########")
+    const len = projectInfos.length;
+    for (let i = 0; i < len; i++) {
+        const name = `new-${i + 1}`;
+        if (!isProjectNameExist(projectInfos, name)) {
             return name;
         }
     }
-    name = `new-${myProjectInfos.length + 1}`;
-    return name;
+    return `new-${len + 1}`;
 };
 
 const actions = {
@@ -156,34 +158,25 @@ const actions = {
     },
     save: () => async (dispatch, getState) => {
         const {projectInfo} = getState().codeProject;
-        if (projectInfo.isSaved) {
-            messageI18n.success("Already saved.");
-            return {type: null};
-        }
         const {vm} = getState().code;
         const content = vm.toJSON();
         const extension = CODE_PROJECT_EXTENSION;
         const {status} = await save(projectInfo, content, extension);
         if (status === "ok") {
-
-
-
-
-            
-
             switch (projectInfo.location) {
                 case null:
-                    //save new project to my
-                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true, location: "my"}}));
-                    return {type: null};
-                case "pc":
+                case "my": {
+                    messageI18n.success("Save success");
+                    const {data: myProjectInfos} = await fetchMyProjectInfos();
+                    const projectInfoNew = getProjectInfoByName(myProjectInfos, projectInfo.name);
+                    dispatch(actions._updateState({projectInfo: projectInfoNew, myProjectInfos}));
+                    break;
+                }
+                case "pc": {
                     messageI18n.success(`Save success to ${projectInfo.filePath}`);
                     dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
-                    return {type: null};
-                case "my":
-                    messageI18n.success("Save success");
-                    dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
-                    return {type: null};
+                    break;
+                }
             }
         } else {
             messageI18n.error("Save failed");
@@ -205,41 +198,40 @@ const actions = {
         }
         return {type: null};
     },
-    rename: (projectInfo, name) => async (dispatch, getState) => {
+    rename: (targetProjectInfo, name) => async (dispatch, getState) => {
         name = name.trim();
-        if (name.length === 0) {
-            messageI18n.error("Name is empty");
+        if (name === targetProjectInfo.name) {
+            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
             return {type: null};
         }
-        const {location} = projectInfo;
-        switch (location) {
+        if (name.length === 0) {
+            messageI18n.error("Name is empty");
+            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
+            return {type: null};
+        }
+        if (isProjectNameExist(getState().codeProject.myProjectInfos, name)) {
+            messageI18n.error("Name already occupied");
+            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
+            return {type: null};
+        }
+        // can nor rename if location is 'example' or 'pc'
+        switch (targetProjectInfo.location) {
             case null:
-                dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
-                return {type: null};
-            case "example":
-                messageI18n.error("Example project can not be renamed.");
-                return {type: null};
-            case "pc":
-                messageI18n.error("The project from your computer can not be renamed.");
-                return {type: null};
+                messageI18n.success("Rename success");
+                dispatch(actions._updateState({projectInfo: {...targetProjectInfo, name}}));
+                break;
             case "my":
-                if (isProjectNameExist(getState().codeProject.myProjectInfos, name)) {
-                    messageI18n.error("Name already occupied");
+                const extension = CODE_PROJECT_EXTENSION;
+                const {status} = await rename(targetProjectInfo, name, extension);
+                if (status === "ok") {
+                    messageI18n.success("Rename success");
+                    const {status, data: myProjectInfos} = await fetchMyProjectInfos();
+                    const projectInfo = getProjectInfoByName(myProjectInfos, name);
+                    dispatch(actions._updateState({projectInfo, myProjectInfos}));
                 } else {
-                    const extension = CODE_PROJECT_EXTENSION;
-                    const {status} = await rename(projectInfo, name, extension);
-                    if (status === "ok") {
-                        messageI18n.success("Rename success");
-                        dispatch(actions.updateMyProjectInfos());
-                        const curProjectInfo = getState().codeProject.projectInfo;
-                        if (projectInfo.filePath === curProjectInfo.filePath) {
-                            dispatch(actions._updateState({projectInfo: {...projectInfo, name}}));
-                        }
-                    } else {
-                        messageI18n.error("Rename failed");
-                    }
+                    messageI18n.error("Rename failed");
                 }
-                return {type: null};
+                break;
         }
         return {type: null};
     },
@@ -307,5 +299,5 @@ const reducer = (state = INITIAL_STATE, action) => {
     }
 };
 
-export {actions, isProjectNameExist};
+export {actions, isProjectNameExist, compareProject};
 export default reducer;
