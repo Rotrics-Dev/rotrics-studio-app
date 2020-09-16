@@ -1,7 +1,15 @@
-const {app, BrowserWindow, shell} = require('electron');
+const {app, BrowserWindow, shell, Menu} = require('electron');
 const path = require('path');
 
+function setUpMenu() {
+    const menu = Menu.getApplicationMenu()
+    menu.items.forEach(item => {
+        if (item.role === 'viewmenu') Menu.setApplicationMenu(Menu.buildFromTemplate([item]));
+    });
+}
+
 function createWindow() {
+    setUpMenu();
     const mainWindow = new BrowserWindow({
         width: 1280,
         height: 768,
