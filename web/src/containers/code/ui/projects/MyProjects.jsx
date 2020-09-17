@@ -5,7 +5,7 @@ import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {actions as codeProjectActions, compareProject, isProjectNameExist} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import {timestamp2date, getBaseFilename} from '../../../../utils/index.js';
+import {timestamp2date} from '../../../../utils/index.js';
 import styles from './styles.css';
 import messageI18n from "../../../../utils/messageI18n";
 import showSaveConfirm from "./showSaveConfirm.jsx";
@@ -200,10 +200,9 @@ class Index extends React.Component {
                 {myProjectInfos.length > 0 &&
                 <Row gutter={[20, 20]}>
                     {myProjectInfos.map(projectInfo => {
-                        const {filePath, created, modified} = projectInfo;
-                        const name = getBaseFilename(filePath);
+                        const {filePath, created, modified, name} = projectInfo;
                         return (
-                            <Col span={6} key={created}>
+                            <Col span={6} key={filePath}>
                                 <div
                                     className={state.selected === projectInfo ? styles.div_project_selected : styles.div_project}
                                     onClick={() => {

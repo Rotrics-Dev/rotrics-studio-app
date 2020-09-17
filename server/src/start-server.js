@@ -70,7 +70,7 @@ const saveFileToCacheDir = (file) => {
     return {url: serverCacheAddress + filename, filePath};
 };
 
-const getFilename = (filePath) => {
+const getBaseFilename = (filePath) => {
     return path.basename(filePath, path.extname(filePath));
 };
 
@@ -110,7 +110,7 @@ const setupHttpServer = () => {
                 const filePath = path.join(CODE_DIR_MY_PROJECT, filename);
                 const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
-                    name: getFilename(filePath),
+                    name: getBaseFilename(filePath),
                     filePath,
                     location: "my",
                     created: birthtimeMs,
@@ -131,7 +131,7 @@ const setupHttpServer = () => {
                 const filePath = path.join(CODE_DIR_EXAMPLE_PROJECT, filename);
                 const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
-                    name: getFilename(filePath),
+                    name: getBaseFilename(filePath),
                     filePath,
                     location: "example",
                     created: birthtimeMs,

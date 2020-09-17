@@ -3,7 +3,6 @@ import {Button, Row, Col, Modal} from 'antd';
 import {actions as codeProjectActions, isProjectNameExist, compareProject} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import { getBaseFilename} from '../../../../utils/index.js';
 import showSaveConfirm from "./showSaveConfirm.jsx";
 import showNameInput from "./showNameInput.jsx";
 import messageI18n from "../../../../utils/messageI18n";
@@ -120,10 +119,9 @@ class Index extends React.Component {
             >
                 <Row gutter={[20, 20]}>
                     {exampleProjectInfos.map(projectInfo => {
-                        const {filePath, created} = projectInfo;
-                        const name = getBaseFilename(filePath);
+                        const {filePath, name} = projectInfo;
                         return (
-                            <Col span={6} key={created}>
+                            <Col span={6} key={filePath}>
                                 <div
                                     className={state.selected === projectInfo ? styles.div_project_selected : styles.div_project}
                                     onClick={() => {
