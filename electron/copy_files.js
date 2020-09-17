@@ -29,6 +29,7 @@ fs.rmdirSync("./CuraEngine", {recursive: true});
 copyDirectorySync("../web/build-web", "./build-web");
 copyDirectorySync("../server/build-server", "./build-server");
 copyDirectorySync("../server/static/fonts", "./static/fonts");
+copyDirectorySync("../server/static/code/example_projects", "./static/code/example_projects");
 copyDirectorySync("../server/CuraEngine/Config", "./CuraEngine/Config");
 
 const os = process.argv[2];
