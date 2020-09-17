@@ -2,15 +2,13 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import FileSaver from 'file-saver';
-import {Button, Space, Menu, Dropdown, Input, Modal, Row, Col} from 'antd';
-import {FolderOutlined, SaveOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {actions as codeProjectActions, isProjectNameExist} from "../../../reducers/codeProject";
-import {CODE_PROJECT_EXTENSION} from "../../../constants";
+import {Button, Space, Menu, Dropdown, Input} from 'antd';
+import {FolderOutlined, SaveOutlined} from '@ant-design/icons';
+import {actions as codeProjectActions, isProjectNameExist} from "../../../../reducers/codeProject";
+import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 import showSaveConfirm from "./showSaveConfirm.jsx";
 import showNameInput from "./showNameInput.jsx";
-import messageI18n from "../../../utils/messageI18n";
-
-let proinfo = null;
+import messageI18n from "../../../../utils/messageI18n";
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -31,13 +29,13 @@ class Index extends React.Component {
             switch (key) {
                 case "New": {
                     if (!location) {
-                        messageI18n.info("A new project already opened.");
+                        messageI18n.info("A new project already opened");
                         return;
                     }
                     if (!isSaved) {
                         if (location === "example") {
                             showSaveConfirm({
-                                title: 'The example project has been modified. Save as it?',
+                                title: 'The example project has been modified. Save as a new project?',
                                 doNotSaveText: "Don't save as",
                                 onDoNotSave: () => {
                                     this.props.create()
@@ -50,7 +48,7 @@ class Index extends React.Component {
                                             return new Promise(async (resolve, reject) => {
                                                 inputName = inputName.trim();
                                                 if (inputName.length === 0) {
-                                                    messageI18n.error("Name is empty");
+                                                    messageI18n.error("Name can't be empty");
                                                     reject();
                                                 } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
                                                     messageI18n.error("Name already occupied");
@@ -67,7 +65,7 @@ class Index extends React.Component {
                             });
                         } else {
                             showSaveConfirm({
-                                title: 'The project has been modified. Save it?',
+                                title: 'Your project has been modified. Save it?',
                                 doNotSaveText: "Don't save",
                                 onDoNotSave: () => {
                                     this.props.create()
@@ -91,7 +89,7 @@ class Index extends React.Component {
                             return new Promise((resolve, reject) => {
                                 inputName = inputName.trim();
                                 if (inputName.length === 0) {
-                                    messageI18n.error("Name is empty");
+                                    messageI18n.error("Name can't be empty");
                                     reject();
                                 } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
                                     messageI18n.error("Name already occupied");
@@ -130,7 +128,6 @@ class Index extends React.Component {
             this.setState({name: e.target.value});
         },
         rename: (e) => {
-            e.stopPropagation();
             this.props.rename(this.props.projectInfo, e.target.value);
             e.target.blur();
         },
@@ -168,8 +165,8 @@ class Index extends React.Component {
                 <Dropdown overlay={this.menu4file} placement="bottomCenter">
                     <Button size="small" type="primary" ghost icon={<FolderOutlined/>}>File</Button>
                 </Dropdown>
-                <Button size="small" type="primary" onClick={save}
-                        disabled={projectInfo.isSaved || projectInfo.location === 'example'} ghost
+                <Button size="small" type="primary" onClick={save} ghost
+                        disabled={projectInfo.isSaved || projectInfo.location === 'example'}
                         icon={<SaveOutlined/>}>Save</Button>
                 <Input
                     value={state.name}
@@ -185,14 +182,14 @@ class Index extends React.Component {
     }
 }
 
+let mProjectInfo = null;
 const mapStateToProps = (state) => {
     const {vm} = state.code;
     const {projectInfo, myProjectInfos} = state.codeProject;
-    if (JSON.stringify(proinfo) !== JSON.stringify(projectInfo)) {
-        proinfo = projectInfo;
+    if (JSON.stringify(mProjectInfo) !== JSON.stringify(projectInfo)) {
+        mProjectInfo = projectInfo;
         console.log(JSON.stringify(projectInfo, null, 2))
     }
-
     return {
         vm,
         projectInfo,

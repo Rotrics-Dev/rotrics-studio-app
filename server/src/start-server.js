@@ -76,13 +76,12 @@ const getFilename = (filePath) => {
 
 const setupHttpServer = () => {
     //file: {"size":684,"path":"/var/folders/r6/w_gtq1gd0rbg6d6ry_h8t6wc0000gn/T/upload_bac2aa9af7e18da65c7535e1d44f4250","name":"cube_bin.stl","type":"application/octet-stream","mtime":"2020-04-17T04:21:17.843Z"}
-    router.post('/uploadFile', async (ctx) => {
+    router.post('/uploadFile', (ctx) => {
         const file = ctx.request.files.file;
         const {url} = saveFileToCacheDir(file);
         console.log("upload file ok: " + file.name + " -> " + url)
         return ctx.body = {url};
     });
-
     router.post('/uploadImage', async (ctx) => {
         const file = ctx.request.files.file;
         const {url, filePath} = saveFileToCacheDir(file);
@@ -102,20 +101,19 @@ const setupHttpServer = () => {
         console.log("upload image ok: " + file.name + " size: " + width + 'x' + height + " -> " + url);
         return ctx.body = {url, width, height};
     });
-
     // code project
     router
-        .get('/code/project/fetch/infos/my', async (ctx) => {
+        .get('/code/project/fetch/infos/my', (ctx) => {
             let data = [];
             const filenames = fs.readdirSync(CODE_DIR_MY_PROJECT);
             filenames.forEach((filename) => {
                 const filePath = path.join(CODE_DIR_MY_PROJECT, filename);
-                const {ctimeMs, mtimeMs} = fs.statSync(filePath);
+                const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
                     name: getFilename(filePath),
                     filePath,
                     location: "my",
-                    created: ctimeMs,
+                    created: birthtimeMs,
                     modified: mtimeMs,
                     isSaved: true
                 };
@@ -126,17 +124,17 @@ const setupHttpServer = () => {
             });
             return ctx.body = {status: "ok", data};
         })
-        .get('/code/project/fetch/infos/example', async (ctx) => {
+        .get('/code/project/fetch/infos/example', (ctx) => {
             let data = [];
             const filenames = fs.readdirSync(CODE_DIR_EXAMPLE_PROJECT);
             filenames.forEach((filename) => {
                 const filePath = path.join(CODE_DIR_EXAMPLE_PROJECT, filename);
-                const {ctimeMs, mtimeMs} = fs.statSync(filePath);
+                const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
                     name: getFilename(filePath),
                     filePath,
                     location: "example",
-                    created: ctimeMs,
+                    created: birthtimeMs,
                     modified: mtimeMs,
                     isSaved: true
                 };
@@ -147,26 +145,26 @@ const setupHttpServer = () => {
             });
             return ctx.body = {status: "ok", data};
         })
-        .post('/code/project/fetch/content', async (ctx) => {
+        .post('/code/project/fetch/content', (ctx) => {
             const {projectInfo} = JSON.parse(ctx.request.body);
             const {filePath} = projectInfo;
             const content = fs.readFileSync(filePath, 'utf8');
             return ctx.body = {status: "ok", data: content};
         })
-        .post('/code/project/rename', async (ctx) => {
+        .post('/code/project/rename', (ctx) => {
             const {projectInfo, name, extension} = JSON.parse(ctx.request.body);
             const {filePath: oldPath} = projectInfo;
             const newPath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
             fs.renameSync(oldPath, newPath);
             return ctx.body = {status: "ok"};
         })
-        .post('/code/project/delete', async (ctx) => {
+        .post('/code/project/delete', (ctx) => {
             const {projectInfo} = JSON.parse(ctx.request.body);
             const {filePath} = projectInfo;
             fs.unlinkSync(filePath);
             return ctx.body = {status: "ok"};
         })
-        .post('/code/project/save', async (ctx) => {
+        .post('/code/project/save', (ctx) => {
             const {projectInfo, content, extension} = JSON.parse(ctx.request.body);
             let {filePath, name} = projectInfo;
             if (!filePath) {
@@ -175,14 +173,13 @@ const setupHttpServer = () => {
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
         })
-        .post('/code/project/save-as', async (ctx) => {
+        .post('/code/project/save-as', (ctx) => {
             const {content, name, extension} = JSON.parse(ctx.request.body);
             const filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
         })
     ;
-
     app.use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');
         await next();

@@ -9,7 +9,7 @@ import {getUuid} from '../../utils/index.js';
 import {actions as tapsActions} from "../../reducers/taps";
 import {withTranslation} from 'react-i18next';
 import {TAP_CODE} from "../../constants.js";
-import Menu4code from '../code/ui/Menu.jsx';
+import Menu4code from '../code/ui/projects/Menu.jsx';
 
 const notificationKeyConnected = getUuid();
 const notificationKeyDisconnected = getUuid();

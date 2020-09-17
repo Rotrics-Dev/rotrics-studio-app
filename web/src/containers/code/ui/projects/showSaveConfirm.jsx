@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Modal} from 'antd';
 
-const index = ({title, onSave, onDoNotSave, saveText = "Save", doNotSaveText = "Don't save"}) => {
+export default ({title, onSave, onDoNotSave, saveText = "Save", doNotSaveText = "Don't save"}) => {
     const modal = Modal.confirm({
         title,
         content: <Button
@@ -16,7 +16,6 @@ const index = ({title, onSave, onDoNotSave, saveText = "Save", doNotSaveText = "
     })
 };
 
-export default index;
 
 
 

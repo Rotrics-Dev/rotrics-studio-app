@@ -3,11 +3,11 @@ import {Button, Row, Col, Modal} from 'antd';
 import {actions as codeProjectActions, isProjectNameExist, compareProject} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import {timestamp2date, getFilename} from '../../../../utils/index.js';
-import styles from './styles.css';
-import showSaveConfirm from "../showSaveConfirm.jsx";
-import showNameInput from "../showNameInput.jsx";
+import { getBaseFilename} from '../../../../utils/index.js';
+import showSaveConfirm from "./showSaveConfirm.jsx";
+import showNameInput from "./showNameInput.jsx";
 import messageI18n from "../../../../utils/messageI18n";
+import styles from './styles.css';
 
 class Index extends React.Component {
     state = {
@@ -24,7 +24,7 @@ class Index extends React.Component {
         },
         openProject: (projectInfo) => {
             if (compareProject(projectInfo, this.props.projectInfo)) {
-                messageI18n.warning("Project already opened.");
+                messageI18n.warning("The project already opened");
                 return;
             }
             const target = projectInfo ? projectInfo : this.state.selected;
@@ -32,7 +32,7 @@ class Index extends React.Component {
             if (!isSaved) {
                 if (location === "example") {
                     showSaveConfirm({
-                        title: 'The example project has been modified. Save as it?',
+                        title: 'The example project has been modified. Save as a new project?',
                         doNotSaveText: "Don't save as",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -46,7 +46,7 @@ class Index extends React.Component {
                                     return new Promise(async (resolve, reject) => {
                                         inputName = inputName.trim();
                                         if (inputName.length === 0) {
-                                            messageI18n.error("Name is empty");
+                                            messageI18n.error("Name can't be empty");
                                             reject();
                                         } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
                                             messageI18n.error("Name already occupied");
@@ -64,7 +64,7 @@ class Index extends React.Component {
                     });
                 } else {
                     showSaveConfirm({
-                        title: 'The project has been modified. Save it?',
+                        title: 'Your project has been modified. Save it?',
                         doNotSaveText: "Don't save",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -88,7 +88,7 @@ class Index extends React.Component {
         const state = this.state;
         const actions = this.actions;
         const {t} = this.props;
-        const {isModalShow4exampleProjects, exampleProjectInfos, openLocal} = this.props;
+        const {isModalShow4exampleProjects, exampleProjectInfos} = this.props;
         return (
             <Modal
                 title={t("Example projects")}
@@ -118,8 +118,8 @@ class Index extends React.Component {
             >
                 <Row gutter={[20, 20]}>
                     {exampleProjectInfos.map(projectInfo => {
-                        const {filePath, created, modified} = projectInfo;
-                        const name = getFilename(filePath);
+                        const {filePath, created} = projectInfo;
+                        const name = getBaseFilename(filePath);
                         return (
                             <Col span={6} key={created}>
                                 <div
@@ -130,9 +130,8 @@ class Index extends React.Component {
                                     onDoubleClick={() => {
                                         actions.openProject(projectInfo)
                                     }}>
-                                    <div className={styles.div_project_info}>
-                                        <p className={styles.p_str}>{name}</p>
-                                        <p className={styles.p_str}>{"created: " + timestamp2date(created)}</p>
+                                    <div className={styles.div_project_info_example}>
+                                        <p className={styles.p_project_info}>{name}</p>
                                     </div>
                                 </div>
                             </Col>

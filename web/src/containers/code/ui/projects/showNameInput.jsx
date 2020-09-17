@@ -1,7 +1,7 @@
 import React from 'react';
 import {Input, Modal, Row, Col} from 'antd';
 
-const index = ({title, onOk, defaultValue}) => {
+export default ({title, onOk, defaultValue}) => {
     const inputRef = React.createRef();
     Modal.confirm({
         title: title,
@@ -14,7 +14,7 @@ const index = ({title, onOk, defaultValue}) => {
                 <Input
                     ref={inputRef}
                     allowClear={true}
-                    placeholder="input project name"
+                    placeholder="Input project name"
                     defaultValue={defaultValue}
                 />
             </Col>
@@ -27,7 +27,6 @@ const index = ({title, onOk, defaultValue}) => {
     })
 };
 
-export default index;
 
 
 

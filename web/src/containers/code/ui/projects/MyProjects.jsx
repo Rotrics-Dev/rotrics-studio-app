@@ -5,15 +5,16 @@ import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {actions as codeProjectActions, compareProject, isProjectNameExist} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import {timestamp2date, getFilename} from '../../../../utils/index.js';
+import {timestamp2date, getBaseFilename} from '../../../../utils/index.js';
 import styles from './styles.css';
 import messageI18n from "../../../../utils/messageI18n";
-import showSaveConfirm from "../showSaveConfirm.jsx";
-import showNameInput from "../showNameInput.jsx";
+import showSaveConfirm from "./showSaveConfirm.jsx";
+import showNameInput from "./showNameInput.jsx";
 import {fetchProjectContent} from "../../../../api/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 
 class Index extends React.Component {
+    fileInput = React.createRef();
     state = {
         selected: null, //selected project info
     };
@@ -28,7 +29,7 @@ class Index extends React.Component {
         },
         openProject: (projectInfo) => {
             if (compareProject(projectInfo, this.props.projectInfo)) {
-                messageI18n.warning("Project already opened.");
+                messageI18n.warning("The project already opened");
                 return;
             }
             const target = projectInfo ? projectInfo : this.state.selected;
@@ -36,7 +37,7 @@ class Index extends React.Component {
             if (!isSaved) {
                 if (location === "example") {
                     showSaveConfirm({
-                        title: 'The example project has been modified. Save as it?',
+                        title: 'The example project has been modified. Save as a new project?',
                         doNotSaveText: "Don't save as",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -50,7 +51,7 @@ class Index extends React.Component {
                                     return new Promise(async (resolve, reject) => {
                                         inputName = inputName.trim();
                                         if (inputName.length === 0) {
-                                            messageI18n.error("Name is empty");
+                                            messageI18n.error("Name can't be empty");
                                             reject();
                                         } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
                                             messageI18n.error("Name already occupied");
@@ -68,7 +69,7 @@ class Index extends React.Component {
                     });
                 } else {
                     showSaveConfirm({
-                        title: 'The project has been modified. Save it?',
+                        title: 'Your project has been modified. Save it?',
                         doNotSaveText: "Don't save",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -88,17 +89,15 @@ class Index extends React.Component {
         },
         delProject: (projectInfo) => {
             Modal.confirm({
-                title: 'Are you sure delete this project?',
+                title: 'Are you sure to delete this project?',
                 icon: <ExclamationCircleOutlined/>,
-                okText: 'Yes',
+                okText: 'Delete',
                 okType: 'danger',
-                cancelText: 'No',
+                cancelText: 'Cancel',
                 onOk: () => {
                     this.setState({selected: null});
                     this.props.del(projectInfo);
-                },
-                onCancel: () => {
-                },
+                }
             })
         },
         renameProject: (projectInfo) => {
@@ -109,9 +108,9 @@ class Index extends React.Component {
                     return new Promise(async (resolve, reject) => {
                         inputName = inputName.trim();
                         if (inputName.length === 0) {
-                            messageI18n.error("Name is empty");
+                            messageI18n.error("Name can't be empty");
                             reject();
-                        } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
+                        } else if (isProjectNameExist(this.props.myProjectInfos.concat([this.props.projectInfo]), inputName)) {
                             messageI18n.error("Name already occupied");
                             reject();
                         } else {
@@ -130,99 +129,123 @@ class Index extends React.Component {
                 const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(blob, filename, true);
             } else {
-                messageI18n.error("Export project failed");
+                messageI18n.error("Fetch project content failed");
             }
         },
+        importProject: async (event) => {
+            const file = event.target.files[0];
+            this.props.importProject(file);
+        },
+        showFileSelectWindow: () => {
+            this.fileInput.current.value = null;
+            this.fileInput.current.click();
+        }
     };
 
     render() {
         const state = this.state;
         const actions = this.actions;
         const {t} = this.props;
-        const {isModalShow4myProjects, myProjectInfos, openLocal} = this.props;
+        const {isModalShow4myProjects, myProjectInfos} = this.props;
         return (
-            <div>
-                <Modal
-                    title={t("My projects")}
-                    visible={isModalShow4myProjects}
-                    onCancel={actions.closeModal}
-                    centered={true}
-                    width={"80%"}
-                    footer={[
-                        <Button
-                            ghost
-                            key="Cancel"
-                            type="primary"
-                            size="small"
-                            onClick={actions.closeModal}>
-                            {t("Cancel")}
-                        </Button>,
-                        <Button
-                            ghost
-                            key="Create"
-                            type="primary"
-                            size="small"
-                            disabled={!state.selected}
-                            onClick={actions.openProject}>
-                            {t('Open')}
-                        </Button>
-                    ]}
-                >
-                    {myProjectInfos.length === 0 &&
-                    <Empty/>
-                    }
-                    {myProjectInfos.length > 0 &&
-                    <Row gutter={[20, 20]}>
-                        {myProjectInfos.map(projectInfo => {
-                            const {filePath, created, modified} = projectInfo;
-                            const name = getFilename(filePath);
-                            return (
-                                <Col span={6} key={created}>
-                                    <div
-                                        className={state.selected === projectInfo ? styles.div_project_selected : styles.div_project}
-                                        onClick={() => {
-                                            actions.selectProject(projectInfo)
-                                        }}
-                                        onDoubleClick={() => {
-                                            actions.openProject(projectInfo)
-                                        }}
-                                    >
-                                        <Dropdown
-                                            trigger={['click']}
-                                            placement="bottomCenter"
-                                            overlay={() => {
-                                                return <Menu>
-                                                    <Menu.Item>
-                                                        <Button size="small" onClick={() => {
-                                                            actions.renameProject(projectInfo)
-                                                        }}>Rename</Button>
-                                                    </Menu.Item>
-                                                    <Menu.Item>
-                                                        <Button size="small" onClick={() => {
-                                                            actions.delProject(projectInfo)
-                                                        }}>Delete</Button>
-                                                    </Menu.Item>
-                                                    <Menu.Item>
-                                                        <Button size="small" onClick={() => {
-                                                            actions.exportProject(projectInfo)
-                                                        }}>Export</Button>
-                                                    </Menu.Item>
-                                                </Menu>
-                                            }}>
-                                            <EditOutlined className={styles.icon_edit}/>
-                                        </Dropdown>
-                                        <div className={styles.div_project_info}>
-                                            <p className={styles.p_str}>{name}</p>
-                                            <p className={styles.p_str}>{"created: " + timestamp2date(created)}</p>
-                                        </div>
+            <Modal
+                title={t("My projects")}
+                visible={isModalShow4myProjects}
+                onCancel={actions.closeModal}
+                centered={true}
+                width={"80%"}
+                footer={[
+                    <Button
+                        style={{position: "absolute", left: "15px"}}
+                        ghost
+                        key="Import"
+                        type="primary"
+                        size="small"
+                        onClick={actions.showFileSelectWindow}>
+                        {t("Import")}
+                    </Button>,
+                    <Button
+                        ghost
+                        key="Cancel"
+                        type="primary"
+                        size="small"
+                        onClick={actions.closeModal}>
+                        {t("Cancel")}
+                    </Button>,
+                    <Button
+                        ghost
+                        key="Create"
+                        type="primary"
+                        size="small"
+                        disabled={!state.selected}
+                        onClick={actions.openProject}>
+                        {t('Open')}
+                    </Button>
+                ]}
+            >
+                <input
+                    ref={this.fileInput}
+                    type="file"
+                    accept={CODE_PROJECT_EXTENSION}
+                    style={{display: 'none'}}
+                    multiple={false}
+                    onChange={actions.importProject}
+                />
+                {myProjectInfos.length === 0 &&
+                <Empty/>
+                }
+                {myProjectInfos.length > 0 &&
+                <Row gutter={[20, 20]}>
+                    {myProjectInfos.map(projectInfo => {
+                        const {filePath, created, modified} = projectInfo;
+                        const name = getBaseFilename(filePath);
+                        return (
+                            <Col span={6} key={created}>
+                                <div
+                                    className={state.selected === projectInfo ? styles.div_project_selected : styles.div_project}
+                                    onClick={() => {
+                                        actions.selectProject(projectInfo)
+                                    }}
+                                    onDoubleClick={() => {
+                                        actions.openProject(projectInfo)
+                                    }}
+                                >
+                                    <Dropdown
+                                        trigger={['click']}
+                                        placement="bottomCenter"
+                                        overlay={() => {
+                                            return <Menu>
+                                                <Menu.Item>
+                                                    <Button size="small" onClick={() => {
+                                                        actions.renameProject(projectInfo)
+                                                    }}>Rename</Button>
+                                                </Menu.Item>
+                                                <Menu.Item>
+                                                    <Button size="small" onClick={() => {
+                                                        actions.delProject(projectInfo)
+                                                    }}>Delete</Button>
+                                                </Menu.Item>
+                                                <Menu.Item>
+                                                    <Button size="small" onClick={() => {
+                                                        actions.exportProject(projectInfo)
+                                                    }}>Export</Button>
+                                                </Menu.Item>
+                                            </Menu>
+                                        }}>
+                                        <EditOutlined className={styles.icon_edit}/>
+                                    </Dropdown>
+                                    <div className={styles.div_project_info_my}>
+                                        <p className={styles.p_project_info}>{name}</p>
+                                        <p className={styles.p_project_info}>{"created: " + timestamp2date(created)}</p>
+                                        <p className={styles.p_project_info}>{"modified: " + timestamp2date(modified)}</p>
                                     </div>
-                                </Col>
-                            );
-                        })}
-                    </Row>
-                    }
-                </Modal>
-            </div>
+                                </div>
+                            </Col>
+                        );
+                    })}
+                </Row>
+                }
+            </Modal>
         )
     }
 }
@@ -248,6 +271,7 @@ const mapDispatchToProps = (dispatch) => {
         rename: (projectInfo, name) => dispatch(codeProjectActions.rename(projectInfo, name)),
         saveAs: (name) => dispatch(codeProjectActions.saveAs(name)),
         save: () => dispatch(codeProjectActions.save()),
+        importProject: (file) => dispatch(codeProjectActions.importProject(file)),
     };
 };
 

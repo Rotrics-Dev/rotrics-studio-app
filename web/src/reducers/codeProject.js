@@ -1,8 +1,8 @@
-import path from 'path';
 import {actions as codeActions} from "./code";
 import socketClientManager from "../socket/socketClientManager";
 import messageI18n from "../utils/messageI18n";
 import {CODE_PROJECT_EXTENSION} from "../constants";
+import {getBaseFilename} from '../utils/index.js';
 import {
     fetchMyProjectInfos,
     fetchExampleProjectInfos,
@@ -25,8 +25,8 @@ const INITIAL_STATE = {
     exampleProjectInfos: []
 };
 
-const getFilename = (filePath) => {
-    return path.basename(filePath, path.extname(filePath));
+const compareProject = (p1, p2) => {
+    return (p1.location === p2.location && p1.filePath === p2.filePath && p1.name === p2.name);
 };
 
 const isProjectNameExist = (projectInfos, name) => {
@@ -38,10 +38,6 @@ const isProjectNameExist = (projectInfos, name) => {
     return false;
 };
 
-const compareProject = (p1, p2) => {
-    return (p1.location === p2.location && p1.filePath === p2.filePath && p1.name === p2.name);
-};
-
 const getProjectInfoByName = (projectInfos, name) => {
     for (let i = 0; i < projectInfos.length; i++) {
         if (projectInfos[i].name === name) {
@@ -51,16 +47,15 @@ const getProjectInfoByName = (projectInfos, name) => {
     return null
 };
 
-const getAvailableName = (projectInfos) => {
-    console.log("########")
+const getAvailableProjectName = (projectInfos, baseName = 'new-') => {
     const len = projectInfos.length;
     for (let i = 0; i < len; i++) {
-        const name = `new-${i + 1}`;
+        const name = `${baseName}${i + 1}`;
         if (!isProjectNameExist(projectInfos, name)) {
             return name;
         }
     }
-    return `new-${len + 1}`;
+    return `${baseName}${len + 1}`;
 };
 
 const actions = {
@@ -69,11 +64,11 @@ const actions = {
             const {status: status4my, data: myProjectInfos} = await fetchMyProjectInfos();
             const {status: status4example, data: exampleProjectInfos} = await fetchExampleProjectInfos();
             dispatch(actions._updateState({myProjectInfos, exampleProjectInfos}));
-            //无项目，则creat one
+            //if no project loaded, then creat one
             if (!getState().codeProject.projectInfo) {
                 dispatch(actions._updateState({
                     projectInfo: {
-                        name: getAvailableName(myProjectInfos),
+                        name: getAvailableProjectName(myProjectInfos),
                         filePath: null,
                         created: null,
                         modified: null,
@@ -101,7 +96,7 @@ const actions = {
         const {myProjectInfos} = getState().codeProject;
         dispatch(actions._updateState({
             projectInfo: {
-                name: getAvailableName(myProjectInfos),
+                name: getAvailableProjectName(myProjectInfos),
                 filePath: null,
                 created: null,
                 modified: null,
@@ -117,13 +112,13 @@ const actions = {
         if (status === "ok") {
             vm.loadProject(content)
                 .then(() => {
-                    messageI18n.success("Open project success.");
+                    messageI18n.success("Open project success");
                     dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true},}));
                     dispatch(actions.closeModal4exampleProjects());
                     dispatch(actions.closeModal4myProjects());
                 })
                 .catch(error => {
-                    messageI18n.error("Can not parse the project.");
+                    messageI18n.error("Project content corrupted");
                     return {type: null};
                 });
         } else {
@@ -139,10 +134,10 @@ const actions = {
         const content = await file.text();
         vm.loadProject(content)
             .then(() => {
-                messageI18n.success("Open project success.");
+                messageI18n.success("Open project success");
                 dispatch(actions._updateState({
                     projectInfo: {
-                        name: getFilename(file.path),
+                        name: getBaseFilename(file.path),
                         filePath: file.path,
                         created: 0,
                         modified: 0,
@@ -152,10 +147,11 @@ const actions = {
                 }));
             })
             .catch(error => {
-                messageI18n.error("Can not parse the project.");
+                messageI18n.error("Project content corrupted");
                 return {type: null};
             });
     },
+    // save current project
     save: () => async (dispatch, getState) => {
         const {projectInfo} = getState().codeProject;
         const {vm} = getState().code;
@@ -166,14 +162,14 @@ const actions = {
             switch (projectInfo.location) {
                 case null:
                 case "my": {
-                    messageI18n.success("Save success");
+                    messageI18n.success("Your project has been saved to My Projects");
                     const {data: myProjectInfos} = await fetchMyProjectInfos();
                     const projectInfoNew = getProjectInfoByName(myProjectInfos, projectInfo.name);
                     dispatch(actions._updateState({projectInfo: projectInfoNew, myProjectInfos}));
                     break;
                 }
                 case "pc": {
-                    messageI18n.success(`Save success to ${projectInfo.filePath}`);
+                    messageI18n.success(`"Your project has been saved to "${projectInfo.filePath}`);
                     dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
                     break;
                 }
@@ -183,35 +179,53 @@ const actions = {
             dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: false}}));
         }
     },
+    // save as current project
     saveAs: (name) => async (dispatch, getState) => {
         const {vm} = getState().code;
         const content = vm.toJSON();
         const extension = CODE_PROJECT_EXTENSION;
         const {status} = await saveAs(content, name, extension);
         if (status === "ok") {
-            messageI18n.success("Save as success");
+            messageI18n.success("Your project has been saved to My Projects");
             const {status, data: myProjectInfos} = await fetchMyProjectInfos();
-            const projectInfo = getProjectInfoByName(myProjectInfos, name)
+            const projectInfo = getProjectInfoByName(myProjectInfos, name);
             dispatch(actions._updateState({projectInfo, myProjectInfos}));
         } else {
             messageI18n.error("Save as failed");
         }
         return {type: null};
     },
+    // save as current project
+    importProject: (file) => async (dispatch, getState) => {
+        const {projectInfo, myProjectInfos} = getState().codeProject;
+        const content = await file.text();
+        const name = getAvailableProjectName(myProjectInfos.concat([projectInfo]), "import-");
+        const extension = CODE_PROJECT_EXTENSION;
+        const {status} = await saveAs(content, name, extension);
+        if (status === "ok") {
+            messageI18n.success(`Your project has been imported to My Projects. Name is ${name}`);
+            const {status, data: myProjectInfos} = await fetchMyProjectInfos();
+            dispatch(actions._updateState({myProjectInfos}));
+        } else {
+            messageI18n.error("Import failed");
+        }
+        return {type: null};
+    },
     rename: (targetProjectInfo, name) => async (dispatch, getState) => {
         name = name.trim();
+        const {projectInfo, myProjectInfos} = getState().codeProject;
         if (name === targetProjectInfo.name) {
-            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
+            dispatch(actions._updateState({projectInfo: {...projectInfo}}));
             return {type: null};
         }
         if (name.length === 0) {
-            messageI18n.error("Name is empty");
-            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
+            messageI18n.error("Name can't be empty");
+            dispatch(actions._updateState({projectInfo: {...projectInfo}}));
             return {type: null};
         }
-        if (isProjectNameExist(getState().codeProject.myProjectInfos, name)) {
+        if (isProjectNameExist(myProjectInfos.concat([projectInfo]), name)) {
             messageI18n.error("Name already occupied");
-            dispatch(actions._updateState({projectInfo: {...targetProjectInfo}}));
+            dispatch(actions._updateState({projectInfo: {...projectInfo}}));
             return {type: null};
         }
         // can nor rename if location is 'example' or 'pc'
@@ -235,16 +249,18 @@ const actions = {
         }
         return {type: null};
     },
-    del: (projectInfo) => async (dispatch, getState) => {
-        const {status} = await del(projectInfo);
+    del: (targetProjectInfo) => async (dispatch, getState) => {
+        const {status} = await del(targetProjectInfo);
         if (status === "ok") {
             messageI18n.success("Delete success");
-            dispatch(actions.updateMyProjectInfos());
-            const {projectInfo: curProjectInfo, myProjectInfos} = getState().codeProject;
-            if (projectInfo.filePath === curProjectInfo.filePath) {
+            const {status, data: myProjectInfos} = await fetchMyProjectInfos();
+            dispatch(actions._updateState({myProjectInfos}));
+            const {projectInfo} = getState().codeProject;
+            //delete opened project
+            if (compareProject(targetProjectInfo, projectInfo)) {
                 dispatch(actions._updateState({
                     projectInfo: {
-                        name: getAvailableName(myProjectInfos),
+                        name: getAvailableProjectName(myProjectInfos),
                         filePath: null,
                         created: null,
                         modified: null,
@@ -257,10 +273,6 @@ const actions = {
             messageI18n.error("Delete failed");
         }
         return {type: null};
-    },
-    updateMyProjectInfos: () => async (dispatch) => {
-        const {status, data: myProjectInfos} = await fetchMyProjectInfos();
-        dispatch(actions._updateState({myProjectInfos}));
     },
     // only called by redux.code
     onProjectChanged: () => (dispatch, getState) => {

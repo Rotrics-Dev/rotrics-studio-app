@@ -127,8 +127,12 @@ const getAvailableSize = (width, height, sizeRestriction) => {
     return {width, height}
 };
 
-const timestamp2date = (timestamp) => {
-    const d = new Date(timestamp),
+/**
+ * @param timestampMS 毫秒值
+ * @returns {string}
+ */
+const timestamp2date = (timestampMS) => {
+    const d = new Date(timestampMS),
         year = d.getFullYear(),
         month = d.getMonth() + 1,
         day = d.getDate(),
@@ -141,12 +145,9 @@ const timestamp2date = (timestamp) => {
         (minute < 10 ? "0" + minute : minute);
 };
 
-const getFilename = (filePath) => {
-    const extname = path.extname(filePath)
-    const name = path.basename(filePath, path.extname(filePath));
-    return name;
+const getBaseFilename = (filePath) => {
+    return path.basename(filePath, path.extname(filePath));
 };
-
 
 // const d = new Date(),
 //     year = d.getFullYear(),
@@ -170,6 +171,6 @@ export {
     getUuid,
     getAvailableSize,
     timestamp2date,
-    getFilename
+    getBaseFilename
 };
 
