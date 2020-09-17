@@ -1,4 +1,5 @@
 import TextToSVG from 'text-to-svg';
+import textToSvgFromSvgFont from "../utils/textToSvgFromSvgFont";
 
 //fetch doc: https://developer.mozilla.org/zh-CN/docs/Web/API/Response
 
@@ -24,7 +25,7 @@ const uploadFile = async (file) => {
 const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await fetch(window.serverAddress+'/uploadImage', {
+    const response = await fetch(window.serverAddress + '/uploadImage', {
         method: 'POST',
         body: formData
     }).then(response => response.json());
@@ -44,23 +45,36 @@ const text2svg = async (text, options) => {
 
 const generateSvg = async (config_text) => {
     const {text, font, font_size} = config_text.children;
+    console.log(font);
+    let executor;
     const fontUrl = window.serverFontsAddress + font.default_value;
-    let promise = new Promise((resolve, reject) => {
-        TextToSVG.load(fontUrl, (err, textToSVG) => {
-            const attributes = {fill: 'black', stroke: 'black'};
+    if (font.default_value.toLowerCase().endsWith('svg')) {
+        executor = (resolve, reject) => {
             const options = {
-                tracking: 100,
-                x: 0,
-                y: 0,
                 fontSize: font_size.default_value,
-                anchor: 'top',
-                attributes: attributes
-            };
-            const svg = textToSVG.getSVG(text.default_value, options);
+                tracking: 100, //字间距  1000/100
+            }
+            const svg = textToSvgFromSvgFont(fontUrl, text.default_value, options);
             resolve(svg);
-        });
-    });
-
+        };
+    } else {
+        executor = (resolve, reject) => {
+            TextToSVG.load(fontUrl, (err, textToSVG) => {
+                const attributes = {fill: 'black', stroke: 'black'};
+                const options = {
+                    tracking: 100,
+                    x: 0,
+                    y: 0,
+                    fontSize: font_size.default_value,
+                    anchor: 'top',
+                    attributes: attributes
+                };
+                const svg = textToSVG.getSVG(text.default_value, options);
+                resolve(svg);
+            });
+        };
+    }
+    const promise = new Promise(executor);
     let svg = await promise;
     return svg;
 };

@@ -24,7 +24,13 @@
         "Impact": "Impact.woff",
         "Times": "Times.woff",
         "Verdana": "Verdana.woff",
-        "IPA": "IPA.ttf"
+        "IPA": "IPA.ttf",
+        "EMS Elfin": "EMSElfin.svg",
+        "EMS Allure": "EMSAllure.svg",
+        "EMS Osmotron": "EMSOsmotron.svg",
+        "EMS Tech": "EMSTech.svg",
+        "Hershey Sans": "HersheySans1.svg",
+        "Hershey Script": "HersheyScript1.svg"
       }
     },
     "font_size": {

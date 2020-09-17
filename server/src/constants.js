@@ -64,3 +64,5 @@ export const FRONT_END_POSITION_MONITOR = 'FRONT_END_POSITION_MONITOR';
 // code
 export const CODE_PROJECT_EXTENSION = '.rsc'; //rotrics studio code
 
+// task time monitor
+export const TASK_TIME_MONITOR = 'TASK_TIME_MONITOR';
