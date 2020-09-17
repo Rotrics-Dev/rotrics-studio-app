@@ -38,6 +38,7 @@ class Index extends React.Component {
                 if (location === "example") {
                     showSaveConfirm({
                         title: 'The example project has been modified. Save as a new project?',
+                        saveText: "Save as",
                         doNotSaveText: "Don't save as",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -70,6 +71,7 @@ class Index extends React.Component {
                 } else {
                     showSaveConfirm({
                         title: 'Your project has been modified. Save it?',
+                        saveText: "Save",
                         doNotSaveText: "Don't save",
                         onDoNotSave: () => {
                             this.props.openLocal(target);
@@ -91,6 +93,7 @@ class Index extends React.Component {
             Modal.confirm({
                 title: 'Are you sure to delete this project?',
                 icon: <ExclamationCircleOutlined/>,
+                centered: true,
                 okText: 'Delete',
                 okType: 'danger',
                 cancelText: 'Cancel',

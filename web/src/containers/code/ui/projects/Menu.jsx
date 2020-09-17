@@ -36,6 +36,7 @@ class Index extends React.Component {
                         if (location === "example") {
                             showSaveConfirm({
                                 title: 'The example project has been modified. Save as a new project?',
+                                saveText: "Save as",
                                 doNotSaveText: "Don't save as",
                                 onDoNotSave: () => {
                                     this.props.create()
@@ -66,6 +67,7 @@ class Index extends React.Component {
                         } else {
                             showSaveConfirm({
                                 title: 'Your project has been modified. Save it?',
+                                saveText: "Save",
                                 doNotSaveText: "Don't save",
                                 onDoNotSave: () => {
                                     this.props.create()
@@ -131,6 +133,41 @@ class Index extends React.Component {
             this.props.rename(this.props.projectInfo, e.target.value);
             e.target.blur();
         },
+        save: () => {
+            const {name, location} = this.props.projectInfo;
+            if (location === "example") {
+                showSaveConfirm({
+                    title: "The example project can't be modified. Save as a new project?",
+                    saveText: "Save as",
+                    doNotSaveText: "Don't save as",
+                    onDoNotSave: () => {
+                    },
+                    onSave: () => {
+                        showNameInput({
+                            title: 'Save as',
+                            defaultValue: name,
+                            onOk: (inputName) => {
+                                return new Promise(async (resolve, reject) => {
+                                    inputName = inputName.trim();
+                                    if (inputName.length === 0) {
+                                        messageI18n.error("Name can't be empty");
+                                        reject();
+                                    } else if (isProjectNameExist(this.props.myProjectInfos, inputName)) {
+                                        messageI18n.error("Name already occupied");
+                                        reject();
+                                    } else {
+                                        await this.props.saveAs(inputName);
+                                        resolve();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                this.props.save();
+            }
+        }
     };
 
     menu4file = (
@@ -150,7 +187,6 @@ class Index extends React.Component {
             return null;
         }
         const state = this.state;
-        const {save} = this.props;
         const actions = this.actions;
         return (
             <Space style={{position: "absolute", left: "50px"}}>
@@ -165,8 +201,8 @@ class Index extends React.Component {
                 <Dropdown overlay={this.menu4file} placement="bottomCenter">
                     <Button size="small" type="primary" ghost icon={<FolderOutlined/>}>File</Button>
                 </Dropdown>
-                <Button size="small" type="primary" onClick={save} ghost
-                        disabled={projectInfo.isSaved || projectInfo.location === 'example'}
+                <Button size="small" type="primary" onClick={actions.save} ghost
+                        disabled={projectInfo.isSaved}
                         icon={<SaveOutlined/>}>Save</Button>
                 <Input
                     value={state.name}
@@ -182,14 +218,14 @@ class Index extends React.Component {
     }
 }
 
-let mProjectInfo = null;
+// let mProjectInfo = null;
 const mapStateToProps = (state) => {
     const {vm} = state.code;
     const {projectInfo, myProjectInfos} = state.codeProject;
-    if (JSON.stringify(mProjectInfo) !== JSON.stringify(projectInfo)) {
-        mProjectInfo = projectInfo;
-        console.log(JSON.stringify(projectInfo, null, 2))
-    }
+    // if (JSON.stringify(mProjectInfo) !== JSON.stringify(projectInfo)) {
+    //     mProjectInfo = projectInfo;
+    //     console.log(JSON.stringify(projectInfo, null, 2))
+    // }
     return {
         vm,
         projectInfo,

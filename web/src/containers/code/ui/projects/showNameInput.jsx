@@ -6,6 +6,7 @@ export default ({title, onOk, defaultValue}) => {
     Modal.confirm({
         title: title,
         width: 500,
+        centered: true,
         content: <Row>
             <Col span={8}>
                 <span style={{float: "right", margin: "5px 10px 0 0"}}>{`${"Project Name"}:`}</span>
