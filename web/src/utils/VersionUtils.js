@@ -83,7 +83,7 @@ const checkUpdate = (onNewVersion) => {
         const latestVersionData = await getLatestSoftwareVersion();
         if (!latestVersionData) return;//没有找到任何版本信息
 
-        const currentVersion = `V${packageJson.version}`;
+        const currentVersion = `V${packageJson.version}`;//获取当前版本
         if (compareVersionCode(latestVersionData.version, currentVersion) === 1) {//需要升级更新
             const now = new Date().getTime() / 1000;//获取当前时间秒的时间戳
             const delay = now - latestVersionData.createTime;
@@ -91,7 +91,7 @@ const checkUpdate = (onNewVersion) => {
                 onNewVersion(latestVersionData);
             }
         } else {//已经是最新版本
-            console.log('//已经是最新版本')
+            console.log('It\'s the latest version of the software already!')
         }
     }, 10 * 1000);//启动10秒后开启查询
 }
