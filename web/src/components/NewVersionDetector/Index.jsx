@@ -19,7 +19,6 @@ class Index extends React.Component {
             const converter = new showdown.Converter()
             info = converter.makeHtml(latestVersionData.infos[0].content);
         }
-        console.log(info);
         return (
             <div>
                 {this.state.showUpdate && <Modal
@@ -33,7 +32,7 @@ class Index extends React.Component {
                         window.open('https://www.rotrics.com/pages/download', '_blank');
                     }}>
                     <div dangerouslySetInnerHTML={{__html: info}}/>
-                    <p>Download the latest Rotrics Studio now?</p>
+                    <h3>Download the latest Rotrics Studio now?</h3>
                 </Modal>}
             </div>
         );
