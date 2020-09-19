@@ -98,7 +98,6 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
     text = text.trim();
     if (text.length === 0) return;
     const glyphs = await getGlyphs(fontUrl);
-    console.log(glyphs)
     const {fontSize, tracking} = options;
     let commonFontHeight = 1000;
     const fontTracking = fontSize * tracking / commonFontHeight;
@@ -106,7 +105,6 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
     let paths = '';
     let height = fontSize;
     let width = 0;
-
 
     for (const c of text) {
         const glyph = glyphs[c.charCodeAt(0).toString(16)];
@@ -134,16 +132,6 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
     const start = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" \>`
     const end = '</svg>'
     const svg = start + paths + end;
-    console.log(svg)
     return svg;
-    // return (
-    //     '<svg \n' +
-    //     'width="561" \n' +
-    //     'height="1000" \n' +
-    //     'xmlns="http://www.w3.org/2000/svg" \n' +
-    //     'xmlns:xlink="http://www.w3.org/1999/xlink" \n' +
-    //     'version="1.1">\n' +
-    //     '    <path fill="none" stroke="#000000" stroke-width="1" d="M284 850.4L432 834.6 365 841 331 157 551 151 554 186 551 151 567 85 551 151 88.2 173 94.5 98 91.4 179 81.9 242"/>\n' +
-    //     '</svg>');
 }
 export default textToSvgFromSvgFont;

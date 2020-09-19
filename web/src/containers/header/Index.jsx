@@ -74,6 +74,7 @@ class Index extends React.Component {
             this.setState({selectedPath})
         },
         emergencyStop: () => {
+            this.props.serialPortWrite('M410\n');
             console.log("emergencyStop")
         },
         setTerminalVisible: (checked) => {
@@ -128,6 +129,13 @@ class Index extends React.Component {
                 <Menu4code/>
                 }
                 <Space style={{position: "absolute", right: "15px"}}>
+                    {path &&
+                    <button
+                        className={styles.btn_emergency_stop}
+                        style={{marginRight: "15px", marginTop: "6px"}}
+                        onClick={actions.emergencyStop}
+                    />
+                    }
                     {path &&
                     <label>{t("Terminal")}</label>
                     }
@@ -204,6 +212,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
+        serialPortWrite: (gcode) => dispatch(serialPortActions.write(gcode)),
         setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value))
     };
 };
