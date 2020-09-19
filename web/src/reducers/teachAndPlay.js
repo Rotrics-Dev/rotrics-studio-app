@@ -82,8 +82,7 @@ const actions = {
         const gcode = actions.stepArray2Gcode(
             currentFrontEnd, stepArray, laserPower, startIndex, repeatCount, doRepeat
         );
-        console.log(gcode);
-        dispatch(gcodeSendActions.start(gcode, false, false));
+        dispatch(gcodeSendActions.startTask(gcode, false));
     },
     stopPlayStep: () => (dispatch, getState) => {
         dispatch(gcodeSendActions.stopTask());

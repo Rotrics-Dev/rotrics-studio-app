@@ -26,7 +26,7 @@ class Index extends React.Component {
             const currentFrontEnd = teach_and_play.front_end.options[frontEnd];
             const currentFrontEndState = currentFrontEnd.state[currentFrontEnd.default_value];
             const gcodeArr = [currentFrontEnd.gcode, currentFrontEndState.gcode];
-            this.props.start(gcodeArr.join('\n'), false, false);
+            this.props.startTask(gcodeArr.join('\n'), false);
 
             this.setState({
                 laserPower: teach_and_play.front_end.options.laser.power.default_value,
@@ -35,26 +35,26 @@ class Index extends React.Component {
             });
         },
         onSelectMovementMode: (movementMode) => {
-            this.props.start(movement.mode[movementMode].gcode, false, false);
+            this.props.startTask(movement.mode[movementMode].gcode, false);
             this.setState({currentMovementMode: movementMode});
         },
         onSetFrontEndState: (event) => {
             const frontEndState = event.target.value;
             const currentFrontEndState = teach_and_play.front_end.options[this.state.currentFrontEnd].state[frontEndState];
-            this.props.start(currentFrontEndState.gcode, false, false);
+            this.props.startTask(currentFrontEndState.gcode, false);
             this.setState({
                 currentFrontEndState: frontEndState
             });
         },
         setLaserPower: (power) => {
-            this.props.start(`M3 S${Math.round(power * 2.55)}`, false, false);
+            this.props.startTask(`M3 S${Math.round(power * 2.55)}`, false);
             this.setState({
                 laserPower: power,
                 currentFrontEndState: 'state_1'//switch to  laser on
             });
         },
         setSpeed: (speed) => {
-            this.props.start(`G0 F${speed}`, false, false);
+            this.props.startTask(`G0 F${speed}`, false);
             this.setState({
                 currentSpeed: speed,
             });
@@ -155,7 +155,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange) => dispatch(gcodeSendActions.startTask(gcode, isAckChange)),
     };
 };
 

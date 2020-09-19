@@ -144,8 +144,7 @@ class Index extends React.Component {
             cmd,
             'G90'//absolute position
         ];
-        this.props.start(gcode.join("\n") + '\n', false, false);
-        // this.props.serialPortWrite(gcode.join("\n") + '\n');
+        this.props.startTask(gcode.join("\n") + '\n', false);
     }
 
     showModal = () => {
@@ -274,7 +273,7 @@ const mapDispatchToProps = (dispatch) => {
         addOneShootGcodeResponseListener: (gcode, listener) => {
             dispatch(serialPortAction.addOneShootGcodeResponseListener(gcode, listener))
         },
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange) => dispatch(gcodeSendActions.startTask(gcode, isAckChange)),
         serialPortWrite: (gcode) => {
             dispatch(serialPortActions.write(gcode));
         },

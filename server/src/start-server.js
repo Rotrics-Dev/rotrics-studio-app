@@ -27,10 +27,10 @@ import {
 
     GCODE_SENDER_STATUS_CHANGE,
     GCODE_SENDER_START,
-    GCODE_SENDER_STOP_TASK,
-    GCODE_SENDER_PAUSE_TASK,
-    GCODE_SENDER_RESUME_TASK,
-    GCODE_SENDER_ACTION_REFUSE,
+    GCODE_SENDER_STOP,
+    GCODE_SENDER_PAUSE,
+    GCODE_SENDER_RESUME,
+    GCODE_SENDER_REFUSE,
     P3D_CONFIG_MATERIAL_SETTINGS_FETCH,
     P3D_CONFIG_MATERIAL_SETTING_UPDATE,
     P3D_CONFIG_MATERIAL_SETTING_DELETE,
@@ -42,7 +42,7 @@ import {
     FIRMWARE_UPGRADE_START,
     FIRMWARE_UPGRADE_STEP_CHANGE,
     FRONT_END_POSITION_MONITOR,
-    CODE_PROJECT_EXTENSION
+    CODE_PROJECT_EXTENSION,
 } from "./constants.js"
 import firmwareUpgradeManager from "./firmwareUpgradeManager.js";
 import {STATIC_DIR, CACHE_DIR, P3D_DIR_CONFIG_PRINT_SETTINGS, P3D_DIR_CONFIG_MATERIAL_SETTINGS} from './init.js';
@@ -259,22 +259,22 @@ const setupSocket = () => {
             });
             serialPortManager.on(SERIAL_PORT_DATA, (data) => {
                 socket.emit(SERIAL_PORT_DATA, data);
-                gcodeSender.onSerialPortData(data)
             });
 
             //gcode sender
             socket.on(GCODE_SENDER_START, (data) => {
-                const {gcode, isTask, isLaser} = data;
-                gcodeSender.start(gcode, isTask, isLaser)
+                const {gcode, isAckChange, isLaser, taskId} = data;
+                gcodeSender.start(gcode, isAckChange, isLaser, taskId)
             });
-            socket.on(GCODE_SENDER_STOP_TASK, () => gcodeSender.stopTask());
-            socket.on(GCODE_SENDER_PAUSE_TASK, () => gcodeSender.pauseTask());
-            socket.on(GCODE_SENDER_RESUME_TASK, () => gcodeSender.resumeTask());
+            socket.on(GCODE_SENDER_PAUSE, () => gcodeSender.pause());
+            socket.on(GCODE_SENDER_RESUME, () => gcodeSender.resume());
+            socket.on(GCODE_SENDER_STOP, () => gcodeSender.stop());
+
             gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
                 socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
             });
-            gcodeSender.on(GCODE_SENDER_ACTION_REFUSE, (data) => {
-                socket.emit(GCODE_SENDER_ACTION_REFUSE, data);
+            gcodeSender.on(GCODE_SENDER_REFUSE, (data) => {
+                socket.emit(GCODE_SENDER_REFUSE, data);
             });
 
             //laser

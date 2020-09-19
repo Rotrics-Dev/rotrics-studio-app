@@ -97,14 +97,14 @@ class Index extends React.Component {
             messageI18n.success('Export G-code success');
         },
         runBoundary: () => {
-            this.props.start(getGcode4runBoundary(), false, false)
+            this.props.startTask(getGcode4runBoundary(), false)
         },
         startTask: () => {
             if (!this.props.gcode) {
                 messageI18n.warning('Generate G-code first');
                 return;
             }
-            this.props.start(this.props.gcode, true, true);
+            this.props.startTask(this.props.gcode, true, true);
         },
         stopTask: () => {
             this.props.stopTask();
@@ -207,7 +207,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange, isLaser) => dispatch(gcodeSendActions.startTask(gcode, isAckChange, isLaser)),
         stopTask: () => dispatch(gcodeSendActions.stopTask()),
         pauseTask: () => dispatch(gcodeSendActions.pauseTask()),
         resumeTask: () => dispatch(gcodeSendActions.resumeTask()),

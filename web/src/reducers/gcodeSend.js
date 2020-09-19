@@ -2,11 +2,12 @@ import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
     GCODE_SENDER_STATUS_CHANGE,
-    GCODE_SENDER_ACTION_REFUSE,
+    GCODE_SENDER_REFUSE,
     GCODE_SENDER_START,
-    GCODE_SENDER_STOP_TASK,
-    GCODE_SENDER_PAUSE_TASK,
-    GCODE_SENDER_RESUME_TASK,
+    GCODE_SENDER_STOP,
+    GCODE_SENDER_PAUSE,
+    GCODE_SENDER_RESUME,
+    GCODE_SENDER_PROGRESS_CHANGE,
     MSG_SERIAL_PORT_CLOSE_TOAST, SERIAL_PORT_WRITE
 } from "../constants";
 
@@ -24,9 +25,12 @@ export const actions = {
         socketClientManager.addServerListener("connect", () => {
             socketClientManager.emitToServer(GCODE_SENDER_STATUS_CHANGE);
         });
-        socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, (data) => {
+        socketClientManager.addServerListener(GCODE_SENDER_PROGRESS_CHANGE, ({total, sent, taskId}) => {
+            console.log("progress: " + (sent / total))
+        });
+        socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
+            console.log(`gcode sender status: ${preStatus} => ${curStatus}`);
             //见: gcodeSender.js emitStatus
-            const {preStatus, curStatus} = data;
             if (preStatus === "idle" && curStatus === "started") {
                 messageI18n.success("Task started");
             } else if (preStatus === "started" && curStatus === "idle") {
@@ -43,7 +47,7 @@ export const actions = {
                 messageI18n.success("Task stopping");
             }
         });
-        socketClientManager.addServerListener(GCODE_SENDER_ACTION_REFUSE, (data) => {
+        socketClientManager.addServerListener(GCODE_SENDER_REFUSE, (data) => {
             messageI18n.warning(data.msg);
         });
     },
@@ -53,20 +57,28 @@ export const actions = {
             state
         };
     },
-    start: (gcode, isTask, isLaser) => {
-        socketClientManager.emitToServer(GCODE_SENDER_START, {gcode, isTask, isLaser});
+    /**
+     * 启动gcode send task
+     * @param gcode
+     * @param isAckChange 是否callback change(status change, progress change)
+     * @param taskId
+     * @param isLaser
+     * @returns {{type: null}}
+     */
+    startTask: (gcode, isAckChange = false, isLaser = false, taskId = null) => {
+        socketClientManager.emitToServer(GCODE_SENDER_START, {gcode, isAckChange, isLaser, taskId});
         return {type: null};
     },
     stopTask: () => {
-        socketClientManager.emitToServer(GCODE_SENDER_STOP_TASK);
+        socketClientManager.emitToServer(GCODE_SENDER_STOP);
         return {type: null};
     },
     pauseTask: () => {
-        socketClientManager.emitToServer(GCODE_SENDER_PAUSE_TASK);
+        socketClientManager.emitToServer(GCODE_SENDER_PAUSE);
         return {type: null};
     },
     resumeTask: () => {
-        socketClientManager.emitToServer(GCODE_SENDER_RESUME_TASK);
+        socketClientManager.emitToServer(GCODE_SENDER_RESUME);
         return {type: null};
     }
 };

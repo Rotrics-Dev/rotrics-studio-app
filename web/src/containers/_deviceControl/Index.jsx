@@ -36,12 +36,12 @@ class Index extends React.Component {
             this.actions._move(`G0 Z${-this.state.step}`)
         },
         z0: () => {
-            this.props.start("G0 Z0", false, false)
+            this.props.startTask("G0 Z0", false)
         },
         //others
         home: () => {
             const gcode = ['M1112', 'M114'].join("\n");
-            this.props.start(gcode, false, false)
+            this.props.startTask(gcode, false)
         },
         leftTop: () => {
             this.actions._move(`G0 X${-this.state.step} Y${this.state.step}`)
@@ -93,15 +93,15 @@ class Index extends React.Component {
             //         workHeight = this.props.workHeightLaser;
             //         break;
             // }
-            // this.props.start(`G0 Z${workHeight}\n`, false, false)
-            this.props.start(`G0 Z0\n`, false, false)
+            // this.props.startTask(`G0 Z${workHeight}\n`, false)
+            this.props.startTask(`G0 Z0\n`, false)
         },
         //G90: absolute position
         //G91: relative position
         //G92: set position
         _move: (moveCmd) => {
             const gcode = ['G91', moveCmd, 'G90', 'M114'].join("\n");
-            this.props.start(gcode, false, false)
+            this.props.startTask(gcode, false)
         }
     };
 
@@ -127,7 +127,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange) => dispatch(gcodeSendActions.startTask(gcode, isAckChange)),
         setWorkHeightP3d: (value) => dispatch(persistentDataActions.setWorkHeightP3d(value)),
         setWorkHeightPen: (value) => dispatch(persistentDataActions.setWorkHeightPen(value)),
         setWorkHeightLaser: (value) => dispatch(persistentDataActions.setWorkHeightLaser(value)),

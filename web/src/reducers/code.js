@@ -2,6 +2,10 @@ import VM from 'rotrics-scratch-vm';
 import defaultProjectJson from "./default_sc_project.json";
 import {actions as gcodeSendActions} from './gcodeSend';
 import {actions as codeProjectActions} from "./codeProject";
+import {getUuid} from '../utils/index.js';
+import socketClientManager from "../socket/socketClientManager";
+import {GCODE_SENDER_STATUS_CHANGE} from "../constants";
+import messageI18n from "../utils/messageI18n";
 
 const INIT_VM = 'code/INIT_VM';
 const SET_RUNNING = "code/SET_RUNNING";
@@ -74,11 +78,9 @@ export const actions = {
         //自定义block发送消息
         //见: rotrics-scratch-vm/src/blocks/scratch3_motions.js, line-58
         vm.runtime.on(
-            'rotrics',
+            'rotrics-async',
             (data) => {
-                const {blockName, args} = data;
-                console.log("blockName: " + JSON.stringify(blockName))
-                console.log("args: " + JSON.stringify(args))
+                const {blockName, args, resolve} = data;
                 let gcode = null;
                 switch (blockName) {
                     case "motion_move_home":
@@ -95,7 +97,16 @@ export const actions = {
                         gcode = "G92 X0 Y0 Z0";
                         break;
                 }
-                gcode && dispatch(gcodeSendActions.start(gcode, false, false));
+                if (gcode) {
+                    const taskIdLocal = getUuid();
+                    dispatch(gcodeSendActions.startTask(gcode, true, false, taskIdLocal));
+                    socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
+                        if (preStatus === "started" && curStatus === "idle" && taskId === taskIdLocal) {
+                            console.log(`${blockName} resolve`)
+                            resolve();
+                        }
+                    });
+                }
             }
         );
     },

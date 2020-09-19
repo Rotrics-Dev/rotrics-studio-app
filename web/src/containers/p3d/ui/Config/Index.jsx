@@ -54,10 +54,10 @@ class Index extends React.Component {
             fetch(gcodeUrl)
                 .then(resp => resp.text())
                 .then(gcode => {
-                    this.props.start(gcode, true, false);
+                    this.props.startTask(gcode, true);
                 })
                 .catch(() => {
-                    console.error("down load err")
+                    console.error("down load error")
                 });
         },
         stopTask: () => {
@@ -100,7 +100,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startSlice: () => dispatch(p3dModelActions.startSlice()),
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange) => dispatch(gcodeSendActions.startTask(gcode, isAckChange)),
         stopTask: () => dispatch(gcodeSendActions.stopTask()),
     };
 };

@@ -22,7 +22,7 @@ class Index extends React.Component {
             if (!frontEnd) {
                 return;
             }
-            this.props.start(front_end[frontEnd].gcode, false, false);
+            this.props.startTask(front_end[frontEnd].gcode, false);
             this.setState({importLevel: 2});
         },
         importGcode: () => {
@@ -49,7 +49,7 @@ class Index extends React.Component {
             reader.readAsText(file, "utf8");
         },
         startTask: () => {
-            this.props.start(this.state.gcode, true, false);
+            this.props.startTask(this.state.gcode, true);
             this.setState({importLevel: 3});
         },
         stopTask: () => {
@@ -126,7 +126,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange) => dispatch(gcodeSendActions.startTask(gcode, isAckChange)),
         stopTask: () => dispatch(gcodeSendActions.stopTask()),
     };
 };

@@ -42,7 +42,7 @@ class Index extends React.Component {
             } else {
                 gcode = "M5"
             }
-            this.props.start(gcode, false, false);
+            this.props.startTask(gcode, false, false);
         }
     };
 
@@ -78,7 +78,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        start: (gcode, isTask, isLaser) => dispatch(gcodeSendActions.start(gcode, isTask, isLaser)),
+        startTask: (gcode, isAckChange, isLaser) => dispatch(gcodeSendActions.startTask(gcode, isAckChange, isLaser)),
     };
 };
 

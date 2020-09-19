@@ -19,6 +19,7 @@ class SerialPortManager extends EventEmitter {
     constructor() {
         super();
         this.serialPort = null;
+        this.readLineParser = null;
         setInterval(() => {
             //定期返回paths
             SerialPort.list().then(
@@ -68,8 +69,8 @@ class SerialPortManager extends EventEmitter {
             }
         });
 
-        const readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
-        readLineParser.on('data', (data) => {
+        this.readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
+        this.readLineParser.on('data', (data) => {
             // console.log("--------------------------------- ");
             // console.log("received line: " + data.trim());
             this.emit(SERIAL_PORT_DATA, {received: data.trim()});
