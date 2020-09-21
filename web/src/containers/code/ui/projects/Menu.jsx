@@ -2,13 +2,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import FileSaver from 'file-saver';
-import {Button, Space, Menu, Dropdown, Input} from 'antd';
-import {FolderOutlined, SaveOutlined} from '@ant-design/icons';
+import {Button, Space, Menu, Dropdown, Input, Tooltip} from 'antd';
+import {FolderOutlined, SaveOutlined, FolderOpenOutlined} from '@ant-design/icons';
 import {actions as codeProjectActions, isProjectNameExist} from "../../../../reducers/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 import showSaveConfirm from "./showSaveConfirm.jsx";
 import showNameInput from "./showNameInput.jsx";
 import messageI18n from "../../../../utils/messageI18n";
+import styles from './styles.css';
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -204,6 +205,7 @@ class Index extends React.Component {
                 <Button size="small" type="primary" onClick={actions.save} ghost
                         disabled={projectInfo.isSaved}
                         icon={<SaveOutlined/>}>Save</Button>
+                {(!projectInfo.location || projectInfo.location === 'my') &&
                 <Input
                     value={state.name}
                     size="small"
@@ -211,8 +213,20 @@ class Index extends React.Component {
                     onBlur={actions.rename}
                     onPressEnter={(e) => e.target.blur()}
                     allowClear={true}
-                    disabled={["example", "pc"].includes(projectInfo.location)}
                 />
+                }
+                {projectInfo.location === 'example' &&
+                <div className={styles.div_project_name} onClick={() => {
+                    messageI18n.warn("Example project can not rename")
+                }}>{state.name}</div>
+                }
+                {projectInfo.location === 'pc' &&
+                <Tooltip placement="bottom" title={state.name}>
+                    <div className={styles.div_project_name} onClick={() => {
+                        messageI18n.warn("Project from your computer can not rename")
+                    }}>{state.name}</div>
+                </Tooltip>
+                }
             </Space>
         )
     }

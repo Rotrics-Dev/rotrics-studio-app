@@ -2,7 +2,6 @@ import {actions as codeActions} from "./code";
 import socketClientManager from "../socket/socketClientManager";
 import messageI18n from "../utils/messageI18n";
 import {CODE_PROJECT_EXTENSION} from "../constants";
-import {getBaseFilename} from '../utils/index.js';
 import {
     fetchMyProjectInfos,
     fetchExampleProjectInfos,
@@ -137,7 +136,7 @@ const actions = {
                 messageI18n.success("Open project success");
                 dispatch(actions._updateState({
                     projectInfo: {
-                        name: getBaseFilename(file.path),
+                        name: file.path || 'undefined',
                         filePath: file.path,
                         created: 0,
                         modified: 0,

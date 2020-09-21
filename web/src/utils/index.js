@@ -1,5 +1,4 @@
 import {v4 as uuidv4} from 'uuid';
-import path from 'path';
 
 // epsilon
 const EPS = 1e-6;
@@ -145,10 +144,6 @@ const timestamp2date = (timestampMS) => {
         (minute < 10 ? "0" + minute : minute);
 };
 
-const getBaseFilename = (filePath) => {
-    return path.basename(filePath, path.extname(filePath));
-};
-
 // const d = new Date(),
 //     year = d.getFullYear(),
 //     month = d.getMonth() + 1,
@@ -171,6 +166,5 @@ export {
     getUuid,
     getAvailableSize,
     timestamp2date,
-    getBaseFilename
 };
 
