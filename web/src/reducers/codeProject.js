@@ -168,7 +168,7 @@ const actions = {
                     break;
                 }
                 case "pc": {
-                    messageI18n.success(`"Your project has been saved to "${projectInfo.filePath}`);
+                    messageI18n.success(`Your project has been saved to ${projectInfo.filePath}`);
                     dispatch(actions._updateState({projectInfo: {...projectInfo, isSaved: true}}));
                     break;
                 }
