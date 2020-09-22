@@ -1,38 +1,9 @@
 const categorySeparator = '<sep gap="15"/>';
 
-
-// const motion = function () {
-//     return `
-//     <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
-//        <block type="motion_reset"/>
-//        <block type="motion_move_home"/>
-//        <block type="motion_move_origin"/>
-//        <block type="motion_move_position">
-//             <value name="X">
-//                 <shadow id="movex" type="math_number">
-//                     <field name="NUM">100</field>
-//                 </shadow>
-//             </value>
-//             <value name="Y">
-//                 <shadow id="movey" type="math_number">
-//                     <field name="NUM">0</field>
-//                 </shadow>
-//             </value>
-//             <value name="Z">
-//                 <shadow id="movez" type="math_number">
-//                     <field name="NUM">0</field>
-//                 </shadow>
-//             </value>
-//        </block>
-//        <block type="motion_set_work_origin"/>
-//     </category>
-//     `;
-// };
-
-//颜色保持和rotrics-scratch-blocks/core/colours.js保持一致
+//颜色和rotrics-scratch-blocks/core/colours.js保持一致
 const module = function () {
     return `
-    <category name="Module" id="module" colour="#6F53F4" secondaryColour="#583FF3">
+    <category name="%{BKY_CATEGORY_MODULE}" id="module" colour="#6F53F4" secondaryColour="#583FF3">
         <block type="RS_MODULE_AIR_PICKER"/>
         <block type="RS_MODULE_SOFT_GRIPPER"/>
         <block type="RS_MODULE_WRIST_ROTATE">
@@ -42,13 +13,14 @@ const module = function () {
                 </shadow>
             </value>
         </block>
+        ${categorySeparator}
     </category>
     `;
 };
 
 const settings = function () {
     return `
-    <category name="Settings" id="Settings" colour="#8E66BC" secondaryColour="#7D51B1">
+    <category name="Settings" id="settings" colour="#8E66BC" secondaryColour="#7D51B1">
         <block type="RS_SETTINGS_SET_MODULE"/>
         <block type="RS_SETTINGS_SET_SPEED">
             <value name="VALUE1">
@@ -66,6 +38,7 @@ const settings = function () {
         </block>
         <block type="RS_SETTINGS_SET_MOTION_MODE"/>
         <block type="RS_SETTINGS_SET_WORK_ORIGIN"/>
+        ${categorySeparator}
     </category>
     `;
 };
@@ -149,6 +122,7 @@ const motion = function () {
                 </shadow>
             </value>
        </block>
+       ${categorySeparator}
     </category>
     `;
 };
@@ -422,8 +396,7 @@ const xmlClose = '</xml>';
  * @param {?string} soundName -  The name of the default selected sound dropdown.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
-const makeToolboxXML = function (isStage, targetId, categoriesXML = [],
-                                 costumeName = '', backdropName = '', soundName = '') {
+const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeName = '', backdropName = '', soundName = '') {
     const gap = [categorySeparator];
 
     categoriesXML = categoriesXML.slice();
@@ -444,6 +417,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [],
     const sensingXML = moveCategory('sensing') || sensing(isStage, targetId);
     const operatorsXML = moveCategory('operators') || operators(isStage, targetId);
 
+    //TODO: 弄明白代码
     const everything = [
         xmlOpen,
         motionXML, gap,
