@@ -14,6 +14,7 @@ import taps from "./taps";
 import code from "./code";
 import settingsGeneral from "./settingsGeneral";
 import persistentData from "./persistentData";
+import fonts from "./fonts";
 
 export default combineReducers({
     gcodeSend,
@@ -31,5 +32,6 @@ export default combineReducers({
     taps,
     code,
     settingsGeneral,
-    persistentData
+    persistentData,
+    fonts
 });

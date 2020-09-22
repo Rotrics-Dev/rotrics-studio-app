@@ -40,7 +40,8 @@ class ConfigSvgText extends PureComponent {
 
     render() {
         const {t} = this.props;
-        const {model, config_text, config} = this.props;
+        const {model, config_text, config, buildInFonts, userFonts,} = this.props;
+
         if (!model || model.fileType !== "text" || !config_text || !config) {
             return null;
         }
@@ -49,10 +50,12 @@ class ConfigSvgText extends PureComponent {
         const {text, font, font_size} = config_text.children;
 
         const fontOptions = [];
-        Object.keys(font.options).forEach((key) => {
-            const option = font.options[key];
-            fontOptions.push({label: key, value: option})
-        });
+        for (const font of buildInFonts) {
+            fontOptions.push({label: font.fontName, value: font.path})
+        }
+        for (const font of userFonts) {
+            fontOptions.push({label: font.fontName, value: font.path, color: '#007777'})
+        }
 
         const {optimize_path, fill} = config.children;
         const {fill_density} = fill.children;
@@ -62,7 +65,7 @@ class ConfigSvgText extends PureComponent {
                 <Tooltip
                     id={tooltipId}
                     place="left"
-                    />
+                />
                 <Line/>
                 <div style={{
                     padding: "8px",
@@ -146,10 +149,13 @@ class ConfigSvgText extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, config, config_text} = state.writeAndDraw;
+    const {buildInFonts, userFonts} = state.fonts;
     return {
         model,
         config,
-        config_text
+        config_text,
+        buildInFonts,
+        userFonts,
     };
 };
 

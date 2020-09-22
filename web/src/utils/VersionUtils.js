@@ -67,7 +67,6 @@ const getLatestSoftwareVersion = async () => {
         } else {
             response.data.list.forEach((version) => {
                 if (platformType === version.type && version.status === VERSION_ENABLED) {
-                    console.log(version)
                     latestVersion = getLatestVersion(latestVersion, version)
                 }
             });

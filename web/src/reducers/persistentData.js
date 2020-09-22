@@ -8,12 +8,7 @@ export const WORK_HEIGHT_PLACE_HOLDER = 'WORK_HEIGHT_PLACE_HOLDER';
 const IS_TOOLTIP_DISPLAYED = "IS_TOOLTIP_DISPLAYED";
 
 export const persistents = {
-    getFloat: (key) => {
-
-        const value = localStorage.getItem(key)
-        console.log(value);
-        return parseFloat(localStorage.getItem(key));
-    },
+    getFloat: (key) => parseFloat(localStorage.getItem(key)),
     get: (key) => localStorage.getItem(key),
     set: (key, value) => localStorage.setItem(key, value)
 };

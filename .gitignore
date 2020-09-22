@@ -4,6 +4,7 @@
 /server/package-lock.json
 /server/static/cache
 /server/CuraEngine/config/fdmprinter.def.json
+/server/static/fonts/user
 
 #web
 /web/node_modules
@@ -26,5 +27,3 @@
 
 # others
 /.eslintcache
-
-

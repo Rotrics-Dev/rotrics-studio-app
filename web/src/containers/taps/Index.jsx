@@ -26,6 +26,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dPrintSettingsActions} from "../../reducers/p3dPrintSettings";
 import {actions as p3dMaterialSettingsActions} from "../../reducers/p3dMaterialSettings";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
+import {actions as fontsActions} from "../../reducers/fonts";
 import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
 
@@ -200,10 +201,10 @@ class Index extends React.Component {
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
                     {/*<button*/}
-                        {/*data-for={tooltipId}*/}
-                        {/*data-tip={t("Debug")}*/}
-                        {/*onClick={() => actions.setTap(TAP_DEBUG)}*/}
-                        {/*className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}*/}
+                    {/*data-for={tooltipId}*/}
+                    {/*data-tip={t("Debug")}*/}
+                    {/*onClick={() => actions.setTap(TAP_DEBUG)}*/}
+                    {/*className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}*/}
                     {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
@@ -258,6 +259,7 @@ const mapDispatchToProps = (dispatch) => {
             //3dp
             dispatch(p3dMaterialSettingsActions.init());
             dispatch(p3dPrintSettingsActions.init());
+            dispatch(fontsActions.init());
         }
     };
 };
