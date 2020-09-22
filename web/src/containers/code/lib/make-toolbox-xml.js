@@ -1,5 +1,6 @@
 const categorySeparator = '<sep gap="15"/>';
 
+
 // const motion = function () {
 //     return `
 //     <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
@@ -28,29 +29,126 @@ const categorySeparator = '<sep gap="15"/>';
 //     `;
 // };
 
-const motion = function () {
+//颜色保持和rotrics-scratch-blocks/core/colours.js保持一致
+const module = function () {
     return `
-    <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
-       <block type="motion_move_home"/>
-       <block type="motion_move_origin"/>
-       <block type="motion_move_position">
-            <value name="X">
-                <shadow id="movex" type="math_number">
-                    <field name="NUM">100</field>
-                </shadow>
-            </value>
-            <value name="Y">
-                <shadow id="movey" type="math_number">
+    <category name="Module" id="module" colour="#6F53F4" secondaryColour="#583FF3">
+        <block type="RS_MODULE_AIR_PICKER"/>
+        <block type="RS_MODULE_SOFT_GRIPPER"/>
+        <block type="RS_MODULE_WRIST_ROTATE">
+            <value name="VALUE1">
+                <shadow type="math_number">
                     <field name="NUM">0</field>
                 </shadow>
             </value>
-            <value name="Z">
-                <shadow id="movez" type="math_number">
+        </block>
+    </category>
+    `;
+};
+
+const settings = function () {
+    return `
+    <category name="Settings" id="Settings" colour="#8E66BC" secondaryColour="#7D51B1">
+        <block type="RS_SETTINGS_SET_MODULE"/>
+        <block type="RS_SETTINGS_SET_SPEED">
+            <value name="VALUE1">
+                <shadow type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="RS_SETTINGS_SET_ACCELERATION">
+            <value name="VALUE1">
+                <shadow type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="RS_SETTINGS_SET_MOTION_MODE"/>
+        <block type="RS_SETTINGS_SET_WORK_ORIGIN"/>
+    </category>
+    `;
+};
+
+const motion = function () {
+    return `
+    <category name="%{BKY_CATEGORY_MOTION}" id="motion" colour="#4C97FF" secondaryColour="#3373CC">
+       <block type="RS_MOTION_SAY_HELLO"/>
+       <block type="RS_MOTION_MOVE_HOME"/>
+       <block type="RS_MOTION_MOVE_ORIGIN"/>
+       <block type="RS_MOTION_MOVE_POSITION">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE3">
+                <shadow  type="math_number">
                     <field name="NUM">0</field>
                 </shadow>
             </value>
        </block>
-       <block type="motion_set_work_origin"/>
+       <block type="RS_MOTION_MOVE_RELATIVE">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE3">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+       <block type="RS_MOTION_MOVE_RECTANGLE">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE3">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+             <value name="VALUE4">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+       <block type="RS_MOTION_MOVE_CIRCLE">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE3">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
     </category>
     `;
 };
@@ -116,6 +214,61 @@ const sensing = function () {
         <block type="sensing_mousedown"/>
         <block type="sensing_mousex"/>
         <block type="sensing_mousey"/>
+        
+        <block type="RS_SENSING_CURRENT_POSITION"/>
+        <block type="RS_SENSING_CURRENT_ACCELERATION"/>
+        <block type="RS_SENSING_CURRENT_SPEED"/>
+        ${categorySeparator}
+    </category>
+    `;
+};
+
+const sliding_rail = function () {
+    return `
+    <category name="Sliding Rail" id="sliding_rail" colour="#B551B3" secondaryColour="#AC44AB">
+        <block type="RS_SLIDING_RAIL_SET_ACCELERATION">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+       <block type="RS_SLIDING_RAIL_MOVE">
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <value name="VALUE3">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+        <block type="RS_SLIDING_RAIL_STOP"/>
+        ${categorySeparator}
+    </category>
+    `;
+};
+
+const conveyor_belt = function () {
+    return `
+    <category name="Conveyor Belt" id="conveyor_belt" colour="#FF7122" secondaryColour="#D2581A">
+        <block type="RS_CONVEYOR_BELT_SET_ACCELERATION">
+            <value name="VALUE1">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+       <block type="RS_CONVEYOR_BELT_MOVE">
+            <value name="VALUE2">
+                <shadow  type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+       </block>
+        <block type="RS_CONVEYOR_BELT_STOP"/>
         ${categorySeparator}
     </category>
     `;
@@ -283,6 +436,8 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [],
         }
         // return `undefined`
     };
+    const moduleXML = moveCategory('module') || module(isStage, targetId);
+    const settingsXML = moveCategory('settings') || settings(isStage, targetId);
     const motionXML = moveCategory('motion') || motion(isStage, targetId);
     const eventsXML = moveCategory('event') || events(isStage, targetId);
     const controlXML = moveCategory('control') || control(isStage, targetId);
@@ -292,6 +447,10 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [],
     const everything = [
         xmlOpen,
         motionXML, gap,
+        moduleXML, gap,
+        settingsXML, gap,
+        sliding_rail, gap,
+        conveyor_belt, gap,
         eventsXML, gap,
         controlXML, gap,
         sensingXML, gap,

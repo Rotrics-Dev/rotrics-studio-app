@@ -80,7 +80,9 @@ export const actions = {
         vm.runtime.on(
             'rotrics-async',
             (data) => {
+                console.log(JSON.stringify(data, null, 2))
                 const {blockName, args, resolve} = data;
+                resolve();
                 let gcode = null;
                 switch (blockName) {
                     case "motion_move_home":
