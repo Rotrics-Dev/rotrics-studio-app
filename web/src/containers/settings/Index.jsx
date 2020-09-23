@@ -3,6 +3,7 @@ import {Menu} from 'antd';
 import styles from './styles.css';
 import General from "./General.jsx";
 import Config from "./Config.jsx";
+import Fonts from "./Fonts.jsx";
 import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
@@ -30,6 +31,7 @@ class Index extends React.Component {
                 >
                     <Menu.Item key="General">{t('General')}</Menu.Item>
                     <Menu.Item key="Config">{t('Config')}</Menu.Item>
+                    <Menu.Item key="Fonts">{t('Fonts')}</Menu.Item>
                 </Menu>
                 <div className={styles.div_menu_item_container}>
                     {key === 'General' &&
@@ -37,6 +39,9 @@ class Index extends React.Component {
                     }
                     {key === 'Config' &&
                     <Config/>
+                    }
+                    {key === 'Fonts' &&
+                    <Fonts/>
                     }
                 </div>
 

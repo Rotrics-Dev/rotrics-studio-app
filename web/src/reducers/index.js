@@ -15,6 +15,7 @@ import code from "./code";
 import codeProject from "./codeProject";
 import settingsGeneral from "./settingsGeneral";
 import persistentData from "./persistentData";
+import fonts from "./fonts";
 
 export default combineReducers({
     gcodeSend,
@@ -33,5 +34,6 @@ export default combineReducers({
     code,
     codeProject,
     settingsGeneral,
-    persistentData
+    persistentData,
+    fonts
 });

@@ -13,10 +13,16 @@ class Index extends PureComponent {
                 {...rest}
             >
                 {options.map(item => {
-                    const backgroundColor = item.value.toLowerCase().endsWith('.svg') ? '#EEEEEE' : '#FFFFFF';//用于区分SvgFont与ttf
+                    const style = {fontSize: "12px"};
+                    if (item.color) {
+                        style.color = item.color;
+                    }
                     return (
-                        <Select.Option key={item.value} style={{fontSize: "12px", backgroundColor: backgroundColor}}
-                                       value={item.value}>{item.label}</Select.Option>
+                        <Select.Option key={item.value}
+                                       style={style}
+                                       value={item.value}>
+                            {item.label}
+                        </Select.Option>
                     );
                 })}
             </Select>

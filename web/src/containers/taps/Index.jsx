@@ -19,7 +19,6 @@ import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTING
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as codeActions} from "../../reducers/code";
-import {actions as codeProjectActions} from "../../reducers/codeProject";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 import {actions as tapsActions} from "../../reducers/taps"
@@ -27,6 +26,7 @@ import {actions as tapsActions} from "../../reducers/taps"
 import {actions as p3dPrintSettingsActions} from "../../reducers/p3dPrintSettings";
 import {actions as p3dMaterialSettingsActions} from "../../reducers/p3dMaterialSettings";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
+import {actions as fontsActions} from "../../reducers/fonts";
 import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
 
@@ -200,12 +200,12 @@ class Index extends React.Component {
                         onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
-                    <button
-                        data-for={tooltipId}
-                        data-tip={t("Debug")}
-                        onClick={() => actions.setTap(TAP_DEBUG)}
-                        className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
-                    />
+                    {/*<button*/}
+                    {/*data-for={tooltipId}*/}
+                    {/*data-tip={t("Debug")}*/}
+                    {/*onClick={() => actions.setTap(TAP_DEBUG)}*/}
+                    {/*className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}*/}
+                    {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
                     <div ref={this.refBasic}>
@@ -255,11 +255,11 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(hotKeysActions.init());
             dispatch(serialPortActions.init());
             dispatch(codeActions.init());
-            dispatch(codeProjectActions.init());
             dispatch(settingsGeneralActions.init());
             //3dp
             dispatch(p3dMaterialSettingsActions.init());
             dispatch(p3dPrintSettingsActions.init());
+            dispatch(fontsActions.init());
         }
     };
 };

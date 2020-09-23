@@ -5,6 +5,8 @@ let CURA_ENGINE_PATH;
 const curaEngineBasePath = path.join(__dirname, '..', 'CuraEngine', '4.6.2');
 const STATIC_DIR = path.join(__dirname, '..', 'static');
 const CACHE_DIR = path.join(__dirname, '..', 'static', 'cache');
+const BUILD_IN_FONTS_DIR = path.join(__dirname, '..', 'static', 'fonts');
+const USER_FONTS_DIR = path.join(__dirname, '..', 'static', 'userFonts');
 
 const P3D_DIR_CONFIG = path.join(__dirname, '..', 'CuraEngine', 'config');
 const P3D_DIR_CONFIG_MATERIAL_SETTINGS = path.join(P3D_DIR_CONFIG, 'material_settings');
@@ -44,6 +46,8 @@ export {
     CURA_ENGINE_PATH,
     STATIC_DIR,
     CACHE_DIR,
+    BUILD_IN_FONTS_DIR,
+    USER_FONTS_DIR,
     P3D_DIR_CONFIG_PRINT_SETTINGS,
     P3D_DIR_CONFIG_MATERIAL_SETTINGS,
     P3D_DIR_CONFIG,

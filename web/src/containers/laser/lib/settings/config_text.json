@@ -13,25 +13,8 @@
     "font": {
       "label": "Font",
       "description": "Font description",
-      "default_value": "Arial Black.woff",
-      "type": "enum",
-      "options": {
-        "Arial Black": "Arial Black.woff",
-        "Comic Sans MS": "Comic Sans MS.woff",
-        "Courier": "Courier.woff",
-        "Georgia": "Georgia.woff",
-        "Helvetica": "Helvetica.woff",
-        "Impact": "Impact.woff",
-        "Times": "Times.woff",
-        "Verdana": "Verdana.woff",
-        "IPA": "IPA.ttf",
-        "EMS Elfin": "EMSElfin.svg",
-        "EMS Allure": "EMSAllure.svg",
-        "EMS Osmotron": "EMSOsmotron.svg",
-        "EMS Tech": "EMSTech.svg",
-        "Hershey Sans": "HersheySans1.svg",
-        "Hershey Script": "HersheyScript1.svg"
-      }
+      "default_value": "/fonts/Arial Black.woff",
+      "type": "string"
     },
     "font_size": {
       "label": "Font Size",

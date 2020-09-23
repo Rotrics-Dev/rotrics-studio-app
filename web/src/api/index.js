@@ -28,7 +28,9 @@ const uploadImage = async (file) => {
     const response = await fetch(window.serverAddress + '/uploadImage', {
         method: 'POST',
         body: formData
-    }).then(response => response.json());
+    }).then(response => {
+        return response.json()
+    });
     //response: {url: "http://localhost:3002/1587459128571.jpg", width: 500, height: 575}
     return response;
 };
@@ -45,9 +47,8 @@ const text2svg = async (text, options) => {
 
 const generateSvg = async (config_text) => {
     const {text, font, font_size} = config_text.children;
-    console.log(font);
     let executor;
-    const fontUrl = window.serverFontsAddress + font.default_value;
+    const fontUrl = window.serverAddress + font.default_value;
     if (font.default_value.toLowerCase().endsWith('svg')) {
         executor = (resolve, reject) => {
             const options = {
@@ -79,6 +80,31 @@ const generateSvg = async (config_text) => {
     return svg;
 };
 
-export {uploadFile, uploadImage, text2svg, generateSvg}
+const uploadFont = async (fontFile) => {
+    const formData = new FormData();
+    formData.append('file', fontFile);
+    return await fetch(window.serverAddress + '/font/upload', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json());
+};
+
+const deleteFont = async (font) => {
+    const formData = new FormData();
+    formData.append('font', font);
+    return await fetch(window.serverAddress + '/font/delete', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json());
+};
+
+const listFonts = async () => {
+    return await fetch(window.serverAddress + '/font/list', {
+        method: 'POST'
+    }).then(response => response.json());
+};
+
+
+export {uploadFile, uploadImage, text2svg, generateSvg, uploadFont, deleteFont, listFonts}
 
 
