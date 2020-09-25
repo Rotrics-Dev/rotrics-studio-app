@@ -157,6 +157,34 @@ const timestamp2date = (timestampMS) => {
 //     (hour < 10 ? "0" + hour : hour) + "-" +
 //     (minute < 10 ? "0" + minute : minute) + "-" +
 //     (second < 10 ? "0" + second : second);
+
+/**
+ * Scratch cast to number.
+ * Treats NaN as 0.
+ * In Scratch 2.0, this is captured by `interp.numArg.`
+ * @param {*} value Value to cast to number.
+ * @return {number} The Scratch-casted number value.
+ */
+const str2Number  = (value) =>{
+    // If value is already a number we don't need to coerce it with
+    // Number().
+    if (typeof value === 'number') {
+        // Scratch treats NaN as 0, when needed as a number.
+        // E.g., 0 + NaN -> 0.
+        if (Number.isNaN(value)) {
+            return 0;
+        }
+        return value;
+    }
+    const n = Number(value);
+    if (Number.isNaN(n)) {
+        // Scratch treats NaN as 0, when needed as a number.
+        // E.g., 0 + NaN -> 0.
+        return 0;
+    }
+    return n;
+};
+
 export {
     EPS,
     ensureRange,
@@ -166,5 +194,6 @@ export {
     getUuid,
     getAvailableSize,
     timestamp2date,
+    str2Number
 };
 

@@ -38,11 +38,13 @@ class SocketClientManager {
     }
 
     removeServerListener(eventName, listener) {
-        this.socketClient.removeEventListener(eventName, listener);
+        //https://github.com/socketio/socket.io-client/blob/master/docs/API.md#socketoneventname-callback
+        //https://github.com/component/emitter
+        this.socketClient.off(eventName, listener);
     }
 
     removeAllServerListener(eventName) {
-        this.socketClient.removeAllListeners(eventName)
+        this.socketClient.off(eventName)
     }
 }
 

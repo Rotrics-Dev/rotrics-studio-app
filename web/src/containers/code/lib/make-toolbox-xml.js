@@ -30,7 +30,7 @@ const settings = function () {
             </value>
         </block>
         <block type="RS_SETTINGS_SET_ACCELERATION">
-            <value name="VALUE1">
+            <value name="VALUE2">
                 <shadow type="math_number">
                     <field name="NUM">0</field>
                 </shadow>
