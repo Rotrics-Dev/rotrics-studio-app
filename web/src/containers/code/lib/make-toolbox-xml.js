@@ -228,13 +228,6 @@ const sliding_rail = function () {
 const conveyor_belt = function () {
     return `
     <category name="Conveyor Belt" id="conveyor_belt" colour="#FF7122" secondaryColour="#D2581A">
-        <block type="RS_CONVEYOR_BELT_SET_ACCELERATION">
-            <value name="VALUE1">
-                <shadow  type="math_number">
-                    <field name="NUM">0</field>
-                </shadow>
-            </value>
-       </block>
        <block type="RS_CONVEYOR_BELT_MOVE">
             <value name="VALUE2">
                 <shadow  type="math_number">

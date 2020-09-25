@@ -184,12 +184,18 @@ const generateGcode = (blockName, args) => {
             break;
 
         //rs conveyor belt
-        case "RS_CONVEYOR_BELT_SET_ACCELERATION":
-            break;
         case "RS_CONVEYOR_BELT_MOVE":
-            break;
+            const {VALUE1: direction, VALUE2: speed} = args;
+            switch (direction) {
+                case 'Forward':
+                    return `M2012 F${speed} D0`;
+                case 'Backward':
+                    return `M2012 F${speed} D1`;
+                default:
+                    return null;
+            }
         case "RS_CONVEYOR_BELT_STOP":
-            break;
+            return 'M2013';
     }
     return null;
 };
