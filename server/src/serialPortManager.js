@@ -1,19 +1,19 @@
 import EventEmitter from 'events';
 import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
-import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import {
     SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
     SERIAL_PORT_ERROR,
+    SERIAL_PORT_WRITE_ERROR,
+    SERIAL_PORT_WRITE_OK,
     SERIAL_PORT_DATA,
 } from "./constants.js"
 import {utf8bytes2string} from './utils/index.js';
 
 const baudRate = 9600;
-
 //TODO: 打开新的串口，应该remove前一个串口的listener；等出bug时候再说
 class SerialPortManager extends EventEmitter {
     constructor() {
@@ -74,27 +74,23 @@ class SerialPortManager extends EventEmitter {
             // console.log("--------------------------------- ");
             // console.log("received line: " + data.trim());
             this.emit(SERIAL_PORT_DATA, {received: data.trim()});
-            frontEndPositionMonitor.positionFilteringRead(data.trim());
         });
 
         this.serialPort.on("open", () => {
             console.log("serial port -> open: " + this.serialPort.path);
             this.emit(SERIAL_PORT_OPEN, this.serialPort.path);
-            frontEndPositionMonitor.onOpen();
         });
 
         this.serialPort.on("close", () => {
             console.log("serial port -> close: " + this.serialPort.path);
             this.emit(SERIAL_PORT_CLOSE, this.serialPort.path);
             this.serialPort = null;
-            frontEndPositionMonitor.onClose();
         });
 
         this.serialPort.on("error", () => {
             console.log("serial port -> error: " + this.serialPort.path);
             this.emit(SERIAL_PORT_ERROR);
             this.serialPort = null;
-            frontEndPositionMonitor.onError();
         });
 
         this.serialPort.open((error) => {
@@ -170,10 +166,10 @@ class SerialPortManager extends EventEmitter {
                     console.error("write error: " + data);
                     this.emit(SERIAL_PORT_ERROR, error);
                 } else {
+                    this.emit(SERIAL_PORT_WRITE_OK, data);
                     // console.log("write ok: " + data);
                 }
             });
-            frontEndPositionMonitor.positionFilteringWrite(data)
         } else {
             console.warn("Port is closed");
         }

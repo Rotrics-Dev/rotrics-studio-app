@@ -319,6 +319,7 @@ const setupSocket = () => {
             serialPortManager.on(SERIAL_PORT_PATH_UPDATE, (paths) => {
                 socket.emit(SERIAL_PORT_PATH_UPDATE, paths);
             });
+            frontEndPositionMonitor.registerListeners();
             frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
                 socket.emit(FRONT_END_POSITION_MONITOR, position);
             });

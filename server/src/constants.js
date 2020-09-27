@@ -23,6 +23,8 @@ export const SERIAL_PORT_GET_OPENED = 'SERIAL_PORT_GET_OPE';  //获取opened的�
 export const SERIAL_PORT_OPEN = 'SERIAL_PORT_OPEN';
 export const SERIAL_PORT_CLOSE = 'SERIAL_PORT_CLOSE';
 export const SERIAL_PORT_ERROR = 'SERIAL_PORT_ERROR';
+export const SERIAL_PORT_WRITE_ERROR = 'SERIAL_PORT_WRITE_ERROR';//串口写数据失败
+export const SERIAL_PORT_WRITE_OK = 'SERIAL_PORT_WRITE_OK';//串口写数据成功
 export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE'; //通过serial port发送数据，比如：固件升级相关数据，单条gcode等
 

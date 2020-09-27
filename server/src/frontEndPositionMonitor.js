@@ -1,17 +1,77 @@
-import {FRONT_END_POSITION_MONITOR} from "./constants";
+import {
+    FRONT_END_POSITION_MONITOR,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_DATA, SERIAL_PORT_ERROR,
+    SERIAL_PORT_OPEN, SERIAL_PORT_WRITE_ERROR,
+    SERIAL_PORT_WRITE_OK
+} from "./constants";
 import EventEmitter from "events";
+import serialPortManager from "./serialPortManager";
 
 class FrontEndPositionMonitor extends EventEmitter {
+    registerListeners() {
+        serialPortManager.on(SERIAL_PORT_OPEN, () => {
+            this.onOpen();
+        });
+        serialPortManager.on(SERIAL_PORT_CLOSE, () => {
+            this.onClose();
+        });
+        serialPortManager.on(SERIAL_PORT_ERROR, () => {
+            this.onError();
+        });
+        serialPortManager.on(SERIAL_PORT_DATA, ({received}) => {//read
+            this.onRead(received);
+        });
+        serialPortManager.on(SERIAL_PORT_WRITE_OK, (data) => {//write
+            this.onWrite(data);
+        });
+        serialPortManager.on(SERIAL_PORT_WRITE_ERROR, (data) => {
+            this.onWriteError();
+        });
+    }
 
-    positionFilteringWrite(line) {
+    resetPosition() {
+        this.currentX = 0;
+        this.currentY = 0
+        this.currentZ = 0;
+        this.nextX = 0;
+        this.nextY = 0;
+        this.nextZ = 0;
+        this.isAbsolutePosition = true;
+        this.needProcessM114 = false;
+    }
+
+    onOpen() {
+        this.resetPosition();
+        this.sendPosition();
+    }
+
+    onClose() {
+        this.resetPosition();
+        this.sendPosition();
+    }
+
+    onError() {
+        this.resetPosition();
+        this.sendPosition();
+    }
+
+    onWriteError() {
+        this.resetPosition();
+        this.sendPosition();
+    }
+
+    onReadOk() {
+        this.currentX = this.nextX;
+        this.currentY = this.nextY;
+        this.currentZ = this.nextZ;
+        this.sendPosition();
+    }
+
+    onWrite(line) {
         if (!line) {
             return;
         }
-        // if (line.startsWith('xxxx')) {//forTest
-        //     console.log(this.xxxx);
-        //     this.xxxx = '';
-        // }
-        this.logWrite(line);
 
         if (line.startsWith('N')) {
             const indexOfSpace = line.indexOf(' ');
@@ -41,34 +101,16 @@ class FrontEndPositionMonitor extends EventEmitter {
         }
     }
 
-    positionFilteringRead(line) {
+    onRead(line) {
         if (!line) {
             return;
         }
-
-        this.logRead(line);
-
         if (line.startsWith('ok')) {
             this.onReadOk();
         } else if (this.needProcessM114) {
             this.processM114(line);
         } else {
         }
-    }
-
-    logWrite(line) {
-        this.log('logWrite', line)
-    }
-
-    logRead(line) {
-        // this.log('logRead', line);
-    }
-
-    log(tag, line) {
-        // if (!this.xxxx) {
-        //     this.xxxx = '';
-        // }
-        // this.xxxx += line.trim() + '\t' + new Date().valueOf() + 'xxxx'
     }
 
     sendPosition() {
@@ -81,44 +123,9 @@ class FrontEndPositionMonitor extends EventEmitter {
 
     }
 
-    resetPosition() {
-        this.currentX = 0;
-        this.currentY = 0
-        this.currentZ = 0;
-        this.nextX = 0;
-        this.nextY = 0;
-        this.nextZ = 0;
-        this.isAbsolutePosition = true;
-        this.needProcessM114 = false;
-    }
-
-
-    onOpen() {
-        this.resetPosition();
-        this.sendPosition();
-    }
-
-    onClose() {
-        this.resetPosition();
-        this.sendPosition();
-    }
-
-    onError() {
-        this.resetPosition();
-        this.sendPosition();
-    }
-
-    onReadOk() {
-        this.currentX = this.nextX;
-        this.currentY = this.nextY;
-        this.currentZ = this.nextZ;
-        this.sendPosition();
-    }
-
     onWriteG0(line) {
         this.setNextPosition(line);
     }
-
 
     onWriteG1(line) {
         this.setNextPosition(line);
@@ -166,7 +173,6 @@ class FrontEndPositionMonitor extends EventEmitter {
         this.needProcessM114 = false;
         this.sendPosition();
     }
-
 
     setNextPosition(line) {
         let x = Number.MIN_VALUE;
