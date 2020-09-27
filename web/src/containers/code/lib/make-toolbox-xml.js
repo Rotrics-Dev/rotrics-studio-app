@@ -82,7 +82,7 @@ const motion = function () {
 //     `;
 // };
 
-const module = function () {
+const module_control = function () {
     return `
     <category name="Module" id="module" colour="#6F53F4" secondaryColour="#583FF3">
         <block type="RS_MODULE_AIR_PICKER"/>
@@ -391,7 +391,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
         }
         // return `undefined`
     };
-    const moduleXML = moveCategory('module') || module(isStage, targetId);
+    const moduleXML = moveCategory('module') || module_control(isStage, targetId);
     const settingsXML = moveCategory('settings') || settings(isStage, targetId);
     const motionXML = moveCategory('motion') || motion(isStage, targetId);
     const eventsXML = moveCategory('event') || events(isStage, targetId);
