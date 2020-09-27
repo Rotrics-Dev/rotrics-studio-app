@@ -2,7 +2,7 @@
     position: absolute;
     left: 10px;
     bottom: 8px;
-    background-image: url(../images/green_flag.svg);
+    background-image: url(../../images/green_flag.svg);
     z-index: 99;
     outline: none;
     width: 40px;
@@ -18,7 +18,7 @@
     position: absolute;
     left: 10px;
     bottom: 50px;
-    background-image: url(../images/stop.svg);
+    background-image: url(../../images/stop.svg);
     z-index: 99;
     outline: none;
     width: 40px;

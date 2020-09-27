@@ -3,7 +3,7 @@ import Blocks from './Blocks.jsx';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 
-class Workspace extends React.Component {
+class Index extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -21,7 +21,7 @@ class Workspace extends React.Component {
         const actions = this.actions;
         const {running} = this.props;
         return (
-            <div style={{width: "100%", height: "100%", position: "absolute"}}>
+            <div style={{width: "100%", height: "100%"}}>
                 <Blocks/>
                 <button disabled={!running} onClick={actions.onStopClick} className={styles.btn_stop}/>
                 <button disabled={running} onClick={actions.onGreenFlagClick} className={styles.btn_green_flag}/>
@@ -38,5 +38,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Workspace);
+export default connect(mapStateToProps, null)(Index);
 

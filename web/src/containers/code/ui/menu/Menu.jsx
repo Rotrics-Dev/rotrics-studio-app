@@ -3,11 +3,11 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import FileSaver from 'file-saver';
 import {Button, Space, Menu, Dropdown, Input, Tooltip} from 'antd';
-import {FolderOutlined, SaveOutlined, FolderOpenOutlined} from '@ant-design/icons';
+import {FolderOutlined, SaveOutlined} from '@ant-design/icons';
 import {actions as codeProjectActions, isProjectNameExist} from "../../../../reducers/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
-import showSaveConfirm from "./showSaveConfirm.jsx";
-import showNameInput from "./showNameInput.jsx";
+import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
+import showNameInput from "../modal-tool/showNameInput.jsx";
 import messageI18n from "../../../../utils/messageI18n";
 import styles from './styles.css';
 
@@ -190,7 +190,7 @@ class Index extends React.Component {
         const state = this.state;
         const actions = this.actions;
         return (
-            <Space style={{position: "absolute", left: "50px"}}>
+            <Space style={{height: "100%"}}>
                 <input
                     ref={this.fileInput}
                     type="file"
@@ -199,12 +199,25 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.openFromYourComputer}
                 />
+                <h4 style={{margin: "auto", color: "#eeeeee", marginRight: "10px"}}>Scratch</h4>
                 <Dropdown overlay={this.menu4file} placement="bottomCenter">
-                    <Button size="small" type="primary" ghost icon={<FolderOutlined/>}>File</Button>
+                    <Button
+                        size="small"
+                        type="primary"
+                        style={{backgroundColor: "transparent", border: "none", boxShadow: "none"}}
+                        icon={<FolderOutlined/>}>
+                        File
+                    </Button>
                 </Dropdown>
-                <Button size="small" type="primary" onClick={actions.save} ghost
-                        disabled={projectInfo.isSaved}
-                        icon={<SaveOutlined/>}>Save</Button>
+                <Button
+                    size="small"
+                    type="primary"
+                    style={{backgroundColor: "transparent", border: "none", boxShadow: "none"}}
+                    onClick={actions.save}
+                    disabled={projectInfo.isSaved}
+                    icon={<SaveOutlined/>}>
+                    Save
+                </Button>
                 {(!projectInfo.location || projectInfo.location === 'my') &&
                 <Input
                     value={state.name}

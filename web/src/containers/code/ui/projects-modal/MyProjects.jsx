@@ -8,8 +8,8 @@ import {withTranslation} from 'react-i18next';
 import {timestamp2date} from '../../../../utils/index.js';
 import styles from './styles.css';
 import messageI18n from "../../../../utils/messageI18n";
-import showSaveConfirm from "./showSaveConfirm.jsx";
-import showNameInput from "./showNameInput.jsx";
+import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
+import showNameInput from "../modal-tool/showNameInput.jsx";
 import {fetchProjectContent} from "../../../../api/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 

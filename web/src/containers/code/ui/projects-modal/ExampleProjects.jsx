@@ -3,8 +3,8 @@ import {Button, Row, Col, Modal} from 'antd';
 import {actions as codeProjectActions, isProjectNameExist, compareProject} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import showSaveConfirm from "./showSaveConfirm.jsx";
-import showNameInput from "./showNameInput.jsx";
+import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
+import showNameInput from "../modal-tool/showNameInput.jsx";
 import messageI18n from "../../../../utils/messageI18n";
 import styles from './styles.css';
 
