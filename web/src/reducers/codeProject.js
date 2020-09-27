@@ -117,7 +117,6 @@ const actions = {
                     dispatch(actions.closeModal4myProjects());
                 })
                 .catch(error => {
-                    console.log("error: " + JSON.stringify(error))
                     messageI18n.error("Project content corrupted");
                     return {type: null};
                 });
@@ -156,7 +155,6 @@ const actions = {
         const {projectInfo} = getState().codeProject;
         const {vm} = getState().code;
         const content = vm.toJSON();
-        console.log(content)
         const extension = CODE_PROJECT_EXTENSION;
         const {status} = await save(projectInfo, content, extension);
         if (status === "ok") {
