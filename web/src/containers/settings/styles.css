@@ -83,7 +83,7 @@
     top: 0;
     right: 0;
     height: 24px;
-    width: 100%;
+    width: 24px;
     outline: none;
     border: none;
     background-color: transparent;
@@ -94,7 +94,7 @@
 }
 
 /*.div :hover .btn_delete {*/
-.btn_delete:hover {
+.div_item:hover .btn_delete {
     opacity: 0.5;
     filter: Alpha(opacity=100)
     /*显示隐藏动画*/

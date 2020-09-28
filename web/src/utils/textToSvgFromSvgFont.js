@@ -102,6 +102,8 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
     let commonFontHeight = 1000;
     const fontTracking = fontSize * tracking / commonFontHeight;
     const scale = fontSize / commonFontHeight;
+    const offsetToWidthOfCharacter = 0.7;//通常svg字体是手写体。这时候字符之间是有重叠的，经过调查，字符之间重叠30% 比较合理
+
     let paths = '';
     let height = fontSize;
     let width = 0;
@@ -127,8 +129,11 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
                     .toString()
                 + '"/>';
         }
-        width = translateX + glyph.width * scale;
+        width = translateX + glyph.width * scale * offsetToWidthOfCharacter;
     }
+    //最后一个字符的右侧没有字符和他重叠，故要将宽度加回来
+    width += commonFontHeight * scale * (1 - offsetToWidthOfCharacter);
+
     const start = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" \>`
     const end = '</svg>'
     const svg = start + paths + end;

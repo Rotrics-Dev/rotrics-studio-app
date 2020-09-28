@@ -38,7 +38,7 @@ class Fonts extends React.Component {
                             renderItem={(item, index) => (
                                 <List.Item style={{padding: "0px"}}>
                                     <div className={styles.div_item}>
-                                        <div>{item.fontName}</div>
+                                        {item.fontName}
                                         <input type="button"
                                                className={styles.btn_delete}
                                                onClick={event => {
