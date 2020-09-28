@@ -15,6 +15,7 @@ import gcodeSender from './gcode/gcodeSender.js';
 import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import p3dStartSlice from './p3dStartSlice.js';
 import {checkFileExist} from "./utils/fsUtils";
+import storeManager from './storeManager.js';
 import {
     SERIAL_PORT_PATH_UPDATE,
     SERIAL_PORT_GET_OPENED,
@@ -55,7 +56,6 @@ import {
     P3D_DIR_CONFIG_MATERIAL_SETTINGS
 } from './init.js';
 import SVGParser from './SVGParser/index.js';
-import {CODE_DIR_EXAMPLE_PROJECT, CODE_DIR_MY_PROJECT} from "./init";
 
 let serverCacheAddress; //获取端口后，再初始化
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
@@ -84,7 +84,7 @@ const saveFontFile = (fontFile) => {
     return new Promise((resolve, reject) => {
         try {
             const reader = fs.createReadStream(fontFile.path);
-            const fontName = fontFile.name/*.replace(/\s+/g, '_')*/;
+            const fontName = fontFile.name; /*.replace(/\s+/g, '_')*/
             const fontPath = path.join(USER_FONTS_DIR, fontName);
             const writer = fs.createWriteStream(fontPath);
             reader.addListener('end', () => {
@@ -154,9 +154,9 @@ const setupHttpServer = () => {
     router
         .get('/code/project/fetch/infos/my', (ctx) => {
             let data = [];
-            const filenames = fs.readdirSync(CODE_DIR_MY_PROJECT);
+            const filenames = fs.readdirSync(storeManager.dir_code_projects_my);
             filenames.forEach((filename) => {
-                const filePath = path.join(CODE_DIR_MY_PROJECT, filename);
+                const filePath = path.join(storeManager.dir_code_projects_my, filename);
                 const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
                     name: getBaseFilename(filePath),
@@ -175,9 +175,9 @@ const setupHttpServer = () => {
         })
         .get('/code/project/fetch/infos/example', (ctx) => {
             let data = [];
-            const filenames = fs.readdirSync(CODE_DIR_EXAMPLE_PROJECT);
+            const filenames = fs.readdirSync(storeManager.dir_code_projects_example);
             filenames.forEach((filename) => {
-                const filePath = path.join(CODE_DIR_EXAMPLE_PROJECT, filename);
+                const filePath = path.join(storeManager.dir_code_projects_example, filename);
                 const {mtimeMs, birthtimeMs} = fs.statSync(filePath);
                 const info = {
                     name: getBaseFilename(filePath),
@@ -203,7 +203,7 @@ const setupHttpServer = () => {
         .post('/code/project/rename', (ctx) => {
             const {projectInfo, name, extension} = JSON.parse(ctx.request.body);
             const {filePath: oldPath} = projectInfo;
-            const newPath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+            const newPath = path.join(storeManager.dir_code_projects_my, `${name}${extension}`);
             fs.renameSync(oldPath, newPath);
             return ctx.body = {status: "ok"};
         })
@@ -217,14 +217,14 @@ const setupHttpServer = () => {
             const {projectInfo, content, extension} = JSON.parse(ctx.request.body);
             let {filePath, name} = projectInfo;
             if (!filePath) {
-                filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+                filePath = path.join(storeManager.dir_code_projects_my, `${name}${extension}`);
             }
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
         })
         .post('/code/project/save-as', (ctx) => {
             const {content, name, extension} = JSON.parse(ctx.request.body);
-            const filePath = path.join(CODE_DIR_MY_PROJECT, `${name}${extension}`);
+            const filePath = path.join(storeManager.dir_code_projects_my, `${name}${extension}`);
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
         })
@@ -233,7 +233,6 @@ const setupHttpServer = () => {
     router.post('/font/upload', async (ctx) => {
         let fontName = '';
         if (ctx.request.files) {
-            console.log(ctx.request.files)
             fontName = await saveFontFile(ctx.request.files.file);
         }
         const {buildInFonts, userFonts} = listFonts()
@@ -242,9 +241,9 @@ const setupHttpServer = () => {
             buildInFonts,
             userFonts
         };
-    }).post('/font/list', async (ctx) => {
+    }).post('/font/list', (ctx) => {
         return ctx.body = listFonts();
-    }).post('/font/delete', async (ctx) => {
+    }).post('/font/delete', (ctx) => {
         let font = ctx.request.body.font;
         if (!font) font = null;
         if (font) {
