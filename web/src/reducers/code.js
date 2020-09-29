@@ -270,6 +270,7 @@ export const actions = {
                 console.log(gcode);
                 if (gcode) {
                     const taskIdLocal = getUuid();
+                    dispatch(gcodeSendActions.startTask(gcode, true, false, taskIdLocal, false, false));
                     if (blockName.indexOf('RS_SENSING') === -1) {
                         socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
                             if (preStatus === "started" && curStatus === "idle" && taskId === taskIdLocal) {
@@ -352,10 +353,7 @@ export const actions = {
                                 break;
                         }
                     }
-                    dispatch(gcodeSendActions.startTask(gcode, true, false, taskIdLocal));
                 }
-
-
             }
         );
     },
