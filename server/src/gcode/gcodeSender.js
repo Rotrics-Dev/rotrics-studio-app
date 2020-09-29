@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
+import deviceStateMonitor from '../deviceStateMonitor.js';
 import {GCODE_SENDER_REFUSE, GCODE_SENDER_STATUS_CHANGE, GCODE_SENDER_PROGRESS_CHANGE} from "../constants";
 
 /**
@@ -53,7 +54,7 @@ class GcodeSender extends EventEmitter {
             this.emit(GCODE_SENDER_REFUSE, {msg});
             return;
         }
-        if (this.isLaserCoverOpened && this.isLaser) {
+        if (deviceStateMonitor.isLaserCoverOpened && isLaser) {
             const msg = "Laser cover opened, please close first";
             this.emit(GCODE_SENDER_REFUSE, {msg});
             return;
@@ -101,7 +102,6 @@ class GcodeSender extends EventEmitter {
         this.taskId = null;
         this.isAckChange = false;
         this.isLaser = false;
-        this.isLaserCoverOpened = false;
     }
 
     async _startSend() {
@@ -123,7 +123,7 @@ class GcodeSender extends EventEmitter {
 
     _sendLine(line) {
         return new Promise((resolve) => {
-            serialPortManager.write(`${line}\n`)
+            serialPortManager.write(`${line}\n`);
             const onData = (data) => {
                 data = data.trim();
                 if (data.indexOf("ok") === 0) {
@@ -132,12 +132,9 @@ class GcodeSender extends EventEmitter {
                 } else if (data.indexOf("wait") === 0) {
                     serialPortManager.write(`${line}\n`)
                 } else if (data === 'Warning!Laser protection door opened') {
-                    this.isLaserCoverOpened = true;
                     if (this.isLaser) {
                         this.pause();
                     }
-                } else if (data === 'Laser protection door closed') {
-                    this.isLaserCoverOpened = false;
                 }
             };
             serialPortManager.readLineParser.on('data', onData);
@@ -171,7 +168,7 @@ class GcodeSender extends EventEmitter {
     }
 
     async resume() {
-        if (this.isLaserCoverOpened && this.isLaser) {
+        if (deviceStateMonitor.isLaserCoverOpened && this.isLaser) {
             const msg = "Laser cover opened, please close first";
             this.emit(GCODE_SENDER_REFUSE, {msg});
             return;
