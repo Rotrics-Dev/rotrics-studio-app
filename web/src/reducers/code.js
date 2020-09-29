@@ -6,6 +6,7 @@ import {getUuid} from '../utils/index.js';
 import socketClientManager from "../socket/socketClientManager";
 import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_DATA} from "../constants";
 import {str2Number} from '../utils/index.js';
+import messageI18n from "../utils/messageI18n";
 
 const INIT_VM = 'code/INIT_VM';
 const SET_RUNNING = "code/SET_RUNNING";
@@ -264,8 +265,12 @@ export const actions = {
         vm.runtime.on(
             'rotrics-async',
             (data) => {
-                console.log(JSON.stringify(data, null, 2));
                 const {blockName, args, resolve} = data;
+                if (!getState().serialPort.path) {
+                    messageI18n.warn("Please connect DexArm first");
+                    resolve();
+                    return;
+                }
                 const gcode = generateGcode(blockName, args);
                 console.log(gcode);
                 if (gcode) {
@@ -274,7 +279,6 @@ export const actions = {
                     if (blockName.indexOf('RS_SENSING') === -1) {
                         socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
                             if (preStatus === "started" && curStatus === "idle" && taskId === taskIdLocal) {
-                                console.log(`${blockName} resolve`);
                                 resolve();
                             }
                         });
@@ -282,7 +286,6 @@ export const actions = {
                         switch (blockName) {
                             case "RS_SENSING_CURRENT_POSITION": {
                                 const onData = (data) => {
-                                    console.log("## received position: " + data.received)
                                     let {received} = data; //X:0.00 Y:0.00 Z:0.00 E:0.00 Count A:0 B:0 C:0
                                     //TODO: 使用正则表达式匹配
                                     if (received.indexOf('X:') != -1 &&
@@ -319,7 +322,6 @@ export const actions = {
                             }
                             case "RS_SENSING_CURRENT_ACCELERATION":
                                 const onData = (data) => {
-                                    console.log("## received acc: " + data.received)
                                     let {received} = data; //Acceleration: P60.00 R80.00 T60.00
                                     //TODO: 使用正则表达式匹配
                                     if (received.indexOf('Acceleration:') != -1 &&
