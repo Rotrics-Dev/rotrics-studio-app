@@ -1,7 +1,7 @@
 {
   "name": "rotrics-studio-app",
   "productName": "Rotrics Studio",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Rotrics Dev",
   "license": "MIT",
   "main": "main.js",
