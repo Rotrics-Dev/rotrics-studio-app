@@ -64,7 +64,7 @@ class GcodeSender extends EventEmitter {
         switch (this.curStatus) {
             case "idle": {
                 this.lines = gcode.trim().split('\n').filter((line) => {
-                    return (line.indexOf(";") !== 0 && line.length > 0)
+                    return (line.trim().indexOf(";") !== 0 && line.trim().length > 0)
                 });
                 this.total = this.lines.length;
                 this.sent = 0;
