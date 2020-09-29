@@ -27,16 +27,13 @@ class GcodeSender extends EventEmitter {
     }
 
     _emitStatus() {
-        console.log(`gcode sender status: ${this.preStatus} => ${this.curStatus}`);
         if (this.isAckChange) {
             const {preStatus, curStatus, taskId} = this;
-            console.log("emit GCODE_SENDER_STATUS_CHANGE")
             this.emit(GCODE_SENDER_STATUS_CHANGE, {preStatus, curStatus, taskId});
         }
     }
 
     _emitProgress() {
-        console.log(`gcode sender progress: ${this.sent} / ${this.total}`);
         if (this.isAckChange) {
             const {total, sent, taskId} = this;
             this.emit(GCODE_SENDER_PROGRESS_CHANGE, {total, sent, taskId});
@@ -74,11 +71,6 @@ class GcodeSender extends EventEmitter {
                 this.isAckChange = isAckChange;
                 this.isLaser = isLaser;
                 this._emitStatus();
-
-                console.log("#start:");
-                console.log(this.lines);
-                console.log("--------------------------------- ");
-
                 await this._startSend();
                 break;
             }
@@ -131,16 +123,14 @@ class GcodeSender extends EventEmitter {
 
     _sendLine(line) {
         return new Promise((resolve) => {
-            console.log("write: " + line);
             serialPortManager.write(`${line}\n`)
             const onData = (data) => {
                 data = data.trim();
-                console.log("    received: " + data);
                 if (data.indexOf("ok") === 0) {
                     serialPortManager.readLineParser.removeListener('data', onData);
                     resolve();
                 } else if (data.indexOf("wait") === 0) {
-                    console.log("### 有断开！！！")
+                    serialPortManager.write(`${line}\n`)
                 } else if (data === 'Warning!Laser protection door opened') {
                     this.isLaserCoverOpened = true;
                     if (this.isLaser) {
