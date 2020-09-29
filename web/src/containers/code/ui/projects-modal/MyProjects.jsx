@@ -32,7 +32,6 @@ class Index extends React.Component {
                 messageI18n.warning("The project already opened");
                 return;
             }
-            const target = projectInfo ? projectInfo : this.state.selected;
             const {name, location, isSaved} = this.props.projectInfo;
             if (!isSaved) {
                 if (location === "example") {
@@ -41,7 +40,7 @@ class Index extends React.Component {
                         saveText: "Save as",
                         doNotSaveText: "Don't save as",
                         onDoNotSave: () => {
-                            this.props.openLocal(target);
+                            this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
                         onSave: () => {
@@ -59,7 +58,7 @@ class Index extends React.Component {
                                             reject();
                                         } else {
                                             await this.props.saveAs(inputName);
-                                            this.props.openLocal(target);
+                                            this.props.openLocal(projectInfo);
                                             this.setState({selected: null});
                                             resolve();
                                         }
@@ -74,18 +73,18 @@ class Index extends React.Component {
                         saveText: "Save",
                         doNotSaveText: "Don't save",
                         onDoNotSave: () => {
-                            this.props.openLocal(target);
+                            this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
                         onSave: async () => {
                             await this.props.save();
-                            this.props.openLocal(target);
+                            this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         }
                     });
                 }
             } else {
-                this.props.openLocal(target);
+                this.props.openLocal(projectInfo);
                 this.setState({selected: null})
             }
         },
@@ -181,7 +180,9 @@ class Index extends React.Component {
                         type="primary"
                         size="small"
                         disabled={!state.selected}
-                        onClick={actions.openProject}>
+                        onClick={() => {
+                            actions.openProject(state.selected)
+                        }}>
                         {t('Open')}
                     </Button>
                 ]}
