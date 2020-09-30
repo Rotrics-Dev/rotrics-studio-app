@@ -195,7 +195,7 @@
             "description": "Determines how many times the printer will run the G-code automatically.",
             "default_value": 2,
             "type": "int",
-            "minimum_value": 1,
+            "minimum_value": 2,
             "maximum_value": 10
           },
           "pass_depth": {
@@ -204,7 +204,7 @@
             "default_value": 1,
             "type": "int",
             "unit": "mm",
-            "minimum_value": 1,
+            "minimum_value": 0.1,
             "maximum_value": 5
           }
         }
