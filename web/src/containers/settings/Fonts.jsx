@@ -56,12 +56,11 @@ class Fonts extends React.Component {
                     <input
                         ref={this.fileInput}
                         type="file"
-                        accept={'.ttf,.svg'}
+                        accept={'.ttf'}
                         style={{display: 'none'}}
                         multiple={false}
                         onChange={actions.uploadUserFont}
                         className={styles.btn_upload}/>
-
                 </div>
             </div>
         )
