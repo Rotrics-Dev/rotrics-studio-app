@@ -397,7 +397,6 @@ class GcodeSender extends EventEmitter {
 
     emitStatus() {
         const {preStatus, curStatus} = this;
-        console.log("gcode sender status: " + preStatus + " -> " + curStatus);
         if (this.isTask) {
             this.emit(GCODE_SENDER_STATUS_CHANGE, {
                 preStatus,

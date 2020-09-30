@@ -6,12 +6,11 @@ import notificationI18n from "../../utils/notificationI18n";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {getUuid} from '../../utils/index.js';
-import {actions as tapsActions} from "../../reducers/taps";
-// import {actions as headerActions} from "../../reducers/header";
+import {actions as headerActions} from "../../reducers/header";
 import {withTranslation} from 'react-i18next';
-import {TAP_CODE} from "../../constants.js";
-// import Terminal from './terminal/Index.jsx';
-// import JogPanel from './jog-panel/Index.jsx';
+import Terminal from './terminal/Index.jsx';
+import JogPanel from './jog-panel/Index.jsx';
+import P3dCalibration from './p3d-calibration/Index.jsx'
 
 const notificationKeyConnected = getUuid();
 const notificationKeyDisconnected = getUuid();
@@ -77,22 +76,6 @@ class Index extends React.Component {
         },
         emergencyStop: () => {
             this.props.serialPortWrite('M410\n');
-            console.log("emergencyStop")
-        },
-        changeTerminalVisibility: (checked) => {
-            this.props.setTerminalVisible(checked);
-            // if (checked){
-            //     this.props.openTerminal()
-            // } else {
-            //     this.props.closeTerminal()
-            // }
-        },
-        changeJogPanelVisibility: (checked) => {
-            // if (checked){
-            //     this.props.openJogPanel()
-            // } else {
-            //     this.props.closeJogPanel()
-            // }
         }
     };
 
@@ -100,6 +83,7 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         const {paths, path, terminalVisible, jogPanelVisible} = this.props;
+        const {changeVisibility4jogPanel, changeVisibility4terminal} = this.props;
         const {selectedPath} = state;
         const {t} = this.props;
         let statusDes = "";
@@ -139,8 +123,9 @@ class Index extends React.Component {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                {/*<Terminal/>*/}
-                {/*<JogPanel/>*/}
+                <Terminal/>
+                <JogPanel/>
+                <P3dCalibration/>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
                     <Space size={10}>
@@ -154,16 +139,16 @@ class Index extends React.Component {
                                 size="small"
                                 style={{marginLeft: "2px"}}
                                 checked={terminalVisible}
-                                onChange={actions.changeTerminalVisibility}/>
+                                onChange={changeVisibility4terminal}/>
                         </div>
-                        {/*<div>*/}
-                            {/*<span>{t("Jog")}</span>*/}
-                            {/*<Switch*/}
-                                {/*size="small"*/}
-                                {/*style={{marginLeft: "2px", marginRight: "10px"}}*/}
-                                {/*checked={jogPanelVisible}*/}
-                                {/*onChange={actions.changeJogPanelVisibility}/>*/}
-                        {/*</div>*/}
+                        <div>
+                            <span>{t("Jog")}</span>
+                            <Switch
+                                size="small"
+                                style={{marginLeft: "2px", marginRight: "10px"}}
+                                checked={jogPanelVisible}
+                                onChange={changeVisibility4jogPanel}/>
+                        </div>
                     </Space>
                     }
                     <button
@@ -220,13 +205,12 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {paths, path} = state.serialPort;
-    // const {terminalVisible, jogPanelVisible} = state.header;
-    const {terminalVisible} = state.taps;
+    const {terminalVisible, jogPanelVisible} = state.header;
     return {
         paths,
         path,
         terminalVisible,
-        // jogPanelVisible
+        jogPanelVisible
     };
 };
 
@@ -235,11 +219,9 @@ const mapDispatchToProps = (dispatch) => {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
         serialPortWrite: (gcode) => dispatch(serialPortActions.write(gcode)),
-        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value)),
-        // openTerminal: () => dispatch(headerActions.openTerminal()),
-        // closeTerminal: () => dispatch(headerActions.closeTerminal()),
-        // openJogPanel: () => dispatch(headerActions.openJogPanel()),
-        // closeJogPanel: () => dispatch(headerActions.closeJogPanel())
+
+        changeVisibility4terminal: (value) => dispatch(headerActions.changeVisibility4terminal(value)),
+        changeVisibility4jogPanel: (value) => dispatch(headerActions.changeVisibility4jogPanel(value)),
     };
 };
 
