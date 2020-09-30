@@ -72,8 +72,8 @@ const svg2toolPathStr = async (url, settings) => {
     toolPathLines.push('M5');
     toolPathLines.push(`G0 F${jog_speed_placeholder}`);
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
-    toolPathLines.push(`G0 X${normalizer.x(segment0.start[0])} Y${normalizer.y(segment0.start[1])}`);
-    toolPathLines.push('G0 Z0');
+    // toolPathLines.push(`G0 X${normalizer.x(segment0.start[0])} Y${normalizer.y(segment0.start[1])}`);
+    // toolPathLines.push('G0 Z0');
 
     for (const segment of segments) {
         // G0 move to start

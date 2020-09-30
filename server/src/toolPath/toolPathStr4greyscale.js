@@ -180,7 +180,7 @@ const img2toolPathStrGs = (img, settings) => {
     let toolPathLines = [];
     toolPathLines.push('G0 F1000'); //G0 default speed is 1000
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
-    toolPathLines.push('G0 Z0');
+    // toolPathLines.push('G0 Z0');
     for (let i = 0; i < width; ++i) {
         const isReverse = (i % 2 === 0);
         for (let j = (isReverse ? height : 0); isReverse ? j >= 0 : j < height; isReverse ? j-- : j++) {

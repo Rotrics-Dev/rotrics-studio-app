@@ -136,7 +136,7 @@ const img2toolPathStrBw = (img, settings) => {
     let toolPathLines = [];
     toolPathLines.push(`G0 F${jog_speed_placeholder}`);
     toolPathLines.push(`G1 F${work_speed_placeholder}`);
-    toolPathLines.push('G0 Z0');
+    // toolPathLines.push('G0 Z0');
     if (!line_direction || line_direction === 'Horizontal') {
         const direction = {x: 1, y: 0};
         for (let j = 0; j < height; j++) {

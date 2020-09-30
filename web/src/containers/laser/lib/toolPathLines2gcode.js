@@ -105,17 +105,21 @@ const processGcodeMultiPass = (gcodeStr, settings) => {
         for (let i = 0; i < passes.default_value; i++) {
             result += `; Laser multi-pass, pass ${i + 1} with Z = ${-i * pass_depth.default_value}\n`;
             // dropping z
-            if (i !== 0) {
-                result += '; Laser multi-pass: dropping z\n';
-                result += 'G91\n'; // relative positioning
-                result += `G0 Z-${pass_depth.default_value} F150\n`;
-                result += 'G90\n'; // absolute positioning
-            }
+            // if (i !== 0) {
+            //     result += '; Laser multi-pass: dropping z\n';
+            //     result += 'G91\n'; // relative positioning
+            //     result += `G0 Z-${pass_depth.default_value} F150\n`;
+            //     result += 'G90\n'; // absolute positioning
+            // }
+            const dropdown = -i * pass_depth.default_value;
+            result += `G0 Z${dropdown} F150\n`;
             result += gcodeStr + '\n';
         }
         // move back to work origin
         result += 'G0 Z0\n';
         gcodeStr = result;
+    } else {
+        gcodeStr = `G0 Z0\n` + gcodeStr;
     }
     return gcodeStr;
 };

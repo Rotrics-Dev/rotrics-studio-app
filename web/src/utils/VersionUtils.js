@@ -86,7 +86,7 @@ const checkUpdate = (onNewVersion) => {
         if (compareVersionCode(latestVersionData.version, currentVersion) === 1) {//需要升级更新
             const now = new Date().getTime() / 1000;//获取当前时间秒的时间戳
             const delay = now - latestVersionData.createTime;
-            if (delay > 60 * 60 * 12) {//软件发布之后延时12小时提醒用户更新
+            if (delay > 60 * 60 * 48) {//软件发布之后延时48小时提醒用户更新
                 onNewVersion(latestVersionData);
             }
         } else {//已经是最新版本
