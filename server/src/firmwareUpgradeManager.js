@@ -130,8 +130,8 @@ class FirmwareUpgradeManager {
             this.onChange(0, 'error', 'Connect DexArm first');
             return;
         }
-        if (gcodeSender.getStatus() === "sending") {
-            this.onChange(0, 'error', 'Stop sending g-code first');
+        if (gcodeSender.curStatus !== "idle") {
+            this.onChange(0, 'error', 'Stop g-code sending task first');
             return;
         }
         if (!(await isOnline())) {
