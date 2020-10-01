@@ -10,7 +10,6 @@ import {
     SERIAL_PORT_WRITE,
     MSG_SERIAL_PORT_CLOSE_TOAST
 } from "../constants.js"
-import {actions as tapsActions} from "./taps";
 
 const ACTION_UPDATE_STATE = 'serialPort/ACTION_UPDATE_STATE';
 
@@ -92,7 +91,6 @@ export const actions = {
             dispatch(actions._updateState({path}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
-            dispatch(tapsActions.setTerminalVisible(false))
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ERROR, () => {

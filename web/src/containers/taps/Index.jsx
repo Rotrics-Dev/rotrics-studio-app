@@ -11,7 +11,6 @@ import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
-import Terminal from './terminal/Index.jsx'
 import Debug from '../debug/Index.jsx'
 
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
@@ -231,7 +230,6 @@ class Index extends React.Component {
                         <Debug/>
                     </div>
                 </div>
-                <Terminal/>
                 <Footer/>
             </div>
         )

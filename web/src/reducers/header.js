@@ -2,7 +2,8 @@ const ACTION_UPDATE_STATE = 'header/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     terminalVisible: false,
-    jogPanelVisible: true,
+    jogPanelVisible: false,
+    p3dCalibrationVisible: false
 };
 
 export const actions = {
@@ -12,24 +13,19 @@ export const actions = {
             state
         };
     },
-    openTerminal: () => (dispatch) => {
+    changeVisibility4terminal: (visible) => (dispatch) => {
         dispatch(actions._updateState({
-            terminalVisible: true
+            terminalVisible: visible
         }));
     },
-    closeTerminal: () => (dispatch) => {
+    changeVisibility4jogPanel: (visible) => (dispatch) => {
         dispatch(actions._updateState({
-            terminalVisible: false
+            jogPanelVisible: visible
         }));
     },
-    openJogPanel: () => (dispatch) => {
+    changeVisibility4p3dCalibration: (visible) => (dispatch) => {
         dispatch(actions._updateState({
-            jogPanelVisible: true
-        }));
-    },
-    closeJogPanel: () => (dispatch) => {
-        dispatch(actions._updateState({
-            jogPanelVisible: false
+            p3dCalibrationVisible: visible
         }));
     },
 };

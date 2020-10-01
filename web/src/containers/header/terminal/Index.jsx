@@ -5,9 +5,9 @@ import {Button, Input, Checkbox} from 'antd';
 import {withTranslation} from 'react-i18next';
 import styles from './styles.css';
 import {actions as serialPortActions} from "../../../reducers/serialPort";
-import {actions as tapsActions} from "../../../reducers/taps"
 import socketClientManager from "../../../socket/socketClientManager";
 import {SERIAL_PORT_DATA} from "../../../constants";
+import {actions as headerActions} from "../../../reducers/header";
 
 const MAX_LINE_COUNT = 150; //最多可展示多少条数据
 
@@ -18,6 +18,7 @@ class Index extends React.Component {
     }
 
     state = {
+        position: {x: 0, y: 0},
         gcode: "",
         receivedLines4debug: [], //debug模式下，显示所有收到的数据
         receivedLines4normal: [], //normal模式下，不显示ok，wait
@@ -58,7 +59,7 @@ class Index extends React.Component {
             this.setState({receivedLines4debug: [], receivedLines4normal: []})
         },
         close: () => {
-            this.props.setTerminalVisible(false)
+            this.props.changeVisibility4terminal(false)
         },
         toggleAutoScroll: (e) => {
             this.setState({autoScroll: e.target.checked})
@@ -76,7 +77,12 @@ class Index extends React.Component {
         const state = this.state;
         const {t} = this.props;
         return (
-            <Draggable>
+            <Draggable
+                defaultPosition={state.position}
+                onStop={(e, data) => {
+                    const {x, y} = data;
+                    this.setState({position: {x, y}})
+                }}>
                 <div className={styles.div_fix}>
                     <div style={{marginBottom: "5px"}}>
                         <Input
@@ -132,7 +138,6 @@ class Index extends React.Component {
                             {t("Clear")}
                         </Button>
                     </div>
-
                 </div>
             </Draggable>
         )
@@ -149,7 +154,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
-        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value))
+        changeVisibility4terminal: (value) => dispatch(headerActions.changeVisibility4terminal(value))
     };
 };
 

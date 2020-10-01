@@ -1,4 +1,4 @@
-.div_fix {
+.div_root {
     padding: 8px;
     position: absolute;
     right: 5px;
@@ -9,6 +9,33 @@
     opacity: 1;
     border: 1px solid #C0C0C0;
     border-radius: 3px;
+}
+
+.div_tap {
+    padding: 5px;
+    margin-top: 8px;
+    opacity: 1;
+    border: 1px solid #C0C0C0;
+    border-radius: 3px;
+}
+
+.btn_close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background-image: url(./images/close.svg);
+    outline: none;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    vertical-align: middle;
+}
+
+.btn_close:active {
+    opacity: 0.4;
 }
 
 .btn_xyz {

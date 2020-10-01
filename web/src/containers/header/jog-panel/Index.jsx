@@ -2,21 +2,29 @@ import React from 'react';
 import {connect} from 'react-redux';
 import Draggable from 'react-draggable';
 import {withTranslation} from 'react-i18next';
+import {Radio, Row, Col, Switch, Slider, Space} from 'antd';
 import styles from './styles.css';
-import {actions as serialPortActions} from "../../../reducers/serialPort";
-import {actions as tapsActions} from "../../../reducers/taps"
 import {actions as headerActions} from "../../../reducers/header"
 import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-
 import PositionMonitor from "../../../components/PositionMoniter/index.jsx";
 import ConfigTitle from "../../../components/Config/ConfigTitle/index.jsx";
-import {Radio, Row, Col} from 'antd';
 import {FRONT_END} from "../../../utils/workAreaUtils";
+import {TAP_BASIC, TAP_LASER, TAP_P3D} from "../../../constants";
+import messageI18n from "../../../utils/messageI18n";
+import movement from "../../basic/lib/settings/movement";
+import NumberInput from "../../../components/NumberInput/Index.jsx";
+import ModuleControl from "./ModuleControl.jsx";
+
+const INIT_LASER_POWER = 1;
 
 class Index extends React.Component {
     state = {
         step: 10,
-        position: {x: 0, y: 0}
+        position: {x: 0, y: 0},
+
+        //laser
+        isLaserOn: false,
+        laserPower: INIT_LASER_POWER
     };
 
     actions = {
@@ -112,13 +120,44 @@ class Index extends React.Component {
         }
     };
 
+    //M3: laser on
+    //M5: laser off
+    //M3 S${power, 0~255}: set laser power
+    actions4laser = {
+        toggleLaser: (checked) => {
+            this.setState({isLaserOn: checked, laserPower: INIT_LASER_POWER}, () => {
+                this.actions4laser._sendGcode();
+            });
+        },
+        changeLaserPower: (value) => {
+            this.setState({laserPower: value})
+        },
+        afterChangeLaserPower: (value) => {
+            this.setState({laserPower: value}, () => {
+                this.actions4laser._sendGcode();
+            });
+        },
+        _sendGcode: () => {
+            const {isLaserOn, laserPower} = this.state;
+            let gcode = "";
+            if (isLaserOn) {
+                gcode = `M3 S${Math.round(laserPower * 2.55)}`
+            } else {
+                gcode = "M5"
+            }
+            this.props.startTask(gcode);
+        }
+    };
+
     render() {
         if (!this.props.jogPanelVisible) {
             return null;
         }
         const actions = this.actions;
+        const actions4laser = this.actions4laser;
         const state = this.state;
         const {t} = this.props;
+        const {tap, changeVisibility4jogPanel, changeVisibility4p3dCalibration, path} = this.props;
         const gutter = 8;
         return (
             <Draggable
@@ -127,8 +166,14 @@ class Index extends React.Component {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
-                <div className={styles.div_fix}>
+                <div className={styles.div_root}>
                     <PositionMonitor/>
+                    <input
+                        type="button"
+                        className={styles.btn_close}
+                        onClick={() => {
+                            changeVisibility4jogPanel(false)
+                        }}/>
                     <Row gutter={[gutter, gutter]}>
                         <Col span={6}>
                             <input type="button" onClick={actions.leftTop} className={styles.btn_left_top}/>
@@ -192,6 +237,16 @@ class Index extends React.Component {
                             <Radio.Button value={0.1} className={styles.btn_step}>0.1</Radio.Button>
                         </Radio.Group>
                     </div>
+                    <div className={styles.div_tap}>
+                        <ConfigTitle text={t("Motion Mode")}/>
+                        <Space direction={"vertical"} style={{width: "100%"}}>
+                            <Radio.Group onChange={this.onChange} value={'Fast Mode'}>
+                                <Radio value={'Fast Mode'}>{'Fast Mode'}</Radio>
+                                <Radio value={'Linear Mode'}>{'Linear Mode'}</Radio>
+                            </Radio.Group>
+                        </Space>
+                    </div>
+                    <ModuleControl/>
                 </div>
             </Draggable>
         )
@@ -199,8 +254,12 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    const {path} = state.serialPort;
+    const {tap} = state.taps;
     const {jogPanelVisible} = state.header;
     return {
+        path,
+        tap,
         jogPanelVisible
     };
 };
@@ -208,7 +267,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
-        setTerminalVisible: (value) => dispatch(tapsActions.setTerminalVisible(value)),
+        changeVisibility4jogPanel: (value) => dispatch(headerActions.changeVisibility4jogPanel(value)),
+        changeVisibility4p3dCalibration: (value) => dispatch(headerActions.changeVisibility4p3dCalibration(value))
     };
 };
 
