@@ -3,7 +3,6 @@ import {Tabs} from 'antd';
 import Canvas2D from '../writeAndDraw/ui/Canvas2D/Index.jsx';
 import TeachAndPlay from './ui/TeachAndPlay/Index.jsx';
 import Gcode from './ui/Gcode/Index.jsx';
-import Control from './ui/Control/Index.jsx';
 import {withTranslation} from 'react-i18next';
 import layout_styles from '../layout_styles.css';
 
@@ -36,9 +35,6 @@ class Index extends React.Component {
                 }}/>
                 <div className={layout_styles.div_right_panel}>
                     <Tabs centered={true} size="small">
-                        <TabPane tab={t('Control')} key="1">
-                            <Control/>
-                        </TabPane>
                         <TabPane tab={t('G-code')} key="2">
                             <Gcode/>
                         </TabPane>

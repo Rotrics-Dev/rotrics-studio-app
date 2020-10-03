@@ -71,8 +71,7 @@ class Index extends React.Component {
             }}>
                 <Tooltip
                     id={tooltipId}
-                    place="left"
-                   />
+                    place="left"/>
                 <Space direction={"vertical"} style={{width: "100%", padding: "6px"}}>
                     <Button
                         data-for={tooltipId}
