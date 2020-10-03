@@ -1,9 +1,9 @@
 import React from 'react';
-import socketClientManager from "../../socket/socketClientManager";
-import styles from './styles.css'
-import {ConfigTitle} from "../Config";
 import {withTranslation} from 'react-i18next';
 import {Row, Col} from 'antd';
+import socketClientManager from "../../../../socket/socketClientManager";
+import styles from './styles.css'
+import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
 
 class Index extends React.Component {
     state = {

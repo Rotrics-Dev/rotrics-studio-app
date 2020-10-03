@@ -4,7 +4,7 @@ import {withTranslation} from 'react-i18next';
 import {Radio, Row, Col, Slider, Space} from 'antd';
 import styles from './styles.css';
 import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-import PositionMonitor from "../../../components/PositionMoniter/index.jsx";
+import PositionMonitor from "./PositionMoniter/index.jsx";
 import ConfigTitle from "../../../components/Config/ConfigTitle/index.jsx";
 import {FRONT_END} from "../../../utils/workAreaUtils";
 

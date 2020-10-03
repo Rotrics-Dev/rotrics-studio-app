@@ -142,7 +142,7 @@ class Index extends React.Component {
                                 onChange={changeVisibility4terminal}/>
                         </div>
                         <div>
-                            <span>{t("Jog")}</span>
+                            <span>{t("Control Panel")}</span>
                             <Switch
                                 size="small"
                                 style={{marginLeft: "2px", marginRight: "10px"}}
