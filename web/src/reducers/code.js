@@ -128,7 +128,6 @@ const generateGcode = (blockName, args) => {
                 case 'Pen Holder':
                     return 'M888 P0';
                 case 'Air Picker':
-                    return 'M888 P2';
                 case 'Soft Gripper':
                     return 'M888 P2';
                 default:

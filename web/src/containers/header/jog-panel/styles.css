@@ -1,14 +1,23 @@
 .div_root {
     padding: 8px;
     position: absolute;
-    right: 5px;
+    right: 305px;
     top: 50px;
-    z-index: 9999;
+    z-index: 999;
     width: 400px;
     background-color: #f0f0f0;
     opacity: 1;
     border: 1px solid #C0C0C0;
     border-radius: 3px;
+}
+
+.div_handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: transparent;
 }
 
 .div_tap {

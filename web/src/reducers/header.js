@@ -2,7 +2,7 @@ const ACTION_UPDATE_STATE = 'header/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     terminalVisible: false,
-    jogPanelVisible: false,
+    jogPanelVisible: true,
     p3dCalibrationVisible: false
 };
 

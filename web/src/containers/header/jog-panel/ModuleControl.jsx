@@ -1,122 +1,205 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import {Radio, Row, Col, Switch, Slider, Space} from 'antd';
+import {Radio, Row, Col, Select, Switch, Slider, Space} from 'antd';
 import styles from './styles.css';
 import {actions as headerActions} from "../../../reducers/header"
 import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-import PositionMonitor from "../../../components/PositionMoniter/index.jsx";
 import ConfigTitle from "../../../components/Config/ConfigTitle/index.jsx";
-import {FRONT_END} from "../../../utils/workAreaUtils";
-import {TAP_BASIC, TAP_LASER, TAP_P3D} from "../../../constants";
-import messageI18n from "../../../utils/messageI18n";
-import movement from "../../basic/lib/settings/movement";
-import NumberInput from "../../../components/NumberInput/Index.jsx";
 
-const INIT_LASER_POWER = 1;
+const MODULE_NAMES = [
+    'Laser',
+    '3D Print',
+    // 'Pen Holder', //应该有两个参数：停笔高度，抬笔高度
+    'Air Pick',
+    'Soft Gripper'
+];
+const STATES_AIR_PICK = ['pick', 'release', 'off'];
+const STATES_SOFT_GRIPPER = ['grip', 'neutral', 'release', 'off'];
 
 class Index extends React.Component {
     state = {
-        module: 'Air Pick', //Air Pick, Soft Gripper, Laser
+        curModule: 'Laser', //Laser, 3D Print, Pen Holder, Air Pick, Soft Gripper
+        isLaserOn: false,
+        laserPowerPercent: 1,
+        //TODO: 查询状态，保证软件和硬件同步
+        //TODO: 若无法同步，则应该考虑使用button而不是Radio，button表示click后发送指定的命令
+        curState4airPick: null,
+        curState4softGripper: null
+    };
 
-        states4laser: ['on', 'off'],
-        states4airPick: ['pick', 'release', 'off'],
-        states4softGripper: ['grip', 'neutral', 'release', 'off'],
-
-        laserState: 'off',
-        curState4airPick: 'release',
-        curState4softGripper: 'grip',
-
-        laserPower: INIT_LASER_POWER
+    actions = {
+        //TODO: gcode是异步的，存在发送不成功，但ui已经更新的问题；存在ui和状态不一致的问题
+        changeModule: (value) => {
+            this.setState({curModule: value});
+            let gcode = null;
+            switch (value) {
+                case 'Laser':
+                    gcode = 'M888 P1';
+                    break;
+                case '3D Print':
+                    gcode = 'M888 P3';
+                    break;
+                case 'Pen Holder':
+                    gcode = 'M888 P0';
+                    break;
+                case 'Air Pick':
+                case 'Soft Gripper':
+                    gcode = 'M888 P2';
+                    break;
+            }
+            this.props.startTask(gcode);
+        }
     };
 
     //M3: laser on
     //M5: laser off
     //M3 S${power, 0~255}: set laser power
     actions4laser = {
+        toggleLaser: (checked) => {
+            this.setState({isLaserOn: checked});
+            let gcode = null;
+            if (checked) {
+                gcode = `M3 S${Math.round(this.state.laserPowerPercent * 2.55)}`;
+            } else {
+                gcode = "M5";
+            }
+            this.props.startTask(gcode);
+        },
+        changePowerPercent: (value) => {
+            this.setState({laserPowerPercent: value})
+        },
+        afterChangePowerPercent: (value) => {
+            this.setState({laserPowerPercent: value, isLaserOn: true}, () => {
+                this.props.startTask(`M3 S${Math.round(this.state.laserPowerPercent * 2.55)}`);
+            });
+        }
+    };
+
+    actions4airPick = {
         changeState: (e) => {
             const value = e.target.value;
-            this.setState({laserState: value});
-            if (value === 'on') {
-                this.props.startTask(`M3 S${Math.round(this.state.laserPower * 2.55)}`);
-            } else if (value === 'off') {
-                this.props.startTask("M5");
+            this.setState({curState4airPick: value});
+            let gcode = null;
+            switch (value) {
+                case 'pick':
+                    gcode = 'M1000';
+                    break;
+                case 'release':
+                    gcode = 'M1002';
+                    break;
+                case 'off':
+                    gcode = 'M1003';
+                    break;
             }
-            console.log(e.target.value)
-        },
-        changePower: (value) => {
-            this.setState({laserPower: value})
-        },
-        afterChangePower: (value) => {
-            this.setState({laserPower: value, laserState: 'on'}, () => {
-                this.props.startTask(`M3 S${Math.round(this.state.laserPower * 2.55)}`);
-            });
+            this.props.startTask(gcode);
+        }
+    };
+
+    actions4softGripper = {
+        changeState: (e) => {
+            const value = e.target.value;
+            this.setState({curState4softGripper: value});
+            let gcode = null;
+            switch (value) {
+                case 'grip':
+                    gcode = 'M1001';
+                    break;
+                case 'release':
+                    gcode = 'M1000';
+                    break;
+                case 'neutral':
+                    gcode = 'M1002';
+                    break;
+                case 'off':
+                    gcode = 'M1003';
+                    break;
+            }
+            this.props.startTask(gcode);
         }
     };
 
     render() {
         const actions = this.actions;
         const actions4laser = this.actions4laser;
+        const actions4airPick = this.actions4airPick;
+        const actions4softGripper = this.actions4softGripper;
+
         const state = this.state;
+        const {curModule} = this.state;
         const {t} = this.props;
         const {changeVisibility4p3dCalibration} = this.props;
         const gutter = 8;
         return (
-            <div>
-                <div className={styles.div_tap}>
-                    <ConfigTitle text={t('Laser')}/>
-                    <Radio.Group onChange={actions4laser.changeState} value={state.laserState}>
-                        <Radio value={state.states4laser[0]}>{t(state.states4laser[0])}</Radio>
-                        <Radio value={state.states4laser[1]}>{t(state.states4laser[1])}</Radio>
-                    </Radio.Group>
+            <div className={styles.div_tap}>
+                <ConfigTitle text={t('Select Module')}/>
+                <Select
+                    value={state.curModule}
+                    onChange={actions.changeModule}
+                    style={{width: "100%", marginBottom: "15px"}}
+                >
+                    {MODULE_NAMES.map(value => {
+                        return (
+                            <Select.Option
+                                key={value}
+                                value={value}
+                            >
+                                {value}
+                            </Select.Option>
+                        );
+                    })}
+                </Select>
+                {curModule === 'Laser' &&
+                <div>
+                    <span>{'Power'}</span>
+                    <Switch
+                        style={{position: "absolute", right: "18px"}}
+                        checked={state.isLaserOn}
+                        onChange={actions4laser.toggleLaser}
+                    />
                     <Slider
-                        style={{width: "85%"}}
-                        min={0}
+                        style={{width: "97%"}}
+                        min={1}
                         max={100}
                         step={1}
-                        onChange={actions4laser.changePower}
-                        onAfterChange={actions4laser.afterChangePower}
-                        defaultValue={0}
-                        value={state.laserPower}
-                        disabled={state.laserState === 'off'}
+                        value={state.laserPowerPercent}
+                        onChange={actions4laser.changePowerPercent}
+                        onAfterChange={actions4laser.afterChangePowerPercent}
                     />
                 </div>
-                <div className={styles.div_tap}>
-                    <ConfigTitle text={t('3D Print')}/>
-                    <Row gutter={[gutter, gutter]}>
-                        <Col span={12}>
-                            <input
-                                type="button"
-                                value={t("Level")}
-                                className={styles.btn_action_work}
-                                onClick={() => {
-                                    changeVisibility4p3dCalibration(true);
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                </div>
-                <div className={styles.div_tap}>
-                    <ConfigTitle text={t('Air Pick')}/>
-                    <Space direction={"vertical"} style={{width: "100%"}}>
-                        <Radio.Group onChange={this.onChange} value={'pick'}>
-                            <Radio value={'pick'}>{t('pick')}</Radio>
-                            <Radio value={'release'}>{t('release')}</Radio>
-                            <Radio value={'off'}>{t('off')}</Radio>
-                        </Radio.Group>
-                    </Space>
-                </div>
-                <div className={styles.div_tap}>
-                    <ConfigTitle text={t('Soft Gripper')}/>
-                    <Space direction={"vertical"} style={{width: "100%"}}>
-                        <Radio.Group onChange={this.onChange} value={'Grip'}>
-                            <Radio value={'Grip'}>{t('Grip')}</Radio>
-                            <Radio value={'release'}>{t('release')}</Radio>
-                            <Radio value={'Neutral'}>{t('Neutral')}</Radio>
-                            <Radio value={'off'}>{t('off')}</Radio>
-                        </Radio.Group>
-                    </Space>
-                </div>
+                }
+                {curModule === '3D Print' &&
+                <Row gutter={[gutter, gutter]}>
+                    <Col span={12}>
+                        <input
+                            type="button"
+                            value={t("Level")}
+                            className={styles.btn_action_work}
+                            onClick={() => {
+                                changeVisibility4p3dCalibration(true);
+                            }}
+                        />
+                    </Col>
+                </Row>
+                }
+                {curModule === 'Air Pick' &&
+                <Space direction={"vertical"} style={{width: "100%"}}>
+                    <Radio.Group onChange={actions4airPick.changeState} value={state.curState4airPick}>
+                        {STATES_AIR_PICK.map(value => {
+                            return (<Radio.Button key={value} value={value}>{t(value)}</Radio.Button>);
+                        })}
+                    </Radio.Group>
+                </Space>
+                }
+                {curModule === 'Soft Gripper' &&
+                <Space direction={"vertical"} style={{width: "100%"}}>
+                    <Radio.Group onChange={actions4softGripper.changeState} value={state.curState4softGripper}>
+                        {STATES_SOFT_GRIPPER.map(value => {
+                            return (<Radio.Button key={value} value={value}>{t(value)}</Radio.Button>);
+                        })}
+                    </Radio.Group>
+                </Space>
+                }
             </div>
         )
     }
@@ -132,7 +215,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
-        changeVisibility4jogPanel: (value) => dispatch(headerActions.changeVisibility4jogPanel(value)),
         changeVisibility4p3dCalibration: (value) => dispatch(headerActions.changeVisibility4p3dCalibration(value))
     };
 };
