@@ -3,7 +3,6 @@ import {Tabs} from 'antd';
 import {Canvas2dLaser as Canvas2D} from './../writeAndDraw/ui/Canvas2D/Index.jsx'
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import Config from "./ui/Config/Index.jsx";
-import Control from "./ui/Control/Index.jsx";
 import {actions as laserActions} from "../../reducers/laser";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
@@ -46,14 +45,7 @@ class Index extends React.Component {
                     <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div className={layout_styles.div_right_panel}>
-                    <Tabs centered={true} size="small">
-                        <TabPane tab={t('G-code')} key="1">
-                            <Config/>
-                        </TabPane>
-                        <TabPane tab={t('Control')} key="2">
-                            <Control/>
-                        </TabPane>
-                    </Tabs>
+                    <Config/>
                 </div>
             </div>
         )
