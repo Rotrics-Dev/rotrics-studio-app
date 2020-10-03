@@ -131,7 +131,6 @@ class Index extends React.Component {
                     {path &&
                     <Space size={15}>
                         <Button
-                            type="primary"
                             size={'small'}
                             danger
                             onClick={actions.emergencyStop}
