@@ -10,7 +10,6 @@ import Progress from "./ui/Progress/Index.jsx";
 import Info from "./ui/Info/Index.jsx";
 import GcodePreviewControl from "./ui/GcodePreviewControl/Index.jsx";
 import Config from "./ui/Config/Index.jsx";
-import Control from "./ui/Control/Index.jsx";
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
@@ -102,14 +101,7 @@ class Index extends React.Component {
                     <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div className={layout_styles.div_right_panel}>
-                    <Tabs centered={true} size="small">
-                        <TabPane tab={t('G-code')} key="2">
-                            <Config/>
-                        </TabPane>
-                        <TabPane tab={t('Control')} key="1">
-                            <Control/>
-                        </TabPane>
-                    </Tabs>
+                    <Config/>
                 </div>
             </div>
         )
