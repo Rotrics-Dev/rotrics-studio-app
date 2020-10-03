@@ -9,7 +9,7 @@ import {getUuid} from '../../utils/index.js';
 import {actions as headerActions} from "../../reducers/header";
 import {withTranslation} from 'react-i18next';
 import Terminal from './terminal/Index.jsx';
-import JogPanel from './jog-panel/Index.jsx';
+import ControlPanel from './control-panel/Index.jsx';
 import P3dCalibration from './p3d-calibration/Index.jsx'
 
 const notificationKeyConnected = getUuid();
@@ -124,7 +124,7 @@ class Index extends React.Component {
                     justifyContent: "space-between"
                 }}>
                 <Terminal/>
-                <JogPanel/>
+                <ControlPanel/>
                 <P3dCalibration/>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
