@@ -211,8 +211,8 @@ class Index extends React.Component {
                     <div>
                         <ConfigTitle text={t("Motion Mode")}/>
                         <Radio.Group onChange={actions.changeMotionMode} value={state.motionMode}>
-                            <Radio.Button value={'Fast'}>{'Fast Mode'}</Radio.Button>
-                            <Radio.Button value={'Linear'}>{'Linear Mode'}</Radio.Button>
+                            <Radio.Button value={'Fast'}>{t("Fast Mode")}</Radio.Button>
+                            <Radio.Button value={'Linear'}>{t("Linear Mode")}</Radio.Button>
                         </Radio.Group>
                     </div>
                     <div>

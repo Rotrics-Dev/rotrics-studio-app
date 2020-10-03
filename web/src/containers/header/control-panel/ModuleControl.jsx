@@ -132,7 +132,7 @@ class Index extends React.Component {
         const gutter = 8;
         return (
             <div className={styles.div_tap}>
-                <ConfigTitle text={t('Select Module')}/>
+                <ConfigTitle text={t('Front end')}/>
                 <Select
                     value={state.curModule}
                     onChange={actions.changeModule}
