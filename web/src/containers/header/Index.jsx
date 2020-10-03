@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import styles from './styles.css';
 import {Button, Modal, Select, Space, Switch} from 'antd';
+import {StopOutlined} from '@ant-design/icons';
 import notificationI18n from "../../utils/notificationI18n";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
@@ -128,11 +129,16 @@ class Index extends React.Component {
                 <P3dCalibration/>
                 <Space style={{position: "absolute", right: "15px"}}>
                     {path &&
-                    <Space size={10}>
-                        <button
-                            className={styles.btn_emergency_stop}
+                    <Space size={15}>
+                        <Button
+                            type="primary"
+                            size={'small'}
+                            danger
                             onClick={actions.emergencyStop}
-                        />
+                            icon={<StopOutlined/>}
+                        >
+                            {t("Stop")}
+                        </Button>
                         <div>
                             <span>{t("Terminal")}</span>
                             <Switch
