@@ -30,7 +30,7 @@
         "type": "int",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 1500
+        "maximum_value": 297
       },
       "height": {
         "label": "Height",
@@ -39,7 +39,7 @@
         "type": "int",
         "unit": "mm",
         "minimum_value": 5,
-        "maximum_value": 1500
+        "maximum_value": 210
       },
       "rotation": {
         "label": "Rotation",
