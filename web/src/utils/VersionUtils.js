@@ -8,15 +8,18 @@ import packageJson from "../../../electron/package.json";
  * EXAMPLE:compareVersionCode('V1.1.1', 'V1.2.1')
  */
 const compareVersionCode = (code1, code2) => {
-    const fractionCount = 3;//版本号分三段
     code1 = code1.slice(1, code1.length).trim();
     code2 = code2.slice(1, code2.length).trim();
     let code1arr = code1.split('.');
     let code2arr = code2.split('.');
+    const fractionCount = Math.max(code1arr.length, code2arr.length);
+
     for (let index = 0; index < fractionCount; index++) {
-        if (parseInt(code1arr[index].trim()) > parseInt(code2arr[index].trim())) {
+        const fraction1 = code1arr[index] ? parseInt(code1arr[index].trim()) : 0;
+        const fraction2 = code2arr[index] ? parseInt(code2arr[index].trim()) : 0;
+        if (fraction1 > fraction2) {
             return 1;
-        } else if (parseInt(code1arr[index].trim()) < parseInt(code2arr[index].trim())) {
+        } else if (fraction1 < fraction2) {
             return -1;
         }
     }
