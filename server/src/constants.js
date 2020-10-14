@@ -29,7 +29,7 @@ export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE'; //通过serial port发送数据，比如：固件升级相关数据，单条gcode等
 
 // gcode sender
-export const GCODE_SENDER_REFUSE = 'GCODE_SENDER_REFUSE'; //data: {msg}
+export const GCODE_SENDER_WARNING = 'GCODE_SENDER_WARNING'; //data: {msg}
 export const GCODE_SENDER_STATUS_CHANGE = 'GCODE_SENDER_STATUS_CHANGE'; //data: {preStatus, curStatus, taskId}; status: idle, started, paused, stopping
 export const GCODE_SENDER_PROGRESS_CHANGE = 'GCODE_SENDER_PROGRESS_CHANGE'; //data: {total, sent, taskId}
 

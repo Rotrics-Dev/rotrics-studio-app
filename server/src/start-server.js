@@ -32,7 +32,7 @@ import {
     GCODE_SENDER_STOP,
     GCODE_SENDER_PAUSE,
     GCODE_SENDER_RESUME,
-    GCODE_SENDER_REFUSE,
+    GCODE_SENDER_WARNING,
     P3D_CONFIG_MATERIAL_SETTINGS_FETCH,
     P3D_CONFIG_MATERIAL_SETTING_UPDATE,
     P3D_CONFIG_MATERIAL_SETTING_DELETE,
@@ -356,8 +356,8 @@ const setupSocket = () => {
             gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
                 socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
             });
-            gcodeSender.on(GCODE_SENDER_REFUSE, (data) => {
-                socket.emit(GCODE_SENDER_REFUSE, data);
+            gcodeSender.on(GCODE_SENDER_WARNING, (data) => {
+                socket.emit(GCODE_SENDER_WARNING, data);
             });
 
             //laser

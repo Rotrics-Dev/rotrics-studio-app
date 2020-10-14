@@ -2,7 +2,7 @@ import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
     GCODE_SENDER_STATUS_CHANGE,
-    GCODE_SENDER_REFUSE,
+    GCODE_SENDER_WARNING,
     GCODE_SENDER_START,
     GCODE_SENDER_STOP,
     GCODE_SENDER_PAUSE,
@@ -49,7 +49,7 @@ export const actions = {
         socketClientManager.addServerListener("connect", () => {
             socketClientManager.emitToServer(GCODE_SENDER_STATUS_CHANGE);
         });
-        socketClientManager.addServerListener(GCODE_SENDER_REFUSE, (data) => {
+        socketClientManager.addServerListener(GCODE_SENDER_WARNING, (data) => {
             messageI18n.warning(data.msg);
         });
     },
