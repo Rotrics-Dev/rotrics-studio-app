@@ -1,7 +1,12 @@
 import EventEmitter from 'events';
 import serialPortManager from '../serialPortManager.js';
 import deviceStateMonitor from '../deviceStateMonitor.js';
-import {GCODE_SENDER_REFUSE, GCODE_SENDER_STATUS_CHANGE, GCODE_SENDER_PROGRESS_CHANGE} from "../constants";
+import {
+    GCODE_SENDER_REFUSE,
+    GCODE_SENDER_STATUS_CHANGE,
+    GCODE_SENDER_PROGRESS_CHANGE,
+    SERIAL_PORT_CLOSE
+} from "../constants";
 
 /**
  *     idle<-----------
@@ -17,14 +22,22 @@ import {GCODE_SENDER_REFUSE, GCODE_SENDER_STATUS_CHANGE, GCODE_SENDER_PROGRESS_C
 class GcodeSender extends EventEmitter {
     constructor() {
         super();
-        this.lines = [];
-        this.total = 0; // line count of gcode
-        this.sent = 0;  // line count of gcode sent
-        this.preStatus = null;
-        this.curStatus = "idle"; // idle, started, paused, stopping
+        this.lines = []; // g-code string split to lines
+        this.total = 0; // line count of g-code
+        this.sent = 0;  // line count of g-code sent
+        this.preStatus = null; // status: idle, started, paused, stopping
+        this.curStatus = "idle";
         this.taskId = null;
         this.isAckChange = false;
         this.isLaser = false;
+
+        serialPortManager.on(SERIAL_PORT_CLOSE, () => {
+            if (["started", "paused"].includes(this.curStatus)) {
+                const msg = "DexArm disconnected, G-code sending task has been removed.";
+                this.emit(GCODE_SENDER_REFUSE, {msg});
+            }
+            this._reset();
+        });
     }
 
     _emitStatus() {
