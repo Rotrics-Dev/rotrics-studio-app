@@ -252,4 +252,5 @@ class GcodeSender extends EventEmitter {
 }
 
 const gcodeSender = new GcodeSender();
+
 export default gcodeSender;
