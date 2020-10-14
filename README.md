@@ -102,7 +102,10 @@ electron执行main.js时候，先启动local server，成功后再加载web端bu
 node: >=14.1.0
 electron: >=9.0.0  
 serialport: >=9.0.0   
+
 若提示serialport版本与electron node版本不对应，请执行：npm run rebuild  
 electron依赖的serialport必须和electron node版本对应，因此需要rebuild  
 electron和server的package.json中的dependencies需要保持一致   
 electron下，安装node_modules必须使用npm而不是cnpm  
+
+要保证两个文件内容一致：server/src/constants.js和web/src/constants.js  

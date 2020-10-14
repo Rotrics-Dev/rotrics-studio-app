@@ -4,7 +4,7 @@ import {actions as gcodeSendActions} from './gcodeSend';
 import {actions as codeProjectActions} from "./codeProject";
 import {getUuid} from '../utils/index.js';
 import socketClientManager from "../socket/socketClientManager";
-import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_DATA} from "../constants";
+import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_RECEIVED_LINE} from "../constants";
 import {str2Number} from '../utils/index.js';
 import messageI18n from "../utils/messageI18n";
 
@@ -284,15 +284,14 @@ export const actions = {
                     } else {
                         switch (blockName) {
                             case "RS_SENSING_CURRENT_POSITION": {
-                                const onData = (data) => {
-                                    let {received} = data; //X:0.00 Y:0.00 Z:0.00 E:0.00 Count A:0 B:0 C:0
+                                const onReceiveLine = (line) => {  //X:0.00 Y:0.00 Z:0.00 E:0.00 Count A:0 B:0 C:0
                                     //TODO: 使用正则表达式匹配
-                                    if (received.indexOf('X:') != -1 &&
-                                        received.indexOf('Y:') != -1 &&
-                                        received.indexOf('Z:') != -1 &&
-                                        received.indexOf('E:') != -1
+                                    if (line.indexOf('X:') != -1 &&
+                                        line.indexOf('Y:') != -1 &&
+                                        line.indexOf('Z:') != -1 &&
+                                        line.indexOf('E:') != -1
                                     ) {
-                                        const segments = received.trim().split(' ');
+                                        const segments = line.trim().split(' ');
                                         const values = segments.map((segment) => {
                                             return str2Number(segment.slice(2))
                                         });
@@ -300,8 +299,8 @@ export const actions = {
                                         // hack: socketClient.off(eventName, fun) not work
                                         // use pop();
                                         // 存在风险
-                                        // socketClientManager.socketClient.off(SERIAL_PORT_DATA, onData);
-                                        socketClientManager.socketClient.listeners(SERIAL_PORT_DATA).pop()
+                                        // socketClientManager.socketClient.off(SERIAL_PORT_DATA, onReceiveLine);
+                                        socketClientManager.socketClient.listeners(SERIAL_PORT_RECEIVED_LINE).pop()
                                         const {VALUE1: axis} = args;
                                         switch (axis) {
                                             case 'X':
@@ -316,24 +315,23 @@ export const actions = {
                                         }
                                     }
                                 };
-                                socketClientManager.addServerListener(SERIAL_PORT_DATA, onData);
+                                socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, onReceiveLine);
                                 break;
                             }
                             case "RS_SENSING_CURRENT_ACCELERATION":
-                                const onData = (data) => {
-                                    let {received} = data; //Acceleration: P60.00 R80.00 T60.00
+                                const onReceiveLine = (line) => {  //Acceleration: P60.00 R80.00 T60.00
                                     //TODO: 使用正则表达式匹配
-                                    if (received.indexOf('Acceleration:') != -1 &&
-                                        received.indexOf('P') != -1 &&
-                                        received.indexOf('R') != -1 &&
-                                        received.indexOf('T') != -1
+                                    if (line.indexOf('Acceleration:') != -1 &&
+                                        line.indexOf('P') != -1 &&
+                                        line.indexOf('R') != -1 &&
+                                        line.indexOf('T') != -1
                                     ) {
-                                        const segments = received.replace('Acceleration:', '').trim().split(' ');
+                                        const segments = line.replace('Acceleration:', '').trim().split(' ');
                                         const values = segments.map((segment) => {
                                             return str2Number(segment.slice(1))
                                         });
 
-                                        socketClientManager.socketClient.listeners(SERIAL_PORT_DATA).pop()
+                                        socketClientManager.socketClient.listeners(SERIAL_PORT_RECEIVED_LINE).pop()
                                         const {VALUE1: prt} = args;
                                         switch (prt) {
                                             case 'Printing':
@@ -348,7 +346,7 @@ export const actions = {
                                         }
                                     }
                                 };
-                                socketClientManager.addServerListener(SERIAL_PORT_DATA, onData);
+                                socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, onReceiveLine);
                                 break;
                             case "RS_SENSING_CURRENT_SPEED":
                                 break;

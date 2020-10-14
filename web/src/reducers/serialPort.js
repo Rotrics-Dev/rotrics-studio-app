@@ -6,7 +6,7 @@ import {
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
     SERIAL_PORT_ERROR,
-    SERIAL_PORT_DATA,
+    SERIAL_PORT_RECEIVED_LINE,
     SERIAL_PORT_WRITE,
     MSG_SERIAL_PORT_CLOSE_TOAST
 } from "../constants.js"
@@ -21,18 +21,17 @@ const INITIAL_STATE = {
 let gcodeResponseListenType = null;
 let gcodeResponseListener = null;
 
-const processGcodeResponseListen = (data) => {
+const processGcodeResponseListen = (line) => {
     if (!gcodeResponseListenType) return;
-    if (!data) return;
-    if (!data.received) return;
+    if (!line) return;
 
     let needClearListener;
     switch (gcodeResponseListenType) {
         case 'M893':
-            needClearListener = processM894(data.received);
+            needClearListener = processM894(line);
             break;
         case 'M114':
-            needClearListener = processM114(data.received);
+            needClearListener = processM114(line);
             break;
         default:
             console.log('add unsupported gcode listener')
@@ -97,20 +96,19 @@ export const actions = {
             console.error("serial port -> err");
             dispatch(actions._updateState({path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            processGcodeResponseListen(data);
-            let {received} = data;
+        socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, (line) => {
+            processGcodeResponseListen(line);
             //存在单词拼写错误，fix it
-            if (received.indexOf("beyound limit..") !== -1) {
-                received = received.replace("beyound", "beyond");
+            if (line.indexOf("beyound limit..") !== -1) {
+                line = line.replace("beyound", "beyond");
             }
             if (
-                received.indexOf("beyond limit..") !== -1 ||
-                received.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
-                received.indexOf("Warning!Laser protection door opened") !== -1 ||
-                received.indexOf("Laser protection door closed") !== -1
+                line.indexOf("beyond limit..") !== -1 ||
+                line.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
+                line.indexOf("Warning!Laser protection door opened") !== -1 ||
+                line.indexOf("Laser protection door closed") !== -1
             ) {
-                messageI18n.warning(received);
+                messageI18n.warning(line);
             }
         });
     },

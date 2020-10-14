@@ -5,7 +5,7 @@ import {
     FIRMWARE_UPGRADE_START,
     SERIAL_PORT_OPEN,
     FIRMWARE_UPGRADE_STEP_CHANGE,
-    SERIAL_PORT_DATA,
+    SERIAL_PORT_RECEIVED_LINE,
     SERIAL_PORT_GET_OPENED,
     SERIAL_PORT_CLOSE
 } from "../constants.js"
@@ -42,41 +42,38 @@ export const actions = {
                 isInBootLoader: false
             }));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
-            const {received} = data;
-            if (received) {
-                //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
-                //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
-                if (received.startsWith("Hardware Version:")) {
-                    const hardwareVersion = received.replace("Hardware Version:", "").replace("\r", "").trim();
-                    dispatch(actions._updateState({
-                        hardwareVersion,
-                        bootLoaderModalVisible: true,
-                        isInBootLoader: true
-                    }));
-                } else if (received.startsWith("Firmware ")) {
-                    const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
-                    dispatch(actions._updateState({
-                        firmwareVersion,
-                        bootLoaderModalVisible: false,
-                        isInBootLoader: false
-                    }));
-                    ReactGA.event({
-                        category: 'firmwareVersion',
-                        action: firmwareVersion
-                    });
-                } else if (received.startsWith("Hardware ")) {
-                    const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
-                    dispatch(actions._updateState({
-                        hardwareVersion,
-                        bootLoaderModalVisible: false,
-                        isInBootLoader: false
-                    }));
-                    ReactGA.event({
-                        category: 'hardwareVersion',
-                        action: hardwareVersion
-                    });
-                }
+        socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, (line) => {
+            //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
+            //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
+            if (line.startsWith("Hardware Version:")) {
+                const hardwareVersion = line.replace("Hardware Version:", "").replace("\r", "").trim();
+                dispatch(actions._updateState({
+                    hardwareVersion,
+                    bootLoaderModalVisible: true,
+                    isInBootLoader: true
+                }));
+            } else if (line.startsWith("Firmware ")) {
+                const firmwareVersion = line.replace("Firmware", "").replace("\r", "").trim();
+                dispatch(actions._updateState({
+                    firmwareVersion,
+                    bootLoaderModalVisible: false,
+                    isInBootLoader: false
+                }));
+                ReactGA.event({
+                    category: 'firmwareVersion',
+                    action: firmwareVersion
+                });
+            } else if (line.startsWith("Hardware ")) {
+                const hardwareVersion = line.replace("Hardware", "").replace("\r", "").trim();
+                dispatch(actions._updateState({
+                    hardwareVersion,
+                    bootLoaderModalVisible: false,
+                    isInBootLoader: false
+                }));
+                ReactGA.event({
+                    category: 'hardwareVersion',
+                    action: hardwareVersion
+                });
             }
         });
 

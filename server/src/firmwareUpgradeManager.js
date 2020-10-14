@@ -7,7 +7,7 @@ import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
 import {start_frame, end_frame, eot, chunk_frame} from "./frameUtil.js";
 import serialPortManager from './serialPortManager.js';
-import gcodeSender from "./gcode/gcodeSender.js";
+import gcodeSender from "./gcodeSender.js";
 
 const baudRate = 9600;
 

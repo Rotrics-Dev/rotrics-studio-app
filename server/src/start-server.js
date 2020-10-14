@@ -8,13 +8,12 @@ import koaBody from 'koa-body';
 import Router from 'koa-router';
 import serve from 'koa-static';
 import isElectron from 'is-electron';
-import {getImageSize, getUniqueFilename} from './utils/index.js';
+import {getImageSize, getUniqueFilename} from './utils';
 import serialPortManager from './serialPortManager.js';
 import generateToolPathLines from './toolPath/generateToolPathLines.js';
-import gcodeSender from './gcode/gcodeSender.js';
+import gcodeSender from './gcodeSender.js';
 import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import p3dStartSlice from './p3dStartSlice.js';
-import {checkFileExist} from "./utils/fsUtils";
 import storeManager from './storeManager.js';
 import {
     SERIAL_PORT_PATH_UPDATE,
@@ -22,7 +21,7 @@ import {
     SERIAL_PORT_OPEN,
     SERIAL_PORT_CLOSE,
     SERIAL_PORT_ERROR,
-    SERIAL_PORT_DATA,
+    SERIAL_PORT_RECEIVED_LINE,
     SERIAL_PORT_WRITE,
     TOOL_PATH_GENERATE_LASER,
     TOOL_PATH_GENERATE_WRITE_AND_DRAW,
@@ -248,7 +247,7 @@ const setupHttpServer = () => {
         if (!font) font = null;
         if (font) {
             const fontPath = path.join(STATIC_DIR, font)
-            if (checkFileExist(fontPath)) {
+            if (fs.existsSync(fontPath)) {
                 fs.unlinkSync(fontPath);
             } else {
                 font = null;
@@ -340,8 +339,8 @@ const setupSocket = () => {
             serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
                 socket.emit(SERIAL_PORT_ERROR, error);
             });
-            serialPortManager.on(SERIAL_PORT_DATA, (data) => {
-                socket.emit(SERIAL_PORT_DATA, data);
+            serialPortManager.on(SERIAL_PORT_RECEIVED_LINE, (line) => {
+                socket.emit(SERIAL_PORT_RECEIVED_LINE, line);
             });
 
             //gcode sender

@@ -1,8 +1,10 @@
 import {
     FRONT_END_POSITION_MONITOR,
     SERIAL_PORT_CLOSE,
-    SERIAL_PORT_DATA, SERIAL_PORT_ERROR,
-    SERIAL_PORT_OPEN, SERIAL_PORT_WRITE_ERROR,
+    SERIAL_PORT_RECEIVED_LINE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_WRITE_ERROR,
     SERIAL_PORT_WRITE_OK
 } from "./constants";
 import EventEmitter from "events";
@@ -19,10 +21,10 @@ class FrontEndPositionMonitor extends EventEmitter {
         serialPortManager.on(SERIAL_PORT_ERROR, () => {
             this.onError();
         });
-        serialPortManager.on(SERIAL_PORT_DATA, ({received}) => {//read
-            this.onRead(received);
+        serialPortManager.on(SERIAL_PORT_RECEIVED_LINE, (line) => {
+            this.onRead(line);
         });
-        serialPortManager.on(SERIAL_PORT_WRITE_OK, (data) => {//write
+        serialPortManager.on(SERIAL_PORT_WRITE_OK, (data) => {
             this.onWrite(data);
         });
         serialPortManager.on(SERIAL_PORT_WRITE_ERROR, (data) => {
@@ -32,7 +34,7 @@ class FrontEndPositionMonitor extends EventEmitter {
 
     resetPosition() {
         this.currentX = 0;
-        this.currentY = 0
+        this.currentY = 0;
         this.currentZ = 0;
         this.nextX = 0;
         this.nextY = 0;

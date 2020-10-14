@@ -7,8 +7,7 @@ export const TAP_BASIC = "TAP_BASIC";
 export const TAB_WRITE_AND_DRAW = "TAB_WRITE_AND_DRAW";
 export const TAP_DEBUG = "TAP_DEBUG";
 
-// tool path渲染方式，line or point
-// default line
+// tool path渲染方式: line or point; default line
 // 添加在gcode的第一行
 export const TOOL_PATH_RENDER_METHOD_LINE = ';TOOL_PATH_RENDER_METHOD_LINE';
 export const TOOL_PATH_RENDER_METHOD_POINT = ';TOOL_PATH_RENDER_METHOD_POINT';
@@ -18,15 +17,16 @@ export const P3D_SLICE_START = 'P3D_SLICE_START';
 export const P3D_SLICE_STATUS = 'P3D_SLICE_STATUS';
 
 // serial port
-export const SERIAL_PORT_PATH_UPDATE = 'SERIAL_PORT_PATH_UPDATE'
-export const SERIAL_PORT_GET_OPENED = 'SERIAL_PORT_GET_OPE';  //获取opened的串口
+export const SERIAL_PORT_PATH_UPDATE = 'SERIAL_PORT_PATH_UPDATE';
+export const SERIAL_PORT_GET_OPENED = 'SERIAL_PORT_GET_OPENED';  //获取opened的串口
 export const SERIAL_PORT_OPEN = 'SERIAL_PORT_OPEN';
 export const SERIAL_PORT_CLOSE = 'SERIAL_PORT_CLOSE';
 export const SERIAL_PORT_ERROR = 'SERIAL_PORT_ERROR';
 export const SERIAL_PORT_WRITE_ERROR = 'SERIAL_PORT_WRITE_ERROR';//串口写数据失败
 export const SERIAL_PORT_WRITE_OK = 'SERIAL_PORT_WRITE_OK';//串口写数据成功
-export const SERIAL_PORT_DATA = 'SERIAL_PORT_DATA';
 export const SERIAL_PORT_WRITE = 'SERIAL_PORT_WRITE'; //通过serial port发送数据，比如：固件升级相关数据，单条gcode等
+
+export const SERIAL_PORT_RECEIVED_LINE = 'SERIAL_PORT_RECEIVED_LINE';
 
 // gcode sender
 export const GCODE_SENDER_WARNING = 'GCODE_SENDER_WARNING'; //data: {msg}

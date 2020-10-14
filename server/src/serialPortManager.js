@@ -9,9 +9,9 @@ import {
     SERIAL_PORT_ERROR,
     SERIAL_PORT_WRITE_ERROR,
     SERIAL_PORT_WRITE_OK,
-    SERIAL_PORT_DATA,
+    SERIAL_PORT_RECEIVED_LINE,
 } from "./constants.js"
-import {utf8bytes2string} from './utils/index.js';
+import {utf8bytes2string} from './utils';
 
 const baudRate = 9600;
 //TODO: 打开新的串口，应该remove前一个串口的listener；等出bug时候再说
@@ -54,26 +54,9 @@ class SerialPortManager extends EventEmitter {
     _openNew(path) {
         this.serialPort = new SerialPort(path, {baudRate, autoOpen: false});
 
-        //data: 类型是buffer的数组
-        //将buffer转为string，发送到前端
-        this.serialPort.on("data", (buffer) => {
-            if (Buffer.isBuffer(buffer)) {
-                const arr = [];
-                for (let i = 0; i < buffer.length; i++) {
-                    arr.push(buffer[i]);
-                }
-                const received = utf8bytes2string(arr);
-                // console.log("received raw: " + received);
-            } else {
-                console.log("received data is not buffer: " + JSON.stringify(buffer))
-            }
-        });
-
         this.readLineParser = this.serialPort.pipe(new ReadLineParser({delimiter: '\n'}));
-        this.readLineParser.on('data', (data) => {
-            // console.log("--------------------------------- ");
-            // console.log("received line: " + data.trim());
-            this.emit(SERIAL_PORT_DATA, {received: data.trim()});
+        this.readLineParser.on('data', (line) => {
+            this.emit(SERIAL_PORT_RECEIVED_LINE, line);
         });
 
         this.serialPort.on("open", () => {
@@ -98,7 +81,7 @@ class SerialPortManager extends EventEmitter {
                 this.serialPort = null;
                 this.emit(SERIAL_PORT_ERROR, error);
             }
-        })
+        });
     }
 
     /**

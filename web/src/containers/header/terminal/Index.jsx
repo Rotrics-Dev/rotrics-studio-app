@@ -6,7 +6,7 @@ import {withTranslation} from 'react-i18next';
 import styles from './styles.css';
 import {actions as serialPortActions} from "../../../reducers/serialPort";
 import socketClientManager from "../../../socket/socketClientManager";
-import {SERIAL_PORT_DATA} from "../../../constants";
+import {SERIAL_PORT_RECEIVED_LINE} from "../../../constants";
 import {actions as headerActions} from "../../../reducers/header";
 
 const MAX_LINE_COUNT = 150; //最多可展示多少条数据
@@ -27,9 +27,9 @@ class Index extends React.Component {
     };
 
     componentDidMount() {
-        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
+        socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, (line) => {
             //达到上限则删除部分数据
-            if (this.state.receivedLines4debug.push(data.received) > MAX_LINE_COUNT) {
+            if (this.state.receivedLines4debug.push(line) > MAX_LINE_COUNT) {
                 this.state.receivedLines4debug.splice(0, MAX_LINE_COUNT / 3)
             }
             const receivedLines4debug = _.cloneDeep(this.state.receivedLines4debug);

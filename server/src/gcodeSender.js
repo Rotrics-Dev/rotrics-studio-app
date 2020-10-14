@@ -1,12 +1,12 @@
 import EventEmitter from 'events';
-import serialPortManager from '../serialPortManager.js';
-import deviceStateMonitor from '../deviceStateMonitor.js';
+import serialPortManager from './serialPortManager.js';
+import deviceStateMonitor from './deviceStateMonitor.js';
 import {
     GCODE_SENDER_WARNING,
     GCODE_SENDER_STATUS_CHANGE,
     GCODE_SENDER_PROGRESS_CHANGE,
     SERIAL_PORT_CLOSE
-} from "../constants";
+} from "./constants";
 
 /**
  *     idle<-----------
@@ -54,7 +54,6 @@ class GcodeSender extends EventEmitter {
         }
     }
 
-    //TODO: serial port断开时候的处理
     //TODO: 逻辑，laser cover, 打开的情况下，再执行laser task。应该监听serial port data，构造其中就监听
     async start(gcode, isAckChange, isLaser, taskId) {
         if (!serialPortManager.getOpened()) {
