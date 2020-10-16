@@ -1,33 +1,35 @@
-import {
-    FRONT_END_POSITION_MONITOR,
-    SERIAL_PORT_CLOSE,
-    SERIAL_PORT_RECEIVED_LINE,
-    SERIAL_PORT_ERROR,
-    SERIAL_PORT_OPEN,
-    SERIAL_PORT_WRITE_ERROR,
-    SERIAL_PORT_WRITE_OK
-} from "./constants";
 import EventEmitter from "events";
 import serialPortManager from "./serialPortManager";
+import {
+    FRONT_END_POSITION_MONITOR,
+    SERIAL_PORT_ACTION_CLOSE,
+    SERIAL_PORT_ON_RECEIVED_LINE,
+    SERIAL_PORT_ON_ERROR,
+    SERIAL_PORT_ACTION_OPEN,
+    SERIAL_PORT_ON_WRITE_ERROR,
+    SERIAL_PORT_ON_WRITE_OK
+} from "./constants";
 
 class FrontEndPositionMonitor extends EventEmitter {
-    registerListeners() {
-        serialPortManager.on(SERIAL_PORT_OPEN, () => {
+    constructor() {
+        super();
+        serialPortManager.on(SERIAL_PORT_ACTION_OPEN, () => {
             this.onOpen();
         });
-        serialPortManager.on(SERIAL_PORT_CLOSE, () => {
+        serialPortManager.on(SERIAL_PORT_ACTION_CLOSE, () => {
             this.onClose();
         });
-        serialPortManager.on(SERIAL_PORT_ERROR, () => {
+        serialPortManager.on(SERIAL_PORT_ON_ERROR, () => {
             this.onError();
         });
-        serialPortManager.on(SERIAL_PORT_RECEIVED_LINE, (line) => {
+        serialPortManager.on(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
             this.onRead(line);
         });
-        serialPortManager.on(SERIAL_PORT_WRITE_OK, (data) => {
+        serialPortManager.on(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
+            //TODO: data不一定是string
             this.onWrite(data);
         });
-        serialPortManager.on(SERIAL_PORT_WRITE_ERROR, (data) => {
+        serialPortManager.on(SERIAL_PORT_ON_WRITE_ERROR, ({data}) => {
             this.onWriteError();
         });
     }
@@ -122,7 +124,6 @@ class FrontEndPositionMonitor extends EventEmitter {
 
         const position = {x: this.currentX, y: this.currentY, z: this.currentZ};
         this.emit(FRONT_END_POSITION_MONITOR, position);
-
     }
 
     onWriteG0(line) {
@@ -204,4 +205,5 @@ class FrontEndPositionMonitor extends EventEmitter {
 }
 
 const frontEndPositionMonitor = new FrontEndPositionMonitor();
+
 export default frontEndPositionMonitor;

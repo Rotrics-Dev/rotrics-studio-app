@@ -15,14 +15,26 @@ import gcodeSender from './gcodeSender.js';
 import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import p3dStartSlice from './p3dStartSlice.js';
 import storeManager from './storeManager.js';
+
 import {
-    SERIAL_PORT_PATH_UPDATE,
-    SERIAL_PORT_GET_OPENED,
-    SERIAL_PORT_OPEN,
-    SERIAL_PORT_CLOSE,
-    SERIAL_PORT_ERROR,
-    SERIAL_PORT_RECEIVED_LINE,
-    SERIAL_PORT_WRITE,
+    SERIAL_PORT_ACTION_GET_ALL_PATHS,
+    SERIAL_PORT_ACTION_GET_OPEN_PATH,
+    SERIAL_PORT_ACTION_OPEN,
+    SERIAL_PORT_ACTION_CLOSE,
+    SERIAL_PORT_ACTION_WRITE,
+
+    SERIAL_PORT_ON_GET_ALL_PATHS,
+    SERIAL_PORT_ON_GET_OPEN_PATH,
+    SERIAL_PORT_ON_OPEN,
+    SERIAL_PORT_ON_CLOSE,
+    SERIAL_PORT_ON_ERROR,
+    SERIAL_PORT_ON_WRITE_ERROR,
+    SERIAL_PORT_ON_WRITE_OK,
+    SERIAL_PORT_ON_WARNING,
+    SERIAL_PORT_ON_RECEIVED_LINE,
+    SERIAL_PORT_ON_INSERT,
+    SERIAL_PORT_ON_PULL_OUT,
+
     TOOL_PATH_GENERATE_LASER,
     TOOL_PATH_GENERATE_WRITE_AND_DRAW,
 
@@ -309,38 +321,51 @@ const setupSocket = () => {
                 socket.removeAllListeners();
                 serialPortManager.removeAllListeners();
                 gcodeSender.removeAllListeners();
-                frontEndPositionMonitor.removeAllListeners();
+            });
+
+            frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
+                socket.emit(FRONT_END_POSITION_MONITOR, position);
             });
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
             //serial port
-            serialPortManager.on(SERIAL_PORT_PATH_UPDATE, (paths) => {
-                socket.emit(SERIAL_PORT_PATH_UPDATE, paths);
+            socket.on(SERIAL_PORT_ACTION_GET_ALL_PATHS, () => serialPortManager.getAllPaths());
+            socket.on(SERIAL_PORT_ACTION_GET_OPEN_PATH, () => {
+                socket.emit(SERIAL_PORT_ON_GET_OPEN_PATH, serialPortManager.getOpenPath());
             });
-            frontEndPositionMonitor.registerListeners();
-            frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
-                socket.emit(FRONT_END_POSITION_MONITOR, position);
-            });
-            socket.on(SERIAL_PORT_GET_OPENED, () => {
-                const path = serialPortManager.getOpened();
-                socket.emit(SERIAL_PORT_GET_OPENED, path);
-            });
+            socket.on(SERIAL_PORT_ACTION_OPEN, path => serialPortManager.open(path));
+            socket.on(SERIAL_PORT_ACTION_CLOSE, () => serialPortManager.close());
+            socket.on(SERIAL_PORT_ACTION_WRITE, data => serialPortManager.write(data));
 
-            socket.on(SERIAL_PORT_OPEN, path => serialPortManager.open(path));
-            socket.on(SERIAL_PORT_CLOSE, () => serialPortManager.close());
-            socket.on(SERIAL_PORT_WRITE, data => serialPortManager.write(data));
-
-            serialPortManager.on(SERIAL_PORT_OPEN, (path) => {
-                socket.emit(SERIAL_PORT_OPEN, path);
+            serialPortManager.on(SERIAL_PORT_ON_GET_ALL_PATHS, (paths) => {
+                socket.emit(SERIAL_PORT_ON_GET_ALL_PATHS, paths)
             });
-            serialPortManager.on(SERIAL_PORT_CLOSE, (path) => {
-                socket.emit(SERIAL_PORT_CLOSE, path);
+            serialPortManager.on(SERIAL_PORT_ON_OPEN, (path) => {
+                socket.emit(SERIAL_PORT_ON_OPEN, path)
             });
-            serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
-                socket.emit(SERIAL_PORT_ERROR, error);
+            serialPortManager.on(SERIAL_PORT_ON_CLOSE, (path) => {
+                socket.emit(SERIAL_PORT_ON_CLOSE, path)
             });
-            serialPortManager.on(SERIAL_PORT_RECEIVED_LINE, (line) => {
-                socket.emit(SERIAL_PORT_RECEIVED_LINE, line);
+            serialPortManager.on(SERIAL_PORT_ON_ERROR, ({message}) => {
+                socket.emit(SERIAL_PORT_ON_ERROR, {message})
+            });
+            serialPortManager.on(SERIAL_PORT_ON_WRITE_ERROR, ({message, data}) => {
+                socket.emit(SERIAL_PORT_ON_WRITE_ERROR, {message, data})
+            });
+            serialPortManager.on(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
+                socket.emit(SERIAL_PORT_ON_WRITE_OK, {data})
+            });
+            serialPortManager.on(SERIAL_PORT_ON_WARNING, ({message}) => {
+                socket.emit(SERIAL_PORT_ON_WARNING, {message});
+            });
+            serialPortManager.on(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
+                socket.emit(SERIAL_PORT_ON_RECEIVED_LINE, line);
+            });
+            serialPortManager.on(SERIAL_PORT_ON_INSERT, (paths) => {
+                socket.emit(SERIAL_PORT_ON_INSERT, paths)
+            });
+            serialPortManager.on(SERIAL_PORT_ON_PULL_OUT, (paths) => {
+                socket.emit(SERIAL_PORT_ON_PULL_OUT, paths)
             });
 
             //gcode sender

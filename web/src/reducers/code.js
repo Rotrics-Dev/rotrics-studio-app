@@ -4,7 +4,7 @@ import {actions as gcodeSendActions} from './gcodeSend';
 import {actions as codeProjectActions} from "./codeProject";
 import {getUuid} from '../utils/index.js';
 import socketClientManager from "../socket/socketClientManager";
-import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_RECEIVED_LINE} from "../constants";
+import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_ON_RECEIVED_LINE} from "../constants";
 import {str2Number} from '../utils/index.js';
 import messageI18n from "../utils/messageI18n";
 
@@ -299,8 +299,7 @@ export const actions = {
                                         // hack: socketClient.off(eventName, fun) not work
                                         // use pop();
                                         // 存在风险
-                                        // socketClientManager.socketClient.off(SERIAL_PORT_DATA, onReceiveLine);
-                                        socketClientManager.socketClient.listeners(SERIAL_PORT_RECEIVED_LINE).pop()
+                                        socketClientManager.socketClient.listeners(SERIAL_PORT_ON_RECEIVED_LINE).pop()
                                         const {VALUE1: axis} = args;
                                         switch (axis) {
                                             case 'X':
@@ -315,7 +314,7 @@ export const actions = {
                                         }
                                     }
                                 };
-                                socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, onReceiveLine);
+                                socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, onReceiveLine);
                                 break;
                             }
                             case "RS_SENSING_CURRENT_ACCELERATION":
@@ -331,7 +330,7 @@ export const actions = {
                                             return str2Number(segment.slice(1))
                                         });
 
-                                        socketClientManager.socketClient.listeners(SERIAL_PORT_RECEIVED_LINE).pop()
+                                        socketClientManager.socketClient.listeners(SERIAL_PORT_ON_RECEIVED_LINE).pop()
                                         const {VALUE1: prt} = args;
                                         switch (prt) {
                                             case 'Printing':
@@ -346,7 +345,7 @@ export const actions = {
                                         }
                                     }
                                 };
-                                socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, onReceiveLine);
+                                socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, onReceiveLine);
                                 break;
                             case "RS_SENSING_CURRENT_SPEED":
                                 break;

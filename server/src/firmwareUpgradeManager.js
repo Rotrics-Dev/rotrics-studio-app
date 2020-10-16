@@ -117,7 +117,7 @@ class FirmwareUpgradeManager {
         this.cache_dir = cache_dir;
         this.onChange = onChange;
         this.serialPort = serialPortManager.serialPort;
-        this.path = serialPortManager.getOpened();
+        this.path = serialPortManager.getOpenPath();
         this.frames = [];
         this.frameCount = 0;
         this.curFrame = null;

@@ -1,20 +1,14 @@
 import React from 'react';
-import _ from 'lodash';
 import styles from './styles.css';
 import {Button, Modal, Select, Space, Switch} from 'antd';
 import {StopOutlined} from '@ant-design/icons';
-import notificationI18n from "../../utils/notificationI18n";
 import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
-import {getUuid} from '../../utils/index.js';
 import {actions as headerActions} from "../../reducers/header";
 import {withTranslation} from 'react-i18next';
 import Terminal from './terminal/Index.jsx';
 import ControlPanel from './control-panel/Index.jsx';
 import P3dCalibration from './p3d-calibration/Index.jsx'
-
-const notificationKeyConnected = getUuid();
-const notificationKeyDisconnected = getUuid();
 
 class Index extends React.Component {
     state = {
@@ -23,28 +17,6 @@ class Index extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.paths.length > 0) {
-            const countDif = nextProps.paths.length - this.props.paths.length;
-            if (countDif === 1) {
-                const dif = _.difference(nextProps.paths, this.props.paths);
-                notificationI18n.success({
-                    key: notificationKeyConnected,
-                    message: 'Cable Inserted',
-                    description: dif[0],
-                    // duration: 3
-                });
-                notificationI18n.close(notificationKeyDisconnected);
-            } else if (countDif === -1) {
-                const dif = _.difference(this.props.paths, nextProps.paths);
-                notificationI18n.error({
-                    key: notificationKeyDisconnected,
-                    message: 'Cable Cable Pulled Out',
-                    description: dif[0],
-                    duration: 1 //设置延时，防止调平断联时消息不消失
-                });
-                notificationI18n.close(notificationKeyConnected)
-            }
-        }
         if (this.props.paths.includes(this.state.selectedPath) && !nextProps.paths.includes(this.state.selectedPath)) {
             this.setState({selectedPath: undefined});
         }

@@ -1,17 +1,31 @@
 import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
-    SERIAL_PORT_PATH_UPDATE,
-    SERIAL_PORT_GET_OPENED,
-    SERIAL_PORT_OPEN,
-    SERIAL_PORT_CLOSE,
-    SERIAL_PORT_ERROR,
-    SERIAL_PORT_RECEIVED_LINE,
-    SERIAL_PORT_WRITE,
-    MSG_SERIAL_PORT_CLOSE_TOAST
+    SERIAL_PORT_ACTION_GET_ALL_PATHS,
+    SERIAL_PORT_ACTION_GET_OPEN_PATH,
+    SERIAL_PORT_ACTION_OPEN,
+    SERIAL_PORT_ACTION_CLOSE,
+    SERIAL_PORT_ACTION_WRITE,
+
+    SERIAL_PORT_ON_GET_ALL_PATHS,
+    SERIAL_PORT_ON_GET_OPEN_PATH,
+    SERIAL_PORT_ON_OPEN,
+    SERIAL_PORT_ON_CLOSE,
+    SERIAL_PORT_ON_ERROR,
+    SERIAL_PORT_ON_WRITE_ERROR,
+    SERIAL_PORT_ON_WRITE_OK,
+    SERIAL_PORT_ON_RECEIVED_LINE,
+    SERIAL_PORT_ON_WARNING,
+    SERIAL_PORT_ON_INSERT,
+    SERIAL_PORT_ON_PULL_OUT,
 } from "../constants.js"
+import {getUuid} from "../utils";
+import notificationI18n from "../utils/notificationI18n";
 
 const ACTION_UPDATE_STATE = 'serialPort/ACTION_UPDATE_STATE';
+
+const KEY_ON_INSERT = getUuid();
+const KEY_ON_PULL_OUT = getUuid();
 
 const INITIAL_STATE = {
     paths: [],
@@ -56,6 +70,7 @@ const processM894 = (received) => {
     );
     return true;
 }
+
 const processM114 = (received) => {
     if (!received.startsWith('X:')) return false;
     const split = received.trim().split(' ');
@@ -73,30 +88,45 @@ const processM114 = (received) => {
 
 export const actions = {
     init: () => (dispatch) => {
+        setInterval(() => {
+            socketClientManager.emitToServer(SERIAL_PORT_ACTION_GET_ALL_PATHS);
+        }, 1000);
         socketClientManager.addServerListener("connect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
-            socketClientManager.emitToServer(SERIAL_PORT_GET_OPENED);
+            socketClientManager.emitToServer(SERIAL_PORT_ACTION_GET_OPEN_PATH);
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_PATH_UPDATE, (paths) => {
+        socketClientManager.addServerListener(SERIAL_PORT_ON_GET_ALL_PATHS, (paths) => {
             dispatch(actions._updateState({paths}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_ON_GET_OPEN_PATH, (path) => {
             dispatch(actions._updateState({path}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_OPEN, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_ON_OPEN, (path) => {
+            messageI18n.success("connect success");
             dispatch(actions._updateState({path}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_ON_CLOSE, (path) => {
+            messageI18n.success("disconnect success");
             dispatch(actions._updateState({path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ERROR, () => {
-            console.error("serial port -> err");
+        socketClientManager.addServerListener(SERIAL_PORT_ON_ERROR, ({message}) => {
+            messageI18n.error(message);
             dispatch(actions._updateState({path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_RECEIVED_LINE, (line) => {
+        socketClientManager.addServerListener(SERIAL_PORT_ON_WRITE_ERROR, ({message, data}) => {
+            messageI18n.error(message);
+            dispatch(actions._updateState({path: null}));
+        });
+        socketClientManager.addServerListener(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
+        });
+        socketClientManager.addServerListener(SERIAL_PORT_ON_WARNING, ({message}) => {
+            messageI18n.warning(message);
+        });
+        socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
+            console.log('receive: ', line)
             processGcodeResponseListen(line);
             //存在单词拼写错误，fix it
             if (line.indexOf("beyound limit..") !== -1) {
@@ -111,6 +141,26 @@ export const actions = {
                 messageI18n.warning(line);
             }
         });
+        socketClientManager.addServerListener(SERIAL_PORT_ON_INSERT, (paths) => {
+            console.log(SERIAL_PORT_ON_INSERT, paths)
+            notificationI18n.success({
+                key: KEY_ON_INSERT,
+                message: 'Cable Inserted',
+                description: paths[0],
+                // duration: 3
+            });
+            notificationI18n.close(KEY_ON_PULL_OUT);
+        });
+        socketClientManager.addServerListener(SERIAL_PORT_ON_PULL_OUT, (paths) => {
+            console.log(SERIAL_PORT_ON_PULL_OUT, paths)
+            notificationI18n.error({
+                key: KEY_ON_PULL_OUT,
+                message: 'Cable Pulled Out',
+                description: paths[0],
+                duration: 1  //设置延时，防止调平断联时消息不消失
+            });
+            notificationI18n.close(KEY_ON_INSERT)
+        });
     },
     _updateState: (state) => {
         return {
@@ -119,25 +169,23 @@ export const actions = {
         };
     },
     open: (path) => () => {
-        console.log("path: " + path)
-        socketClientManager.emitToServer(SERIAL_PORT_OPEN, path);
+        socketClientManager.emitToServer(SERIAL_PORT_ACTION_OPEN, path);
         return {type: null};
     },
     //close当前已连接的串口
     close: () => () => {
-        socketClientManager.emitToServer(SERIAL_PORT_CLOSE);
+        socketClientManager.emitToServer(SERIAL_PORT_ACTION_CLOSE);
         return {type: null};
     },
     //data: string|Buffer|Array<number>
     write: (data) => (dispatch, getState) => {
         if (getState().serialPort.path) {
-            socketClientManager.emitToServer(SERIAL_PORT_WRITE, data);
+            socketClientManager.emitToServer(SERIAL_PORT_ACTION_WRITE, data);
         } else {
-            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
+            messageI18n.warning('Please connect DexArm first');
         }
         return {type: null};
     },
-
     /**
      * 添加查询回调
      * @param gcode M114 M893，等用于查询的Gcode
