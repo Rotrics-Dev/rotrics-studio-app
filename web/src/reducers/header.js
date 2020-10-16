@@ -3,7 +3,8 @@ const ACTION_UPDATE_STATE = 'header/ACTION_UPDATE_STATE';
 const INITIAL_STATE = {
     terminalVisible: false,
     jogPanelVisible: false,
-    p3dCalibrationVisible: false
+    p3dCalibrationVisible: false,
+    serialPortConnectionVisible: false
 };
 
 export const actions = {
@@ -26,6 +27,11 @@ export const actions = {
     changeVisibility4p3dCalibration: (visible) => (dispatch) => {
         dispatch(actions._updateState({
             p3dCalibrationVisible: visible
+        }));
+    },
+    changeVisibility4serialPortConnection: (visible) => (dispatch) => {
+        dispatch(actions._updateState({
+            serialPortConnectionVisible: visible
         }));
     },
 };
