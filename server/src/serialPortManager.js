@@ -15,6 +15,8 @@ import {
     SERIAL_PORT_ON_PULL_OUT
 } from "./constants.js"
 
+const MANUFACTURER_DEX_ARM = 'STMicroelectronics';
+
 /**
  * serial port断电，不会触发任何event，port.isOpen依旧是true；只能用通过比对SerialPort.list监测
  * TODO: 打开新的串口，应该remove前一个串口的listener；等出bug时候再说
@@ -33,7 +35,10 @@ class SerialPortManager extends EventEmitter {
         setInterval(() => {
             SerialPort.list().then(
                 (ports) => {
-                    //TODO: 逻辑不严谨
+                    ports = ports.filter(({manufacturer}) => {
+                        return manufacturer === MANUFACTURER_DEX_ARM;
+                    });
+                    //逻辑不够严谨，但实际使用中没问题
                     this._curPaths = ports.map(port => {
                         return port.path;
                     });
@@ -71,6 +76,9 @@ class SerialPortManager extends EventEmitter {
     getAllPaths() {
         SerialPort.list().then(
             (ports) => {
+                ports = ports.filter(({manufacturer}) => {
+                    return manufacturer === MANUFACTURER_DEX_ARM;
+                });
                 const paths = ports.map(item => {
                     return item.path;
                 });
