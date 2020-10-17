@@ -80,13 +80,14 @@ class Index extends React.Component {
         const {t} = this.props;
         return (
             <Draggable
+                handle="#handle"
                 defaultPosition={state.position}
                 onStop={(e, data) => {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
                 <div className={styles.div_root}>
-                    <div className={styles.div_header}>
+                    <div id="handle" className={styles.div_header}>
                         <label className={styles.label_console}>{t('Terminal')}</label>
                         <Space size={0} className={styles.space}>
                             <input type="button"

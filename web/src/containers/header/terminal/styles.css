@@ -3,7 +3,7 @@
     left: 60px;
     top: 50px;
     width: 450px;
-    height: 320px;
+    height: 325px;
     background-color: #F2F2F2;
     z-index: 999;
     opacity: 1;
@@ -13,7 +13,7 @@
 
 .div_header {
     width: 100%;
-    height: 22px;
+    height: 25px;
     background-color: #CCCCCC;
     border-radius: 5px 5px 0 0;
 }
@@ -27,8 +27,8 @@
 .space {
     position: absolute;
     right: 0;
-    width: 80px;
-    height: 22px;
+    width: 100px;
+    height: 25px;
     line-height: 0;
 }
 
@@ -39,7 +39,7 @@
 
 .input_received {
     width: 100%;
-    height: 250px;
+    height: 252px;
     margin-top: 5px;
 }
 
@@ -48,8 +48,8 @@
 }
 
 .btn_close {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/close.svg);
     background-color: transparent;
     outline: none;
@@ -66,8 +66,8 @@
 }
 
 .btn_clear {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/clear.svg);
     outline: none;
     background-color: transparent;
@@ -84,8 +84,8 @@
 }
 
 .btn_debug_enabled {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/debug-enabled.svg);
     outline: none;
     background-color: transparent;
@@ -102,8 +102,8 @@
 }
 
 .btn_debug_disabled {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/debug-disabled.svg);
     outline: none;
     background-color: transparent;
@@ -120,8 +120,8 @@
 }
 
 .btn_auto_scroll_enabled {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/scroll-to-bottom-enabled.svg);
     outline: none;
     background-color: transparent;
@@ -138,8 +138,8 @@
 }
 
 .btn_auto_scroll_disabled {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     background-image: url(./images/scroll-to-bottom-disabled.svg);
     outline: none;
     background-color: transparent;

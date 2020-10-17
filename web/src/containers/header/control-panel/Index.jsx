@@ -19,14 +19,14 @@ class Index extends React.Component {
         const {changeVisibility4jogPanel} = this.props;
         return (
             <Draggable
-                handle="#imhandle"
+                handle="#handle"
                 defaultPosition={state.position}
                 onStop={(e, data) => {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
                 <div className={styles.div_root}>
-                    <div id="imhandle" className={styles.div_handle}/>
+                    <div id="handle" className={styles.div_handle}/>
                     <input
                         type="button"
                         className={styles.btn_close}
