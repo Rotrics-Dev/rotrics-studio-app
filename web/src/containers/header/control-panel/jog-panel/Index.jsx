@@ -3,10 +3,9 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {Radio, Row, Col, Slider, Space} from 'antd';
 import styles from './styles.css';
-import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-import PositionMonitor from "./PositionMoniter/index.jsx";
-import ConfigTitle from "../../../components/Config/ConfigTitle/index.jsx";
-import {FRONT_END} from "../../../utils/workAreaUtils";
+import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
+import {FRONT_END} from "../../../../utils/workAreaUtils";
 
 const JOG_SPEED_MARKS = {
     500: '500',
@@ -143,7 +142,6 @@ class Index extends React.Component {
         const gutter = 5;
         return (
             <div>
-                <PositionMonitor/>
                 <Row gutter={[gutter, gutter]}>
                     <Col span={6}>
                         <input type="button" onClick={actions.leftTop} className={styles.btn_left_top}/>

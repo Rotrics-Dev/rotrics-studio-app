@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {Radio, Row, Col, Select, Switch, Slider, Space} from 'antd';
 import styles from './styles.css';
-import {actions as headerActions} from "../../../reducers/header"
-import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-import ConfigTitle from "../../../components/Config/ConfigTitle/index.jsx";
+import {actions as headerActions} from "../../../../reducers/header"
+import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
 
 const MODULE_NAMES = [
     'Laser',

@@ -1,0 +1,24 @@
+.div_tap {
+    padding: 5px;
+    margin-top: 8px;
+    opacity: 1;
+    border: 1px solid #C0C0C0;
+    border-radius: 3px;
+}
+
+.btn_action_work {
+    width: 100%;
+    height: 30px;
+    outline: none;
+    border: 1px solid #C0C0C0;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+
+.btn_action_work:active {
+    opacity: 0.4;
+}
+
+
+
+

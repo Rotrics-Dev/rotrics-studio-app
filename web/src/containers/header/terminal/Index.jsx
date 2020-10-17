@@ -18,6 +18,7 @@ class Index extends React.Component {
     }
 
     state = {
+        transparent: false,
         position: {x: 0, y: 0},
         gcode: "",
         receivedLines4debug: [], //debug模式下，显示所有收到的数据
@@ -65,9 +66,13 @@ class Index extends React.Component {
             const autoScroll = !this.state.autoScroll;
             this.setState({autoScroll})
         },
-        toggleDebug: (e) => {
+        toggleDebug: () => {
             const debug = !this.state.debug;
             this.setState({debug})
+        },
+        toggleTransparent: () => {
+            const transparent = !this.state.transparent;
+            this.setState({transparent})
         }
     };
 
@@ -86,7 +91,7 @@ class Index extends React.Component {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
-                <div className={styles.div_root}>
+                <div className={state.transparent ? styles.div_root_transparent : styles.div_root}>
                     <div id="handle" className={styles.div_header}>
                         <label className={styles.label_title}>{t('Terminal')}</label>
                         <Space size={0} className={styles.space}>
@@ -97,6 +102,7 @@ class Index extends React.Component {
                                    className={state.debug ? styles.btn_debug_enabled : styles.btn_debug_disabled}
                                    onClick={actions.toggleDebug}/>
                             <input type="button" className={styles.btn_clear} onClick={actions.clearReceivedLines}/>
+                            <input type="button" className={styles.btn_transparent} onClick={actions.toggleTransparent}/>
                             <input type="button" className={styles.btn_close} onClick={actions.close}/>
                         </Space>
                     </div>

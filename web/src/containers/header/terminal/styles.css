@@ -11,6 +11,19 @@
     border-radius: 5px;
 }
 
+.div_root_transparent {
+    position: absolute;
+    left: 60px;
+    top: 50px;
+    width: 450px;
+    height: 325px;
+    background-color: #F2F2F2;
+    z-index: 999;
+    opacity: 0.7;
+    border: 1px solid #C0C0C0;
+    border-radius: 5px;
+}
+
 .div_header {
     width: 100%;
     height: 25px;
@@ -27,7 +40,7 @@
 .space {
     position: absolute;
     right: 0;
-    width: 100px;
+    width: 125px;
     height: 25px;
     line-height: 0;
 }
@@ -152,5 +165,23 @@
 }
 
 .btn_auto_scroll_disabled:active {
+    opacity: 0.4;
+}
+
+.btn_transparent {
+    width: 25px;
+    height: 25px;
+    background-image: url(./images/transparent.svg);
+    outline: none;
+    background-color: transparent;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: solid #AAAAAA;
+    border-width: 0 0 0 1px;
+    vertical-align: middle;
+}
+
+.btn_transparent:active {
     opacity: 0.4;
 }
