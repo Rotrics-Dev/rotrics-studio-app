@@ -140,7 +140,7 @@ class Index extends React.Component {
         const actions = this.actions;
         const state = this.state;
         const {t} = this.props;
-        const gutter = 8;
+        const gutter = 5;
         return (
             <div>
                 <PositionMonitor/>
@@ -219,7 +219,7 @@ class Index extends React.Component {
                         <ConfigTitle text={`${t("Jog Speed")}(mm/s)`}/>
                         <Slider
                             tooltipVisible={false}
-                            style={{marginRight: "15px"}}
+                            style={{margin: "5px 20px 20px 15px"}}
                             min={500}
                             max={4000}
                             marks={JOG_SPEED_MARKS}

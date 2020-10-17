@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Draggable from 'react-draggable';
+import {withTranslation} from 'react-i18next';
 import ModuleControl from "./ModuleControl.jsx";
 import JogPanel from "./JogPanel.jsx";
 import styles from './styles.css';
@@ -17,6 +18,7 @@ class Index extends React.Component {
         }
         const state = this.state;
         const {changeVisibility4jogPanel} = this.props;
+        const {t} = this.props;
         return (
             <Draggable
                 handle="#handle"
@@ -26,15 +28,20 @@ class Index extends React.Component {
                     this.setState({position: {x, y}})
                 }}>
                 <div className={styles.div_root}>
-                    <div id="handle" className={styles.div_handle}/>
-                    <input
-                        type="button"
-                        className={styles.btn_close}
-                        onClick={() => {
-                            changeVisibility4jogPanel(false)
-                        }}/>
-                    <JogPanel/>
-                    <ModuleControl/>
+                    <div id="handle" className={styles.div_header}>
+                        <label className={styles.label_title}>{t('Control Panel')}</label>
+                        <input
+                            type="button"
+                            className={styles.btn_close}
+                            onClick={() => {
+                                changeVisibility4jogPanel(false)
+                            }}
+                        />
+                    </div>
+                    <div className={styles.div_container}>
+                        <JogPanel/>
+                        <ModuleControl/>
+                    </div>
                 </div>
             </Draggable>
         )
@@ -54,4 +61,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));

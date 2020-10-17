@@ -26,7 +26,7 @@ class Index extends React.Component {
 
         return (
             <div className={styles.bkg}>
-                <ConfigTitle text={t("Axes")} sytle={{margin: "0px", padding: "0px"}}/>
+                <ConfigTitle text={t("Axes")}/>
                 <div className={styles.axes}>
                     <Row>
                         <Col span={2} push={1} className={styles.border_right}>

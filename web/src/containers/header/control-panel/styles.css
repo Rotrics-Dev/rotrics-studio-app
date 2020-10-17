@@ -3,13 +3,47 @@
     width: 400px;
     right: 305px;
     top: 50px;
-    padding: 8px;
+    background-color: #F2F2F2;
     z-index: 999;
-    background-color: #C0C0C0;
     opacity: 1;
     border: 1px solid #C0C0C0;
-    border-radius: 3px;
+    border-radius: 5px;
 }
+
+.div_header {
+    width: 100%;
+    height: 25px;
+    background-color: #CCCCCC;
+    border-radius: 5px 5px 0 0;
+}
+
+.div_container {
+    padding: 5px;
+    width: 100%;
+}
+
+.label_title {
+    margin-left: 5px;
+}
+
+.btn_close {
+    float: right;
+    width: 25px;
+    height: 25px;
+    background-image: url(./images/close.svg);
+    background-color: transparent;
+    outline: none;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    vertical-align: middle;
+}
+
+.btn_close:active {
+    opacity: 0.4;
+}
+
 
 .div_handle {
     position: absolute;
@@ -28,24 +62,7 @@
     border-radius: 3px;
 }
 
-.btn_close {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 30px;
-    height: 30px;
-    background-image: url(./images/close.svg);
-    outline: none;
-    background-size: 12px 12px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: none;
-    vertical-align: middle;
-}
 
-.btn_close:active {
-    opacity: 0.4;
-}
 
 .btn_xyz {
     width: 100%;

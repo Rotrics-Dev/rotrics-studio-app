@@ -88,7 +88,7 @@ class Index extends React.Component {
                 }}>
                 <div className={styles.div_root}>
                     <div id="handle" className={styles.div_header}>
-                        <label className={styles.label_console}>{t('Terminal')}</label>
+                        <label className={styles.label_title}>{t('Terminal')}</label>
                         <Space size={0} className={styles.space}>
                             <input type="button"
                                    className={state.autoScroll ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
