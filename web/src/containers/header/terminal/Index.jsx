@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Draggable from 'react-draggable';
-import {Button, Input, Checkbox} from 'antd';
+import {Space, Input} from 'antd';
 import {withTranslation} from 'react-i18next';
 import styles from './styles.css';
 import {actions as serialPortActions} from "../../../reducers/serialPort";
@@ -61,11 +61,13 @@ class Index extends React.Component {
         close: () => {
             this.props.changeVisibility4terminal(false)
         },
-        toggleAutoScroll: (e) => {
-            this.setState({autoScroll: e.target.checked})
+        toggleAutoScroll: () => {
+            const autoScroll = !this.state.autoScroll;
+            this.setState({autoScroll})
         },
         toggleDebug: (e) => {
-            this.setState({debug: e.target.checked})
+            const debug = !this.state.debug;
+            this.setState({debug})
         }
     };
 
@@ -83,60 +85,37 @@ class Index extends React.Component {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
-                <div className={styles.div_fix}>
-                    <div style={{marginBottom: "5px"}}>
+                <div className={styles.div_root}>
+                    <div className={styles.div_header}>
+                        <label className={styles.label_console}>{t('Terminal')}</label>
+                        <Space size={0} className={styles.space}>
+                            <input type="button"
+                                   className={state.autoScroll ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
+                                   onClick={actions.toggleAutoScroll}/>
+                            <input type="button"
+                                   className={state.debug ? styles.btn_debug_enabled : styles.btn_debug_disabled}
+                                   onClick={actions.toggleDebug}/>
+                            <input type="button" className={styles.btn_clear} onClick={actions.clearReceivedLines}/>
+                            <input type="button" className={styles.btn_close} onClick={actions.close}/>
+                        </Space>
+                    </div>
+                    <div className={styles.div_container}>
                         <Input
                             onPressEnter={actions.sendGcode}
                             onChange={actions.onChangeGcode}
-                            placeholder={t("send g-code")}
-                            style={{width: "327px", marginRight: "5px"}}
+                            className={styles.input_g_code}
+                            placeholder={t("press enter to send")}
                             allowClear={true}
                             size="small"
                         />
-                        <Button
-                            type="primary"
+                        <Input.TextArea
+                            ref={this.refTextArea}
+                            className={styles.input_received}
                             size="small"
-                            onClick={actions.sendGcode}>
-                            {t("Send")}
-                        </Button>
-                    </div>
-                    <Input.TextArea
-                        ref={this.refTextArea}
-                        className={styles.textarea_received}
-                        size="small"
-                        allowClear={true}
-                        value={state.debug ? state.receivedLines4debug.join("\n") : state.receivedLines4normal.join("\n")}
-                        disabled={true}
-                    />
-                    <Checkbox
-                        style={{fontSize: "13px", position: "absolute", bottom: "1px", left: "8px"}}
-                        onChange={actions.toggleAutoScroll}
-                        checked={state.autoScroll}>
-                        {t("Auto Scroll")}
-                    </Checkbox>
-                    <Checkbox
-                        style={{fontSize: "13px", position: "absolute", bottom: "22px", left: "0px"}}
-                        onChange={actions.toggleDebug}
-                        checked={state.debug}>
-                        {t("Debug")}
-                    </Checkbox>
-                    <div className={styles.div_close}>
-                        <Button
-                            ghost
-                            type="primary"
-                            size="small"
-                            onClick={actions.close}>
-                            {t("Close")}
-                        </Button>
-                    </div>
-                    <div className={styles.div_clear}>
-                        <Button
-                            ghost
-                            type="primary"
-                            size="small"
-                            onClick={actions.clearReceivedLines}>
-                            {t("Clear")}
-                        </Button>
+                            allowClear={true}
+                            value={state.debug ? state.receivedLines4debug.join("\n") : state.receivedLines4normal.join("\n")}
+                            disabled={true}
+                        />
                     </div>
                 </div>
             </Draggable>
