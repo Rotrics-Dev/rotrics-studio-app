@@ -1,68 +1,68 @@
 import React, {PureComponent} from 'react';
-import {InputNumber} from 'antd';
+import {Input} from 'antd';
 
+//props: onPressEnter(value), ...rest(not include: onChange)
 class Index extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.refInput = React.createRef();
+        this.hisroty = [];
+        this.index = 0;
+    }
+
     state = {
-        displayedValue: 0
+        value: undefined
     };
 
     componentDidMount() {
-        this.setState({displayedValue: this.props.value});
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.value !== nextProps.value) {
-            this.setState({displayedValue: nextProps.value});
-        }
+        document.addEventListener('keydown', (e) => {
+            if (e.target === this.refInput.current.input) {
+                switch (e.keyCode) {
+                    case 38: {
+                        //arrow up
+                        e.preventDefault();
+                        if (this.index > 0) {
+                            this.setState({value: this.hisroty[--this.index]});
+                        }
+                        break;
+                    }
+                    case 40: {
+                        //arrow down
+                        e.preventDefault();
+                        if (this.index < this.hisroty.length) {
+                            this.setState({value: this.hisroty[++this.index]});
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     actions = {
-        onKeyUp: (e) => {
-            // 按下[回车]
-            if (e.keyCode === 13) {
-                e.target.blur();
-            }
+        onChange: (e) => {
+            this.setState({value: e.target.value})
         },
-        onBlur: (e) => {
-            const min = parseFloat(e.target.min);
-            const max = parseFloat(e.target.max);
-            let value = parseFloat(this.state.displayedValue);
-            if (isNaN(value)) {
-                value = this.props.value;
-            }
-            if (value > max) {
-                value = max;
-            } else if (value < min) {
-                value = min;
-            }
-            this.setState({displayedValue: value});
-            this.props.onAfterChange(value);
-        },
-        onChange: (value) => {
-            this.setState({displayedValue: value});
+        onPressEnter: (e) => {
+            const value = e.target.value;
+            this.setState({value: undefined});
+            this.hisroty.push(value);
+            this.index = this.hisroty.length;
+            this.props.onPressEnter(value);
         }
     };
 
     render() {
         const state = this.state;
-        // required props: onAfterChange, value
-        // https://ant.design/components/input-number-cn/
-        const {max = 999999, min = -99999, precision = 0, ...rest} = this.props;
         const actions = this.actions;
-        const step = 1 / Math.pow(10, precision);
+        const {...rest} = this.props;
         return (
-            <InputNumber
-                style={{width: "100%", fontSize: "12px"}}
-                step={step}
+            <Input
                 {...rest}
-                min={min}
-                max={max}
-                value={state.displayedValue}
-                precision={precision}
-                size="small"
-                onBlur={actions.onBlur}
-                onKeyUp={actions.onKeyUp}
+                ref={this.refInput}
+                value={state.value}
                 onChange={actions.onChange}
+                onPressEnter={actions.onPressEnter}
             />
         );
     }
