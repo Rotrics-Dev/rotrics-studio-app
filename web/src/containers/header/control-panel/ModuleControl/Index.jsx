@@ -128,7 +128,7 @@ class Index extends React.Component {
         const state = this.state;
         const {curModule} = this.state;
         const {t} = this.props;
-        const {changeVisibility4p3dCalibration} = this.props;
+        const {changeVisible4p3dCalibration} = this.props;
         const gutter = 8;
         return (
             <div className={styles.div_tap}>
@@ -176,7 +176,7 @@ class Index extends React.Component {
                             value={t("Level")}
                             className={styles.btn_action_work}
                             onClick={() => {
-                                changeVisibility4p3dCalibration(true);
+                                changeVisible4p3dCalibration(true);
                             }}
                         />
                     </Col>
@@ -206,16 +206,16 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {jogPanelVisible} = state.header;
+    const {controlPanelVisible} = state.header;
     return {
-        jogPanelVisible
+        controlPanelVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
-        changeVisibility4p3dCalibration: (value) => dispatch(headerActions.changeVisibility4p3dCalibration(value))
+        changeVisible4p3dCalibration: (value) => dispatch(headerActions.changeVisible4p3dCalibration(value))
     };
 };
 

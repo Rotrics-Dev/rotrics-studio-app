@@ -31,7 +31,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const state = this.state;
-        const {paths, path, serialPortConnectionVisible, changeVisibility4serialPortConnection} = this.props;
+        const {paths, path, serialPortConnectionVisible, changeVisible4serialPortConnection} = this.props;
         const {selectedPath} = state;
         const {t} = this.props;
         let statusDes = "";
@@ -67,7 +67,7 @@ class Index extends React.Component {
                 title={t("Connect DexArm")}
                 visible={serialPortConnectionVisible}
                 onCancel={() => {
-                    changeVisibility4serialPortConnection(false);
+                    changeVisible4serialPortConnection(false);
                 }}
                 footer={[
                     <Button
@@ -117,7 +117,7 @@ const mapDispatchToProps = (dispatch) => {
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
         closeSerialPort: () => dispatch(serialPortActions.close()),
         serialPortWrite: (gcode) => dispatch(serialPortActions.write(gcode)),
-        changeVisibility4serialPortConnection: (value) => dispatch(headerActions.changeVisibility4serialPortConnection(value)),
+        changeVisible4serialPortConnection: (value) => dispatch(headerActions.changeVisible4serialPortConnection(value)),
     };
 };
 

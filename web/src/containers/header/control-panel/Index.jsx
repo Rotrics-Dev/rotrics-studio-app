@@ -21,14 +21,13 @@ class Index extends React.Component {
         }
     };
 
-
     render() {
-        if (!this.props.jogPanelVisible) {
+        if (!this.props.controlPanelVisible) {
             return null;
         }
         const actions = this.actions;
         const state = this.state;
-        const {changeVisibility4jogPanel} = this.props;
+        const {changeVisible4controlPanel} = this.props;
         const {t} = this.props;
         return (
             <Draggable
@@ -46,7 +45,7 @@ class Index extends React.Component {
                             type="button"
                             className={styles.btn_close}
                             onClick={() => {
-                                changeVisibility4jogPanel(false)
+                                changeVisible4controlPanel(false)
                             }}
                         />
                         <input type="button" className={styles.btn_transparent} onClick={actions.toggleTransparent}/>
@@ -63,15 +62,15 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {jogPanelVisible} = state.header;
+    const {controlPanelVisible} = state.header;
     return {
-        jogPanelVisible
+        controlPanelVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeVisibility4jogPanel: (value) => dispatch(headerActions.changeVisibility4jogPanel(value)),
+        changeVisible4controlPanel: (value) => dispatch(headerActions.changeVisible4controlPanel(value)),
     };
 };
 

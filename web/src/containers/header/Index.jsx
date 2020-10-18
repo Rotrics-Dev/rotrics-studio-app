@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../reducers/serialPort';
 import {actions as headerActions} from "../../reducers/header";
 import {withTranslation} from 'react-i18next';
-import Terminal from './terminal/Index.jsx';
+import Monitor from './monitor/Index.jsx';
 import ControlPanel from './control-panel/Index.jsx';
 import P3dCalibration from './p3d-calibration/Index.jsx'
 import SerialPortConnection from './serial-port-connection/Index.jsx'
@@ -21,8 +21,8 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
-        const {path, terminalVisible, jogPanelVisible} = this.props;
-        const {changeVisibility4jogPanel, changeVisibility4terminal, changeVisibility4serialPortConnection} = this.props;
+        const {path, monitorVisible, controlPanelVisible} = this.props;
+        const {changeVisible4controlPanel, changeVisible4monitor, changeVisible4serialPortConnection} = this.props;
         const {t} = this.props;
         return (
             <div
@@ -33,7 +33,7 @@ class Index extends React.Component {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                <Terminal/>
+                <Monitor/>
                 <ControlPanel/>
                 <P3dCalibration/>
                 <SerialPortConnection/>
@@ -49,20 +49,20 @@ class Index extends React.Component {
                             {t("Stop")}
                         </Button>
                         <div>
-                            <span>{t("Terminal")}</span>
+                            <span>{t("Monitor")}</span>
                             <Switch
                                 size="small"
-                                style={{marginLeft: "2px"}}
-                                checked={terminalVisible}
-                                onChange={changeVisibility4terminal}/>
+                                style={{marginLeft: "5px"}}
+                                checked={monitorVisible}
+                                onChange={changeVisible4monitor}/>
                         </div>
                         <div>
                             <span>{t("Control Panel")}</span>
                             <Switch
                                 size="small"
-                                style={{marginLeft: "2px", marginRight: "10px"}}
-                                checked={jogPanelVisible}
-                                onChange={changeVisibility4jogPanel}/>
+                                style={{marginLeft: "5px", marginRight: "10px"}}
+                                checked={controlPanelVisible}
+                                onChange={changeVisible4controlPanel}/>
                         </div>
                     </Space>
                     }
@@ -70,7 +70,7 @@ class Index extends React.Component {
                         className={path ? styles.btn_connected : styles.btn_disconnected}
                         style={{marginRight: "110px"}}
                         onClick={() => {
-                            changeVisibility4serialPortConnection(true)
+                            changeVisible4serialPortConnection(true)
                         }}/>
                     <a href="https://www.rotrics.com/" target="_blank" rel="noopener noreferrer">
                         <button className={styles.btn_official_website}/>
@@ -89,20 +89,20 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {path} = state.serialPort;
-    const {terminalVisible, jogPanelVisible} = state.header;
+    const {monitorVisible, controlPanelVisible} = state.header;
     return {
         path,
-        terminalVisible,
-        jogPanelVisible
+        monitorVisible,
+        controlPanelVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         serialPortWrite: (gcode) => dispatch(serialPortActions.write(gcode)),
-        changeVisibility4terminal: (value) => dispatch(headerActions.changeVisibility4terminal(value)),
-        changeVisibility4jogPanel: (value) => dispatch(headerActions.changeVisibility4jogPanel(value)),
-        changeVisibility4serialPortConnection: (value) => dispatch(headerActions.changeVisibility4serialPortConnection(value)),
+        changeVisible4monitor: (value) => dispatch(headerActions.changeVisible4monitor(value)),
+        changeVisible4controlPanel: (value) => dispatch(headerActions.changeVisible4controlPanel(value)),
+        changeVisible4serialPortConnection: (value) => dispatch(headerActions.changeVisible4serialPortConnection(value)),
     };
 };
 

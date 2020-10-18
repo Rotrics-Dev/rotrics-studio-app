@@ -60,7 +60,7 @@ class Index extends React.Component {
             this.setState({receivedLines4debug: [], receivedLines4normal: []})
         },
         close: () => {
-            this.props.changeVisibility4terminal(false)
+            this.props.changeVisible4monitor(false)
         },
         toggleAutoScroll: () => {
             const autoScroll = !this.state.autoScroll;
@@ -77,7 +77,7 @@ class Index extends React.Component {
     };
 
     render() {
-        if (!this.props.terminalVisible) {
+        if (!this.props.monitorVisible) {
             return null;
         }
         const actions = this.actions;
@@ -93,7 +93,7 @@ class Index extends React.Component {
                 }}>
                 <div className={state.transparent ? styles.div_root_transparent : styles.div_root}>
                     <div id="handle" className={styles.div_header}>
-                        <label className={styles.label_title}>{t('Terminal')}</label>
+                        <label className={styles.label_title}>{t('Monitor')}</label>
                         <Space size={0} className={styles.space}>
                             <input type="button"
                                    className={state.autoScroll ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
@@ -131,16 +131,16 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {terminalVisible} = state.header;
+    const {monitorVisible} = state.header;
     return {
-        terminalVisible
+        monitorVisible
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
-        changeVisibility4terminal: (value) => dispatch(headerActions.changeVisibility4terminal(value))
+        changeVisible4monitor: (value) => dispatch(headerActions.changeVisible4monitor(value))
     };
 };
 

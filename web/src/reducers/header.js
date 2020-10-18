@@ -1,8 +1,8 @@
 const ACTION_UPDATE_STATE = 'header/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    terminalVisible: false,
-    jogPanelVisible: false,
+    monitorVisible: false,
+    controlPanelVisible: false,
     p3dCalibrationVisible: false,
     serialPortConnectionVisible: false
 };
@@ -14,22 +14,22 @@ export const actions = {
             state
         };
     },
-    changeVisibility4terminal: (visible) => (dispatch) => {
+    changeVisible4monitor: (visible) => (dispatch) => {
         dispatch(actions._updateState({
-            terminalVisible: visible
+            monitorVisible: visible
         }));
     },
-    changeVisibility4jogPanel: (visible) => (dispatch) => {
+    changeVisible4controlPanel: (visible) => (dispatch) => {
         dispatch(actions._updateState({
-            jogPanelVisible: visible
+            controlPanelVisible: visible
         }));
     },
-    changeVisibility4p3dCalibration: (visible) => (dispatch) => {
+    changeVisible4p3dCalibration: (visible) => (dispatch) => {
         dispatch(actions._updateState({
             p3dCalibrationVisible: visible
         }));
     },
-    changeVisibility4serialPortConnection: (visible) => (dispatch) => {
+    changeVisible4serialPortConnection: (visible) => (dispatch) => {
         dispatch(actions._updateState({
             serialPortConnectionVisible: visible
         }));

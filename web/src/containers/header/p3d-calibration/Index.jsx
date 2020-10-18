@@ -167,7 +167,7 @@ class Index extends React.Component {
 
     render() {
         const {t} = this.props;
-        const {p3dCalibrationVisible, changeVisibility4p3dCalibration} = this.props;
+        const {p3dCalibrationVisible, changeVisible4p3dCalibration} = this.props;
         const {pointIndex} = this.state;
         return (
             <Modal
@@ -177,7 +177,7 @@ class Index extends React.Component {
                 footer={null}
                 centered={true}
                 onCancel={() => {
-                    changeVisibility4p3dCalibration(false);
+                    changeVisible4p3dCalibration(false);
                 }}
             >
                 <Space direction={"horizontal"} align={"start"}>
@@ -271,7 +271,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(serialPortActions.write(gcode));
         },
         openSerialPort: (path) => dispatch(serialPortActions.open(path)),
-        changeVisibility4p3dCalibration: (value) => dispatch(headerActions.changeVisibility4p3dCalibration(value))
+        changeVisible4p3dCalibration: (value) => dispatch(headerActions.changeVisible4p3dCalibration(value))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
