@@ -9,18 +9,21 @@ import socketClientManager from "../../../socket/socketClientManager";
 import {SERIAL_PORT_ON_RECEIVED_LINE} from "../../../constants";
 import {actions as headerActions} from "../../../reducers/header";
 
-const MAX_LINE_COUNT = 150; //最多可展示多少条数据
+const MAX_COUNT_RECEIVED_LINE = 150;
 
 class Index extends React.Component {
     constructor(props) {
         super(props);
         this.refTextArea = React.createRef();
+        this.refInputGcode = React.createRef();
+        this.hisrotyCommands = [];
+        this.curCommandIndex = 0;
     }
 
     state = {
         transparent: false,
         position: {x: 0, y: 0},
-        gcode: "",
+        gcode: undefined,
         receivedLines4debug: [], //debug模式下，显示所有收到的数据
         receivedLines4normal: [], //normal模式下，不显示ok，wait
         autoScroll: true,
@@ -30,8 +33,8 @@ class Index extends React.Component {
     componentDidMount() {
         socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
             //达到上限则删除部分数据
-            if (this.state.receivedLines4debug.push(line) > MAX_LINE_COUNT) {
-                this.state.receivedLines4debug.splice(0, MAX_LINE_COUNT / 3)
+            if (this.state.receivedLines4debug.push(line) > MAX_COUNT_RECEIVED_LINE) {
+                this.state.receivedLines4debug.splice(0, MAX_COUNT_RECEIVED_LINE / 3)
             }
             const receivedLines4debug = _.cloneDeep(this.state.receivedLines4debug);
             const receivedLines4normal = receivedLines4debug.filter((value) => {
@@ -45,12 +48,43 @@ class Index extends React.Component {
                 }
             }
         });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target === this.refInputGcode.current.input) {
+                switch (e.keyCode) {
+                    case 38: {
+                        //arrow up
+                        e.preventDefault();
+                        if (--this.curCommandIndex < 0) {
+                            this.curCommandIndex = 0;
+                        }
+                        const gcode = this.hisrotyCommands[this.curCommandIndex];
+                        this.setState({gcode})
+                        break;
+                    }
+                    case 40: {
+                        //arrow down
+                        e.preventDefault();
+                        if (++this.curCommandIndex > this.hisrotyCommands.length) {
+                            this.curCommandIndex = this.hisrotyCommands.length;
+                        }
+                        const gcode = this.hisrotyCommands[this.curCommandIndex];
+                        this.setState({gcode})
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     actions = {
         sendGcode: () => {
             const gcode = this.state.gcode;
-            this.props.writeSerialPort(gcode + "\n")
+            this.props.writeSerialPort(gcode + '\n');
+            this.setState({gcode: undefined});
+            this.hisrotyCommands.push(gcode);
+            this.curCommandIndex = this.hisrotyCommands.length;
+            console.log(this.hisrotyCommands)
         },
         onChangeGcode: (e) => {
             const gcode = e.target.value;
@@ -102,14 +136,17 @@ class Index extends React.Component {
                                    className={state.debug ? styles.btn_debug_enabled : styles.btn_debug_disabled}
                                    onClick={actions.toggleDebug}/>
                             <input type="button" className={styles.btn_clear} onClick={actions.clearReceivedLines}/>
-                            <input type="button" className={styles.btn_transparent} onClick={actions.toggleTransparent}/>
+                            <input type="button" className={styles.btn_transparent}
+                                   onClick={actions.toggleTransparent}/>
                             <input type="button" className={styles.btn_close} onClick={actions.close}/>
                         </Space>
                     </div>
                     <div className={styles.div_container}>
                         <Input
+                            ref={this.refInputGcode}
                             onPressEnter={actions.sendGcode}
                             onChange={actions.onChangeGcode}
+                            value={state.gcode}
                             className={styles.input_g_code}
                             placeholder={t("press enter to send")}
                             allowClear={true}
