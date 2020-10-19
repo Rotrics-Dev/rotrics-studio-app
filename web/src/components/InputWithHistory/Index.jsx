@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Input} from 'antd';
 
-//props: onPressEnter(value), ...rest(not include: onChange)
+// props: onPressEnter(value), isUppercase
+// ...rest(not include: onChange)
 class Index extends PureComponent {
     constructor(props) {
         super(props);
@@ -21,17 +22,13 @@ class Index extends PureComponent {
                     case 38: {
                         //arrow up
                         e.preventDefault();
-                        if (this.index > 0) {
-                            this.setState({value: this.hisroty[--this.index]});
-                        }
+                        this.index > 0 && this.setState({value: this.hisroty[--this.index]});
                         break;
                     }
                     case 40: {
                         //arrow down
                         e.preventDefault();
-                        if (this.index < this.hisroty.length) {
-                            this.setState({value: this.hisroty[++this.index]});
-                        }
+                        this.index < this.hisroty.length && this.setState({value: this.hisroty[++this.index]});
                         break;
                     }
                 }
@@ -41,10 +38,17 @@ class Index extends PureComponent {
 
     actions = {
         onChange: (e) => {
-            this.setState({value: e.target.value})
+            let value = e.target.value;
+            if (this.props.isUppercase) {
+                value = value.toUpperCase();
+            }
+            this.setState({value})
         },
         onPressEnter: (e) => {
-            const value = e.target.value;
+            let value = e.target.value;
+            if (this.props.isUppercase) {
+                value = value.toUpperCase();
+            }
             this.setState({value: undefined});
             this.hisroty.push(value);
             this.index = this.hisroty.length;

@@ -24,7 +24,8 @@ class Index extends React.Component {
         receivedLines4debug: [], //debug模式下，显示所有收到的数据
         receivedLines4normal: [], //normal模式下，不显示ok，wait
         autoScroll: true,
-        debug: false
+        debug: false,
+        isUppercase: true
     };
 
     componentDidMount() {
@@ -68,7 +69,11 @@ class Index extends React.Component {
         toggleTransparent: () => {
             const transparent = !this.state.transparent;
             this.setState({transparent})
-        }
+        },
+        toggleUppercase: () => {
+            const isUppercase = !this.state.isUppercase;
+            this.setState({isUppercase})
+        },
     };
 
     render() {
@@ -94,6 +99,9 @@ class Index extends React.Component {
                                    className={state.autoScroll ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
                                    onClick={actions.toggleAutoScroll}/>
                             <input type="button"
+                                   className={state.isUppercase ? styles.btn_uppercase_enabled : styles.btn_uppercase_disabled}
+                                   onClick={actions.toggleUppercase}/>
+                            <input type="button"
                                    className={state.debug ? styles.btn_debug_enabled : styles.btn_debug_disabled}
                                    onClick={actions.toggleDebug}/>
                             <input type="button" className={styles.btn_clear} onClick={actions.clearReceivedLines}/>
@@ -109,6 +117,7 @@ class Index extends React.Component {
                             placeholder={t("press enter to send")}
                             className={styles.input_g_code}
                             onPressEnter={actions.onPressEnter}
+                            isUppercase={state.isUppercase}
                         />
                         <Input.TextArea
                             ref={this.refTextArea}

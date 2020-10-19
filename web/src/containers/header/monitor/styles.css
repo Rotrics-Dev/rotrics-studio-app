@@ -40,7 +40,7 @@
 .space {
     position: absolute;
     right: 0;
-    width: 125px;
+    width: 150px;
     height: 25px;
     line-height: 0;
 }
@@ -183,5 +183,41 @@
 }
 
 .btn_transparent:active {
+    opacity: 0.4;
+}
+
+.btn_uppercase_enabled {
+    width: 25px;
+    height: 25px;
+    background-image: url(./images/uppercase-enabled.svg);
+    outline: none;
+    background-color: transparent;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: solid #AAAAAA;
+    border-width: 0 0 0 1px;
+    vertical-align: middle;
+}
+
+.btn_uppercase_enabled:active {
+    opacity: 0.4;
+}
+
+.btn_uppercase_disabled {
+    width: 25px;
+    height: 25px;
+    background-image: url(./images/uppercase-disabled.svg);
+    outline: none;
+    background-color: transparent;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: solid #AAAAAA;
+    border-width: 0 0 0 1px;
+    vertical-align: middle;
+}
+
+.btn_uppercase_disabled:active {
     opacity: 0.4;
 }
