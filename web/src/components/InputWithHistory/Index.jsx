@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Input} from 'antd';
 
-// props: onPressEnter(value), isUppercase
+// props: onPressEnter(value), isUppercaseEnabled
 // ...rest(not include: onChange)
 class Index extends PureComponent {
     constructor(props) {
@@ -39,14 +39,14 @@ class Index extends PureComponent {
     actions = {
         onChange: (e) => {
             let value = e.target.value;
-            if (this.props.isUppercase) {
+            if (this.props.isUppercaseEnabled) {
                 value = value.toUpperCase();
             }
             this.setState({value})
         },
         onPressEnter: (e) => {
             let value = e.target.value;
-            if (this.props.isUppercase) {
+            if (this.props.isUppercaseEnabled) {
                 value = value.toUpperCase();
             }
             this.setState({value: undefined});

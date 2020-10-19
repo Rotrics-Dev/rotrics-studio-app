@@ -15,33 +15,27 @@ const MAX_COUNT_RECEIVED_LINE = 150;
 class Index extends React.Component {
     constructor(props) {
         super(props);
-        this.refTextArea = React.createRef();
+        this.refInputTextArea = React.createRef();
     }
 
     state = {
-        transparent: false,
         position: {x: 0, y: 0},
-        receivedLines4debug: [], //debug模式下，显示所有收到的数据
-        receivedLines4normal: [], //normal模式下，不显示ok，wait
-        autoScroll: true,
-        debug: false,
-        isUppercase: true
+        receivedLines: [],
+        isAutoScrollEnabled: true,
+        isUppercaseEnabled: true,
+        isDebugEnabled: false,
+        isTransparentEnabled: false,
     };
 
     componentDidMount() {
         socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-            //达到上限则删除部分数据
-            if (this.state.receivedLines4debug.push(line) > MAX_COUNT_RECEIVED_LINE) {
-                this.state.receivedLines4debug.splice(0, MAX_COUNT_RECEIVED_LINE / 3)
+            if (this.state.receivedLines.push(line) > MAX_COUNT_RECEIVED_LINE) {
+                this.state.receivedLines.splice(0, MAX_COUNT_RECEIVED_LINE / 3)
             }
-            const receivedLines4debug = _.cloneDeep(this.state.receivedLines4debug);
-            const receivedLines4normal = receivedLines4debug.filter((value) => {
-                return !["ok", "wait"].includes(value);
-            });
-            this.setState({receivedLines4debug, receivedLines4normal});
-            if (this.state.autoScroll) {
-                if (this.refTextArea.current) {
-                    const textArea = this.refTextArea.current.resizableTextArea.textArea;
+            this.setState({receivedLines: _.cloneDeep(this.state.receivedLines)});
+            if (this.state.isAutoScrollEnabled) {
+                if (this.refInputTextArea.current) {
+                    const textArea = this.refInputTextArea.current.resizableTextArea.textArea;
                     textArea.scrollTop = textArea.scrollHeight;
                 }
             }
@@ -53,27 +47,27 @@ class Index extends React.Component {
             this.props.writeSerialPort(value + '\n');
         },
         clearReceivedLines: () => {
-            this.setState({receivedLines4debug: [], receivedLines4normal: []})
+            this.setState({receivedLines: []})
         },
         close: () => {
             this.props.changeVisible4monitor(false)
         },
         toggleAutoScroll: () => {
-            const autoScroll = !this.state.autoScroll;
-            this.setState({autoScroll})
+            const isAutoScrollEnabled = !this.state.isAutoScrollEnabled;
+            this.setState({isAutoScrollEnabled})
         },
         toggleDebug: () => {
-            const debug = !this.state.debug;
-            this.setState({debug})
+            const isDebugEnabled = !this.state.isDebugEnabled;
+            this.setState({isDebugEnabled})
         },
         toggleTransparent: () => {
-            const transparent = !this.state.transparent;
-            this.setState({transparent})
+            const isTransparentEnabled = !this.state.isTransparentEnabled;
+            this.setState({isTransparentEnabled})
         },
         toggleUppercase: () => {
-            const isUppercase = !this.state.isUppercase;
-            this.setState({isUppercase})
-        },
+            const isUppercaseEnabled = !this.state.isUppercaseEnabled;
+            this.setState({isUppercaseEnabled})
+        }
     };
 
     render() {
@@ -91,18 +85,18 @@ class Index extends React.Component {
                     const {x, y} = data;
                     this.setState({position: {x, y}})
                 }}>
-                <div className={state.transparent ? styles.div_root_transparent : styles.div_root}>
+                <div className={state.isTransparentEnabled ? styles.div_root_transparent : styles.div_root}>
                     <div id="handle" className={styles.div_header}>
                         <label className={styles.label_title}>{t('Monitor')}</label>
                         <Space size={0} className={styles.space}>
                             <input type="button"
-                                   className={state.autoScroll ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
+                                   className={state.isAutoScrollEnabled ? styles.btn_auto_scroll_enabled : styles.btn_auto_scroll_disabled}
                                    onClick={actions.toggleAutoScroll}/>
                             <input type="button"
-                                   className={state.isUppercase ? styles.btn_uppercase_enabled : styles.btn_uppercase_disabled}
+                                   className={state.isUppercaseEnabled ? styles.btn_uppercase_enabled : styles.btn_uppercase_disabled}
                                    onClick={actions.toggleUppercase}/>
                             <input type="button"
-                                   className={state.debug ? styles.btn_debug_enabled : styles.btn_debug_disabled}
+                                   className={state.isDebugEnabled ? styles.btn_debug_enabled : styles.btn_debug_disabled}
                                    onClick={actions.toggleDebug}/>
                             <input type="button" className={styles.btn_clear} onClick={actions.clearReceivedLines}/>
                             <input type="button" className={styles.btn_transparent}
@@ -117,15 +111,19 @@ class Index extends React.Component {
                             placeholder={t("press enter to send")}
                             className={styles.input_g_code}
                             onPressEnter={actions.onPressEnter}
-                            isUppercase={state.isUppercase}
+                            isUppercaseEnabled={state.isUppercaseEnabled}
                         />
                         <Input.TextArea
-                            ref={this.refTextArea}
+                            ref={this.refInputTextArea}
                             className={styles.input_received}
                             size="small"
                             allowClear={true}
-                            value={state.debug ? state.receivedLines4debug.join("\n") : state.receivedLines4normal.join("\n")}
                             disabled={true}
+                            value={
+                                state.isDebugEnabled ? state.receivedLines.join('\n') : (state.receivedLines.filter(value => {
+                                    return !["ok", "wait"].includes(value);
+                                })).join('\n')
+                            }
                         />
                     </div>
                 </div>
