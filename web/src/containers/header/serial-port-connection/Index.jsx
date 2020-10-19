@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../../reducers/serialPort';
 import {actions as headerActions} from "../../../reducers/header";
 import {withTranslation} from 'react-i18next';
+import messageI18n from "../../../utils/messageI18n";
 
 class Index extends React.Component {
     state = {
@@ -18,7 +19,12 @@ class Index extends React.Component {
 
     actions = {
         openSerialPort: () => {
-            this.props.openSerialPort(this.state.selectedPath)
+            const path = this.props.path;
+            if (path) {
+                messageI18n.warning(`Can't connect, already connected to ${path}`);
+            } else {
+                this.props.openSerialPort(this.state.selectedPath)
+            }
         },
         closeSerialPort: () => {
             this.props.closeSerialPort()
