@@ -50,8 +50,10 @@ class Index extends PureComponent {
                 value = value.toUpperCase();
             }
             this.setState({value: undefined});
-            this.hisroty.push(value);
-            this.index = this.hisroty.length;
+            if (value.length > 0) {
+                this.hisroty.push(value);
+                this.index = this.hisroty.length;
+            }
             this.props.onPressEnter(value);
         }
     };
