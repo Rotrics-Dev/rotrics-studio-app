@@ -3,7 +3,7 @@ import {TAP_BASIC, TAP_LASER, TAP_P3D, TAP_CODE, TAP_SETTINGS, TAB_WRITE_AND_DRA
 const ACTION_UPDATE_STATE = 'taps/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    tap: TAP_BASIC
+    tap: TAP_P3D
 };
 
 export const actions = {

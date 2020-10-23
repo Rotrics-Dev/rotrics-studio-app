@@ -17,7 +17,7 @@ class Index extends PureComponent {
 
     componentDidMount() {
         document.addEventListener('keydown', (e) => {
-            if (e.target === this.refInput.current.input) {
+            if (this.refInput.current && this.refInput.current.input === e.target) {
                 switch (e.keyCode) {
                     case 38: {
                         //arrow up

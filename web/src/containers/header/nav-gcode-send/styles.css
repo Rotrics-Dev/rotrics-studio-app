@@ -1,0 +1,80 @@
+.btn_play {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/play.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px 0 0 4px;
+    vertical-align: middle;
+}
+
+.btn_play:disabled,
+.btn_play:active {
+    opacity: 0.4;
+}
+
+.btn_pause {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/pause.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px 0 0 4px;
+    vertical-align: middle;
+}
+
+.btn_pause:disabled,
+.btn_pause:active {
+    opacity: 0.4;
+}
+
+.btn_stop {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/stop.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: solid #C0C0C0;
+    border-width: 1px 1px 1px 0;
+    border-radius: 0 4px 4px 0;
+    vertical-align: middle;
+}
+
+.btn_stop:disabled,
+.btn_stop:active {
+    opacity: 0.4;
+}
+
+.btn_run_boundary {
+    width: 30px;
+    height: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-image: url(./images/run-boundary.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_run_boundary:disabled,
+.btn_run_boundary:active {
+    opacity: 0.4;
+}
+
+

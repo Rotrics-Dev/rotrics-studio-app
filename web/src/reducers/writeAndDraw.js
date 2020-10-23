@@ -1,14 +1,11 @@
 import _ from 'lodash';
-import {computeBoundary} from "../containers/writeAndDraw/lib/toolPathUtils";
 import {uploadImage, generateSvg} from "../api";
 import Model2D from "../containers/writeAndDraw/lib/Model2D";
-import write_and_draw from '../containers/writeAndDraw/lib/settings/write_and_draw.json'
-import {persistents, WORK_HEIGHT} from "./persistentData";
 
 const ACTION_UPDATE_STATE = 'writeAndDraw/ACTION_UPDATE_STATE';
 
-
 const INITIAL_STATE = {
+    rendererParent: null,
     model: null, //选中的model
     transformation: null,
     config: null,
@@ -18,46 +15,6 @@ const INITIAL_STATE = {
     gcode: null,
     //text独有
     config_text: null,
-    write_and_draw: _.cloneDeep(write_and_draw)
-};
-
-let rendererParent = null;
-
-/**
- * 所有模型都preview后才能调用，控制逻辑由ui处理
- * @returns {Array}
- */
-const getGcode4runBoundary = () => {
-    const min = -Number.MAX_VALUE;
-    const max = Number.MAX_VALUE;
-    let _minX = max, _minY = max;
-    let _maxX = min, _maxY = min;
-    for (let i = 0; i < rendererParent.children.length; i++) {
-        const model = rendererParent.children[i];
-        const {toolPathLines, settings} = model;
-        const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
-        _minX = Math.min(minX, _minX);
-        _maxX = Math.max(maxX, _maxX);
-        _minY = Math.min(minY, _minY);
-        _maxY = Math.max(maxY, _maxY);
-    }
-
-    const p1 = {x: _minX.toFixed(1), y: _minY.toFixed(1)};
-    const p2 = {x: _maxX.toFixed(1), y: _minY.toFixed(1)};
-    const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
-    const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
-    const gcodeArr = [];
-    const jogHeightPen = /*persistents.getFloat(WORK_HEIGHT.PEN) +*/ 10;
-    gcodeArr.push('M2000')
-    gcodeArr.push(`G1 X${p1.x} Y${p1.y}` + `Z${jogHeightPen} F2000`);
-    gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);
-    gcodeArr.push(`G1 X${p2.x} Y${p2.y}`);
-    gcodeArr.push(`G1 X${p3.x} Y${p3.y}`);
-    gcodeArr.push(`G1 X${p4.x} Y${p4.y}`);
-    gcodeArr.push(`G1 X${p1.x} Y${p1.y}`);
-    // gcodeArr.push("M5");
-    const gcode = gcodeArr.join("\n") + "\n";
-    return gcode;
 };
 
 const actions = {
@@ -67,9 +24,10 @@ const actions = {
             state
         };
     },
-    setRendererParent: (object3d) => {
-        rendererParent = object3d;
-        return {type: null};
+    setRendererParent: (object3d) => (dispatch, getState) => {
+        dispatch(actions._updateState({
+            rendererParent: object3d
+        }));
     },
     addModel: (fileType, file) => async (dispatch, getState) => {
         if (!["svg", "text"].includes(fileType)) {
@@ -88,6 +46,7 @@ const actions = {
         console.log("## response: " + JSON.stringify(response))
         model.loadImg(url, width, height);
 
+        const {rendererParent} = getState().writeAndDraw;
         for (const child of rendererParent.children) {
             child.setSelected(false);
         }
@@ -128,6 +87,7 @@ const actions = {
     },
     selectModel: (model) => (dispatch, getState) => {
         const selected = getState().writeAndDraw.model;
+        const {rendererParent} = getState().writeAndDraw;
         if (model === selected) {
             return {type: null};
         }
@@ -149,6 +109,7 @@ const actions = {
     },
     removeSelected: () => (dispatch, getState) => {
         const selected = getState().writeAndDraw.model;
+        const {rendererParent} = getState().writeAndDraw;
         if (!selected) {
             return {type: null};
         }
@@ -166,6 +127,7 @@ const actions = {
         }));
     },
     removeAll: () => (dispatch, getState) => {
+        const {rendererParent} = getState().writeAndDraw;
         if (rendererParent.children.length === 0) {
             return {type: null};
         }
@@ -225,11 +187,6 @@ const actions = {
             gcode: null
         }));
     },
-    updateWriteAndDrawParameters: (key, value) => (dispatch, getState) => {
-        const write_and_draw = getState().writeAndDraw.write_and_draw;
-        write_and_draw[key].default_value = value;
-        dispatch(actions._updateState({write_and_draw: _.cloneDeep(write_and_draw)}));
-    },
     //text独有
     updateConfigText: (key, value) => async (dispatch, getState) => {
         const {model} = getState().writeAndDraw;
@@ -260,11 +217,12 @@ const actions = {
         }));
     },
     //g-code
-    generateGcode: (write_and_draw) => (dispatch, getState) => {
+    generateGcode: () => (dispatch, getState) => {
+        const {rendererParent} = getState().writeAndDraw;
         const gcodeArr = [];
         for (let i = 0; i < rendererParent.children.length; i++) {
             const model = rendererParent.children[i];
-            gcodeArr.push(model.generateGcode(write_and_draw));
+            gcodeArr.push(model.generateGcode());
         }
         const gcode = gcodeArr.join("\n");
         dispatch(actions._updateState({
@@ -282,5 +240,5 @@ const reducer = (state = INITIAL_STATE, action) => {
     }
 };
 
-export {actions, getGcode4runBoundary};
+export {actions};
 export default reducer;

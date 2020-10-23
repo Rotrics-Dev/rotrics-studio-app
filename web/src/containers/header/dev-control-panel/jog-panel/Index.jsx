@@ -45,11 +45,11 @@ class Index extends React.Component {
             this.actions._moveRelative(`G0 Z${-this.state.step}`)
         },
         z0: () => {
-            this.props.startTask("G0 Z0")
+            this.props.send("G0 Z0")
         },
         home: () => {
             const gcode = ['M1112', 'M114'].join("\n");
-            this.props.startTask(gcode)
+            this.props.send(gcode)
         },
         leftTop: () => {
             this.actions._moveRelative(`G0 X${-this.state.step} Y${this.state.step}`)
@@ -102,14 +102,14 @@ class Index extends React.Component {
             //         break;
             // }
             // this.props.startTask(`G0 Z${workHeight}\n`, false)
-            this.props.startTask('G0 Z0')
+            this.props.send('G0 Z0')
         },
         //G90: absolute position
         //G91: relative position
         //G92: set position
         _moveRelative: (moveCmd) => {
             const gcode = ['G91', moveCmd, 'G90', 'M114'].join("\n");
-            this.props.startTask(gcode)
+            this.props.send(gcode)
         },
         changeJogSpeed: (value) => {
             this.setState({jogSpeed: value})
@@ -117,7 +117,7 @@ class Index extends React.Component {
         afterChangeJogSpeed: (value) => {
             this.setState({jogSpeed: value}, () => {
                 const gcode = [`G0 F${value}`].join("\n");
-                this.props.startTask(gcode);
+                this.props.send(gcode);
             });
         },
         changeMotionMode: (e) => {
@@ -125,10 +125,10 @@ class Index extends React.Component {
             this.setState({motionMode: value}, () => {
                 switch (value) {
                     case 'Fast':
-                        this.props.startTask('M2001');
+                        this.props.send('M2001');
                         break;
                     case 'Linear':
-                        this.props.startTask('M2000');
+                        this.props.send('M2000');
                         break;
                 }
             });
@@ -236,7 +236,7 @@ class Index extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
+        send: (gcode) => dispatch(gcodeSendActions.send(gcode)),
     };
 };
 

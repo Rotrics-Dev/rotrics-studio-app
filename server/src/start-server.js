@@ -22,7 +22,6 @@ import {
     SERIAL_PORT_ACTION_OPEN,
     SERIAL_PORT_ACTION_CLOSE,
     SERIAL_PORT_ACTION_WRITE,
-
     SERIAL_PORT_ON_GET_ALL_PATHS,
     SERIAL_PORT_ON_GET_OPEN_PATH,
     SERIAL_PORT_ON_OPEN,
@@ -35,15 +34,19 @@ import {
     SERIAL_PORT_ON_INSERT,
     SERIAL_PORT_ON_PULL_OUT,
 
+    GCODE_SENDER_ACTION_START,
+    GCODE_SENDER_ACTION_PAUSE,
+    GCODE_SENDER_ACTION_RESUME,
+    GCODE_SENDER_ACTION_STOP,
+    GCODE_SENDER_ACTION_GET_STATUS,
+    GCODE_SENDER_ACTION_GET_PROGRESS,
+    GCODE_SENDER_ON_WARNING,
+    GCODE_SENDER_ON_STATUS_CHANGE,
+    GCODE_SENDER_ON_PROGRESS_CHANGE,
+
     TOOL_PATH_GENERATE_LASER,
     TOOL_PATH_GENERATE_WRITE_AND_DRAW,
 
-    GCODE_SENDER_STATUS_CHANGE,
-    GCODE_SENDER_START,
-    GCODE_SENDER_STOP,
-    GCODE_SENDER_PAUSE,
-    GCODE_SENDER_RESUME,
-    GCODE_SENDER_WARNING,
     P3D_CONFIG_MATERIAL_SETTINGS_FETCH,
     P3D_CONFIG_MATERIAL_SETTING_UPDATE,
     P3D_CONFIG_MATERIAL_SETTING_DELETE,
@@ -369,19 +372,29 @@ const setupSocket = () => {
             });
 
             //gcode sender
-            socket.on(GCODE_SENDER_START, (data) => {
-                const {gcode, isAckChange, isLaser, taskId} = data;
-                gcodeSender.start(gcode, isAckChange, isLaser, taskId)
+            socket.on(GCODE_SENDER_ACTION_START, ({gcode, isLaser}) => {
+                gcodeSender.start({gcode, isLaser})
             });
-            socket.on(GCODE_SENDER_PAUSE, () => gcodeSender.pause());
-            socket.on(GCODE_SENDER_RESUME, () => gcodeSender.resume());
-            socket.on(GCODE_SENDER_STOP, () => gcodeSender.stop());
+            socket.on(GCODE_SENDER_ACTION_PAUSE, () => gcodeSender.pause());
+            socket.on(GCODE_SENDER_ACTION_RESUME, () => gcodeSender.resume());
+            socket.on(GCODE_SENDER_ACTION_STOP, () => gcodeSender.stop());
+            socket.on(GCODE_SENDER_ACTION_GET_STATUS, () => {
+                const {preStatus, curStatus} = gcodeSender;
+                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus})
+            });
+            socket.on(GCODE_SENDER_ACTION_GET_PROGRESS, () => {
+                const {total, sent} = gcodeSender;
+                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent})
+            });
 
-            gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
-                socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
+            gcodeSender.on(GCODE_SENDER_ON_WARNING, ({msg}) => {
+                socket.emit(GCODE_SENDER_ON_WARNING, {msg});
             });
-            gcodeSender.on(GCODE_SENDER_WARNING, (data) => {
-                socket.emit(GCODE_SENDER_WARNING, data);
+            gcodeSender.on(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus}) => {
+                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus});
+            });
+            gcodeSender.on(GCODE_SENDER_ON_PROGRESS_CHANGE, ({total, sent}) => {
+                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent});
             });
 
             //laser

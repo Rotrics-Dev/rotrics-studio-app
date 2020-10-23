@@ -27,7 +27,11 @@ class Index extends React.Component {
             }
         },
         closeSerialPort: () => {
-            this.props.closeSerialPort()
+            if (this.props.curStatus !== 'idle') {
+                messageI18n.warning(`Can't disconnect, there G-code sending.`);
+            } else {
+                this.props.closeSerialPort();
+            }
         },
         selectPath: (selectedPath) => {
             this.setState({selectedPath})
@@ -109,9 +113,12 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    const {curStatus} = state.gcodeSend;
     const {paths, path} = state.serialPort;
     const {serialPortConnectionVisible} = state.header;
+    // console.log('curStatus: ' + curStatus)
     return {
+        curStatus,
         paths,
         path,
         serialPortConnectionVisible

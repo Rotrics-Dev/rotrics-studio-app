@@ -2,9 +2,9 @@ import EventEmitter from 'events';
 import serialPortManager from './serialPortManager.js';
 import deviceStateMonitor from './deviceStateMonitor.js';
 import {
-    GCODE_SENDER_WARNING,
-    GCODE_SENDER_STATUS_CHANGE,
-    GCODE_SENDER_PROGRESS_CHANGE,
+    GCODE_SENDER_ON_WARNING,
+    GCODE_SENDER_ON_STATUS_CHANGE,
+    GCODE_SENDER_ON_PROGRESS_CHANGE,
     SERIAL_PORT_ACTION_CLOSE
 } from "./constants";
 
@@ -23,52 +23,46 @@ class GcodeSender extends EventEmitter {
     constructor() {
         super();
         this.lines = []; // g-code string split to lines
-        this.total = 0; // line count of g-code
+        this.total = 0; // line count of g-code total
         this.sent = 0;  // line count of g-code sent
         this.preStatus = null; // status: idle, started, paused, stopping
         this.curStatus = "idle";
-        this.taskId = null;
-        this.isAckChange = false;
         this.isLaser = false;
 
         serialPortManager.on(SERIAL_PORT_ACTION_CLOSE, () => {
             if (["started", "paused"].includes(this.curStatus)) {
                 const msg = "DexArm disconnected, G-code sending task has been removed.";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
             }
             this._reset();
         });
     }
 
     _emitStatus() {
-        if (this.isAckChange) {
-            const {preStatus, curStatus, taskId} = this;
-            this.emit(GCODE_SENDER_STATUS_CHANGE, {preStatus, curStatus, taskId});
-        }
+        const {preStatus, curStatus} = this;
+        this.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus});
     }
 
     _emitProgress() {
-        if (this.isAckChange) {
-            const {total, sent, taskId} = this;
-            this.emit(GCODE_SENDER_PROGRESS_CHANGE, {total, sent, taskId});
-        }
+        const {total, sent} = this;
+        this.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent});
     }
 
     //TODO: 逻辑，laser cover, 打开的情况下，再执行laser task。应该监听serial port data，构造其中就监听
-    async start(gcode, isAckChange, isLaser, taskId) {
+    async start({gcode, isLaser}) {
         if (!serialPortManager.isOpen()) {
             const msg = "Please connect DexArm first";
-            this.emit(GCODE_SENDER_WARNING, {msg});
+            this.emit(GCODE_SENDER_ON_WARNING, {msg});
             return;
         }
         if (!serialPortManager.readLineParser) {
             const msg = "Param error: readLineParser is null";
-            this.emit(GCODE_SENDER_WARNING, {msg});
+            this.emit(GCODE_SENDER_ON_WARNING, {msg});
             return;
         }
         if (deviceStateMonitor.isLaserCoverOpened && isLaser) {
             const msg = "Laser cover opened, please close first";
-            this.emit(GCODE_SENDER_WARNING, {msg});
+            this.emit(GCODE_SENDER_ON_WARNING, {msg});
             return;
         }
         switch (this.curStatus) {
@@ -80,8 +74,6 @@ class GcodeSender extends EventEmitter {
                 this.sent = 0;
                 this.preStatus = this.curStatus;
                 this.curStatus = "started";
-                this.taskId = taskId;
-                this.isAckChange = isAckChange;
                 this.isLaser = isLaser;
                 this._emitStatus();
                 await this._startSend();
@@ -89,17 +81,17 @@ class GcodeSender extends EventEmitter {
             }
             case "started": {
                 const msg = "G-code sending task started, please do not repeat";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "paused": {
                 const msg = "G-code sending task paused, please resume or stop first";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "stopping": {
                 const msg = "G-code sending task stopping, please wait";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
         }
@@ -111,8 +103,6 @@ class GcodeSender extends EventEmitter {
         this.sent = 0;
         this.preStatus = null;
         this.curStatus = "idle";
-        this.taskId = null;
-        this.isAckChange = false;
         this.isLaser = false;
     }
 
@@ -157,7 +147,7 @@ class GcodeSender extends EventEmitter {
         switch (this.curStatus) {
             case "idle": {
                 const msg = "No G-code sending task";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "started": {
@@ -168,12 +158,12 @@ class GcodeSender extends EventEmitter {
             }
             case "paused": {
                 const msg = "G-code sending task paused, please do not repeat";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "stopping": {
                 const msg = "G-code sending task stopping, please wait";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
         }
@@ -182,18 +172,18 @@ class GcodeSender extends EventEmitter {
     async resume() {
         if (deviceStateMonitor.isLaserCoverOpened && this.isLaser) {
             const msg = "Laser cover opened, please close first";
-            this.emit(GCODE_SENDER_WARNING, {msg});
+            this.emit(GCODE_SENDER_ON_WARNING, {msg});
             return;
         }
         switch (this.curStatus) {
             case "idle": {
                 const msg = "No G-code sending task";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "started": {
                 const msg = "G-code sending task started, no need resume";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "paused": {
@@ -205,7 +195,7 @@ class GcodeSender extends EventEmitter {
             }
             case "stopping": {
                 const msg = "G-code sending task stopping, please wait";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
         }
@@ -215,7 +205,7 @@ class GcodeSender extends EventEmitter {
         switch (this.curStatus) {
             case "idle": {
                 const msg = "No G-code sending task";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
             case "started":
@@ -243,7 +233,7 @@ class GcodeSender extends EventEmitter {
             }
             case "stopping": {
                 const msg = "G-code sending task paused, please do not repeat";
-                this.emit(GCODE_SENDER_WARNING, {msg});
+                this.emit(GCODE_SENDER_ON_WARNING, {msg});
                 break;
             }
         }

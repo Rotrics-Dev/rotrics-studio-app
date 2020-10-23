@@ -1,70 +1,27 @@
 import _ from 'lodash';
-import {computeBoundary} from "../containers/laser/lib/toolPathUtils";
 import {generateSvg, uploadImage} from "../api";
 import Model2D from "../containers/laser/lib/Model2D";
 
 const ACTION_UPDATE_STATE = 'laser/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    model: null, //选中的model
+    rendererParent: null,
+    model: null, // the selected model
     transformation: null,
     config: null,
     working_parameters: null,
     modelCount: 0,
-    isAllPreviewed: false, //是否所有model全部previewed
+    isAllPreviewed: false, // 是否所有model全部previewed
     gcode: null,
-    //text独有
-    config_text: null
-};
-
-let rendererParent = null;
-
-/**
- * 所有模型都preview后才能调用，控制逻辑由ui处理
- * @returns {Array}
- */
-const getGcode4runBoundary = () => {
-    const min = -Number.MAX_VALUE;
-    const max = Number.MAX_VALUE;
-    let _minX = max, _minY = max;
-    let _maxX = min, _maxY = min;
-    for (let i = 0; i < rendererParent.children.length; i++) {
-        const model = rendererParent.children[i];
-        const {toolPathLines, settings} = model;
-        const {minX, maxX, minY, maxY} = computeBoundary(toolPathLines, settings);
-        _minX = Math.min(minX, _minX);
-        _maxX = Math.max(maxX, _maxX);
-        _minY = Math.min(minY, _minY);
-        _maxY = Math.max(maxY, _maxY);
-    }
-    const p1 = {x: _minX.toFixed(1), y: _minY.toFixed(1)};
-    const p2 = {x: _maxX.toFixed(1), y: _minY.toFixed(1)};
-    const p3 = {x: _maxX.toFixed(1), y: _maxY.toFixed(1)};
-    const p4 = {x: _minX.toFixed(1), y: _maxY.toFixed(1)};
-    const gcodeArr = [];
-    gcodeArr.push("M2000");
-    gcodeArr.push("G0 F2000");
-    gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
-    // gcodeArr.push("M3 S255");
-    gcodeArr.push(`G0 X${p2.x} Y${p2.y}`);
-    gcodeArr.push(`G0 X${p3.x} Y${p3.y}`);
-    gcodeArr.push(`G0 X${p4.x} Y${p4.y}`);
-    gcodeArr.push(`G0 X${p1.x} Y${p1.y}`);
-    // gcodeArr.push("M5");
-    const gcode = gcodeArr.join("\n") + "\n";
-    return gcode;
+    config_text: null  // text独有
 };
 
 const actions = {
     _updateState: (state) => {
-        return {
-            type: ACTION_UPDATE_STATE,
-            state
-        };
+        return {type: ACTION_UPDATE_STATE, state};
     },
-    setRendererParent: (object3d) => {
-        rendererParent = object3d;
-        return {type: null};
+    setRendererParent: (object3d) => (dispatch) => {
+        dispatch(actions._updateState({rendererParent: object3d}));
     },
     addModel: (fileType, file) => async (dispatch, getState) => {
         if (!["bw", "greyscale", "svg", "text"].includes(fileType)) {
@@ -81,9 +38,9 @@ const actions = {
 
         const response = await uploadImage(file);
         const {url, width, height} = response;
-        console.log("## response: " + JSON.stringify(response))
         model.loadImg(url, width, height);
 
+        const {rendererParent} = getState().laser;
         for (const child of rendererParent.children) {
             child.setSelected(false);
         }
@@ -103,7 +60,6 @@ const actions = {
             config_text
         }));
 
-        // preview
         model.addEventListener('preview', (event) => {
             const {isPreviewed} = event.data;
             if (!isPreviewed) {
@@ -124,6 +80,7 @@ const actions = {
     },
     selectModel: (model) => (dispatch, getState) => {
         const selected = getState().laser.model;
+        const {rendererParent} = getState().laser;
         if (model === selected) {
             return {type: null};
         }
@@ -145,6 +102,7 @@ const actions = {
     },
     removeSelected: () => (dispatch, getState) => {
         const selected = getState().laser.model;
+        const {rendererParent} = getState().laser;
         if (!selected) {
             return {type: null};
         }
@@ -161,6 +119,7 @@ const actions = {
         }));
     },
     removeAll: () => (dispatch, getState) => {
+        const {rendererParent} = getState().laser;
         if (rendererParent.children.length === 0) {
             return {type: null};
         }
@@ -185,9 +144,10 @@ const actions = {
         return {type: null};
     },
     //update settings
+    //TODO: 比较前后settings是否变化；不变则不更新数据
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const selected = getState().laser.model;
-        const {workHeightLaser} = getState().persistentData
+        const {workHeightLaser} = getState().persistentData;
         if (!selected) {
             return {type: null};
         }
@@ -236,30 +196,27 @@ const actions = {
         const file = new File([blob], filename);
 
         const response = await uploadImage(file);
-
         const {url, width, height} = response;
-
         model.loadImg(url, width, height);
-
         model.preview();
 
-        const {transformation} = model.settings;
         dispatch(actions._updateState({
             config_text: _.cloneDeep(config_text),
-            transformation: _.cloneDeep(transformation),
+            transformation: _.cloneDeep(model.settings.transformation),
+            isAllPreviewed: false,
+            gcode: null
         }));
     },
     //g-code
     generateGcode: () => (dispatch, getState) => {
+        const {rendererParent} = getState().laser;
         const gcodeArr = [];
         for (let i = 0; i < rendererParent.children.length; i++) {
             const model = rendererParent.children[i];
             gcodeArr.push(model.generateGcode());
         }
-        const gcode = gcodeArr.join("\n");
-        dispatch(actions._updateState({
-            gcode
-        }));
+        const gcode = gcodeArr.join('\n');
+        dispatch(actions._updateState({gcode}));
     },
 };
 
@@ -273,5 +230,5 @@ const reducer = (state = INITIAL_STATE, action) => {
     }
 };
 
-export {actions, getGcode4runBoundary};
+export {actions};
 export default reducer;

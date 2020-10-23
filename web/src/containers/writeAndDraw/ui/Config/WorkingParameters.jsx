@@ -23,19 +23,19 @@ class WorkingParameters extends PureComponent {
             this.props.updateWorkingParameters("work_speed", value)
         },
         setJogPenOffset: (value) => {
-            this.props.updateWriteAndDrawParameters("jog_pen_offset", value)
+            this.props.updateWorkingParameters("jog_pen_offset", value)
         }
     };
 
     render() {
-        const {model, working_parameters, config, jog_pen_offset} = this.props;
+        const {model, working_parameters, config} = this.props;
         const {t} = this.props;
 
         if (!model || !working_parameters || !config) {
             return null;
         }
         const actions = this.actions;
-        const {work_speed, jog_speed} = working_parameters.children;
+        const {work_speed, jog_speed, jog_pen_offset} = working_parameters.children;
         return (
             <div>
                 <Tooltip
@@ -97,20 +97,16 @@ class WorkingParameters extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {model, working_parameters, config} = state.writeAndDraw;
-    const {jog_pen_offset} = state.writeAndDraw.write_and_draw;
-
     return {
         model,
         working_parameters,
-        config,
-        jog_pen_offset
+        config
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         updateWorkingParameters: (key, value) => dispatch(writeAndDrawActions.updateWorkingParameters(key, value)),
-        updateWriteAndDrawParameters: (key, value) => dispatch(writeAndDrawActions.updateWriteAndDrawParameters(key, value))
     };
 };
 

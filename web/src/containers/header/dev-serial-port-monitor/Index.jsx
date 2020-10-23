@@ -4,11 +4,11 @@ import Draggable from 'react-draggable';
 import {Space, Input} from 'antd';
 import {withTranslation} from 'react-i18next';
 import styles from './styles.css';
-import {actions as serialPortActions} from "../../../reducers/serialPort";
 import socketClientManager from "../../../socket/socketClientManager";
 import {SERIAL_PORT_ON_RECEIVED_LINE} from "../../../constants";
 import {actions as headerActions} from "../../../reducers/header";
 import InputWithHistory from '../../../components/InputWithHistory/Index.jsx';
+import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
 
 const MAX_COUNT_RECEIVED_LINE = 150;
 
@@ -44,7 +44,7 @@ class Index extends React.Component {
 
     actions = {
         onPressEnter: (value) => {
-            this.props.writeSerialPort(value + '\n');
+            this.props.send(value);
         },
         clearReceivedLines: () => {
             this.setState({receivedLines: []})
@@ -141,7 +141,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        writeSerialPort: (str) => dispatch(serialPortActions.write(str)),
+        send: (gcode) => dispatch(gcodeSendActions.send(gcode)),
         changeVisible4monitor: (value) => dispatch(headerActions.changeVisible4monitor(value))
     };
 };

@@ -1,0 +1,55 @@
+.btn_official_website {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/official_website.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px 0 0 4px;
+    vertical-align: middle;
+}
+
+.btn_official_website:active {
+    opacity: 0.4;
+}
+
+.btn_manual {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/manual.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: solid #C0C0C0;
+    border-width: 1px 0 1px 0;
+    vertical-align: middle;
+}
+
+.btn_manual:active {
+    opacity: 0.4;
+}
+
+.btn_forum {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/forum.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 0 4px 4px 0;
+    vertical-align: middle;
+}
+
+.btn_forum:active {
+    opacity: 0.4;
+}
+
+

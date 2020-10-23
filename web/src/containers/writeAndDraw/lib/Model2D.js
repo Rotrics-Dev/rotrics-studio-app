@@ -211,7 +211,6 @@ class Model2D extends THREE.Group {
             this.settings.transformation.children.rotation.default_value
         )
 
-        console.log("2D越界检测:" + this.inWorkArea);
 
         this._display("edge");
 
@@ -272,8 +271,8 @@ class Model2D extends THREE.Group {
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode(write_and_draw) {
-        return toolPathLines2gcode(this.toolPathLines, this.settings, write_and_draw);
+    generateGcode() {
+        return toolPathLines2gcode(this.toolPathLines, this.settings);
     }
 
     clone() {

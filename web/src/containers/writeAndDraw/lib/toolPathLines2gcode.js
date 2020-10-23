@@ -2,13 +2,13 @@
 // import {persistents, WORK_HEIGHT_PLACE_HOLDER} from "../../../reducers/persistentData";
 // import {FRONT_END} from "../../../utils/workAreaUtils";
 
-const toolPathLines2gcode = (toolPathLines, settings, write_and_draw) => {
+const toolPathLines2gcode = (toolPathLines, settings) => {
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
 
     const work_speed_value = settings.working_parameters.children.work_speed.default_value;
     const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
-    const jog_pen_offset = write_and_draw.jog_pen_offset.default_value;//空闲抬笔高度
+    const jog_pen_offset = settings.working_parameters.children.jog_pen_offset.default_value;//空闲抬笔高度
     // const workHeight = persistents.getFloat(FRONT_END.PEN);
 
     const {x, y} = settings.transformation.children;

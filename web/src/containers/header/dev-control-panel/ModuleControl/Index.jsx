@@ -48,7 +48,7 @@ class Index extends React.Component {
                     gcode = 'M888 P2';
                     break;
             }
-            this.props.startTask(gcode);
+            this.props.send(gcode);
         }
     };
 
@@ -64,14 +64,14 @@ class Index extends React.Component {
             } else {
                 gcode = "M5";
             }
-            this.props.startTask(gcode);
+            this.props.send(gcode);
         },
         changePowerPercent: (value) => {
             this.setState({laserPowerPercent: value})
         },
         afterChangePowerPercent: (value) => {
             this.setState({laserPowerPercent: value, isLaserOn: true}, () => {
-                this.props.startTask(`M3 S${Math.round(this.state.laserPowerPercent * 2.55)}`);
+                this.props.send(`M3 S${Math.round(this.state.laserPowerPercent * 2.55)}`);
             });
         }
     };
@@ -92,7 +92,7 @@ class Index extends React.Component {
                     gcode = 'M1003';
                     break;
             }
-            this.props.startTask(gcode);
+            this.props.send(gcode);
         }
     };
 
@@ -115,7 +115,7 @@ class Index extends React.Component {
                     gcode = 'M1003';
                     break;
             }
-            this.props.startTask(gcode);
+            this.props.send(gcode);
         }
     };
 
@@ -214,7 +214,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
+        send: (gcode) => dispatch(gcodeSendActions.send(gcode)),
         changeVisible4p3dCalibration: (value) => dispatch(headerActions.changeVisible4p3dCalibration(value))
     };
 };

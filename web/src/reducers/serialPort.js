@@ -126,7 +126,7 @@ export const actions = {
             messageI18n.warning(message);
         });
         socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-            console.log('receive: ', line)
+            // console.log('receive: ', line)
             processGcodeResponseListen(line);
             //存在单词拼写错误，fix it
             if (line.indexOf("beyound limit..") !== -1) {

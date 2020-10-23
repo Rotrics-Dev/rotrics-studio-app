@@ -223,9 +223,8 @@ class Model2D extends THREE.Group {
             this.settings.transformation.children.width.default_value,
             this.settings.transformation.children.height.default_value,
             this.settings.transformation.children.rotation.default_value
-        )
+        );
 
-        console.log("2D越界检测:" + this.inWorkArea);
 
         this._display("edge");
 
@@ -297,7 +296,7 @@ class Model2D extends THREE.Group {
         const img_width = this.settings.transformation.children.img_width.default_value;
         const img_height = this.settings.transformation.children.img_height.default_value;
 
-        instance.loadImg(url, img_width, img_height)
+        instance.loadImg(url, img_width, img_height);
 
         return instance;
     }

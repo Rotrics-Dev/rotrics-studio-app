@@ -4,7 +4,7 @@ import {actions as gcodeSendActions} from './gcodeSend';
 import {actions as codeProjectActions} from "./codeProject";
 import {getUuid} from '../utils/index.js';
 import socketClientManager from "../socket/socketClientManager";
-import {GCODE_SENDER_STATUS_CHANGE, SERIAL_PORT_ON_RECEIVED_LINE} from "../constants";
+import {GCODE_SENDER_ON_STATUS_CHANGE, SERIAL_PORT_ON_RECEIVED_LINE} from "../constants";
 import {str2Number} from '../utils/index.js';
 import messageI18n from "../utils/messageI18n";
 
@@ -276,7 +276,7 @@ export const actions = {
                     const taskIdLocal = getUuid();
                     dispatch(gcodeSendActions.startTask(gcode, true, false, taskIdLocal, false, false));
                     if (blockName.indexOf('RS_SENSING') === -1) {
-                        socketClientManager.addServerListener(GCODE_SENDER_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
+                        socketClientManager.addServerListener(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
                             if (preStatus === "started" && curStatus === "idle" && taskId === taskIdLocal) {
                                 resolve();
                             }

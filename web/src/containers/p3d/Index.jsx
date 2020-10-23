@@ -9,14 +9,12 @@ import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
 import Info from "./ui/Info/Index.jsx";
 import GcodePreviewControl from "./ui/GcodePreviewControl/Index.jsx";
-import Config from "./ui/Config/Index.jsx";
+import ControlPanel from "./ui/ControlPanel/Index.jsx";
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import styles from './styles.css';
 import layout_styles from '../layout_styles.css';
-
-const {TabPane} = Tabs;
 
 class Index extends React.Component {
     operations = {
@@ -43,7 +41,7 @@ class Index extends React.Component {
                 messageI18n.warning('Load model first', 1);
                 return;
             }
-            const blob = exportModelsToBlob();
+            const blob = exportModelsToBlob(this.props.rendererParent4model);
             const date = new Date();
             const arr = [date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
             const fileName = arr.join("") + ".stl";
@@ -101,7 +99,7 @@ class Index extends React.Component {
                     <ToolBarI18n operations={operations} enabledInfo={enabledInfo} visibleInfo={visibleInfo}/>
                 </div>
                 <div className={layout_styles.div_right_panel}>
-                    <Config/>
+                    <ControlPanel/>
                 </div>
             </div>
         )
@@ -109,8 +107,9 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {model, modelCount, result} = state.p3dModel;
+    const {rendererParent4model, model, modelCount, result} = state.p3dModel;
     return {
+        rendererParent4model,
         result,
         model,
         modelCount

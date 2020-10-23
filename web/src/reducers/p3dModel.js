@@ -13,6 +13,7 @@ import GcodeToBufferGeometryWorker from '../containers/p3d/lib/GcodeToBufferGeom
 const ACTION_UPDATE_STATE = 'p3dModel/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
+    rendererParent4model: null,
     model: null,
     modelCount: 0,
     transformation: null,
@@ -23,14 +24,20 @@ const INITIAL_STATE = {
     layerCountVisible: 0, //当前显示的多少层gcode line
     lineTypeVisibility: null, //gcode渲染后，不同type的visibility
     bounds: null,
-    //progress
+    //slice progress
     progress: 0,
     progressTitle: "",
+    //slice result: {gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
+    gcodeFileName: null,
+    printTime: 0,
+    filamentLength: 0,
+    filamentWeight: 0,
+    gcodeFilePath: null,
+    gcodeUrl: null
 };
 
 const gcodeRenderingWorker = new GcodeToBufferGeometryWorker();
 
-let rendererParent4model = null;
 let rendererParent4gcode = null;
 
 const _computeAvailableXZ = (rendererParent4model, model) => {
@@ -142,9 +149,10 @@ const actions = {
             state
         };
     },
-    setRendererParent4model: (object3d) => {
-        rendererParent4model = object3d;
-        return {type: null};
+    setRendererParent4model: (object3d) => (dispatch, getState) => {
+        dispatch(actions._updateState({
+            rendererParent4model: object3d
+        }));
     },
     setRendererParent4gcode: (object3d) => {
         rendererParent4gcode = object3d;
@@ -174,6 +182,7 @@ const actions = {
                     convexBufferGeometry.addAttribute('position', modelConvexPositionAttribute);
 
                     const model = new Model3D(bufferGeometry, convexBufferGeometry, url, url);
+                    const {rendererParent4model} = getState().p3dModel;
                     const xz = _computeAvailableXZ(rendererParent4model, model);
                     model.position.x = xz.x;
                     model.position.z = xz.z /*- 300*/;//设置Y方向的偏移到 y300 陈会龙 2020年8月24日Z
@@ -195,13 +204,18 @@ const actions = {
                         modelCount,
                         transformation,
                         gcodeObj3d: null,
-                        result: null,
                         layerCount: 0,
                         layerCountVisible: 0,
                         lineTypeVisibility: null,
                         bounds: null,
                         progress: 100,
-                        progressTitle: 'Load model ok'
+                        progressTitle: 'Load model ok',
+                        gcodeFileName: null,
+                        printTime: 0,
+                        filamentLength: 0,
+                        filamentWeight: 0,
+                        gcodeFilePath: null,
+                        gcodeUrl: null
                     }));
                     break;
                 }
@@ -219,6 +233,7 @@ const actions = {
         };
     },
     selectModel: (model) => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         for (const child of rendererParent4model.children) {
             child.setSelected(false);
         }
@@ -230,7 +245,7 @@ const actions = {
         }));
     },
     removeSelected: () => (dispatch, getState) => {
-        console.log("remove")
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         rendererParent4model.remove(model);
@@ -240,14 +255,20 @@ const actions = {
             modelCount,
             transformation: null,
             gcodeObj3d: null,
-            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     removeAll: () => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         rendererParent4model.remove(...rendererParent4model.children);
         dispatch(actions._updateState({
@@ -255,14 +276,20 @@ const actions = {
             modelCount: 0,
             transformation: null,
             gcodeObj3d: null,
-            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     duplicateSelected: () => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         const newModel = model.clone();
@@ -283,11 +310,16 @@ const actions = {
         dispatch(actions._updateState({
             modelCount,
             gcodeObj3d: null,
-            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     undo: () => {
@@ -299,6 +331,7 @@ const actions = {
         return {type: null};
     },
     layFlat: () => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.layFlat();
@@ -309,14 +342,20 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
-            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     updateTransformation: (key, value) => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.updateTransformation(key, value);
@@ -327,10 +366,16 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
-            result: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     afterUpdateTransformation: (key, value) => (dispatch, getState) => {
+        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.updateTransformation(key, value);
@@ -342,11 +387,16 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
-            result: null,
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
         }));
     },
     //g-code
-    startSlice: () => async (dispatch, getState) => {
+    generateGcode: () => async (dispatch, getState) => {
         destoryGcodeObj3d();
 
         dispatch(actions._updateState({
@@ -354,12 +404,22 @@ const actions = {
         }));
 
         //导出数据并上传到server
-        const file = exportModelsToFile();
+        const {rendererParent4model} = getState().p3dModel;
+        const file = exportModelsToFile(rendererParent4model);
         const response = await uploadFile(file);
         const {url: stlUrl} = response;
 
         //设置初始状态
-        dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
+        dispatch(actions._updateState({
+            progress: 0,
+            progressTitle: "slicing",
+            gcodeFileName: null,
+            printTime: 0,
+            filamentLength: 0,
+            filamentWeight: 0,
+            gcodeFilePath: null,
+            gcodeUrl: null
+        }));
 
         //异步切片
         const materialSettingFilename = getState().p3dMaterialSettings.selected.filename;
@@ -376,10 +436,18 @@ const actions = {
             } else if (progress) {
                 dispatch(actions._updateState({progress, progressTitle: "slicing"}));
             } else if (result) {
-                //result: {gcodeName, printTime, filamentLength, filamentWeight, gcodePath}
+                const {gcodeName, printTime, filamentLength, filamentWeight, gcodePath} = result;
                 const gcodeUrl = window.serverCacheAddress + result.gcodeName;
-                result.gcodeUrl = gcodeUrl;
-                dispatch(actions._updateState({progress: 1, progressTitle: "slicing completed", result}));
+                dispatch(actions._updateState({
+                    progress: 1,
+                    progressTitle: "slicing completed",
+                    gcodeName,
+                    printTime,
+                    filamentLength,
+                    filamentWeight,
+                    gcodePath,
+                    gcodeUrl
+                }));
                 dispatch(actions._renderGcode(gcodeUrl));
             }
         });
@@ -452,6 +520,7 @@ const actions = {
                         }
                     };
 
+                    const {rendererParent4model} = getState().p3dModel;
                     for (const child of rendererParent4model.children) {
                         child.setMode('preview');
                     }
@@ -513,14 +582,14 @@ const addGcodeObj3d = (object3d) => {
     rendererParent4gcode.add(object3d);
 };
 
-const exportModelsToFile = () => {
-    const blob = exportModelsToBlob();
+const exportModelsToFile = (rendererParent4model) => {
+    const blob = exportModelsToBlob(rendererParent4model);
     const fileName = "output.stl";
     const file = new File([blob], fileName);
     return file;
 };
 
-const exportModelsToBlob = () => {
+const exportModelsToBlob = (rendererParent4model) => {
     const output = new ModelExporter().parseToBinaryStl(rendererParent4model);
     const blob = new Blob([output], {type: 'text/plain'});
     return blob;
