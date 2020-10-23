@@ -23,12 +23,9 @@ import {actions as p3dMaterialSettingsActions} from "../../reducers/p3dMaterialS
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
 import {actions as fontsActions} from "../../reducers/fonts";
 import notificationI18n from "../../utils/notificationI18n";
-import {withTranslation} from 'react-i18next';
 import {getUuid} from '../../utils/index.js';
 import {GA_tracking_id} from "./GA-tracking-id.json";
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
-
-const notificationKey = getUuid();
 
 ReactGA.initialize(GA_tracking_id, {
     debug: false,
@@ -38,6 +35,8 @@ ReactGA.initialize(GA_tracking_id, {
         siteSpeedSampleRate: 100
     }
 });
+
+const notificationKey = getUuid();
 
 class Index extends React.Component {
     constructor(props) {
@@ -148,7 +147,6 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const {tap} = this.props;
-        const {t} = this.props;
         return (
             <div>
                 <div className={styles.div_header}>
@@ -233,7 +231,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(codeActions.init());
             dispatch(codeProjectActions.init());
             dispatch(settingsGeneralActions.init());
-            //3dp
             dispatch(p3dMaterialSettingsActions.init());
             dispatch(p3dPrintSettingsActions.init());
             dispatch(fontsActions.init());
@@ -241,4 +238,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
