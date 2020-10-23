@@ -1,5 +1,4 @@
 import React from 'react';
-import Tooltip from '../Tooltip/Index.jsx';
 import {connect} from 'react-redux';
 import styles from './styles.css';
 import ReactGA from 'react-ga';
@@ -12,9 +11,6 @@ import Code from '../code/Index.jsx';
 import Settings from '../settings/Index.jsx';
 import Basic from '../basic/Index.jsx'
 import Debug from '../debug/Index.jsx'
-
-import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
-
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as codeActions} from "../../reducers/code";
@@ -22,19 +18,17 @@ import {actions as codeProjectActions} from "../../reducers/codeProject";
 import {actions as socketActions} from "../../reducers/socket";
 import {actions as gcodeSendActions} from "../../reducers/gcodeSend";
 import {actions as tapsActions} from "../../reducers/taps"
-
 import {actions as p3dPrintSettingsActions} from "../../reducers/p3dPrintSettings";
 import {actions as p3dMaterialSettingsActions} from "../../reducers/p3dMaterialSettings";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
 import {actions as fontsActions} from "../../reducers/fonts";
 import notificationI18n from "../../utils/notificationI18n";
 import {withTranslation} from 'react-i18next';
-
 import {getUuid} from '../../utils/index.js';
 import {GA_tracking_id} from "./GA-tracking-id.json";
+import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
 
 const notificationKey = getUuid();
-const tooltipId = getUuid();
 
 ReactGA.initialize(GA_tracking_id, {
     debug: false,
@@ -161,50 +155,33 @@ class Index extends React.Component {
                     <Header/>
                 </div>
                 <div className={styles.div_tap_bar}>
-                    <Tooltip
-                        id={tooltipId}
-                        place="right"/>
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("Basic")}
                         onClick={() => actions.setTap(TAP_BASIC)}
                         className={tap === TAP_BASIC ? styles.btn_basic_selected : styles.btn_basic}
                     />
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("Write&Draw")}
                         onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
                         className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
                     />
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("Laser")}
                         onClick={() => actions.setTap(TAP_LASER)}
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("3D Print")}
                         onClick={() => actions.setTap(TAP_P3D)}
                         className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("Code")}
                         onClick={() => actions.setTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
                     <button
-                        data-for={tooltipId}
-                        data-tip={t("Settings")}
                         onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
                     <button
-                    data-for={tooltipId}
-                    data-tip={t("Debug")}
-                    onClick={() => actions.setTap(TAP_DEBUG)}
-                    className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
+                        onClick={() => actions.setTap(TAP_DEBUG)}
+                        className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
                     />
                 </div>
                 <div className={styles.div_workspace}>
