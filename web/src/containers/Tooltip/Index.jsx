@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react';
 import ReactTooltip from "react-tooltip";
+import { Tooltip } from 'antd';
+
 import styles from './styles.css';
 import {connect} from 'react-redux';
 

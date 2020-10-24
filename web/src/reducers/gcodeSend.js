@@ -72,11 +72,19 @@ export const actions = {
                 if (preStatus === "idle" && curStatus === "started") {
                     messageI18n.info("Task started");
                 } else if (preStatus === "started" && curStatus === "idle") {
-                    messageI18n.success("Task completed");
+                    messageI18n.info("Task completed");
+                    dispatch(actions._updateState({
+                        task: null
+                    }));
                 } else if (preStatus === "started" && curStatus === "stopping") {
                     messageI18n.info("Task stopping");
                 } else if (preStatus === "stopping" && curStatus === "idle") {
                     messageI18n.info("Task stopped");
+                    dispatch(actions._updateState({
+                        total: 0,
+                        sent: 0,
+                        task: null
+                    }));
                 } else if (preStatus === "started" && curStatus === "paused") {
                     messageI18n.info("Task paused");
                 } else if (preStatus === "paused" && curStatus === "started") {
@@ -97,12 +105,10 @@ export const actions = {
         };
     },
     send: (gcode) => (dispatch, getState) => {
-        console.log("#send: " + gcode);
         socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode});
         dispatch(actions._updateState({task: null}));
     },
     startTask: (gcode, tap) => (dispatch, getState) => {
-        console.log("#startTask", tap);
         dispatch(actions._updateState({task: {gcode, tap}}));
         const isLaser = (tap === TAP_LASER);
         socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, isLaser});
