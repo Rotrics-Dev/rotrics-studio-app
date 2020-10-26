@@ -1,14 +1,11 @@
 import React from 'react';
 import {Radio, Collapse} from 'antd';
-import Tooltip from '../../../Tooltip/Index.jsx';
-import {getUuid} from "../../../../utils";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
 import {actions as p3dPrintSettingsActions} from "../../../../reducers/p3dPrintSettings";
 import Line from "../../../../components/Line/Index.jsx";
 
-const tooltipId = getUuid();
 const radioStyle = {
     display: 'block',
     height: '30px',
@@ -68,7 +65,7 @@ class PrintSettings extends React.Component {
                 const icon = category.icon;
                 const categoryKey = `${key}.children`;
                 const editable = !isOfficial;
-                const elements4settings = renderCategoryChildren(category.children, categoryKey, printSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
+                const elements4settings = renderCategoryChildren(category.children, categoryKey, printSettingsFilter, tCura, actions.updateSetting, editable);
                 collapsePanels = collapsePanels.concat(wrapCollapsePanel(header, icon, elements4settings));
             }
         }
@@ -77,10 +74,6 @@ class PrintSettings extends React.Component {
         const collapse = wrapCollapse(elements);
         return (
             <div>
-                <Tooltip
-                    id={tooltipId}
-                    place="left"
-                />
                 <Collapse expandIconPosition="right">
                     <Collapse.Panel
                         forceRender={true}

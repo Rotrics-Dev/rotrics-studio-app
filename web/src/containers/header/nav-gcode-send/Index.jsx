@@ -6,7 +6,7 @@ import {withTranslation} from 'react-i18next';
 import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
 import {TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
 import getGcode4runBoundary from "../../../utils/getGcode4runBoundary";
-import TooltipI18n from '../../TooltipI18n/Index.jsx';
+import Tooltip from '../../Tooltip/Index.jsx';
 
 class Index extends React.Component {
     getPropsByTap = (tap) => {
@@ -63,27 +63,27 @@ class Index extends React.Component {
         }
         return (
             <Space size={0}>
-                <TooltipI18n title={curStatus === "started" ? "pause G-code task" : "start G-code task"}>
+                <Tooltip placement="bottom" title={curStatus === "started" ? "pause G-code task" : "start G-code task"}>
                     <button
                         disabled={startOrPauseDisabled}
                         onClick={actions.startOrPauseTask}
                         className={startOrPauseDisabled ? styles.btn_play_disabled : (curStatus === "started" ? styles.btn_pause : styles.btn_play)}
                     />
-                </TooltipI18n>
-                <TooltipI18n title="stop G-code task">
+                </Tooltip>
+                <Tooltip placement="bottom" title="stop G-code task">
                     <button
                         disabled={stopDisabled}
                         onClick={actions.stopTask}
                         className={stopDisabled ? styles.btn_stop_disabled : styles.btn_stop}
                     />
-                </TooltipI18n>
-                <TooltipI18n title="run boundary">
+                </Tooltip>
+                <Tooltip placement="bottom" title="run boundary">
                     <button
                         disabled={runBoundaryDisabled}
                         onClick={actions.runBoundary}
                         className={runBoundaryDisabled ? styles.btn_run_boundary_disabled : styles.btn_run_boundary}
                     />
-                </TooltipI18n>
+                </Tooltip>
                 <Progress style={{marginRight: "5px"}} type="circle" percent={percent} width={25}/>
             </Space>
         )

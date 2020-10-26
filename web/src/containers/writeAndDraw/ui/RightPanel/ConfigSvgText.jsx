@@ -8,9 +8,6 @@ import {connect} from 'react-redux';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
 import {withTranslation} from 'react-i18next';
 import Tooltip from '../../../Tooltip/Index.jsx';
-import {getUuid} from '../../../../utils';
-
-const tooltipId = getUuid();
 
 class ConfigSvgText extends PureComponent {
     actions = {
@@ -62,71 +59,68 @@ class ConfigSvgText extends PureComponent {
 
         return (
             <div>
-                <Tooltip
-                    id={tooltipId}
-                    place="left"
-                />
                 <Line/>
                 <div style={{
                     padding: "8px",
                 }}>
                     <ConfigTitle text={t('Text')}/>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Content of the Text.')}>
-                        <Col span={13}>
-                            <ConfigText text={`${t('Content')}`}/>
-                        </Col>
-                        <Col span={11}>
-                            <Input.TextArea style={{fontSize: "12px", resize: "none"}}
-                                            value={text.default_value}
-                                            onChange={actions.setText}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Font of the Text.')}>
-                        <Col span={13}>
-                            <ConfigText text={`${t(font.label)}`}/>
-                        </Col>
-                        <Col span={11}>
-                            <ConfigSelect options={fontOptions} value={font.default_value} onChange={actions.setFont}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Font size of the Text.')}>
-                        <Col span={19}>
-                            <ConfigText text={`${t(font_size.label)}`}/>
-                        </Col>
-                        <Col span={5}>
-                            <NumberInput
-                                min={font_size.minimum_value}
-                                max={font_size.maximum_value}
-                                value={font_size.default_value}
-                                onAfterChange={actions.setFontSize}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Optimizes the path based on the proximity of the lines in the image.')}>
-                        <Col span={19}>
-                            <ConfigText text={`${t(optimize_path.label)}`}/>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
-                        </Col>
-                    </Row>
-                    <Row
-                        data-for={tooltipId}
-                        data-tip={t('Set the degree to which an area is filled with laser dots.')}>
-                        <Col span={19}>
-                            <ConfigText text={`${t(fill.label)}`}/>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
-                        </Col>
-                    </Row>
+                    <Tooltip title={t('Content of the Text.')}>
+                        <Row>
+                            <Col span={13}>
+                                <ConfigText text={`${t('Content')}`}/>
+                            </Col>
+                            <Col span={11}>
+                                <Input.TextArea style={{fontSize: "12px", resize: "none"}}
+                                                value={text.default_value}
+                                                onChange={actions.setText}/>
+                            </Col>
+                        </Row>
+                    </Tooltip>
+                    <Tooltip title={t('Font of the Text.')}>
+                        <Row>
+                            <Col span={13}>
+                                <ConfigText text={`${t(font.label)}`}/>
+                            </Col>
+                            <Col span={11}>
+                                <ConfigSelect options={fontOptions} value={font.default_value}
+                                              onChange={actions.setFont}/>
+                            </Col>
+                        </Row>
+                    </Tooltip>
+                    <Tooltip title={t('Font size the Text.')}>
+                        <Row>
+                            <Col span={19}>
+                                <ConfigText text={`${t(font_size.label)}`}/>
+                            </Col>
+                            <Col span={5}>
+                                <NumberInput
+                                    min={font_size.minimum_value}
+                                    max={font_size.maximum_value}
+                                    value={font_size.default_value}
+                                    onAfterChange={actions.setFontSize}/>
+                            </Col>
+                        </Row>
+                    </Tooltip>
+                    <Tooltip title={t('Optimizes the path based on the proximity of the lines in the image.')}>
+                        <Row>
+                            <Col span={19}>
+                                <ConfigText text={`${t(optimize_path.label)}`}/>
+                            </Col>
+                            <Col span={5}>
+                                <Checkbox checked={optimize_path.default_value} onChange={actions.setOptimizePath}/>
+                            </Col>
+                        </Row>
+                    </Tooltip>
+                    <Tooltip title={t('Set the degree to which an area is filled with laser dots.')}>
+                        <Row>
+                            <Col span={19}>
+                                <ConfigText text={`${t(fill.label)}`}/>
+                            </Col>
+                            <Col span={5}>
+                                <Checkbox checked={fill.default_value} onChange={actions.setFill}/>
+                            </Col>
+                        </Row>
+                    </Tooltip>
                     {fill.default_value &&
                     <Row>
                         <Col span={17} push={2}>

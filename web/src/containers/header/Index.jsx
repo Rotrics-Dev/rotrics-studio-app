@@ -25,9 +25,9 @@ class Index extends React.Component {
                 <DevControlPanel/>
                 <P3dCalibration/>
                 <Space size={35} style={{marginLeft: "55px"}}>
-                    <NavGcodeAction/>
-                    <NavGcodeSend/>
-                    <NavDev/>
+                <NavGcodeAction/>
+                <NavGcodeSend/>
+                <NavDev/>
                 </Space>
                 <div style={{position: "absolute", right: "8px", top: "10px"}}>
                     <NavLink/>

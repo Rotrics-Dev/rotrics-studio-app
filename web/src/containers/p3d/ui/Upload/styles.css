@@ -1,0 +1,17 @@
+.btn_open {
+    width: 40px;
+    height: 25px;
+    background-image: url(./images/open.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.btn_open:active {
+    opacity: 0.4;
+}

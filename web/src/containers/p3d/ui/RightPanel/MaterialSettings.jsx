@@ -3,12 +3,9 @@ import {Radio} from 'antd';
 import {actions as p3dMaterialSettingsActions} from "../../../../reducers/p3dMaterialSettings";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
-import {getUuid} from "../../../../utils";
 import {renderCategoryChildren, wrapCollapse, wrapCollapsePanel} from "./renderUtils.jsx";
 import Line from "../../../../components/Line/Index.jsx";
 
-const tooltipId = getUuid();
 const radioStyle = {
     display: 'block',
     height: '30px',
@@ -64,7 +61,7 @@ class MaterialSettings extends PureComponent {
         const {materialSettingsFilter} = this.props;
         const header = tCura("Material Settings");
         const editable = !isOfficial;
-        const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, tooltipId, actions.updateSetting, editable);
+        const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, actions.updateSetting, editable);
         const line = <Line key="line"/>;
         const elements = [radioGroup, line, ...elements4settings];
 
@@ -73,10 +70,6 @@ class MaterialSettings extends PureComponent {
         const collapse = wrapCollapse(collapsePanel);
         return (
             <div>
-                <Tooltip
-                    id={tooltipId}
-                    place="left"
-                />
                 <div>
                     {collapse}
                 </div>

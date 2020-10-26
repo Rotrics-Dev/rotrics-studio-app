@@ -2,6 +2,7 @@ import React from 'react';
 import {Checkbox, Row, Col, Collapse} from 'antd';
 import {ConfigText, ConfigSelect} from '../../../../components/Config';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
+import Tooltip from '../../../Tooltip/Index.jsx';
 
 //only display the following types
 const PARAMETER_TYPES_DISPLAYED = [
@@ -30,12 +31,11 @@ const convertOptions = (options, t) => {
  * @param categoryKey        category的key
  * @param keyChainFilter     根据keyChain过滤；如果是null，则不过滤，显示全部
  * @param t                  i18n
- * @param tooltipId
  * @param updateSettingFunc  function
  * @param editable           bool: 是否允许修改parameter
  * @returns {Array}
  */
-const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, tooltipId, updateSettingFunc, editable = false) => {
+const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, updateSettingFunc, editable = false) => {
     let result = [];
     for (let key in children) {
         let keyChain = `${categoryKey}.${key}`; //example：resolution.layer_height, resolution.line_width.wall_line_width.wall_line_width_0
@@ -55,19 +55,19 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                 let {label, description} = child;
                 result.push(
                     <div key={keyChain}>
-                        <Row
-                            style={{marginTop: "8px"}}
-                            data-for={tooltipId}
-                            data-tip={t(description)}
-                        >
-                            <Col span={24 - offset} offset={offset}>
-                                <ConfigText text={t(label)}/>
-                                {/*<ConfigText text={"  "+keyChain}/>*/}
-                            </Col>
-                        </Row>
+                        <Tooltip  title={t(description)}>
+                            <Row
+                                style={{marginTop: "8px"}}
+                            >
+                                <Col span={24 - offset} offset={offset}>
+                                    <ConfigText text={t(label)}/>
+                                    {/*<ConfigText text={"  "+keyChain}/>*/}
+                                </Col>
+                            </Row>
+                        </Tooltip>
                     </div>
                 );
-                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, keyChainFilter, t, tooltipId, updateSettingFunc, editable))
+                result = result.concat(renderCategoryChildren(child.children, `${keyChain}.children`, keyChainFilter, t, updateSettingFunc, editable))
             } else {
                 //叶节点
                 let {label, description, unit, type, default_value, minimum_value, maximum_value, options} = child;
@@ -81,10 +81,9 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
 
                 result.push(
                     <div key={keyChain}>
+                        <Tooltip  title={t(description)}>
                         <Row
                             style={{marginTop: "8px"}}
-                            data-for={tooltipId}
-                            data-tip={t(description)}
                         >
                             <Col span={16 - offset} offset={offset}>
                                 <ConfigText text={t(label)}/>
@@ -144,6 +143,7 @@ const renderCategoryChildren = (children, categoryKey, keyChainFilter, t, toolti
                             </Col>
                             }
                         </Row>
+                        </Tooltip>
                     </div>
                 );
             }

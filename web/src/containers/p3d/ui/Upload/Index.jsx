@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './styles.css';
-import {Button, Slider, Space, Divider} from 'antd';
 import {uploadFile} from "../../../../api";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
@@ -24,7 +23,6 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
-        const {t} = this.props;
         return (
             <div>
                 <input
@@ -35,13 +33,10 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.uploadFile}
                 />
-                <Button
-                    style={{fontSize: "12px"}}
-                    size="small"
+                <button
                     onClick={actions.onClickUpload}
-                >
-                    {t("Upload")}
-                </Button>
+                    className={styles.btn_open}
+                />
             </div>
         )
     }

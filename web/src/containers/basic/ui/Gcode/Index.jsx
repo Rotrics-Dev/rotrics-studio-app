@@ -5,10 +5,7 @@ import Line from '../../../../components/Line/Index.jsx'
 import {Space, Button, Select} from 'antd';
 import front_end from "../../lib/settings/front_end.json";
 import Tooltip from '../../../Tooltip/Index.jsx';
-import {getUuid} from '../../../../utils';
 import {withTranslation} from 'react-i18next';
-
-const tooltipId = getUuid();
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -58,6 +55,7 @@ class Index extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         const frontEndOptions = [];
         Object.keys(front_end).forEach((key) => {
             const option = front_end[key];
@@ -69,23 +67,20 @@ class Index extends React.Component {
                 width: "100%",
                 height: "100%",
             }}>
-                <Tooltip
-                    id={tooltipId}
-                    place="left"/>
                 <Space direction={"vertical"} style={{width: "100%", padding: "6px"}}>
-                    <Button
-                        data-for={tooltipId}
-                        data-tip={this.props.t('Select the right module and set work origin first.')}
-                        style={{width: "100%"}}
-                        onClick={this.actions.importGcode}
-                    >
-                        {this.props.t("Import G-code")}
-                    </Button>
+                    <Tooltip title={t('Select the right module and set work origin first.')}>
+                        <Button
+                            style={{width: "100%"}}
+                            onClick={this.actions.importGcode}
+                        >
+                            {t("Import G-code")}
+                        </Button>
+                    </Tooltip>
                     {this.state.importLevel > 0 &&
                     <Select
                         style={{width: "100%", textAlign: "center"}}
                         onChange={this.actions.onSelectFrontEnd}
-                        placeholder={this.props.t('Select a front end')}
+                        placeholder={t('Select a front end')}
                         options={frontEndOptions}/>
                     }
                     {this.state.importLevel > 1 &&
@@ -93,14 +88,14 @@ class Index extends React.Component {
                         style={{width: "100%"}}
                         onClick={this.actions.startTask}
                     >
-                        {this.props.t("Start Send")}
+                        {t("Start Send")}
                     </Button>}
                     {this.state.importLevel > 2 &&
                     <Button
                         style={{width: "100%"}}
                         onClick={this.actions.stopTask}
                     >
-                        {this.props.t("Stop Send")}
+                        {t("Stop Send")}
                     </Button>}
                 </Space>
                 <Line/>
