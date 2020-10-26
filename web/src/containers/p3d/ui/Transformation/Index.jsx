@@ -35,7 +35,6 @@ class Index extends React.Component {
         },
         //after change
         afterChangeScale: (value) => {
-            console.log(value)
             this.props.afterUpdateTransformation("scale", value / 100)
         },
         afterChangeRX: (value) => {
@@ -180,21 +179,21 @@ class Index extends React.Component {
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('move')}
-                            className={styles.btn_move}
+                            className={disabled ? styles.btn_move_disabled : styles.btn_move}
                         />
                     </Popover>
                     <Popover placement="right" content={content4scale} trigger="click">
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('scale')}
-                            className={styles.btn_scale}
+                            className={disabled ? styles.btn_scale_disabled : styles.btn_scale}
                         />
                     </Popover>
                     <Popover placement="right" content={content4rotate} trigger="click">
                         <button
                             disabled={disabled}
                             onClick={() => actions.activateTap('rotate')}
-                            className={styles.btn_rotate}
+                            className={disabled ? styles.btn_rotate_disabled : styles.btn_rotate}
                         />
                     </Popover>
                 </Space>

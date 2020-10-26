@@ -2,7 +2,7 @@
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 24px 24px;
+    background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -12,14 +12,28 @@
 }
 
 .btn_move:active {
-    background-color: lightskyblue;
+    opacity: 0.4;
+}
+
+.btn_move_disabled {
+    width: 40px;
+    height: 40px;
+    outline: none;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 4px 4px 0 0;
+    vertical-align: middle;
+    background-image: url(./images/translate.svg);
+    opacity: 0.4;
 }
 
 .btn_scale {
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 24px 24px;
+    background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -30,15 +44,29 @@
 }
 
 .btn_scale:active {
-    background-color: lightskyblue;
+    opacity: 0.4;
+}
+
+.btn_scale_disabled {
+    width: 40px;
+    height: 40px;
+    outline: none;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    vertical-align: middle;
     background-image: url(./images/scale.svg);
+    opacity: 0.4;
 }
 
 .btn_rotate {
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 24px 24px;
+    background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -48,7 +76,21 @@
 }
 
 .btn_rotate:active {
-    background-color: lightskyblue;
+    opacity: 0.4;
+}
+
+
+.btn_rotate_disabled {
+    width: 40px;
+    height: 40px;
+    outline: none;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 0 0 4px 4px;
+    vertical-align: middle;
     background-image: url(./images/rotate.svg);
+    opacity: 0.4;
 }
 
