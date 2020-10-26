@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles.css';
-import {Button, Slider, Space, Popover} from 'antd';
+import {Slider, Space, Popover} from 'antd';
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
 import {connect} from 'react-redux';
@@ -35,6 +35,7 @@ class Index extends React.Component {
         },
         //after change
         afterChangeScale: (value) => {
+            console.log(value)
             this.props.afterUpdateTransformation("scale", value / 100)
         },
         afterChangeRX: (value) => {
@@ -63,7 +64,6 @@ class Index extends React.Component {
         const rxDegree = radian2degree(rx);
         const ryDegree = radian2degree(ry);
         const rzDegree = radian2degree(rz);
-        console.log()
         const sliderCss = {width: "120px"};
         const content4move = (
             <div>
@@ -98,7 +98,7 @@ class Index extends React.Component {
             </div>
         );
         const content4scale = (
-            <div>
+            <Space>
                 <Slider
                     tipFormatter={(value) => {
                         return `${value}%`
@@ -112,7 +112,16 @@ class Index extends React.Component {
                     onChange={actions.changeScale}
                     onAfterChange={actions.afterChangeScale}
                 />
-            </div>
+                <NumberInput
+                    style={{width: "70px", fontSize: "12px"}}
+                    disabled={disabled}
+                    precision={0}
+                    min={10}
+                    max={1000}
+                    value={scale * 100}
+                    onAfterChange={actions.afterChangeScale}
+                />
+            </Space>
         );
         const content4rotate = (
             <div>
