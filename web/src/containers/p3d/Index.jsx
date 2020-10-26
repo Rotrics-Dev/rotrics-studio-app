@@ -1,6 +1,6 @@
 import React from 'react';
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
-import Upload from "./ui/Upload/Index.jsx";
+import OpenModel from "./ui/OpenModel/Index.jsx";
 import Transformation from "./ui/Transformation/Index.jsx";
 import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
@@ -22,7 +22,7 @@ class Index extends React.Component {
                     top: "8px",
                     left: "8px"
                 }}>
-                    <Upload/>
+                    <OpenModel/>
                 </div>
                 <div className={styles.div_transformation}>
                     <Transformation/>
