@@ -29,7 +29,7 @@ class Index extends React.Component {
                 <NavGcodeSend/>
                 <NavDev/>
                 </Space>
-                <div style={{position: "absolute", right: "8px", top: "10px"}}>
+                <div style={{position: "absolute", right: "5px", top: "10px"}}>
                     <NavLink/>
                 </div>
             </div>

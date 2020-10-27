@@ -71,7 +71,6 @@ class Model3D extends THREE.Mesh {
     }
 
     computeBoundingBox() {
-        console.log("### computeBoundingBox")
         // after operated(move/scale/rotate), model.geometry is not changed
         // so need to call: bufferGemotry.applyMatrix(matrixLocal);
         // then call: bufferGemotry.computeBoundingBox(); to get operated modelMesh BoundingBox

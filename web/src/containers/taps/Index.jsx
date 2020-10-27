@@ -177,10 +177,10 @@ class Index extends React.Component {
                         onClick={() => actions.setTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
-                    <button
-                        onClick={() => actions.setTap(TAP_DEBUG)}
-                        className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
-                    />
+                    {/*<button*/}
+                        {/*onClick={() => actions.setTap(TAP_DEBUG)}*/}
+                        {/*className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}*/}
+                    {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
                     <div ref={this.refBasic}>

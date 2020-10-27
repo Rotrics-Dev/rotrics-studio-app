@@ -4,6 +4,7 @@ import {withTranslation} from 'react-i18next';
 import {Radio, Row, Col, Slider, Space} from 'antd';
 import styles from './styles.css';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
+import {actions as persistentDataActions} from "../../../../reducers/persistentData";
 import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
 import {FRONT_END} from "../../../../utils/workAreaUtils";
 
@@ -64,9 +65,7 @@ class Index extends React.Component {
             this.actions._moveRelative(`G0 X${this.state.step} Y${-this.state.step}`)
         },
         setWorkOrigin: () => {
-            //TODO: 不要使用serialPortWrite
             const {frontEnd} = this.props;
-            this.props.serialPortWrite('G92.1\n');
             this.props.addOneShootGcodeResponseListener(
                 'M114', (x, y, z) => {
                     console.log(` 'M114', (${x}, ${y}, ${z})`)
@@ -83,25 +82,10 @@ class Index extends React.Component {
                     }
                 }
             );
-            this.props.serialPortWrite('M114\n');
-            this.props.serialPortWrite('G92 Z0\n')
+            //G92.1: reset工作原点为工件坐标系原点，也就是home变成了(0, 300, 0)
+            this.props.send(['G92.1', 'M114', 'G92 Z0'].join('\n'));
         },
         goToWorkOrigin: () => {
-            // console.log('goToWorkOrigin'+JSON.stringify(this.props));
-            // const {frontEnd} = this.props;
-            // let workHeight = 0;
-            // switch (frontEnd) {
-            //     case FRONT_END.P3D :
-            //         workHeight = this.props.workHeightP3d;
-            //         break;
-            //     case FRONT_END.PEN :
-            //         workHeight = this.props.workHeightPen;
-            //         break;
-            //     case FRONT_END.LASER :
-            //         workHeight = this.props.workHeightLaser;
-            //         break;
-            // }
-            // this.props.startTask(`G0 Z${workHeight}\n`, false)
             this.props.send('G0 Z0')
         },
         //G90: absolute position
@@ -237,6 +221,9 @@ class Index extends React.Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         send: (gcode) => dispatch(gcodeSendActions.send(gcode)),
+        setWorkHeightP3d: (value) => dispatch(persistentDataActions.setWorkHeightP3d(value)),
+        setWorkHeightPen: (value) => dispatch(persistentDataActions.setWorkHeightPen(value)),
+        setWorkHeightLaser: (value) => dispatch(persistentDataActions.setWorkHeightLaser(value)),
     };
 };
 
