@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import styles from './styles.css';
 
 //printTime单位是s
 const getPrintTimeDes = (printTime) => {
@@ -10,13 +9,11 @@ const getPrintTimeDes = (printTime) => {
 };
 
 class Index extends React.Component {
-
     render() {
-        if (!this.props.result) {
+        const {printTime, filamentLength, filamentWeight} = this.props;
+        if (printTime * filamentLength * filamentWeight === 0) {
             return null;
         }
-        const {result} = this.props;
-        const {printTime, filamentLength, filamentWeight} = result;
         return (
             <div>
                 <p style={{
@@ -30,9 +27,11 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {result} = state.p3dModel;
+    const {printTime, filamentLength, filamentWeight} = state.p3dModel;
     return {
-        result,
+        filamentLength,
+        filamentWeight,
+        printTime,
     };
 };
 

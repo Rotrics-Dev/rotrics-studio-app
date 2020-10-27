@@ -11,9 +11,10 @@ class Index extends React.Component {
     actions = {
         uploadFile: async (event) => {
             const file = event.target.files[0];
+            const filePath =  file.path || 'undefined';
             const response = await uploadFile(file);
             const {url} = response;
-            this.props.loadModel(url)
+            this.props.loadModel(url, filePath)
         },
         onClickUpload: () => {
             this.fileInput.current.value = null;

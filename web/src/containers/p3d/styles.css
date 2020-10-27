@@ -24,10 +24,19 @@
     height: 38px;
 }
 
-.div_info {
+.div_gcode_info {
     position: absolute;
     bottom: 15px;
     right: 410px;
     height: 45px;
     width: 100px;
+}
+
+.div_model_info {
+    position: absolute;
+    bottom: 35px;
+    left: 0;
+    padding: 5px;
+    height: 30px;
+    width: 350px;
 }

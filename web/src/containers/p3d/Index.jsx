@@ -4,7 +4,8 @@ import OpenModel from "./ui/OpenModel/Index.jsx";
 import Transformation from "./ui/Transformation/Index.jsx";
 import Canvas3D from "./ui/Canvas3D/Index.jsx";
 import Progress from "./ui/Progress/Index.jsx";
-import Info from "./ui/Info/Index.jsx";
+import GcodeInfo from "./ui/GcodeInfo/Index.jsx";
+import ModelInfo from "./ui/ModelInfo/Index.jsx";
 import GcodePreviewControl from "./ui/GcodePreviewControl/Index.jsx";
 import RightPanel from "./ui/RightPanel/Index.jsx";
 import styles from './styles.css';
@@ -33,8 +34,11 @@ class Index extends React.Component {
                 <div className={styles.div_progress}>
                     <Progress/>
                 </div>
-                <div className={styles.div_info}>
-                    <Info/>
+                <div className={styles.div_gcode_info}>
+                    <GcodeInfo/>
+                </div>
+                <div className={styles.div_model_info}>
+                    <ModelInfo/>
                 </div>
                 <div className={layout_styles.div_tool_bar}>
                     <ToolBarI18n/>

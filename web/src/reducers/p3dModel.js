@@ -15,11 +15,12 @@ const ACTION_UPDATE_STATE = 'p3dModel/ACTION_UPDATE_STATE';
 const INITIAL_STATE = {
     rendererParent4model: null,
     model: null,
+    boundingBox: null,
+    filePath: null,
     modelCount: 0,
     transformation: null,
     //gcode
     gcodeObj3d: null,
-    result: null, //切片结果：{gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
     layerCount: 0, //gcode渲染后，一共多少层
     layerCountVisible: 0, //当前显示的多少层gcode line
     lineTypeVisibility: null, //gcode渲染后，不同type的visibility
@@ -158,7 +159,7 @@ const actions = {
         rendererParent4gcode = object3d;
         return {type: null};
     },
-    loadModel: (url) => (dispatch, getState) => {
+    loadModel: (url, filePath) => (dispatch, getState) => {
         const worker = new File3dToBufferGeometryWorker();
         worker.postMessage({url});
         worker.onmessage = (e) => {
@@ -181,13 +182,14 @@ const actions = {
                     bufferGeometry.computeVertexNormals();
                     convexBufferGeometry.addAttribute('position', modelConvexPositionAttribute);
 
-                    const model = new Model3D(bufferGeometry, convexBufferGeometry, url, url);
+                    const model = new Model3D(bufferGeometry, convexBufferGeometry);
                     const {rendererParent4model} = getState().p3dModel;
                     const xz = _computeAvailableXZ(rendererParent4model, model);
                     model.position.x = xz.x;
                     model.position.z = xz.z /*- 300*/;//设置Y方向的偏移到 y300 陈会龙 2020年8月24日Z
                     model.transformation.x = model.position.x;
                     model.transformation.y = -model.position.z;
+                    model.computeBoundingBox();
                     rendererParent4model.add(model);
 
                     for (const child of rendererParent4model.children) {
@@ -196,11 +198,13 @@ const actions = {
                     }
                     model.setSelected(true);
 
-                    const transformation = model.transformation;
+                    const {transformation, boundingBox, filePath} = model;
                     const modelCount = rendererParent4model.children.length;
 
                     dispatch(actions._updateState({
                         model,
+                        boundingBox,
+                        filePath,
                         modelCount,
                         transformation,
                         gcodeObj3d: null,
@@ -238,9 +242,11 @@ const actions = {
             child.setSelected(false);
         }
         model.setSelected(true);
-        const transformation = model.transformation;
+        const {transformation, boundingBox, filePath} = model;
         dispatch(actions._updateState({
             model,
+            boundingBox,
+            filePath,
             transformation
         }));
     },
@@ -252,6 +258,8 @@ const actions = {
         const modelCount = rendererParent4model.children.length;
         dispatch(actions._updateState({
             model: null,
+            boundingBox: null,
+            filePath: null,
             modelCount,
             transformation: null,
             gcodeObj3d: null,
@@ -273,6 +281,8 @@ const actions = {
         rendererParent4model.remove(...rendererParent4model.children);
         dispatch(actions._updateState({
             model: null,
+            boundingBox: null,
+            filePath: null,
             modelCount: 0,
             transformation: null,
             gcodeObj3d: null,
@@ -300,7 +310,6 @@ const actions = {
         newModel.position.z = xz.z;
         newModel.transformation.x = newModel.position.x;
         newModel.transformation.y = -newModel.position.z;
-
         rendererParent4model.add(newModel);
 
         for (const child of rendererParent4model.children) {
@@ -340,6 +349,8 @@ const actions = {
             child.setMode('prepare');
         }
         dispatch(actions._updateState({
+            boundingBox: model.boundingBox,
+            filePath: model.filePath,
             transformation,
             gcodeObj3d: null,
             layerCount: 0,
@@ -385,6 +396,7 @@ const actions = {
         }
         const transformation = _.cloneDeep(model.transformation);
         dispatch(actions._updateState({
+            boundingBox: model.boundingBox,
             transformation,
             gcodeObj3d: null,
             gcodeFileName: null,
@@ -453,7 +465,7 @@ const actions = {
         });
         socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, materialSettingFilename, printSettingFilename, id})
     },
-    _renderGcode: (gcodeUrl) => (dispatch) => {
+    _renderGcode: (gcodeUrl) => (dispatch, getState) => {
         dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));
 
         gcodeRenderingWorker.postMessage({fileUrl: gcodeUrl});

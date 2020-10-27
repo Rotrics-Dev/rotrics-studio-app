@@ -17,15 +17,20 @@ const materialTransparent = new THREE.MeshPhongMaterial({
 });
 
 class Model3D extends THREE.Mesh {
-    constructor(bufferGeometry, convexBufferGeometry, modelName, modelPath) {
+    /**
+     *
+     * @param bufferGeometry
+     * @param convexBufferGeometry
+     * @param filePath
+     */
+    constructor(bufferGeometry, convexBufferGeometry, filePath) {
         super(bufferGeometry, materialNormal);
 
         this.boundingBox = null; // the boundingBox is aligned parent axis
 
         this.bufferGeometry = bufferGeometry;
         this.convexBufferGeometry = convexBufferGeometry;
-        this.modelName = modelName;
-        this.modelPath = modelPath;
+        this.filePath = filePath;
 
         this.isSelected = false;
         this.mode = 'prepare';
@@ -66,6 +71,7 @@ class Model3D extends THREE.Mesh {
     }
 
     computeBoundingBox() {
+        console.log("### computeBoundingBox")
         // after operated(move/scale/rotate), model.geometry is not changed
         // so need to call: bufferGemotry.applyMatrix(matrixLocal);
         // then call: bufferGemotry.computeBoundingBox(); to get operated modelMesh BoundingBox
@@ -137,8 +143,7 @@ class Model3D extends THREE.Mesh {
         const clone = new Model3D(
             this.bufferGeometry.clone(),
             this.convexBufferGeometry.clone(),
-            this.modelName,
-            this.modelPath
+            this.filePath
         );
 
         //TODO：setMatrix居然不符合预期
