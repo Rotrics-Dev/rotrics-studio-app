@@ -28,6 +28,7 @@ class GcodeSender extends EventEmitter {
         this.preStatus = null; // status: idle, started, paused, stopping
         this.curStatus = "idle";
         this.isLaser = false;
+        this.taskId = null;
 
         serialPortManager.on(SERIAL_PORT_ACTION_CLOSE, () => {
             if (["started", "paused"].includes(this.curStatus)) {
@@ -39,17 +40,17 @@ class GcodeSender extends EventEmitter {
     }
 
     _emitStatus() {
-        const {preStatus, curStatus} = this;
-        this.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus});
+        const {preStatus, curStatus, taskId} = this;
+        this.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus, taskId});
     }
 
     _emitProgress() {
-        const {total, sent} = this;
-        this.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent});
+        const {total, sent, taskId} = this;
+        this.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent, taskId});
     }
 
     //TODO: 逻辑，laser cover, 打开的情况下，再执行laser task。应该监听serial port data，构造其中就监听
-    async start({gcode, isLaser}) {
+    async start({gcode, isLaser, taskId}) {
         if (!serialPortManager.isOpen()) {
             const msg = "Please connect DexArm first";
             this.emit(GCODE_SENDER_ON_WARNING, {msg});
@@ -75,6 +76,7 @@ class GcodeSender extends EventEmitter {
                 this.preStatus = this.curStatus;
                 this.curStatus = "started";
                 this.isLaser = isLaser;
+                this.taskId = taskId;
                 this._emitStatus();
                 await this._startSend();
                 break;
@@ -104,6 +106,7 @@ class GcodeSender extends EventEmitter {
         this.preStatus = null;
         this.curStatus = "idle";
         this.isLaser = false;
+        this.taskId = null;
     }
 
     async _startSend() {

@@ -117,26 +117,11 @@ class Index extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {gcode, model, modelCount, isAllPreviewed} = state.laser;
-    return {
-        gcode,
-        model,
-        isAllPreviewed,
-        modelCount,
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
-        startTask: (gcode, isLaser) => dispatch(gcodeSendActions.startTask(gcode, isLaser)),
-        stopTask: () => dispatch(gcodeSendActions.stopTask()),
-        pauseTask: () => dispatch(gcodeSendActions.pauseTask()),
-        resumeTask: () => dispatch(gcodeSendActions.resumeTask()),
-        //model
         addModel: (fileType, file) => dispatch(laserActions.addModel(fileType, file)),
         generateGcode: () => dispatch(laserActions.generateGcode()),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index));
+export default connect(null, mapDispatchToProps)(withTranslation()(Index));

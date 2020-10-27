@@ -105,13 +105,17 @@ export const actions = {
         };
     },
     send: (gcode) => (dispatch, getState) => {
-        socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode});
+        socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, taskId: null, isLaser: false});
+        dispatch(actions._updateState({task: null}));
+    },
+    send4code: (gcode, taskId) => (dispatch) => {
+        socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, taskId, isLaser: false});
         dispatch(actions._updateState({task: null}));
     },
     startTask: (gcode, tap) => (dispatch, getState) => {
         dispatch(actions._updateState({task: {gcode, tap}}));
         const isLaser = (tap === TAP_LASER);
-        socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, isLaser});
+        socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, taskId: null, isLaser});
     },
     stopTask: () => {
         socketClientManager.emitToServer(GCODE_SENDER_ACTION_STOP);

@@ -147,8 +147,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        startTask: (gcode) => dispatch(gcodeSendActions.startTask(gcode)),
-        stopTask: () => dispatch(gcodeSendActions.stopTask()),
         addModel: (fileType, file) => dispatch(writeAndDrawActions.addModel(fileType, file)),
         generateGcode: () => dispatch(writeAndDrawActions.generateGcode()),
     };

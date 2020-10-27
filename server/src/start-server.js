@@ -372,29 +372,29 @@ const setupSocket = () => {
             });
 
             //gcode sender
-            socket.on(GCODE_SENDER_ACTION_START, ({gcode, isLaser}) => {
-                gcodeSender.start({gcode, isLaser})
+            socket.on(GCODE_SENDER_ACTION_START, ({gcode, isLaser, taskId}) => {
+                gcodeSender.start({gcode, isLaser, taskId})
             });
             socket.on(GCODE_SENDER_ACTION_PAUSE, () => gcodeSender.pause());
             socket.on(GCODE_SENDER_ACTION_RESUME, () => gcodeSender.resume());
             socket.on(GCODE_SENDER_ACTION_STOP, () => gcodeSender.stop());
             socket.on(GCODE_SENDER_ACTION_GET_STATUS, () => {
-                const {preStatus, curStatus} = gcodeSender;
-                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus})
+                const {preStatus, curStatus, taskId} = gcodeSender;
+                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus, taskId})
             });
             socket.on(GCODE_SENDER_ACTION_GET_PROGRESS, () => {
-                const {total, sent} = gcodeSender;
-                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent})
+                const {total, sent, taskId} = gcodeSender;
+                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent, taskId})
             });
 
             gcodeSender.on(GCODE_SENDER_ON_WARNING, ({msg}) => {
                 socket.emit(GCODE_SENDER_ON_WARNING, {msg});
             });
-            gcodeSender.on(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus}) => {
-                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus});
+            gcodeSender.on(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
+                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus, taskId});
             });
-            gcodeSender.on(GCODE_SENDER_ON_PROGRESS_CHANGE, ({total, sent}) => {
-                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent});
+            gcodeSender.on(GCODE_SENDER_ON_PROGRESS_CHANGE, ({total, sent, taskId}) => {
+                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent, taskId});
             });
 
             //laser

@@ -271,13 +271,13 @@ export const actions = {
                     return;
                 }
                 const gcode = generateGcode(blockName, args);
-                console.log(gcode);
+                // console.log(gcode);
                 if (gcode) {
-                    const taskIdLocal = getUuid();
-                    dispatch(gcodeSendActions.startTask(gcode, true, false, taskIdLocal, false, false));
+                    const _taskId = getUuid();
+                    dispatch(gcodeSendActions.send4code(gcode, _taskId));
                     if (blockName.indexOf('RS_SENSING') === -1) {
                         socketClientManager.addServerListener(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
-                            if (preStatus === "started" && curStatus === "idle" && taskId === taskIdLocal) {
+                            if (preStatus === "started" && curStatus === "idle" && taskId === _taskId) {
                                 resolve();
                             }
                         });
