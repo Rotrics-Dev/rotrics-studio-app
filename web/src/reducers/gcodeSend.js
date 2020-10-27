@@ -67,7 +67,7 @@ export const actions = {
             console.log(`gcode sender status: ${preStatus} => ${curStatus}`);
             dispatch(actions._updateState({preStatus, curStatus}));
             //见: gcodeSender.js emitStatus
-            //执行task时候，给出提示信息
+            //只有执行task时候，才弹出状态提示信息
             if (getState().gcodeSend.task) {
                 if (preStatus === "idle" && curStatus === "started") {
                     messageI18n.info("Task started");
@@ -104,14 +104,31 @@ export const actions = {
             state
         };
     },
-    send: (gcode) => (dispatch, getState) => {
+    /**
+     * 发送普通的简短的gcode，比如dev-control-panel中的gcode
+     * @param gcode
+     * @returns {Function}
+     */
+    send: (gcode) => (dispatch) => {
         socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, taskId: null, isLaser: false});
         dispatch(actions._updateState({task: null}));
     },
+    /**
+     * 发送code中block对应的gcode；每个block对应一个promise，当对应的task的发送完毕后，promise resolve
+     * @param gcode
+     * @param taskId
+     * @returns {Function}
+     */
     send4code: (gcode, taskId) => (dispatch) => {
         socketClientManager.emitToServer(GCODE_SENDER_ACTION_START, {gcode, taskId, isLaser: false});
         dispatch(actions._updateState({task: null}));
     },
+    /**
+     * 发送长的gcode，比如p3d，laser，write draw等发送任务
+     * @param gcode
+     * @param tap
+     * @returns {Function}
+     */
     startTask: (gcode, tap) => (dispatch, getState) => {
         dispatch(actions._updateState({task: {gcode, tap}}));
         const isLaser = (tap === TAP_LASER);
