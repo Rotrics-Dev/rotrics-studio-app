@@ -153,7 +153,8 @@ class Index extends React.Component {
                 <div>
                     <span>{'Power'}</span>
                     <Switch
-                        style={{position: "absolute", right: "18px"}}
+                        size="small"
+                        style={{marginLeft: "5px"}}
                         checked={state.isLaserOn}
                         onChange={actions4laser.toggleLaser}
                     />

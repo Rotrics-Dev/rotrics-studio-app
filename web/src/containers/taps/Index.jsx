@@ -3,14 +3,13 @@ import {connect} from 'react-redux';
 import styles from './styles.css';
 import ReactGA from 'react-ga';
 import Header from '../header/Index.jsx';
-import Footer from '../footer/Index.jsx'
+import Basic from '../basic/Index.jsx'
+import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Laser from '../laser/Index.jsx';
 import P3D from '../p3d/Index.jsx';
-import WriteAndDraw from '../writeAndDraw/Index.jsx'
 import Code from '../code/Index.jsx';
+import Debug from '../debug/Index.jsx';
 import Settings from '../settings/Index.jsx';
-import Basic from '../basic/Index.jsx'
-import Debug from '../debug/Index.jsx'
 import {actions as hotKeysActions} from "../../reducers/hotKeys";
 import {actions as serialPortActions} from "../../reducers/serialPort";
 import {actions as codeActions} from "../../reducers/code";
@@ -24,10 +23,11 @@ import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral"
 import {actions as fontsActions} from "../../reducers/fonts";
 import notificationI18n from "../../utils/notificationI18n";
 import {getUuid} from '../../utils/index.js';
-import {GA_tracking_id} from "./GA-tracking-id.json";
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
 
-ReactGA.initialize(GA_tracking_id, {
+const GA_TRACKING_ID = 'UA-128953016-5';
+
+ReactGA.initialize(GA_TRACKING_ID, {
     debug: false,
     titleCase: false,
     gaOptions: {
@@ -42,48 +42,25 @@ class Index extends React.Component {
     constructor(props) {
         super(props);
         this.props.init();
-
-        this.refBasic = React.createRef();
-        this.refLaser = React.createRef();
-        this.refP3D = React.createRef();
-        this.refWriteAndDraw = React.createRef();
-        this.refCode = React.createRef();
-        this.refSettings = React.createRef();
-        this.refDebug = React.createRef();
     }
 
     actions = {
-        setTap: (value) => {
-            this.props.setTap(value);
-        },
+        changeTap: (tap) => {
+            ReactGA.event({
+                category: 'open tap',
+                action: tap
+            });
+            this.props.changeTap(tap);
+        }
     };
 
     componentDidMount() {
-        this.displayTap(this.props.tap);
-
-        // disable select text on document
+        // disabled select text on document
         document.onselectstart = () => {
             return false;
         };
-        //
+
         setInterval(() => {
-            // ReactGA.ga('set', 'dimension1', 'Sports1');
-            // ReactGA.ga('set', 'dimension2', 'Sports2');
-            // ReactGA.ga('set', 'dimension3', 'Sports3');
-            // ReactGA.ga('set', 'dimension4', 'Sports4');
-            //
-            // ReactGA.set({ dimension1: 'Sports1-1' });
-            // ReactGA.set({ dimension2: 'Sports1-2' });
-            // ReactGA.set({ dimension3: 'Sports1-3' });
-            // ReactGA.set({ dimension4: 'Sports1-4' });
-
-            // ReactGA.event({
-            //     category: 'Promotion',
-            //     action: 'Displayed Promotional Widget',
-            //     label: 'Homepage Thing',
-            //     nonInteraction: true
-            // });
-
             if (this.props.socketStatus === "disconnect") {
                 notificationI18n.error({
                     key: notificationKey,
@@ -97,55 +74,8 @@ class Index extends React.Component {
         }, 3000)
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.tap !== nextProps.tap) {
-            this.displayTap(nextProps.tap)
-        }
-    }
-
-    // 因为code和laser中都用到了canvas，canvas必须根据parent element计算其size，才能正常显示
-    // 如此写，可以实现，先计算parent element的size，再显示指定的tap
-    displayTap = (tap) => {
-        // ReactGA.pageview(tap)
-        ReactGA.event({
-            category: 'open tap',
-            action: tap
-        });
-
-        this.refBasic.current.style.display = 'none';
-        this.refLaser.current.style.display = 'none';
-        this.refP3D.current.style.display = 'none';
-        this.refWriteAndDraw.current.style.display = 'none';
-        this.refCode.current.style.display = 'none';
-        this.refSettings.current.style.display = 'none';
-        this.refDebug.current.style.display = 'none';
-        switch (tap) {
-            case TAP_BASIC:
-                this.refBasic.current.style.display = 'block';
-                break;
-            case TAP_LASER:
-                this.refLaser.current.style.display = 'block';
-                break;
-            case TAP_P3D:
-                this.refP3D.current.style.display = 'block';
-                break;
-            case TAB_WRITE_AND_DRAW:
-                this.refWriteAndDraw.current.style.display = 'block';
-                break;
-            case TAP_CODE:
-                this.refCode.current.style.display = 'block';
-                break;
-            case TAP_SETTINGS:
-                this.refSettings.current.style.display = 'block';
-                break;
-            case TAP_DEBUG:
-                this.refDebug.current.style.display = 'block';
-                break;
-        }
-    };
-
     render() {
-        const actions = this.actions;
+        const {changeTap} = this.actions;
         const {tap} = this.props;
         return (
             <div>
@@ -154,58 +84,58 @@ class Index extends React.Component {
                 </div>
                 <div className={styles.div_tap_bar}>
                     <button
-                        onClick={() => actions.setTap(TAP_BASIC)}
+                        onClick={() => changeTap(TAP_BASIC)}
                         className={tap === TAP_BASIC ? styles.btn_basic_selected : styles.btn_basic}
                     />
                     <button
-                        onClick={() => actions.setTap(TAB_WRITE_AND_DRAW)}
-                        className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_and_draw_selected : styles.btn_write_and_draw}
+                        onClick={() => changeTap(TAB_WRITE_AND_DRAW)}
+                        className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_draw_selected : styles.btn_write_draw}
                     />
                     <button
-                        onClick={() => actions.setTap(TAP_LASER)}
+                        onClick={() => changeTap(TAP_LASER)}
                         className={tap === TAP_LASER ? styles.btn_laser_selected : styles.btn_laser}
                     />
                     <button
-                        onClick={() => actions.setTap(TAP_P3D)}
+                        onClick={() => changeTap(TAP_P3D)}
                         className={tap === TAP_P3D ? styles.btn_3d_selected : styles.btn_3d}
                     />
                     <button
-                        onClick={() => actions.setTap(TAP_CODE)}
+                        onClick={() => changeTap(TAP_CODE)}
                         className={tap === TAP_CODE ? styles.btn_code_selected : styles.btn_code}
                     />
                     <button
-                        onClick={() => actions.setTap(TAP_SETTINGS)}
+                        onClick={() => changeTap(TAP_DEBUG)}
+                        className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}
+                    />
+                    <button
+                        onClick={() => changeTap(TAP_SETTINGS)}
                         className={tap === TAP_SETTINGS ? styles.btn_settings_selected : styles.btn_settings}
                     />
-                    {/*<button*/}
-                        {/*onClick={() => actions.setTap(TAP_DEBUG)}*/}
-                        {/*className={tap === TAP_DEBUG ? styles.btn_debug_selected : styles.btn_debug}*/}
-                    {/*/>*/}
                 </div>
                 <div className={styles.div_workspace}>
-                    <div ref={this.refBasic}>
+                    <div className={tap === TAP_BASIC ? styles.div_tap_show : styles.div_tap_hidden}>
                         <Basic/>
                     </div>
-                    <div ref={this.refLaser}>
+                    <div className={tap === TAP_LASER ? styles.div_tap_show : styles.div_tap_hidden}>
                         <Laser/>
                     </div>
-                    <div ref={this.refP3D}>
+                    <div className={tap === TAP_P3D ? styles.div_tap_show : styles.div_tap_hidden}>
                         <P3D/>
                     </div>
-                    <div ref={this.refWriteAndDraw}>
+                    <div
+                        className={tap === TAB_WRITE_AND_DRAW ? styles.div_tap_show : styles.div_tap_hidden}>
                         <WriteAndDraw/>
                     </div>
-                    <div ref={this.refCode}>
+                    <div className={tap === TAP_CODE ? styles.div_tap_show : styles.div_tap_hidden}>
                         <Code/>
                     </div>
-                    <div ref={this.refSettings}>
-                        <Settings/>
-                    </div>
-                    <div ref={this.refDebug}>
+                    <div className={tap === TAP_DEBUG ? styles.div_tap_show : styles.div_tap_hidden}>
                         <Debug/>
                     </div>
+                    <div className={tap === TAP_SETTINGS ? styles.div_tap_show : styles.div_tap_hidden}>
+                        <Settings/>
+                    </div>
                 </div>
-                <Footer/>
             </div>
         )
     }
@@ -222,9 +152,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setTap: (value) => dispatch(tapsActions.setTap(value)),
+        changeTap: (value) => dispatch(tapsActions.changeTap(value)),
         init: () => {
-            dispatch(socketActions.init()); //必须首先执行
+            dispatch(socketActions.init()); // must execute first
             dispatch(gcodeSendActions.init());
             dispatch(hotKeysActions.init());
             dispatch(serialPortActions.init());

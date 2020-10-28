@@ -29,10 +29,6 @@ class Index extends React.Component {
         this.printablePlate = new PrintablePlate(new THREE.Vector2(130, 120));
         this.group.add(this.printablePlate);
         window.addEventListener('resize', this.resizeWindow, false);
-
-        setInterval(()=>{
-            console.log(JSON.stringify(this.printablePlate.position))
-        }, 1000)
     }
 
     componentWillReceiveProps(nextProps) {

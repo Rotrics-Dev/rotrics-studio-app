@@ -8,18 +8,10 @@ const INITIAL_STATE = {
 
 export const actions = {
     _updateState: (state) => {
-        return {
-            type: ACTION_UPDATE_STATE,
-            state
-        };
+        return {type: ACTION_UPDATE_STATE, state};
     },
-    //切换tap会触发多个canvas的resize，因此尽量少切换
-    setTap: (value) => (dispatch, getState) => {
-        if (getState().taps.tap !== value) {
-            dispatch(actions._updateState({
-                tap: value
-            }));
-        }
+    changeTap: (value) => (dispatch) => {
+        dispatch(actions._updateState({tap: value}));
     }
 };
 

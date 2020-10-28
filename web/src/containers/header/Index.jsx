@@ -24,10 +24,10 @@ class Index extends React.Component {
                 <DevSerialPortMonitor/>
                 <DevControlPanel/>
                 <P3dCalibration/>
-                <Space size={35} style={{marginLeft: "55px"}}>
-                <NavGcodeAction/>
-                <NavGcodeSend/>
-                <NavDev/>
+                <Space size={40} style={{marginLeft: "5px"}}>
+                    <NavGcodeAction/>
+                    <NavGcodeSend/>
+                    <NavDev/>
                 </Space>
                 <div style={{position: "absolute", right: "5px", top: "10px"}}>
                     <NavLink/>
