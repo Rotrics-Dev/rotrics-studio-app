@@ -6,16 +6,10 @@ import Gcode from './ui/Gcode/Index.jsx';
 import {withTranslation} from 'react-i18next';
 import layout_styles from '../layout_styles.css';
 
-const {TabPane} = Tabs;
-
 class Index extends React.Component {
 
     render() {
-        const {model, modelCount} = this.props;
         const {t} = this.props;
-        const operations = this.operations;
-        // const enabledInfo = {duplicate: !!model, del: !!model, clear: (modelCount > 0)};
-        // const visibleInfo = {undo: false, redo: false, layFlat: false, duplicate: false, del: true, clear: true};
         return (
             <div>
                 <div className={layout_styles.div_canvas}>
@@ -35,12 +29,12 @@ class Index extends React.Component {
                 }}/>
                 <div className={layout_styles.div_right_panel}>
                     <Tabs centered={true} size="small">
-                        <TabPane tab={t('G-code')} key="2">
+                        <Tabs.TabPane tab={t('G-code')} key="2">
                             <Gcode/>
-                        </TabPane>
-                        <TabPane tab={t('Teach & Play')} key="3">
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab={t('Teach & Play')} key="3">
                             <TeachAndPlay/>
-                        </TabPane>
+                        </Tabs.TabPane>
                     </Tabs>
                 </div>
             </div>

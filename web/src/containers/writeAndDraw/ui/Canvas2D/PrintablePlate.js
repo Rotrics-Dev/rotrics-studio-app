@@ -5,12 +5,11 @@ import GridLine from './GridLine';
 import CoordinateAxes from './CoordinateAxes';
 import TextSprite from '../../../../three-extensions/TextSprite';
 import TargetPoint from '../../../../three-extensions/TargetPoint';
-import {FRONT_END, getLimit} from "../../../../utils/workAreaUtils";
 
 const METRIC_GRID_SPACING = 10; // 10 mm
 
 class PrintablePlate extends THREE.Object3D {
-    constructor(size, workHeight, frontEnd) {
+    constructor(size) {
         super();
         this.isPrintPlane = true;
         this.type = 'PrintPlane';
@@ -18,8 +17,6 @@ class PrintablePlate extends THREE.Object3D {
         // this.coordinateVisible = true;
         this.coordinateSystem = null;
         this.size = size;
-        this.workHeight = workHeight;
-        this.frontEnd = frontEnd;
         this._setup();
     }
 
@@ -119,10 +116,7 @@ class PrintablePlate extends THREE.Object3D {
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
-            group.translateY(200);
-
             this.add(group);
-            this.setUpWorkArea(this.workHeight)
         }
 
         { // Target Point
@@ -139,34 +133,6 @@ class PrintablePlate extends THREE.Object3D {
     changeCoordinateVisibility(value) {
         // this.coordinateVisible = value;
         this.coordinateSystem && (this.coordinateSystem.visible = value);
-    }
-
-    setUpWorkArea(workHeight) {
-        this.workHeight = workHeight;
-        let workArea = this.getObjectByName('workArea')
-        if (workArea) {
-            this.remove(workArea);
-            workArea.geometry.dispose();
-            workArea.material.dispose();
-        }
-        const green = colornames('green');
-        let limit = getLimit(this.workHeight, this.frontEnd);
-        if (!limit) {
-            return;
-        }
-
-        const path = new THREE.Path();
-        path.moveTo(-limit.outerRadius, 0)
-            .arc(limit.outerRadius, 0, limit.outerRadius, -Math.PI, 0, true)
-            .lineTo(limit.innerRadius, 0)
-            .arc(-limit.innerRadius, 0, limit.innerRadius, 0, -Math.PI, false)
-            .closePath();
-        workArea = new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints(path.getPoints(100)),
-            new THREE.LineBasicMaterial({color: green})
-        )
-        workArea.name = 'workArea';
-        this.add(workArea);
     }
 }
 

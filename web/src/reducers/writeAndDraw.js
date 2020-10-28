@@ -115,7 +115,6 @@ const actions = {
         }
 
         rendererParent.remove(selected);
-        selected.dispose()
         dispatch(actions._updateState({
             model: null,
             transformation: null,
@@ -154,12 +153,11 @@ const actions = {
     //update settings
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const selected = getState().writeAndDraw.model;
-        const {workHeightPen} = getState().persistentData
         if (!selected) {
             return {type: null};
         }
         //TODO: 是否有更？
-        selected.updateTransformation(key, value, preview, workHeightPen);
+        selected.updateTransformation(key, value, preview);
         dispatch(actions._updateState({
             transformation: _.cloneDeep(selected.settings.transformation),
             gcode: null

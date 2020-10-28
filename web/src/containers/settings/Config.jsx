@@ -3,7 +3,6 @@ import {withTranslation} from 'react-i18next';
 import ConfigSelect from '../../components/Config/ConfigSelect/Index.jsx';
 import language from "./lib/language.json";
 import {Switch, Space} from 'antd';
-import {actions as persistentDataActions} from "../../reducers/persistentData";
 import {connect} from 'react-redux';
 
 class Config extends React.Component {
@@ -49,15 +48,13 @@ class Config extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {isTooltipDisplayed} = state.persistentData;
     return {
-        isTooltipDisplayed
+        isTooltipDisplayed: true
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setIsTooltipDisplayed: (value) => dispatch(persistentDataActions.setIsTooltipDisplayed(value)),
     };
 };
 

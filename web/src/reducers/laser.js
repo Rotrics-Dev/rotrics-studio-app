@@ -147,12 +147,11 @@ const actions = {
     //TODO: 比较前后settings是否变化；不变则不更新数据
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const selected = getState().laser.model;
-        const {workHeightLaser} = getState().persistentData;
         if (!selected) {
             return {type: null};
         }
         //TODO: 是否有更？
-        selected.updateTransformation(key, value, preview, workHeightLaser);
+        selected.updateTransformation(key, value, preview);
         dispatch(actions._updateState({
             transformation: _.cloneDeep(selected.settings.transformation),
             gcode: null

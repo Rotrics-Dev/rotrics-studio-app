@@ -31,7 +31,7 @@ class Index extends React.Component {
         // this.this = new THREE.Vector3(SIZ, SIZ, SIZ)
         this.size = new THREE.Vector3(450, 260, 300)
         // this.printableArea = new PrintableCube(this.size);
-        this.printableArea = new PrintablePlate(new THREE.Vector2(this.size.x, this.size.y), this.props.workHeight);
+        this.printableArea = new PrintablePlate(new THREE.Vector2(this.size.x, this.size.y));
         this.printableArea.rotation.x = Math.PI / 2;
     }
 
@@ -191,12 +191,6 @@ class Index extends React.Component {
     }
 
     render() {
-        const {workHeight} = this.props
-        if (this.workHeight !== workHeight) {
-            if (this.printableArea)
-                this.printableArea.setUpWorkArea(workHeight)
-            this.workHeight = workHeight
-        }
         return (
             <div
                 ref={this.node}
@@ -207,10 +201,7 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {workHeightP3d} = state.persistentData
-
     return {
-        workHeight: workHeightP3d,
         tap
     };
 };

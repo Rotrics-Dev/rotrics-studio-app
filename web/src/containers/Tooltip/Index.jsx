@@ -18,9 +18,8 @@ class Index extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    const {isTooltipDisplayed} = state.persistentData;
     return {
-        isTooltipDisplayed
+        isTooltipDisplayed: true
     };
 };
 

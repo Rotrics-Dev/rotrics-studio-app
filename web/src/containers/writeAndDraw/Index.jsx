@@ -1,5 +1,5 @@
 import React from 'react';
-import {Canvas2dPen as Canvas2D} from './ui/Canvas2D/Index.jsx'
+import Canvas2D from './ui/Canvas2D/Index.jsx'
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import RightPanel from "./ui/RightPanel/Index.jsx";
 import layout_styles from '../layout_styles.css';

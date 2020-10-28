@@ -4,9 +4,7 @@ import {withTranslation} from 'react-i18next';
 import {Radio, Row, Col, Slider, Space} from 'antd';
 import styles from './styles.css';
 import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
-import {actions as persistentDataActions} from "../../../../reducers/persistentData";
 import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
-import {FRONT_END} from "../../../../utils/workAreaUtils";
 
 const JOG_SPEED_MARKS = {
     500: '500',
@@ -65,28 +63,10 @@ class Index extends React.Component {
             this.actions._moveRelative(`G0 X${this.state.step} Y${-this.state.step}`)
         },
         setWorkOrigin: () => {
-            const {frontEnd} = this.props;
-            this.props.addOneShootGcodeResponseListener(
-                'M114', (x, y, z) => {
-                    console.log(` 'M114', (${x}, ${y}, ${z})`)
-                    switch (frontEnd) {
-                        case FRONT_END.P3D:
-                            this.props.setWorkHeightP3d(z);
-                            break;
-                        case FRONT_END.PEN:
-                            this.props.setWorkHeightPen(z);
-                            break;
-                        case FRONT_END.LASER:
-                            this.props.setWorkHeightLaser(z);
-                            break;
-                    }
-                }
-            );
-            //G92.1: reset工作原点为工件坐标系原点，也就是home变成了(0, 300, 0)
-            this.props.send(['G92.1', 'M114', 'G92 Z0'].join('\n'));
+            this.props.send('G92 X0 Y0 Z0');
         },
         goToWorkOrigin: () => {
-            this.props.send('G0 Z0')
+            this.props.send('G0 X0 Y0 Z0')
         },
         //G90: absolute position
         //G91: relative position
@@ -171,11 +151,11 @@ class Index extends React.Component {
                 <Row gutter={[gutter, gutter]}>
                     <Col span={12}>
                         <input type="button" onClick={actions.goToWorkOrigin} className={styles.btn_action_work}
-                               value={t("Go To Work Height")}/>
+                               value={t("Go To Work Origin")}/>
                     </Col>
                     <Col span={12}>
                         <input type="button" onClick={actions.setWorkOrigin} className={styles.btn_action_work}
-                               value={t("Set Work Height")}/>
+                               value={t("Set Work Origin")}/>
                     </Col>
                 </Row>
                 <Space direction={"vertical"} style={{width: "100%"}}>
@@ -221,9 +201,6 @@ class Index extends React.Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         send: (gcode) => dispatch(gcodeSendActions.send(gcode)),
-        setWorkHeightP3d: (value) => dispatch(persistentDataActions.setWorkHeightP3d(value)),
-        setWorkHeightPen: (value) => dispatch(persistentDataActions.setWorkHeightPen(value)),
-        setWorkHeightLaser: (value) => dispatch(persistentDataActions.setWorkHeightLaser(value)),
     };
 };
 

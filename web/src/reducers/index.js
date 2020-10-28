@@ -14,7 +14,6 @@ import taps from "./taps";
 import code from "./code";
 import codeProject from "./codeProject";
 import settingsGeneral from "./settingsGeneral";
-import persistentData from "./persistentData";
 import fonts from "./fonts";
 import header from "./header";
 
@@ -35,7 +34,6 @@ export default combineReducers({
     code,
     codeProject,
     settingsGeneral,
-    persistentData,
     fonts,
     header
 });
