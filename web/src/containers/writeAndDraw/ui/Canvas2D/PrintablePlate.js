@@ -52,7 +52,6 @@ class PrintablePlate extends THREE.Object3D {
                 group.add(gridLine);
             }
 
-
             { // Coordinate Axes
                 const coordinateAxes = new CoordinateAxes(axisXLength, axisYLength);
                 coordinateAxes.name = 'CoordinateAxes';
@@ -104,7 +103,7 @@ class PrintablePlate extends THREE.Object3D {
                             y: y,
                             z: 0,
                             size: textSize,
-                            text: y + 200,
+                            text: y,
                             textAlign: 'center',
                             textBaseline: 'bottom',
                             color: colornames('green'),

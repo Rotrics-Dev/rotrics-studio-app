@@ -26,9 +26,13 @@ class Index extends React.Component {
         this.setupMouseController();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.printablePlate = new PrintablePlate(new THREE.Vector2(450, 260));
+        this.printablePlate = new PrintablePlate(new THREE.Vector2(130, 120));
         this.group.add(this.printablePlate);
         window.addEventListener('resize', this.resizeWindow, false);
+
+        setInterval(()=>{
+            console.log(JSON.stringify(this.printablePlate.position))
+        }, 1000)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,8 +55,8 @@ class Index extends React.Component {
             'pan_object_end',
             (event) => {
                 const {x, y} = event.object.position;
-                this.props.updateTransformation("x", x, false)
-                this.props.updateTransformation("y", y, false)
+                this.props.updateTransformation("x", x, false);
+                this.props.updateTransformation("y", y, false);
             }
         );
     }
@@ -81,8 +85,8 @@ class Index extends React.Component {
         this.group.add(this.modelGroup);
 
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        this.camera.position.copy(new THREE.Vector3(0, 280, 150));
-        this.camera.lookAt(new THREE.Vector3(0, 280, 0));
+        this.camera.position.copy(new THREE.Vector3(0, 0, 180));
+        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         this.renderer = new THREE.WebGLRenderer({antialias: true});
         this.renderer.setClearColor(new THREE.Color(0xfafafa), 1);

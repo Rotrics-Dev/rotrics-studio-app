@@ -69,7 +69,7 @@ class PrintablePlate extends THREE.Object3D {
                 });
                 const axisYLabel = new TextSprite({
                     x: 0,
-                    y: -(axisYLength + 10),
+                    y: axisYLength + 10,
                     z: 0,
                     size: 10,
                     text: 'Y',
@@ -103,7 +103,7 @@ class PrintablePlate extends THREE.Object3D {
                             y: y,
                             z: 0,
                             size: textSize,
-                            text: -y + 200,
+                            text: y,
                             textAlign: 'center',
                             textBaseline: 'bottom',
                             color: colornames('green'),
@@ -115,7 +115,6 @@ class PrintablePlate extends THREE.Object3D {
             }
             this.coordinateSystem = group;
             group.name = 'MetricCoordinateSystem';
-            group.translateY(-200);
             this.add(group);
         }
 
@@ -129,7 +128,6 @@ class PrintablePlate extends THREE.Object3D {
             this.add(this.targetPoint);
         }
     }
-
 
     changeCoordinateVisibility(value) {
         // this.coordinateVisible = value;
