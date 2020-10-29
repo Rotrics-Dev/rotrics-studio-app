@@ -61,14 +61,14 @@ class Index extends React.Component {
         };
 
         setInterval(() => {
-            if (this.props.socketStatus === "disconnect") {
+            if (this.props.status === "disconnect") {
                 notificationI18n.error({
                     key: notificationKey,
                     message: 'Internal error occurred',
                     description: 'Please restart the app',
                     duration: 0
                 });
-            } else if (this.props.socketStatus === "connect") {
+            } else if (this.props.status === "connect") {
                 notificationI18n.close(notificationKey);
             }
         }, 3000)
@@ -143,10 +143,10 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {status: socketStatus} = state.socket;
+    const {status} = state.socket;
     return {
         tap,
-        socketStatus
+        status
     };
 };
 
