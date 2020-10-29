@@ -4,6 +4,7 @@
 /server/package-lock.json
 /server/static/cache
 /server/static/userFonts
+/server/static/app_config.json
 /server/CuraEngine/config/active.def.json
 /server/static/code/my_projects
 /server/CuraEngine/config/fdmprinter.def.json
