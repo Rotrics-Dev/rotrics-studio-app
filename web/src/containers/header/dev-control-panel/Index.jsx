@@ -51,7 +51,7 @@ class Index extends React.Component {
                         <input type="button" className={styles.btn_transparent} onClick={actions.toggleTransparent}/>
                     </div>
                     <div className={styles.div_container}>
-                        <PositionMonitor/>
+                        {/*<PositionMonitor/>*/}
                         <JogPanel/>
                         <ModuleControl/>
                     </div>

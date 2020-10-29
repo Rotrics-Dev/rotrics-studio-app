@@ -154,6 +154,7 @@ class Model2D extends THREE.Group {
                 if (this._isSelected) {
                     this.remove(this.edgeObj3d);
                     const geometry = new THREE.EdgesGeometry(this.imgObj3d.geometry);
+                    const color = 0x007700;
                     this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: color}));
                     this.add(this.edgeObj3d);
                 } else {

@@ -57,7 +57,6 @@ class PanControls extends THREE.EventDispatcher {
         if (!this.selectedObject) {
             return;
         }
-        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -70,15 +69,12 @@ class PanControls extends THREE.EventDispatcher {
         } else if (event.button === THREE.MOUSE.RIGHT) {
             // event.preventDefault();
             event.stopPropagation();
-
-            console.log('event.button===THREE.MOUSE.RIGHT onMouseDown');
         }
     }
 
     onMouseMove = (event) => {
         console.log()
         if (!this.selectedObject) return;
-        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -96,18 +92,15 @@ class PanControls extends THREE.EventDispatcher {
 
                 this.dispatchEvent({type: 'panning', object: this.selectedObject});
             }
-            console.log('event.button===THREE.MOUSE.LEFT onMouseMove');
 
         } else if (event.button === THREE.MOUSE.RIGHT) {
             // event.preventDefault();
             event.stopPropagation();
-            console.log('event.button===THREE.MOUSE.RIGHT onMouseMove');
         }
     }
 
     onMouseUp = (event) => {
         if (!this.selectedObject) return;
-        console.log(event.button)
 
         event.preventDefault();
 
@@ -122,8 +115,6 @@ class PanControls extends THREE.EventDispatcher {
         } else if (event.button === THREE.MOUSE.RIGHT) {
             // event.preventDefault();
             event.stopPropagation();
-
-            console.log('event.button===THREE.MOUSE.RIGHT onMouseUp');
         }
     }
 

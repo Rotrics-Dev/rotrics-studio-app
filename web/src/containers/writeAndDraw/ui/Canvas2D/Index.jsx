@@ -2,7 +2,8 @@ import React from 'react';
 import styles from './styles.css';
 import * as THREE from 'three';
 import PrintablePlate from "./PrintablePlate.js"
-import MouseController from '../../../../three-extensions/MouseController';
+import IntersectDetector from '../../../../three-extensions/IntersectDetector';
+import PanControls from '../../../../three-extensions/PanControls';
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {connect} from 'react-redux';
 
@@ -17,17 +18,18 @@ class Index extends React.Component {
         this.group = null;
         this.modelGroup = null;
         //controls
-        this.mouseController = null;
-        this.printablePlate = null;
+        this.intersectDetector = null; // detect the intersected model with mouse
+        this.panControls = null;
     }
 
     componentDidMount() {
         this.setupThree();
-        this.setupMouseController();
+        this.setupZoom();
+        this.setupIntersectDetector();
+        this.setupPanControls();
         this.props.setRendererParent(this.modelGroup);
         this.animate();
-        this.printablePlate = new PrintablePlate(new THREE.Vector2(130, 120));
-        this.group.add(this.printablePlate);
+        this.group.add(new PrintablePlate(new THREE.Vector2(150, 120)));
         window.addEventListener('resize', this.resizeWindow, false);
     }
 
@@ -35,24 +37,51 @@ class Index extends React.Component {
         if (this.props.tap !== nextProps.tap) {
             this.resizeWindow();
         }
+        if (this.props.model && !nextProps.model) {
+            this.panControls.dispose();
+        }
     }
 
-    setupMouseController() {
-        this.mouseController = new MouseController(this.camera, this.renderer.domElement, this.group, this.modelGroup.children);
-        this.mouseController.addEventListener(
+    setupIntersectDetector() {
+        // recursive detect 'this.modelGroup.children'
+        this.intersectDetector = new IntersectDetector(
+            this.camera,
+            this.renderer.domElement,
+            this.modelGroup.children,
+            true
+        );
+        // triggered when "left mouse down on modelw"
+        this.intersectDetector.addEventListener(
             'detected',
             (event) => {
+                //detect到的是model2d的children
                 const model = event.object.parent;
                 this.props.selectModel(model);
-                this.mouseController.select(model);
+                this.panControls.select(model);
             }
         );
-        this.mouseController.addEventListener(
-            'pan_object_end',
+    }
+
+    setupPanControls() {
+        this.panControls = new PanControls(this.camera, this.renderer.domElement);
+        // this.group.add(this.panControls);
+
+        this.panControls.addEventListener(
+            'panning',
+            (event) => {
+                // 比较卡
+                // const {x, y} = event.object.position;
+                // this.props.updateTransformation("x", x, false)
+                // this.props.updateTransformation("y", y, false)
+            }
+        );
+
+        this.panControls.addEventListener(
+            'pan-end',
             (event) => {
                 const {x, y} = event.object.position;
-                this.props.updateTransformation("x", x, false);
-                this.props.updateTransformation("y", y, false);
+                this.props.updateTransformation("x", x, false)
+                this.props.updateTransformation("y", y, false)
             }
         );
     }
@@ -76,7 +105,7 @@ class Index extends React.Component {
         this.modelGroup = new THREE.Group();
 
         //结构：scene--group--modelGroup--models
-        //便于检测modelGroup.children
+        //因为需要IntersectDetector去检测modelGroup.children
         this.scene.add(this.group);
         this.group.add(this.modelGroup);
 
@@ -102,6 +131,34 @@ class Index extends React.Component {
 
     getVisibleHeight() {
         return this.node.current.parentElement.clientHeight;
+    }
+
+    setupZoom() {
+        const mousewheel = (e) => {
+            e.preventDefault();
+            //e.stopPropagation();
+            const delta = 3;
+            let z = this.camera.position.z;
+            if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件
+                if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                    z -= delta;
+                }
+                if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                    z += delta;
+                }
+            } else if (e.detail) {  //Firefox滑轮事件
+                if (e.detail > 0) { //当滑轮向上滚动时
+                    z -= delta;
+                }
+                if (e.detail < 0) { //当滑轮向下滚动时
+                    z += delta;
+                }
+            }
+            this.camera.position.z = z;
+            this.camera.updateProjectionMatrix();
+        };
+
+        this.renderer.domElement.addEventListener('mousewheel', mousewheel, false);
     }
 
     render() {

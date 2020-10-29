@@ -35,9 +35,9 @@ class SerialPortManager extends EventEmitter {
         setInterval(() => {
             SerialPort.list().then(
                 (ports) => {
-                    ports = ports.filter(({manufacturer}) => {
-                        return manufacturer === MANUFACTURER_DEX_ARM;
-                    });
+                    // ports = ports.filter(({manufacturer}) => {
+                    //     return manufacturer === MANUFACTURER_DEX_ARM;
+                    // });
                     //逻辑不够严谨，但实际使用中没问题
                     this._curPaths = ports.map(port => {
                         return port.path;
@@ -76,9 +76,9 @@ class SerialPortManager extends EventEmitter {
     getAllPaths() {
         SerialPort.list().then(
             (ports) => {
-                ports = ports.filter(({manufacturer}) => {
-                    return manufacturer === MANUFACTURER_DEX_ARM;
-                });
+                // ports = ports.filter(({manufacturer}) => {
+                //     return manufacturer === MANUFACTURER_DEX_ARM;
+                // });
                 const paths = ports.map(item => {
                     return item.path;
                 });

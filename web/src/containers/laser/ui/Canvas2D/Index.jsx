@@ -10,24 +10,17 @@ import {connect} from 'react-redux';
 class Index extends React.Component {
     constructor(props) {
         super(props);
-
         this.node = React.createRef();
-
         // three
         this.camera = null;
         this.renderer = null;
         this.scene = null;
         this.group = null;
         this.modelGroup = null;
-
         //controls
         this.intersectDetector = null; // detect the intersected model with mouse
         this.panControls = null;
     }
-
-    state = {
-        current: "basic" // basic, function, g-code
-    };
 
     componentDidMount() {
         this.setupThree();
