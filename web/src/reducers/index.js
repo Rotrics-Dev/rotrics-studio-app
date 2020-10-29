@@ -16,6 +16,7 @@ import codeProject from "./codeProject";
 import settingsGeneral from "./settingsGeneral";
 import fonts from "./fonts";
 import header from "./header";
+import appConfig from "./appConfig";
 
 export default combineReducers({
     gcodeSend,
@@ -35,5 +36,6 @@ export default combineReducers({
     codeProject,
     settingsGeneral,
     fonts,
-    header
+    header,
+    appConfig
 });

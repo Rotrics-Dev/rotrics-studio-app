@@ -4,11 +4,11 @@ import {Tooltip} from 'antd';
 
 class Index extends PureComponent {
     render() {
-        const { isTooltipDisplayed, title = '', placement = "left", ...rest} = this.props;
+        const {is_show_tip, title = '', placement = "left", ...rest} = this.props;
         return (
             <Tooltip
                 // color={'#f50'}
-                trigger={isTooltipDisplayed ? 'hover' : ''}
+                trigger={is_show_tip ? 'hover' : ''}
                 title={title}
                 placement={placement}
                 {...rest}
@@ -18,8 +18,9 @@ class Index extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
+    const {is_show_tip} = state.appConfig;
     return {
-        isTooltipDisplayed: true
+        is_show_tip
     };
 };
 

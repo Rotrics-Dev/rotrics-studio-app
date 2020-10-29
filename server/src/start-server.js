@@ -241,8 +241,7 @@ const setupHttpServer = () => {
             const filePath = path.join(storeManager.dir_code_projects_my, `${name}${extension}`);
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
-        })
-    ;
+        });
 
     router.post('/font/upload', async (ctx) => {
         let fontName = '';
@@ -275,6 +274,19 @@ const setupHttpServer = () => {
             userFonts
         };
     });
+
+    // app config
+    router
+        .get('/app_config/get/all', (ctx) => {
+            const data = storeManager.getAllAppConfig();
+            return ctx.body = {status: "ok", data};
+        })
+        .post('/app_config/set/one', (ctx) => {
+            const {key, value} = JSON.parse(ctx.request.body);
+            storeManager.setAppConfig(key, value);
+            const data = storeManager.getAllAppConfig();
+            return ctx.body = {status: "ok", data};
+        });
 
     app.use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');

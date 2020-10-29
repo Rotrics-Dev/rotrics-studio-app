@@ -21,6 +21,7 @@ import {actions as p3dPrintSettingsActions} from "../../reducers/p3dPrintSetting
 import {actions as p3dMaterialSettingsActions} from "../../reducers/p3dMaterialSettings";
 import {actions as settingsGeneralActions} from "../../reducers/settingsGeneral";
 import {actions as fontsActions} from "../../reducers/fonts";
+import {actions as appConfigActions} from "../../reducers/appConfig";
 import notificationI18n from "../../utils/notificationI18n";
 import {getUuid} from '../../utils/index.js';
 import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
@@ -164,6 +165,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(p3dMaterialSettingsActions.init());
             dispatch(p3dPrintSettingsActions.init());
             dispatch(fontsActions.init());
+            dispatch(appConfigActions.init());
         }
     };
 };
