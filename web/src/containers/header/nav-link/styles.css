@@ -1,21 +1,3 @@
-.btn_feedback {
-    width: 30px;
-    height: 25px;
-    background-image: url(./images/feedback.svg);
-    background-color: white;
-    outline: none;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 4px 0 0 4px;
-    vertical-align: middle;
-}
-
-.btn_feedback:active {
-    opacity: 0.4;
-}
-
 .btn_official_website {
     width: 30px;
     height: 25px;
@@ -26,6 +8,7 @@
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
+    border-radius: 4px 0 0 4px;
     vertical-align: middle;
 }
 
@@ -43,7 +26,7 @@
     background-repeat: no-repeat;
     background-position: center;
     border: solid #C0C0C0;
-    border-width: 1px 0 1px 0;
+    border-width: 1px 1px 1px 0;
     vertical-align: middle;
 }
 
@@ -60,8 +43,8 @@
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 0 4px 4px 0;
+    border: solid #C0C0C0;
+    border-width: 1px 0 1px 0;
     vertical-align: middle;
 }
 
@@ -69,4 +52,21 @@
     opacity: 0.4;
 }
 
+.btn_feedback {
+    width: 30px;
+    height: 25px;
+    background-image: url(./images/feedback.svg);
+    background-color: white;
+    outline: none;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #C0C0C0;
+    border-radius: 0 4px 4px 0;
+    vertical-align: middle;
+}
+
+.btn_feedback:active {
+    opacity: 0.4;
+}
 
