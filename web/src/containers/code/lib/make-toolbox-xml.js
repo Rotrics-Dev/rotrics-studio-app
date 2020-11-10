@@ -1,3 +1,5 @@
+import ScratchBlocks from "rotrics-scratch-blocks";
+
 const categorySeparator = '<sep gap="15"/>';
 
 //颜色和rotrics-scratch-blocks/core/colours.js保持一致
@@ -176,9 +178,6 @@ const sensing = function () {
                 <shadow type="sensing_keyoptions"/>
             </value>
         </block>
-        <block type="sensing_mousedown"/>
-        <block type="sensing_mousex"/>
-        <block type="sensing_mousey"/>
         <block type="RS_SENSING_CURRENT_POSITION"/>
         <block type="RS_SENSING_CURRENT_ACCELERATION"/>
         ${categorySeparator}
@@ -231,6 +230,9 @@ const conveyor_belt = function () {
 };
 
 const operators = function () {
+    const apple = ScratchBlocks.ScratchMsgs.translate('OPERATORS_JOIN_APPLE', 'apple');
+    const banana = ScratchBlocks.ScratchMsgs.translate('OPERATORS_JOIN_BANANA', 'banana');
+    const letter = ScratchBlocks.ScratchMsgs.translate('OPERATORS_LETTEROF_APPLE', 'a');
     return `
     <category name="%{BKY_CATEGORY_OPERATORS}" id="operators" colour="#40BF4A" secondaryColour="#389438">
         <block type="operator_add">
@@ -358,7 +360,62 @@ const operators = function () {
                 </shadow>
             </value>
         </block>
+        <block type="operator_join">
+                <value name="STRING1">
+                    <shadow type="text">
+                        <field name="TEXT">${apple} </field>
+                    </shadow>
+                </value>
+                <value name="STRING2">
+                    <shadow type="text">
+                        <field name="TEXT">${banana}</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="operator_letter_of">
+                <value name="LETTER">
+                    <shadow type="math_whole_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="STRING">
+                    <shadow type="text">
+                        <field name="TEXT">${apple}</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="operator_length">
+                <value name="STRING">
+                    <shadow type="text">
+                        <field name="TEXT">${apple}</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="operator_contains" id="operator_contains">
+              <value name="STRING1">
+                <shadow type="text">
+                  <field name="TEXT">${apple}</field>
+                </shadow>
+              </value>
+              <value name="STRING2">
+                <shadow type="text">
+                  <field name="TEXT">${letter}</field>
+                </shadow>
+              </value>
+            </block>
         ${categorySeparator}
+    </category>
+    `;
+};
+
+const variables = function () {
+    return `
+    <category
+        name="%{BKY_CATEGORY_VARIABLES}"
+        id="variables"
+        colour="#FF8C1A"
+        secondaryColour="#DB6E00"
+        custom="VARIABLE">
     </category>
     `;
 };
@@ -398,6 +455,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
     const controlXML = moveCategory('control') || control(isStage, targetId);
     const sensingXML = moveCategory('sensing') || sensing(isStage, targetId);
     const operatorsXML = moveCategory('operators') || operators(isStage, targetId);
+    const variablesXML = moveCategory('data') || variables(isStage, targetId);
 
     //TODO: 弄明白代码
     const everything = [
@@ -410,7 +468,8 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
         eventsXML, gap,
         controlXML, gap,
         sensingXML, gap,
-        operatorsXML
+        operatorsXML, gap,
+        variablesXML
     ];
 
     for (const extensionCategory of categoriesXML) {

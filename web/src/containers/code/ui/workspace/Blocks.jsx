@@ -223,6 +223,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(withTranslation()(Blocks));
+export default connect(mapStateToProps)(withTranslation()(Blocks));
 
 

@@ -8,12 +8,12 @@ import {GCODE_SENDER_ON_STATUS_CHANGE, SERIAL_PORT_ON_RECEIVED_LINE} from "../co
 import {str2Number} from '../utils/index.js';
 import messageI18n from "../utils/messageI18n";
 
-const INIT_VM = 'code/INIT_VM';
-const SET_RUNNING = "code/SET_RUNNING";
+const ACTION_UPDATE_STATE = 'code/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     vm: null,
-    running: false
+    running: false,
+    variables: [] //item={visible, id, value, name}
 };
 
 const generateGcode = (blockName, args) => {
@@ -201,19 +201,21 @@ const generateGcode = (blockName, args) => {
 };
 
 export const actions = {
-    init: () => (dispatch) => {
-        dispatch(actions._init());
-        dispatch(actions.loadEmptyProject());
-        dispatch(actions._setupListener());
-    },
-    _init: () => {
+    _updateState: (state) => {
         return {
-            type: INIT_VM
+            type: ACTION_UPDATE_STATE,
+            state
         };
     },
-    _setupListener: () => (dispatch, getState) => {
-        const vm = getState().code.vm;
+    init: () => (dispatch, getState) => {
+        const vm = new VM();
+        dispatch(actions._updateState({vm}));
+        vm.start();
+        // 为了正常使用blocks，至少load一个project，保证至少有一个target
+        // 为了方便，直接生成一个默认的项目，json格式，加载即可
+        // default_sc_project.json的生成：使用官方的scratch-gui，const json = vm.toJSON();
         //参考：scratch-gui/lib/vm-listener-hoc.jsx
+        vm.loadProject(defaultProjectJson);
         document.addEventListener('keydown', (e) => {
             // Don't capture keys intended for Blockly inputs.
             if (e.target !== document && e.target !== document.body) return;
@@ -244,13 +246,13 @@ export const actions = {
         vm.on(
             'PROJECT_RUN_START',
             () => {
-                dispatch(actions._setRunning(true));
+                dispatch(actions._updateState({running: true}));
             }
         );
         vm.on(
             'PROJECT_RUN_STOP',
             () => {
-                dispatch(actions._setRunning(false));
+                dispatch(actions._updateState({running: false}));
             }
         );
         vm.on(
@@ -260,11 +262,28 @@ export const actions = {
                 dispatch(codeProjectActions.onProjectChanged());
             }
         );
+        //not be called back if the visible of variables are all false
+        //TODO: bug-fix, visible is true when a new variable first added, but checkbox is false in tool-box
+        vm.on(
+            'MONITORS_UPDATE',
+            (monitorList) => {
+                //variable count: monitorList._list._tail.array.length
+                const variables = [];
+                const array = monitorList._list._tail.array;
+                for (let i = 0; i < array.length; i++) {
+                    const {visible, id, value, params} = array[i][1];
+                    const name = params.VARIABLE; //for example: 我的变量
+                    variables.push({visible, id, value, name})
+                }
+                dispatch(actions._updateState({variables}));
+            }
+        );
         //自定义block发送消息
         vm.runtime.on(
             'rotrics-async',
             (data) => {
                 const {blockName, args, resolve} = data;
+                console.log("blockName: " + blockName)
                 if (!getState().serialPort.path) {
                     messageI18n.warn("Please connect DexArm first");
                     resolve();
@@ -354,31 +373,14 @@ export const actions = {
                 }
             }
         );
-    },
-    _setRunning: (value) => {
-        return {
-            type: SET_RUNNING,
-            value
-        };
-    },
-    loadEmptyProject: () => (dispatch, getState) => {
-        getState().code.vm.loadProject(defaultProjectJson);
-        return {type: null};
     }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case INIT_VM:
-            const vm = new VM();
-            vm.start();
-            // 为了正常使用blocks，至少load一个project，保证至少有一个target
-            // 为了方便，直接生成一个默认的项目，json格式，加载即可
-            // default_sc_project.json的生成：使用官方的scratch-gui，const json = vm.toJSON();
-            return Object.assign({}, state, {vm});
-        case SET_RUNNING:
-            const {value} = action;
-            return Object.assign({}, state, {running: value});
+        case ACTION_UPDATE_STATE: {
+            return Object.assign({}, state, action.state);
+        }
         default:
             return state;
     }
