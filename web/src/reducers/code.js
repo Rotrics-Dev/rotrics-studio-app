@@ -88,6 +88,17 @@ const generateGcode = (blockName, args) => {
                     return null;
             }
         }
+        case "RS_MOTION_ROTATE_WRIST": {
+            const {VALUE1: direction, VALUE2: degree} = args;
+            switch (direction) {
+                case 'clockwise':
+                    // return `G2 I${-degree} J0`;
+                case 'anticlockwise':
+                    // return `G2 I${degree} J0`;
+                default:
+                    return null;
+            }
+        }
 
         //rs module
         case "RS_MODULE_AIR_PICKER": {
@@ -136,7 +147,6 @@ const generateGcode = (blockName, args) => {
         }
         case "RS_SETTINGS_SET_SPEED": {
             const {VALUE1: speed} = args;
-
             return [`G0 F${speed}`, `G1 F${speed}`].join("\n");
         }
         case "RS_SETTINGS_SET_ACCELERATION": {
@@ -174,14 +184,19 @@ const generateGcode = (blockName, args) => {
             return null;
 
         //rs sliding rail
-        case "RS_SLIDING_RAIL_SET_ACCELERATION":
-            break;
-        case "RS_SLIDING_RAIL_MOVE":
-            break;
-        case "RS_SLIDING_RAIL_STALL_GUARD_DETECTED":
-            break;
-        case "RS_SLIDING_RAIL_STOP":
-            break;
+        case "RS_SLIDING_RAIL_MOVE": {
+            const {VALUE1: direction,  VALUE2: distance, VALUE3: speed} = args;
+            switch (direction) {
+                case 'Forward':
+                    return ['G91', `G1 E${distance} F${speed}`, 'G90'].join("\n");
+                case 'Backward':
+                    return ['G91', `G1 E${-distance} F${speed}`, 'G90'].join("\n");
+                default:
+                    return null;
+            }
+        }
+        case "RS_SLIDING_RAIL_MOVE_TO_ORIGIN":
+            return 'M2005';
 
         //rs conveyor belt
         case "RS_CONVEYOR_BELT_MOVE":

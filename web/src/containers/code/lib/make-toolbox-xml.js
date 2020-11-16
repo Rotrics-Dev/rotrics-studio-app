@@ -62,6 +62,13 @@ const motion = function () {
                 </shadow>
             </value>
        </block>
+       <block type="RS_MOTION_ROTATE_WRIST">
+            <value name="VALUE2">
+                <shadow type="math_number">
+                    <field name="NUM">45</field>
+                </shadow>
+            </value>
+       </block>
        ${categorySeparator}
     </category>
     `;
@@ -188,27 +195,20 @@ const sensing = function () {
 const sliding_rail = function () {
     return `
     <category name="Sliding Rail" id="sliding_rail" colour="#B551B3" secondaryColour="#AC44AB">
-        <block type="RS_SLIDING_RAIL_SET_ACCELERATION">
-            <value name="VALUE1">
-                <shadow  type="math_number">
-                    <field name="NUM">0</field>
-                </shadow>
-            </value>
-       </block>
        <block type="RS_SLIDING_RAIL_MOVE">
             <value name="VALUE2">
                 <shadow  type="math_number">
-                    <field name="NUM">0</field>
+                    <field name="NUM">100</field>
                 </shadow>
             </value>
             <value name="VALUE3">
                 <shadow  type="math_number">
-                    <field name="NUM">0</field>
+                    <field name="NUM">2000</field>
                 </shadow>
             </value>
        </block>
-        <block type="RS_SLIDING_RAIL_STOP"/>
-        ${categorySeparator}
+       <block type="RS_SLIDING_RAIL_MOVE_TO_ORIGIN"/>
+       ${categorySeparator}
     </category>
     `;
 };
@@ -463,7 +463,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
         motionXML, gap,
         moduleXML, gap,
         settingsXML, gap,
-        // sliding_rail, gap,
+        sliding_rail, gap,
         conveyor_belt, gap,
         eventsXML, gap,
         controlXML, gap,
