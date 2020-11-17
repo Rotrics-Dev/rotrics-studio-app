@@ -74,23 +74,6 @@ const motion = function () {
     `;
 };
 
-// const module = function () {
-//     return `
-//     <category name="%{BKY_CATEGORY_MODULE}" id="module" colour="#6F53F4" secondaryColour="#583FF3">
-//         <block type="RS_MODULE_AIR_PICKER"/>
-//         <block type="RS_MODULE_SOFT_GRIPPER"/>
-//         <block type="RS_MODULE_WRIST_ROTATE">
-//             <value name="VALUE1">
-//                 <shadow type="math_number">
-//                     <field name="NUM">0</field>
-//                 </shadow>
-//             </value>
-//         </block>
-//         ${categorySeparator}
-//     </category>
-//     `;
-// };
-
 const module_control = function () {
     return `
     <category name="Module" id="module" colour="#6F53F4" secondaryColour="#583FF3">
@@ -176,7 +159,6 @@ const control = function () {
     `;
 };
 
-// <block type="RS_SENSING_CURRENT_SPEED"/>
 const sensing = function () {
     return `
     <category name="%{BKY_CATEGORY_SENSING}" id="sensing" colour="#4CBFE6" secondaryColour="#2E8EB8">

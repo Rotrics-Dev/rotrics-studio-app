@@ -20,18 +20,18 @@ const generateGcode = (blockName, args) => {
     switch (blockName) {
         //rs motion
         case "RS_MOTION_SAY_HELLO":
-            return ['M1112', 'G91', 'G0 Z20', 'G0 Z-20', 'G0 Z0', 'G90'].join("\n");
+            return ['M1112', 'G91', 'G1 Z20', 'G1 Z-20', 'G1 Z0', 'G90'].join("\n");
         case "RS_MOTION_MOVE_HOME":
             return 'M1112';
         case "RS_MOTION_MOVE_ORIGIN":
-            return 'G0 X0 Y0 Z0';
+            return 'G1 X0 Y0 Z0';
         case "RS_MOTION_MOVE_POSITION": {
             const {VALUE1, VALUE2, VALUE3} = args;
-            return `G0 X${VALUE1} Y${VALUE2} Z${VALUE3}`;
+            return `G1 X${VALUE1} Y${VALUE2} Z${VALUE3}`;
         }
         case "RS_MOTION_MOVE_RELATIVE": {
             const {VALUE1, VALUE2, VALUE3} = args;
-            const moveCmd = `G0 X${VALUE1} Y${VALUE2} Z${VALUE3}`;
+            const moveCmd = `G1 X${VALUE1} Y${VALUE2} Z${VALUE3}`;
             return ['G91', moveCmd, 'G90'].join("\n");
         }
         case "RS_MOTION_MOVE_RECTANGLE": {
@@ -40,34 +40,34 @@ const generateGcode = (blockName, args) => {
             switch (anchor) {
                 case 'left-top':
                     moveCmd = [
-                        `G0 Y${height}`,
-                        `G0 X${-width}`,
-                        `G0 Y${-height}`,
-                        `G0 X${width}`
+                        `G1 Y${height}`,
+                        `G1 X${-width}`,
+                        `G1 Y${-height}`,
+                        `G1 X${width}`
                     ].join("\n");
                     break;
                 case 'left-bottom':
                     moveCmd = [
-                        `G0 Y${-height}`,
-                        `G0 X${-width}`,
-                        `G0 Y${height}`,
-                        `G0 X${width}`
+                        `G1 Y${-height}`,
+                        `G1 X${-width}`,
+                        `G1 Y${height}`,
+                        `G1 X${width}`
                     ].join("\n");
                     break;
                 case 'right-top':
                     moveCmd = [
-                        `G0 Y${height}`,
-                        `G0 X${width}`,
-                        `G0 Y${-height}`,
-                        `G0 X${-width}`
+                        `G1 Y${height}`,
+                        `G1 X${width}`,
+                        `G1 Y${-height}`,
+                        `G1 X${-width}`
                     ].join("\n");
                     break;
                 case 'right-bottom':
                     moveCmd = [
-                        `G0 Y${-height}`,
-                        `G0 X${width}`,
-                        `G0 Y${height}`,
-                        `G0 X${-width}`
+                        `G1 Y${-height}`,
+                        `G1 X${width}`,
+                        `G1 Y${height}`,
+                        `G1 X${-width}`
                     ].join("\n");
                     break;
             }
@@ -92,9 +92,9 @@ const generateGcode = (blockName, args) => {
             const {VALUE1: direction, VALUE2: degree} = args;
             switch (direction) {
                 case 'clockwise':
-                    // return `G2 I${-degree} J0`;
+                // return `G2 I${-degree} J0`;
                 case 'anticlockwise':
-                    // return `G2 I${degree} J0`;
+                // return `G2 I${degree} J0`;
                 default:
                     return null;
             }
@@ -129,17 +129,15 @@ const generateGcode = (blockName, args) => {
                     return null;
             }
         }
-        case "RS_MODULE_WRIST_ROTATE":
-            break;
 
         //rs settings
         case "RS_SETTINGS_SET_MODULE": {
             const {VALUE1: module} = args;
             switch (module) {
-                case 'Pen Holder':
+                case 'pen holder':
                     return 'M888 P0';
-                case 'Air Picker':
-                case 'Soft Gripper':
+                case 'air picker':
+                case 'soft gripper':
                     return 'M888 P2';
                 default:
                     return null;
@@ -147,16 +145,16 @@ const generateGcode = (blockName, args) => {
         }
         case "RS_SETTINGS_SET_SPEED": {
             const {VALUE1: speed} = args;
-            return [`G0 F${speed}`, `G1 F${speed}`].join("\n");
+            return `G1 F${speed}`;
         }
         case "RS_SETTINGS_SET_ACCELERATION": {
             const {VALUE1: prt, VALUE2: acceleration} = args;
             switch (prt) {
-                case 'Printing':
+                case 'printing':
                     return `M204 P${acceleration}`;
-                case 'Retract':
+                case 'retract':
                     return `M204 R${acceleration}`;
-                case 'Travel':
+                case 'travel':
                     return `M204 T${acceleration}`;
                 default:
                     return null;
@@ -164,12 +162,13 @@ const generateGcode = (blockName, args) => {
         }
         case "RS_SETTINGS_SET_MOTION_MODE": {
             const {VALUE1: mode} = args;
-            if (mode === 'Fast') {
-                return 'M2001';
-            } else if (mode === 'Linear') {
-                return 'M2000';
-            } else {
-                return null;
+            switch (mode) {
+                case 'fast':
+                    return 'M2001';
+                case 'linear':
+                    return 'M2000';
+                default:
+                    return null;
             }
         }
         case "RS_SETTINGS_SET_WORK_ORIGIN":
@@ -185,11 +184,11 @@ const generateGcode = (blockName, args) => {
 
         //rs sliding rail
         case "RS_SLIDING_RAIL_MOVE": {
-            const {VALUE1: direction,  VALUE2: distance, VALUE3: speed} = args;
+            const {VALUE1: direction, VALUE2: distance, VALUE3: speed} = args;
             switch (direction) {
-                case 'Forward':
+                case 'forward':
                     return ['G91', `G1 E${distance} F${speed}`, 'G90'].join("\n");
-                case 'Backward':
+                case 'backward':
                     return ['G91', `G1 E${-distance} F${speed}`, 'G90'].join("\n");
                 default:
                     return null;
@@ -202,9 +201,9 @@ const generateGcode = (blockName, args) => {
         case "RS_CONVEYOR_BELT_MOVE":
             const {VALUE1: direction, VALUE2: speed} = args;
             switch (direction) {
-                case 'Forward':
+                case 'forward':
                     return `M2012 F${speed} D0`;
-                case 'Backward':
+                case 'backward':
                     return `M2012 F${speed} D1`;
                 default:
                     return null;
@@ -298,7 +297,6 @@ export const actions = {
             'rotrics-async',
             (data) => {
                 const {blockName, args, resolve} = data;
-                console.log("blockName: " + blockName)
                 if (!getState().serialPort.path) {
                     messageI18n.warn("Please connect DexArm first");
                     resolve();
