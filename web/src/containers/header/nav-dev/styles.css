@@ -49,6 +49,7 @@
     color: #ff4d4f;
 }
 
+.btn_emergency_stop:disabled,
 .btn_emergency_stop:active {
     opacity: 0.4;
 }

@@ -46,7 +46,7 @@ class Index extends React.Component {
         const {paths, path, serialPortConnectionVisible, changeVisible4serialPortConnection} = this.props;
         return (
             <Modal
-                title={t("Connection")}
+                title={t("Manage Connection")}
                 visible={serialPortConnectionVisible}
                 onCancel={() => {
                     changeVisible4serialPortConnection(false);
@@ -67,7 +67,7 @@ class Index extends React.Component {
                         disabled={!path || selectedPath !== path}
                         onClick={actions.closeSerialPort}>
                         {t('Disconnect')}
-                    </Button>,
+                    </Button>
                 ]}
             >
                 <Radio.Group onChange={actions.selectPath} value={selectedPath}>

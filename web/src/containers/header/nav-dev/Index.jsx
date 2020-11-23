@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {actions as serialPortActions} from '../../../reducers/serialPort';
 import {actions as headerActions} from "../../../reducers/header";
 import {withTranslation} from 'react-i18next';
+import Tooltip from '../../Tooltip/Index.jsx';
 
 class Index extends React.Component {
     actions = {
@@ -21,11 +22,13 @@ class Index extends React.Component {
         const {t} = this.props;
         return (
             <Space size={0}>
-                <button
-                    className={path ? styles.btn_connected : styles.btn_disconnected}
-                    onClick={() => {
-                        changeVisible4serialPortConnection(true)
-                    }}/>
+                <Tooltip placement="bottom" title={t("Manage Connection")}>
+                    <button
+                        className={path ? styles.btn_connected : styles.btn_disconnected}
+                        onClick={() => {
+                            changeVisible4serialPortConnection(true)
+                        }}/>
+                </Tooltip>
                 <div className={styles.div_monitor}>
                     <span style={{fontSize: "13px", marginRight: "5px"}}>{t("Monitor")}</span>
                     <Switch
@@ -40,7 +43,7 @@ class Index extends React.Component {
                         checked={controlPanelVisible}
                         onChange={changeVisible4controlPanel}/>
                 </div>
-                <button className={styles.btn_emergency_stop} onClick={actions.emergencyStop}>
+                <button className={styles.btn_emergency_stop} onClick={actions.emergencyStop} disabled={!path}>
                     {t("Emergency Stop")}
                 </button>
             </Space>
