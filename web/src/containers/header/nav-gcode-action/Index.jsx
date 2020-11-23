@@ -54,7 +54,7 @@ class Index extends React.Component {
                 case TAB_WRITE_AND_DRAW: {
                     const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                     FileSaver.saveAs(blob, filename, true);
-                    messageI18n.success('Export G-code success');
+                    messageI18n.success('Success');
                     break;
                 }
                 case TAP_P3D: {
@@ -63,11 +63,11 @@ class Index extends React.Component {
                         .then(resp => resp.blob())
                         .then(blob => {
                             FileSaver.saveAs(blob, filename, true);
-                            messageI18n.success('Export G-code success', 1);
+                            messageI18n.success('Success', 1);
                         })
                         .catch(() => {
                             console.error("down load err");
-                            messageI18n.error('Export G-code failed', 1);
+                            messageI18n.error('Failed', 1);
                         });
                     break;
                 }

@@ -8,18 +8,18 @@ import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import ConfigTitle from "../../../../components/Config/ConfigTitle/index.jsx";
 
 const MODULE_NAMES = [
-    'Laser',
-    '3D Print',
-    // 'Pen Holder', //应该有两个参数：停笔高度，抬笔高度
-    'Air Pick',
-    'Soft Gripper'
+    'laser',
+    '3d print',
+    // 'pen', //应该有两个参数：停笔高度，抬笔高度
+    'air picker',
+    'soft gripper'
 ];
 const STATES_AIR_PICK = ['pick', 'release', 'off'];
 const STATES_SOFT_GRIPPER = ['grip', 'neutral', 'release', 'off'];
 
 class Index extends React.Component {
     state = {
-        curModule: 'Laser', //Laser, 3D Print, Pen Holder, Air Pick, Soft Gripper
+        curModule: 'laser',
         isLaserOn: false,
         laserPowerPercent: 1,
         //TODO: 查询状态，保证软件和硬件同步
@@ -34,17 +34,17 @@ class Index extends React.Component {
             this.setState({curModule: value});
             let gcode = null;
             switch (value) {
-                case 'Laser':
+                case 'laser':
                     gcode = 'M888 P1';
                     break;
-                case '3D Print':
+                case '3d print':
                     gcode = 'M888 P3';
                     break;
-                case 'Pen Holder':
+                case 'pen':
                     gcode = 'M888 P0';
                     break;
-                case 'Air Pick':
-                case 'Soft Gripper':
+                case 'air picker':
+                case 'soft gripper':
                     gcode = 'M888 P2';
                     break;
             }
@@ -132,11 +132,11 @@ class Index extends React.Component {
         const gutter = 8;
         return (
             <div className={styles.div_tap}>
-                <ConfigTitle text={t('Front end')}/>
+                <ConfigTitle text={t('Front End')}/>
                 <Select
                     value={state.curModule}
                     onChange={actions.changeModule}
-                    style={{width: "100%", marginBottom: "15px"}}
+                    style={{width: "100%", marginBottom: "5px"}}
                 >
                     {MODULE_NAMES.map(value => {
                         return (
@@ -144,17 +144,17 @@ class Index extends React.Component {
                                 key={value}
                                 value={value}
                             >
-                                {value}
+                                {t(value)}
                             </Select.Option>
                         );
                     })}
                 </Select>
-                {curModule === 'Laser' &&
+                {curModule === 'laser' &&
                 <div>
-                    <span>{'Power'}</span>
+                    <span>{t('Power')}</span>
                     <Switch
                         size="small"
-                        style={{marginLeft: "5px"}}
+                        style={{marginLeft: "10px"}}
                         checked={state.isLaserOn}
                         onChange={actions4laser.toggleLaser}
                     />
@@ -169,12 +169,12 @@ class Index extends React.Component {
                     />
                 </div>
                 }
-                {curModule === '3D Print' &&
+                {curModule === '3d print' &&
                 <Row gutter={[gutter, gutter]}>
                     <Col span={12}>
                         <input
                             type="button"
-                            value={t("Level")}
+                            value={t("Calibration")}
                             className={styles.btn_action_work}
                             onClick={() => {
                                 changeVisible4p3dCalibration(true);
@@ -183,7 +183,7 @@ class Index extends React.Component {
                     </Col>
                 </Row>
                 }
-                {curModule === 'Air Pick' &&
+                {curModule === 'air picker' &&
                 <Space direction={"vertical"} style={{width: "100%"}}>
                     <Radio.Group onChange={actions4airPick.changeState} value={state.curState4airPick}>
                         {STATES_AIR_PICK.map(value => {
@@ -192,7 +192,7 @@ class Index extends React.Component {
                     </Radio.Group>
                 </Space>
                 }
-                {curModule === 'Soft Gripper' &&
+                {curModule === 'soft gripper' &&
                 <Space direction={"vertical"} style={{width: "100%"}}>
                     <Radio.Group onChange={actions4softGripper.changeState} value={state.curState4softGripper}>
                         {STATES_SOFT_GRIPPER.map(value => {

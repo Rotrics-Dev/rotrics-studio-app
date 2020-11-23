@@ -105,11 +105,9 @@ export const actions = {
             dispatch(actions._updateState({path}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ON_OPEN, (path) => {
-            messageI18n.success("connect success");
             dispatch(actions._updateState({path}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ON_CLOSE, (path) => {
-            messageI18n.success("disconnect success");
             dispatch(actions._updateState({path: null}));
         });
         socketClientManager.addServerListener(SERIAL_PORT_ON_ERROR, ({message}) => {

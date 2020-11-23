@@ -151,7 +151,7 @@ class Index extends React.Component {
                 <Row gutter={[gutter, gutter]}>
                     <Col span={12}>
                         <input type="button" onClick={actions.goToWorkOrigin} className={styles.btn_action_work}
-                               value={t("Go To Work Origin")}/>
+                               value={t("Move To Work Origin")}/>
                     </Col>
                     <Col span={12}>
                         <input type="button" onClick={actions.setWorkOrigin} className={styles.btn_action_work}
@@ -160,7 +160,7 @@ class Index extends React.Component {
                 </Row>
                 <Space direction={"vertical"} style={{width: "100%"}}>
                     <div>
-                        <ConfigTitle text={`${t("Step length")}(mm)`}/>
+                        <ConfigTitle text={`${t("Step Length")}(mm)`}/>
                         <Radio.Group value={state.step} onChange={actions.changeStep}>
                             <Radio.Button value={20}>20</Radio.Button>
                             <Radio.Button value={10}>10</Radio.Button>

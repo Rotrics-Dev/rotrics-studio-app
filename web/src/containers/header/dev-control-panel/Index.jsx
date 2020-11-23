@@ -38,7 +38,6 @@ class Index extends React.Component {
                     this.setState({position: {x, y}})
                 }}>
                 <div className={state.transparent ? styles.div_root_transparent : styles.div_root}>
-
                     <div id="handle" className={styles.div_header}>
                         <label className={styles.label_title}>{t('Control Panel')}</label>
                          <input

@@ -1,19 +1,20 @@
 import React from 'react';
-import {Button, Modal, Select, Space} from 'antd';
+import {Button, Modal, Radio} from 'antd';
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 import {actions as serialPortActions} from '../../../reducers/serialPort';
 import {actions as headerActions} from "../../../reducers/header";
-import {withTranslation} from 'react-i18next';
 import messageI18n from "../../../utils/messageI18n";
+import styles from "./styles.css";
 
 class Index extends React.Component {
     state = {
-        selectedPath: undefined, //undefined时Select才会显示placeholder
+        selectedPath: null
     };
 
     componentWillReceiveProps(nextProps) {
         if (!nextProps.paths.includes(this.state.selectedPath)) {
-            this.setState({selectedPath: undefined});
+            this.setState({selectedPath: null});
         }
     }
 
@@ -21,60 +22,31 @@ class Index extends React.Component {
         openSerialPort: () => {
             const path = this.props.path;
             if (path) {
-                messageI18n.warning(`Can't connect, already connected to ${path}`);
+                messageI18n.warning("Unable to connect, disconnect first.");
             } else {
                 this.props.openSerialPort(this.state.selectedPath)
             }
         },
         closeSerialPort: () => {
             if (this.props.curStatus !== 'idle') {
-                messageI18n.warning(`Can't disconnect, there G-code sending.`);
+                messageI18n.warning("Unable to disconnect, sending G-code.");
             } else {
                 this.props.closeSerialPort();
             }
         },
-        selectPath: (selectedPath) => {
-            this.setState({selectedPath})
+        selectPath: (e) => {
+            this.setState({selectedPath: e.target.value})
         }
     };
 
     render() {
-        const actions = this.actions;
-        const state = this.state;
-        const {paths, path, serialPortConnectionVisible, changeVisible4serialPortConnection} = this.props;
-        const {selectedPath} = state;
         const {t} = this.props;
-        let statusDes = "";
-        if (selectedPath) {
-            if (path === selectedPath) {
-                statusDes = "Connected"
-            } else {
-                statusDes = "Disconnected"
-            }
-        }
-
-        let connectDisabled = false;
-        let disconnectDisabled = false;
-        if (!selectedPath) {
-            connectDisabled = true;
-            disconnectDisabled = true;
-        } else {
-            if (selectedPath === path) {
-                connectDisabled = true;
-                disconnectDisabled = false;
-            } else {
-                connectDisabled = false;
-                disconnectDisabled = true;
-            }
-        }
-
-        const options = [];
-        for (let i = 0; i < paths.length; i++) {
-            options.push({label: paths[i], value: paths[i]})
-        }
+        const actions = this.actions;
+        const {selectedPath} = this.state;
+        const {paths, path, serialPortConnectionVisible, changeVisible4serialPortConnection} = this.props;
         return (
             <Modal
-                title={t("Connect DexArm")}
+                title={t("Connection")}
                 visible={serialPortConnectionVisible}
                 onCancel={() => {
                     changeVisible4serialPortConnection(false);
@@ -84,7 +56,7 @@ class Index extends React.Component {
                         ghost
                         key="connect"
                         type="primary"
-                        disabled={connectDisabled}
+                        disabled={!selectedPath || selectedPath === path}
                         onClick={actions.openSerialPort}>
                         {t("Connect")}
                     </Button>,
@@ -92,21 +64,25 @@ class Index extends React.Component {
                         ghost
                         key="disconnect"
                         type="primary"
-                        disabled={disconnectDisabled}
+                        disabled={!path || selectedPath !== path}
                         onClick={actions.closeSerialPort}>
                         {t('Disconnect')}
                     </Button>,
                 ]}
             >
-                <Space direction={"vertical"}>
-                    <h4>{`${t('Status')}: ${t(statusDes)}`}</h4>
-                    <Select
-                        style={{width: 300}}
-                        value={selectedPath}
-                        onChange={actions.selectPath}
-                        placeholder={t("Choose a port")}
-                        options={options}/>
-                </Space>
+                <Radio.Group onChange={actions.selectPath} value={selectedPath}>
+                    {paths.map(value => {
+                        if (path === value) {
+                            return (
+                                <Radio className={styles.radio} key={value} value={value}>
+                                    {value}
+                                    <div className={styles.div_connected}/>
+                                </Radio>)
+                        } else {
+                            return (<Radio className={styles.radio} key={value} value={value}>{value}</Radio>)
+                        }
+                    })}
+                </Radio.Group>
             </Modal>
         )
     }
@@ -116,7 +92,6 @@ const mapStateToProps = (state) => {
     const {curStatus} = state.gcodeSend;
     const {paths, path} = state.serialPort;
     const {serialPortConnectionVisible} = state.header;
-    // console.log('curStatus: ' + curStatus)
     return {
         curStatus,
         paths,

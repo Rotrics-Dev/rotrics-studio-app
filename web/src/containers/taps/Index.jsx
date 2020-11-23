@@ -123,8 +123,7 @@ class Index extends React.Component {
                     <div className={tap === TAP_P3D ? styles.div_tap_show : styles.div_tap_hidden}>
                         <P3D/>
                     </div>
-                    <div
-                        className={tap === TAB_WRITE_AND_DRAW ? styles.div_tap_show : styles.div_tap_hidden}>
+                    <div className={tap === TAB_WRITE_AND_DRAW ? styles.div_tap_show : styles.div_tap_hidden}>
                         <WriteAndDraw/>
                     </div>
                     <div className={tap === TAP_CODE ? styles.div_tap_show : styles.div_tap_hidden}>

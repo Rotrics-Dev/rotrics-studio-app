@@ -1,0 +1,17 @@
+.div_connected {
+    display:inline-block;
+    width: 15px;
+    height: 15px;
+    margin-left: 15px;
+    background-image: url(./images/connected.svg);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.radio {
+    display: block;
+    height: 35px;
+    margin: 5px;
+    line-height: 30px;
+}
