@@ -36,7 +36,7 @@ class Index extends React.Component {
                 generateGcode = this.props.generateGcode4writeAndDraw;
                 break;
         }
-        return { gcode, modelCount, isAllPreviewed, generateGcode};
+        return {gcode, modelCount, isAllPreviewed, generateGcode};
     };
 
     actions = {
@@ -89,10 +89,10 @@ class Index extends React.Component {
         return (
             <Space size={0}>
                 <button className={styles.btn_generate} onClick={actions.generateGcode} disabled={generateDisabled}>
-                    {t("Generate G-Code")}
+                    {t("Generate G-code")}
                 </button>
                 <button className={styles.btn_export} onClick={actions.exportGcode} disabled={exportDisabled}>
-                    {t("Export G-Code")}
+                    {t("Export G-code")}
                 </button>
             </Space>
         )

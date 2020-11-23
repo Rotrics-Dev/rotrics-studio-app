@@ -52,6 +52,7 @@ class Index extends React.Component {
 
     render() {
         const actions = this.actions;
+        const {t} = this.props;
         const {tap, path, curStatus, total, sent, task} = this.props;
         const {gcode} = this.getPropsByTap(tap);
         const startOrPauseDisabled = (!path || !gcode || !["idle", "started", "paused"].includes(curStatus));
@@ -63,28 +64,31 @@ class Index extends React.Component {
         }
         return (
             <Space size={0}>
-                <Tooltip placement="bottom" title={curStatus === "started" ? "pause G-code task" : "start G-code task"}>
+                <Tooltip placement="bottom"
+                         title={curStatus === "started" ? t("Pause Send G-code") : t("Start Send G-code")}>
                     <button
                         disabled={startOrPauseDisabled}
                         onClick={actions.startOrPauseTask}
                         className={startOrPauseDisabled ? styles.btn_play_disabled : (curStatus === "started" ? styles.btn_pause : styles.btn_play)}
                     />
                 </Tooltip>
-                <Tooltip placement="bottom" title="stop G-code task">
+                <Tooltip placement="bottom" title={t("Stop Send G-code")}>
                     <button
                         disabled={stopDisabled}
                         onClick={actions.stopTask}
                         className={stopDisabled ? styles.btn_stop_disabled : styles.btn_stop}
                     />
                 </Tooltip>
-                <Tooltip placement="bottom" title="run boundary">
+                <Tooltip placement="bottom" title={t("Run Boundary")}>
                     <button
                         disabled={runBoundaryDisabled}
                         onClick={actions.runBoundary}
                         className={runBoundaryDisabled ? styles.btn_run_boundary_disabled : styles.btn_run_boundary}
                     />
                 </Tooltip>
-                <Progress style={{marginRight: "5px"}} type="circle" percent={percent} width={25}/>
+                <Tooltip placement="bottom" title={t("G-code Send Progress")}>
+                    <Progress style={{marginRight: "5px"}} type="circle" percent={percent} width={25}/>
+                </Tooltip>
             </Space>
         )
     }
