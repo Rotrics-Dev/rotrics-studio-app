@@ -29,8 +29,12 @@ class MaterialSettings extends PureComponent {
         }
 
         const actions = this.actions;
+        const {t} = this.props;
+        const tCommon = (key) => {
+            return t("common#" + key);
+        };
         const tCura = (key) => {
-            return this.props.t("cura#" + key);
+            return t("cura#" + key);
         };
 
         const {name, isOfficial} = selected;
@@ -51,7 +55,7 @@ class MaterialSettings extends PureComponent {
                             size="small"
                             checked={itemName === name}
                             value={itemName}>
-                            {itemName}
+                            {tCommon(itemName)}
                         </Radio>
                     );
                 })}
@@ -59,7 +63,7 @@ class MaterialSettings extends PureComponent {
 
         const categoryKey = "material.children";
         const {materialSettingsFilter} = this.props;
-        const header = tCura("Material Settings");
+        const header = tCommon("Material Settings");
         const editable = !isOfficial;
         const elements4settings = renderCategoryChildren(selected.material.children, categoryKey, materialSettingsFilter, tCura, actions.updateSetting, editable);
         const line = <Line key="line"/>;
@@ -98,4 +102,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(MaterialSettings));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'cura'])(MaterialSettings));

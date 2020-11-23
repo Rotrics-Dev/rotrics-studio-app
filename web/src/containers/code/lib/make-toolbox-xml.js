@@ -76,7 +76,7 @@ const motion = function () {
 
 const module_control = function () {
     return `
-    <category name="Module" id="module" colour="#6F53F4" secondaryColour="#583FF3">
+    <category name="%{BKY_CATEGORY_RS_MODULE}" id="module" colour="#6F53F4" secondaryColour="#583FF3">
         <block type="RS_MODULE_AIR_PICKER"/>
         <block type="RS_MODULE_SOFT_GRIPPER"/>
         ${categorySeparator}
@@ -86,7 +86,7 @@ const module_control = function () {
 
 const settings = function () {
     return `
-    <category name="Settings" id="settings" colour="#8E66BC" secondaryColour="#7D51B1">
+    <category name="%{BKY_CATEGORY_RS_SETTINGS}" id="settings" colour="#8E66BC" secondaryColour="#7D51B1">
         <block type="RS_SETTINGS_SET_MODULE"/>
         <block type="RS_SETTINGS_SET_SPEED">
             <value name="VALUE1">
@@ -176,7 +176,7 @@ const sensing = function () {
 
 const sliding_rail = function () {
     return `
-    <category name="Sliding Rail" id="sliding_rail" colour="#B551B3" secondaryColour="#AC44AB">
+    <category name="%{BKY_CATEGORY_RS_SLIDING_RAIL}" id="sliding_rail" colour="#B551B3" secondaryColour="#AC44AB">
        <block type="RS_SLIDING_RAIL_MOVE">
             <value name="VALUE2">
                 <shadow  type="math_number">
@@ -197,7 +197,7 @@ const sliding_rail = function () {
 
 const conveyor_belt = function () {
     return `
-    <category name="Conveyor Belt" id="conveyor_belt" colour="#FF7122" secondaryColour="#D2581A">
+    <category name="%{BKY_CATEGORY_RS_CONVEYOR_BELT}" id="conveyor_belt" colour="#FF7122" secondaryColour="#D2581A">
        <block type="RS_CONVEYOR_BELT_MOVE">
             <value name="VALUE2">
                 <shadow  type="math_number">

@@ -101,7 +101,9 @@ class Blocks extends React.Component {
             if (locale !== this.props.vm.getLocale()) {
                 this.changeLocale(locale);
             }
-        })
+        });
+
+        this.props.vm.refreshWorkspace();
     }
 
     changeLocale = (locale) => {

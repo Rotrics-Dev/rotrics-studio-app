@@ -29,8 +29,12 @@ class PrintSettings extends React.Component {
         }
 
         const actions = this.actions;
+        const {t} = this.props;
+        const tCommon = (key) => {
+            return t("common#" + key);
+        };
         const tCura = (key) => {
-            return this.props.t("cura#" + key);
+            return t("cura#" + key);
         };
 
         const {name, isOfficial} = selected;
@@ -51,7 +55,7 @@ class PrintSettings extends React.Component {
                             size="small"
                             checked={itemName === name}
                             value={itemName}>
-                            {itemName}
+                            {tCommon(itemName)}
                         </Radio>
                     );
                 })}
@@ -78,7 +82,7 @@ class PrintSettings extends React.Component {
                     <Collapse.Panel
                         forceRender={true}
                         key="1"
-                        header="Print Settings"
+                        header={tCommon("Print Settings")}
                         style={{
                             fontSize: "13px",
                         }}>
@@ -111,6 +115,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['cura'])(PrintSettings));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'cura'])(PrintSettings));
 
 

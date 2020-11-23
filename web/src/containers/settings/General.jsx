@@ -107,7 +107,7 @@ class General extends React.Component {
                     </div>
                 </div>
                 <div style={{width: "100%", paddingTop: "30px", marginBottom: "30px"}}>
-                    <h3>{t("Rotrics Studio Info")}</h3>
+                    <h3>{t("Software Infos")}</h3>
                     <div className={styles.div_info}>
                         <Row gutter={[0, verticalSpace]}>
                             <Col span={spanCol1}>{t("Version")}</Col>

@@ -21,7 +21,7 @@ class SettingVisibility extends React.Component {
         const actions = this.actions;
         return (
             <div>
-                <span style={{fontSize: "14px", marginLeft: "5px", marginRight: "5px"}}>{t("Show All")}</span>
+                <span style={{fontSize: "14px", marginLeft: "5px", marginRight: "5px"}}>{t("Show All Settings")}</span>
                 <Switch
                     size="small"
                     checked={visibility === "All"}
