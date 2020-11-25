@@ -230,14 +230,14 @@ class Index extends React.Component {
                             disabled={!(stepArray.length > 0)}/>
                 </div>
                 <Modal
-                    title={t("Select Teach & Play Front End")}
+                    title={t("Select Front End")}
                     visible={this.props.showFrontEndSelect}
                     onCancel={this.actions.onCancel}
                     onOk={this.actions.onOk}>
                     {/*<Space direction={"vertical"}>*/}
                     <Select style={{width: 300}}
                             onChange={this.props.onSelectFrontEnd}
-                            placeholder="select a front end"
+                            placeholder={t("select front end")}
                             defaultValue={this.props.currentFrontEnd}
                             options={frontEndOptions}/>
                 </Modal>

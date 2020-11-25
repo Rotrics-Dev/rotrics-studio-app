@@ -101,7 +101,7 @@ const generateGcode = (blockName, args) => {
         }
 
         //rs module
-        case "RS_MODULE_AIR_PICKER": {
+        case "RS_FRONT_END_AIR_PICKER": {
             const {VALUE1: status} = args;
             switch (status) {
                 case 'pick':
@@ -114,7 +114,7 @@ const generateGcode = (blockName, args) => {
                     return null;
             }
         }
-        case "RS_MODULE_SOFT_GRIPPER": {
+        case "RS_FRONT_END_SOFT_GRIPPER": {
             const {VALUE1: status} = args;
             switch (status) {
                 case 'grip':
@@ -131,7 +131,7 @@ const generateGcode = (blockName, args) => {
         }
 
         //rs settings
-        case "RS_SETTINGS_SET_MODULE": {
+        case "RS_SETTINGS_SELECT_FRONT_END": {
             const {VALUE1: module} = args;
             switch (module) {
                 case 'pen holder':

@@ -74,11 +74,11 @@ const motion = function () {
     `;
 };
 
-const module_control = function () {
+const frontEnd = function () {
     return `
-    <category name="%{BKY_CATEGORY_RS_MODULE}" id="module" colour="#6F53F4" secondaryColour="#583FF3">
-        <block type="RS_MODULE_AIR_PICKER"/>
-        <block type="RS_MODULE_SOFT_GRIPPER"/>
+    <category name="%{BKY_CATEGORY_RS_FRONT_END}" id="front_end" colour="#6F53F4" secondaryColour="#583FF3">
+        <block type="RS_FRONT_END_AIR_PICKER"/>
+        <block type="RS_FRONT_END_SOFT_GRIPPER"/>
         ${categorySeparator}
     </category>
     `;
@@ -87,7 +87,7 @@ const module_control = function () {
 const settings = function () {
     return `
     <category name="%{BKY_CATEGORY_RS_SETTINGS}" id="settings" colour="#8E66BC" secondaryColour="#7D51B1">
-        <block type="RS_SETTINGS_SET_MODULE"/>
+        <block type="RS_SETTINGS_SELECT_FRONT_END"/>
         <block type="RS_SETTINGS_SET_SPEED">
             <value name="VALUE1">
                 <shadow type="math_number">
@@ -430,7 +430,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
         }
         // return `undefined`
     };
-    const moduleXML = moveCategory('module') || module_control(isStage, targetId);
+    const frontEndXML = moveCategory('front_end') || frontEnd(isStage, targetId);
     const settingsXML = moveCategory('settings') || settings(isStage, targetId);
     const motionXML = moveCategory('motion') || motion(isStage, targetId);
     const eventsXML = moveCategory('event') || events(isStage, targetId);
@@ -443,7 +443,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
     const everything = [
         xmlOpen,
         motionXML, gap,
-        moduleXML, gap,
+        frontEndXML, gap,
         settingsXML, gap,
         sliding_rail, gap,
         conveyor_belt, gap,

@@ -151,7 +151,7 @@ class Index extends React.Component {
         const {isModalShow4myProjects, myProjectInfos} = this.props;
         return (
             <Modal
-                title={t("My projects")}
+                title={t("My Projects")}
                 visible={isModalShow4myProjects}
                 onCancel={actions.closeModal}
                 centered={true}
@@ -221,17 +221,17 @@ class Index extends React.Component {
                                                 <Menu.Item>
                                                     <Button size="small" onClick={() => {
                                                         actions.renameProject(projectInfo)
-                                                    }}>Rename</Button>
+                                                    }}>{t('Rename')}</Button>
                                                 </Menu.Item>
                                                 <Menu.Item>
                                                     <Button size="small" onClick={() => {
                                                         actions.delProject(projectInfo)
-                                                    }}>Delete</Button>
+                                                    }}>{t('Delete')} </Button>
                                                 </Menu.Item>
                                                 <Menu.Item>
                                                     <Button size="small" onClick={() => {
                                                         actions.exportProject(projectInfo)
-                                                    }}>Export</Button>
+                                                    }}>{t('Export')} </Button>
                                                 </Menu.Item>
                                             </Menu>
                                         }}>
@@ -239,8 +239,8 @@ class Index extends React.Component {
                                     </Dropdown>
                                     <div className={styles.div_project_info_my}>
                                         <p className={styles.p_project_info}>{name}</p>
-                                        <p className={styles.p_project_info}>{"created: " + timestamp2date(created)}</p>
-                                        <p className={styles.p_project_info}>{"modified: " + timestamp2date(modified)}</p>
+                                        <p className={styles.p_project_info}>{`${t("created")}: ${timestamp2date(created)}`}</p>
+                                        <p className={styles.p_project_info}>{`${t("modified")}: ${timestamp2date(modified)}`}</p>
                                     </div>
                                 </div>
                             </Col>
@@ -278,5 +278,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Index))
+export default connect(mapStateToProps,
+    mapDispatchToProps)(withTranslation()(Index))
 

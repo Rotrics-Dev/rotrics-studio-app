@@ -168,25 +168,28 @@ class Index extends React.Component {
             } else {
                 this.props.save();
             }
+        },
+        getMenu4file: () =>{
+            const {t} = this.props;
+            return (
+                <Menu onClick={this.actions.onMenu4fileClick}>
+                    <Menu.Item key="New">{t("New")}</Menu.Item>
+                    <Menu.Item key="Save As">{t("Save As")}</Menu.Item>
+                    <Menu.Item key="Example Projects">{t("Example Projects")}</Menu.Item>
+                    <Menu.Item key="My Projects">{t("My Projects")}</Menu.Item>
+                    <Menu.Item key="Open from your computer">{t("Open from your computer")}</Menu.Item>
+                    <Menu.Item key="Save to your computer">{t("Save to your computer")}</Menu.Item>
+                </Menu>
+            )
         }
     };
-
-    menu4file = (
-        <Menu onClick={this.actions.onMenu4fileClick}>
-            <Menu.Item key="New">New</Menu.Item>
-            <Menu.Item key="Save As">Save As</Menu.Item>
-            <Menu.Item key="Example Projects">Example Projects</Menu.Item>
-            <Menu.Item key="My Projects">My Projects</Menu.Item>
-            <Menu.Item key="Open from your computer">Open from your computer</Menu.Item>
-            <Menu.Item key="Save to your computer">Save to your computer</Menu.Item>
-        </Menu>
-    );
 
     render() {
         const {projectInfo} = this.props;
         if (!projectInfo) {
             return null;
         }
+        const {t} = this.props;
         const state = this.state;
         const actions = this.actions;
         return (
@@ -200,13 +203,13 @@ class Index extends React.Component {
                     onChange={actions.openFromYourComputer}
                 />
                 <h4 style={{margin: "auto", color: "#eeeeee", marginRight: "10px"}}>Scratch</h4>
-                <Dropdown overlay={this.menu4file} placement="bottomCenter">
+                <Dropdown overlay={actions.getMenu4file} placement="bottomCenter">
                     <Button
                         size="small"
                         type="primary"
                         style={{backgroundColor: "transparent", border: "none", boxShadow: "none"}}
                         icon={<FolderOutlined/>}>
-                        File
+                        {t("File")}
                     </Button>
                 </Dropdown>
                 <Button
@@ -216,7 +219,7 @@ class Index extends React.Component {
                     onClick={actions.save}
                     disabled={projectInfo.isSaved}
                     icon={<SaveOutlined/>}>
-                    Save
+                    {t("Save")}
                 </Button>
                 {(!projectInfo.location || projectInfo.location === 'my') &&
                 <Input
@@ -249,10 +252,6 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
     const {vm} = state.code;
     const {projectInfo, myProjectInfos} = state.codeProject;
-    // if (JSON.stringify(mProjectInfo) !== JSON.stringify(projectInfo)) {
-    //     mProjectInfo = projectInfo;
-    //     console.log(JSON.stringify(projectInfo, null, 2))
-    // }
     return {
         vm,
         projectInfo,

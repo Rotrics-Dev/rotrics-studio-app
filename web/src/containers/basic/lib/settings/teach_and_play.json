@@ -15,8 +15,8 @@
     "type": "enum",
     "options": {
       "air_pick": {
-        "label": "Air Pick",
-        "description": "Air Pick",
+        "label": "air picker",
+        "description": "air picker",
         "gcode": "M888 P2",
         "default_value": "state_0",
         "type": "enum",
@@ -39,8 +39,8 @@
         }
       },
       "soft_gripper": {
-        "label": "Soft Gripper",
-        "description": "Soft Gripper",
+        "label": "soft gripper",
+        "description": "soft gripper",
         "gcode": "M888 P2",
         "default_value": "state_0",
         "type": "enum",
@@ -68,20 +68,20 @@
         }
       },
       "laser": {
-        "label": "Laser",
-        "description": "Laser",
+        "label": "laser",
+        "description": "laser",
         "gcode": "M888 P1",
         "default_value": "state_0",
         "type": "enum",
         "state": {
           "state_0": {
             "label": "Off",
-            "description": "Laser Off",
+            "description": "laser Off",
             "gcode": "M5"
           },
           "state_1": {
             "label": "On",
-            "description": "Laser On",
+            "description": "laser On",
             "gcode": "M3"
           }
         },

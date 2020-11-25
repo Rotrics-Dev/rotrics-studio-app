@@ -91,7 +91,7 @@ class Index extends React.Component {
         const {isModalShow4exampleProjects, exampleProjectInfos} = this.props;
         return (
             <Modal
-                title={t("Example projects")}
+                title={t("Example Projects")}
                 visible={isModalShow4exampleProjects}
                 onCancel={actions.closeModal}
                 centered={true}

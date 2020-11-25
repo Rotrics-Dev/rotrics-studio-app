@@ -84,7 +84,7 @@
   },
   "config": {
     "icon": "base64xxx",
-    "label": "Greyscale",
+    "label": "GREYSCALE",
     "type": "category",
     "description": "Config of Greyscale",
     "children": {

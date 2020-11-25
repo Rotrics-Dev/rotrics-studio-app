@@ -1,11 +1,11 @@
 {
   "icon": "base64xxx",
-  "label": "Text",
+  "label": "TEXT",
   "type": "category",
   "description": "Config of Text",
   "children": {
     "text": {
-      "label": "Text",
+      "label": "TEXT",
       "description": "text description",
       "default_value": "Rotrics",
       "type": "string"
