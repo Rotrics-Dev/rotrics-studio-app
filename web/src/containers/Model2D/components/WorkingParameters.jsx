@@ -1,13 +1,9 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
-import styles from './styles.css';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as laserActions} from "../../../../reducers/laser";
-import {connect} from 'react-redux';
-import {ConfigText, ConfigTitle} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
+import NumberInput from '../../../components/NumberInput/Index.jsx';
+import Line from '../../../components/Line/Index.jsx'
+import Tooltip from '../../Tooltip/Index.jsx';
+import {ConfigText, ConfigTitle} from "../../../components/Config";
 
 //hiddenStr: "movement_mode === greyscale-dot"
 const getHiddenValue = (hiddenStr = "", config) => {
@@ -51,7 +47,8 @@ const getHiddenValue = (hiddenStr = "", config) => {
     return hidden;
 };
 
-class WorkingParameters extends PureComponent {
+//props: t, model, working_parameters, updateWorkingParameters, config
+class Index extends PureComponent {
     actions = {
         setPrintOrder: (value) => {
             this.props.updateWorkingParameters("print_order", value)
@@ -68,7 +65,6 @@ class WorkingParameters extends PureComponent {
         setEngraveTime: (value) => {
             this.props.updateWorkingParameters("engrave_time", value)
         },
-        //multi pass
         setMultiPass: (e) => {
             this.props.updateWorkingParameters("multi_pass", e.target.checked)
         },
@@ -78,7 +74,6 @@ class WorkingParameters extends PureComponent {
         setMultiPassPassDepth: (value) => {
             this.props.updateWorkingParameters("multi_pass.pass_depth", value)
         },
-        //power
         setPower: (value) => {
             this.props.updateWorkingParameters("power", value)
         }
@@ -127,13 +122,13 @@ class WorkingParameters extends PureComponent {
                                     min={work_speed.minimum_value}
                                     max={work_speed.maximum_value}
                                     value={work_speed.default_value}
-                                    onAfterChange={actions.setWorkSpeed}/>
+                                    onAfterChange={actions.setWorkSpeed}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(jog_speed.description)}>
-                        <Row
-                            style={{display: jogSpeedVisible ? "" : "none"}}>
+                        <Row style={{display: jogSpeedVisible ? "" : "none"}}>
                             <Col span={19}>
                                 <ConfigText text={`${t(jog_speed.label)}(${jog_speed.unit})`}/>
                             </Col>
@@ -142,7 +137,8 @@ class WorkingParameters extends PureComponent {
                                     min={jog_speed.minimum_value}
                                     max={jog_speed.maximum_value}
                                     value={jog_speed.default_value}
-                                    onAfterChange={actions.setJogSpeed}/>
+                                    onAfterChange={actions.setJogSpeed}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -156,7 +152,8 @@ class WorkingParameters extends PureComponent {
                                     min={dwell_time.minimum_value}
                                     max={dwell_time.maximum_value}
                                     value={dwell_time.default_value}
-                                    onAfterChange={actions.setDwellTime}/>
+                                    onAfterChange={actions.setDwellTime}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -170,7 +167,8 @@ class WorkingParameters extends PureComponent {
                                     min={engrave_time.minimum_value}
                                     max={engrave_time.maximum_value}
                                     value={engrave_time.default_value}
-                                    onAfterChange={actions.setEngraveTime}/>
+                                    onAfterChange={actions.setEngraveTime}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -184,7 +182,8 @@ class WorkingParameters extends PureComponent {
                                     min={power.minimum_value}
                                     max={power.maximum_value}
                                     value={power.default_value}
-                                    onAfterChange={actions.setPower}/>
+                                    onAfterChange={actions.setPower}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -199,23 +198,22 @@ class WorkingParameters extends PureComponent {
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(passes.description)}>
-                        <Row
-                            style={{display: multi_pass.default_value ? "" : "none"}}>
+                        <Row style={{display: multi_pass.default_value ? "" : "none"}}>
                             <Col span={17} push={2}>
-                                <ConfigText text={`${t(passes.label)}`}/>
+                                <ConfigText text={t(passes.label)}/>
                             </Col>
                             <Col span={5} push={2}>
                                 <NumberInput
                                     min={passes.minimum_value}
                                     max={passes.maximum_value}
                                     value={passes.default_value}
-                                    onAfterChange={actions.setMultiPassPasses}/>
+                                    onAfterChange={actions.setMultiPassPasses}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(pass_depth.description)}>
-                        <Row
-                            style={{display: multi_pass.default_value ? "" : "none"}}>
+                        <Row style={{display: multi_pass.default_value ? "" : "none"}}>
                             <Col span={17} push={2}>
                                 <ConfigText text={`${t(pass_depth.label)}(${pass_depth.unit})`}/>
                             </Col>
@@ -235,21 +233,6 @@ class WorkingParameters extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model, working_parameters, config} = state.laser;
-    return {
-        model,
-        working_parameters,
-        config
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateWorkingParameters: (key, value) => dispatch(laserActions.updateWorkingParameters(key, value)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(WorkingParameters));
+export default Index;
 
 

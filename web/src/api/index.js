@@ -54,7 +54,7 @@ const generateSvg = async (config_text) => {
             const options = {
                 fontSize: font_size.default_value,
                 tracking: 100, //字间距  1000/100
-            }
+            };
             const svg = textToSvgFromSvgFont(fontUrl, text.default_value, options);
             resolve(svg);
         };
@@ -78,6 +78,27 @@ const generateSvg = async (config_text) => {
     const promise = new Promise(executor);
     let svg = await promise;
     return svg;
+};
+
+const generateSvg2 = async (text, font, font_size) => {
+    const fontUrl = window.serverAddress + font;
+    const executor = (resolve, reject) => {
+        TextToSVG.load(fontUrl, (err, textToSVG) => {
+            const attributes = {fill: 'black', stroke: 'black'};
+            const options = {
+                tracking: 100,
+                x: 0,
+                y: 0,
+                fontSize: font_size,
+                anchor: 'top',
+                attributes: attributes
+            };
+            const svg = textToSVG.getSVG(text, options);
+            resolve(svg);
+        });
+    };
+    const promise = new Promise(executor);
+    return await promise;
 };
 
 const uploadFont = async (fontFile) => {
@@ -105,6 +126,6 @@ const listFonts = async () => {
 };
 
 
-export {uploadFile, uploadImage, text2svg, generateSvg, uploadFont, deleteFont, listFonts}
+export {uploadFile, uploadImage, text2svg, generateSvg, generateSvg2, uploadFont, deleteFont, listFonts}
 
 

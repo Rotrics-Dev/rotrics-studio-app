@@ -1,19 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import FileSaver from 'file-saver';
 import styles from './styles.css';
 import {Space, List} from 'antd';
-import messageI18n from "../../../../utils/messageI18n";
 import Transformation from './Transformation.jsx';
 import ConfigSvg from './ConfigSvg.jsx';
 import ConfigSvgText from './ConfigSvgText.jsx';
 import WorkingParameters from './WorkingParameters.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
 import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
 import {withTranslation} from 'react-i18next';
-import {TAB_WRITE_AND_DRAW} from "../../../../constants.js";
 
 //Jimp支持的文件格式  https://github.com/oliver-moran/jimp
 const getAccept = (fileType) => {
@@ -100,7 +95,7 @@ class Index extends React.Component {
                             this.buildInSvgList.current.style.display = 'block'
                         }}
                     >
-                        <h6 className={styles.h_file_type}>{t('SELECT')}</h6>
+                        <h6 className={styles.h_file_type}>{t('Example')}</h6>
                     </button>
                     <button
                         className={styles.btn_svg}
@@ -112,7 +107,7 @@ class Index extends React.Component {
                         className={styles.btn_text}
                         onClick={() => actions.onClickToUpload('text')}
                     >
-                        <h6 className={styles.h_file_type}>{t('TEXT')}</h6>
+                        <h6 className={styles.h_file_type}>{t('Text')}</h6>
                     </button>
                 </Space>
                 <div

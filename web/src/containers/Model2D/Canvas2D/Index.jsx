@@ -1,12 +1,12 @@
 import React from 'react';
-import styles from './styles.css';
 import * as THREE from 'three';
-import PrintablePlate from "./PrintablePlate.js"
-import IntersectDetector from '../../../../three-extensions/IntersectDetector';
-import PanControls from '../../../../three-extensions/PanControls';
-import {actions as laserActions} from "../../../../reducers/laser";
 import {connect} from 'react-redux';
+import PrintablePlate from "./PrintablePlate.js"
+import IntersectDetector from '../../../three-extensions/IntersectDetector';
+import PanControls from '../../../three-extensions/PanControls';
+import {actions as laserActions} from "../../../reducers/laser";
 
+//props: tap, model, setRendererParent, selectModel, updateTransformation
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -163,9 +163,7 @@ class Index extends React.Component {
 
     render() {
         return (
-            <div
-                ref={this.node}
-            />
+            <div ref={this.node}/>
         )
     }
 }

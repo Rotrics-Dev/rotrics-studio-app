@@ -1,0 +1,45 @@
+{
+  "label": "Text",
+  "children": {
+    "text": {
+      "label": "Content",
+      "description": "Content of the Text.",
+      "default_value": "Rotrics",
+      "type": "string"
+    },
+    "font": {
+      "label": "Font",
+      "description": "Font of the Text.",
+      "default_value": "/fonts/Arial Black.woff",
+      "type": "string"
+    },
+    "font_size": {
+      "label": "Font Size",
+      "description": "Font size of the Text.",
+      "default_value": 50,
+      "type": "int"
+    },
+    "optimize_path": {
+      "label": "Optimize Path",
+      "description": "Optimizes the path based on the proximity of the lines in the image.",
+      "default_value": false,
+      "type": "bool"
+    },
+    "fill": {
+      "default_value": false,
+      "label": "Fill",
+      "type": "bool",
+      "description": "",
+      "children": {
+        "fill_density": {
+          "label": "Fill Density",
+          "description": "Set the degree to which an area is filled with laser dots.",
+          "default_value": 4,
+          "type": "int",
+          "minimum_value": 1,
+          "maximum_value": 10
+        }
+      }
+    }
+  }
+}

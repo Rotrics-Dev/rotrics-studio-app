@@ -1,15 +1,12 @@
 import React, {PureComponent} from 'react';
-import {Checkbox, Select, Row, Col, Divider} from 'antd';
-import styles from './styles.css';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as laserActions} from "../../../../reducers/laser";
-import {connect} from 'react-redux';
-import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
+import {Checkbox, Row, Col} from 'antd';
+import NumberInput from '../../../components/NumberInput/Index.jsx';
+import Line from '../../../components/Line/Index.jsx'
+import {ConfigText, ConfigTitle, ConfigSelect} from "../../../components/Config";
+import Tooltip from '../../Tooltip/Index.jsx';
 
-class ConfigGreyscale extends PureComponent {
+//props: t, model, config, updateConfig
+class Index extends PureComponent {
     actions = {
         setInvert: (e) => {
             this.props.updateConfig("invert", e.target.checked)
@@ -31,15 +28,16 @@ class ConfigGreyscale extends PureComponent {
         },
         setDensity: (value) => {
             this.props.updateConfig("density", value)
-        },
+        }
     };
 
     render() {
-        const {t} = this.props;
-        const {model, config} = this.props;
+        const {t, model, config} = this.props;
+
         if (!model || model.fileType !== "greyscale" || !config) {
             return null;
         }
+
         const actions = this.actions;
         const {invert, contrast, brightness, white_clip, algorithm, movement_mode, density} = config.children;
 
@@ -57,14 +55,12 @@ class ConfigGreyscale extends PureComponent {
         return (
             <div>
                 <Line/>
-                <div style={{
-                    padding: "8px",
-                }}>
+                <div style={{padding: "8px"}}>
                     <ConfigTitle text={t(config.label)}/>
                     <Tooltip title={t(invert.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(invert.label)}`}/>
+                                <ConfigText text={t(invert.label)}/>
                             </Col>
                             <Col span={5}>
                                 <Checkbox checked={invert.default_value} onChange={actions.setInvert}/>
@@ -74,42 +70,45 @@ class ConfigGreyscale extends PureComponent {
                     <Tooltip title={t(contrast.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(contrast.label)}`}/>
+                                <ConfigText text={t(contrast.label)}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
                                     min={contrast.minimum_value}
                                     max={contrast.maximum_value}
                                     value={contrast.default_value}
-                                    onAfterChange={actions.setContrast}/>
+                                    onAfterChange={actions.setContrast}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(brightness.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(brightness.label)}`}/>
+                                <ConfigText text={t(brightness.label)}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
                                     min={brightness.minimum_value}
                                     max={brightness.maximum_value}
                                     value={brightness.default_value}
-                                    onAfterChange={actions.setBrightness}/>
+                                    onAfterChange={actions.setBrightness}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(white_clip.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(white_clip.label)}`}/>
+                                <ConfigText text={t(white_clip.label)}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
                                     min={white_clip.minimum_value}
                                     max={white_clip.maximum_value}
                                     value={white_clip.default_value}
-                                    onAfterChange={actions.setWhiteClip}/>
+                                    onAfterChange={actions.setWhiteClip}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -123,29 +122,36 @@ class ConfigGreyscale extends PureComponent {
                                     min={density.minimum_value}
                                     max={density.maximum_value}
                                     value={density.default_value}
-                                    onAfterChange={actions.setDensity}/>
+                                    onAfterChange={actions.setDensity}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(algorithm.description)}>
                         <Row>
                             <Col span={10}>
-                                <ConfigText text={`${t(algorithm.label)}`}/>
+                                <ConfigText text={t(algorithm.label)}/>
                             </Col>
                             <Col span={14}>
-                                <ConfigSelect options={algorithmOptions} value={algorithm.default_value}
-                                              onChange={actions.setAlgorithm}/>
+                                <ConfigSelect
+                                    options={algorithmOptions}
+                                    value={algorithm.default_value}
+                                    onChange={actions.setAlgorithm}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
                     <Tooltip title={t(movement_mode.description)}>
                         <Row>
                             <Col span={10}>
-                                <ConfigText text={`${t(movement_mode.label)}`}/>
+                                <ConfigText text={t(movement_mode.label)}/>
                             </Col>
                             <Col span={14}>
-                                <ConfigSelect options={movementModeOptions} value={movement_mode.default_value}
-                                              onChange={actions.setMovementMode}/>
+                                <ConfigSelect
+                                    options={movementModeOptions}
+                                    value={movement_mode.default_value}
+                                    onChange={actions.setMovementMode}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -155,19 +161,5 @@ class ConfigGreyscale extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model, config} = state.laser;
-    return {
-        model,
-        config
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigGreyscale));
+export default Index;
 

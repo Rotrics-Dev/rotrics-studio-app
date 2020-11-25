@@ -1,29 +1,24 @@
 import React, {PureComponent} from 'react';
-import {Checkbox, Select, Input, Row, Col} from 'antd';
-import styles from './styles.css';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as laserActions} from "../../../../reducers/laser";
-import {connect} from 'react-redux';
-import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
+import {Checkbox, Input, Row, Col} from 'antd';
+import NumberInput from '../../../components/NumberInput/Index.jsx';
+import Line from '../../../components/Line/Index.jsx'
+import Tooltip from '../../Tooltip/Index.jsx';
+import {ConfigTitle, ConfigText, ConfigSelect} from "../../../components/Config";
 
-class ConfigSvgText extends PureComponent {
+//props: t, model, config, updateConfig, buildInFonts, userFonts
+class Index extends PureComponent {
     actions = {
-        //config text
         setText: (e) => {
             if (e.target.value.trim().length > 0) {
-                this.props.updateConfigText("text", e.target.value.trim())
+                this.props.updateConfig("text", e.target.value.trim())
             }
         },
         setFont: (value) => {
-            this.props.updateConfigText("font", value)
+            this.props.updateConfig("font", value)
         },
         setFontSize: (value) => {
-            this.props.updateConfigText("font_size", value)
+            this.props.updateConfig("font_size", value)
         },
-        //config
         setOptimizePath: (e) => {
             this.props.updateConfig("optimize_path", e.target.checked)
         },
@@ -31,20 +26,20 @@ class ConfigSvgText extends PureComponent {
             this.props.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            this.props.updateConfig("fill.fill_density", value)
-        },
+            this.props.updateConfig("fill.fill_density", value);
+        }
     };
 
     render() {
-        const {t} = this.props;
-        const {model, config_text, config, buildInFonts, userFonts,} = this.props;
+        const {t, model, config, buildInFonts, userFonts} = this.props;
 
-        if (!model || model.fileType !== "text" || !config_text || !config) {
+        if (!model || model.fileType !== "text" || !config) {
             return null;
         }
-        const actions = this.actions;
 
-        const {text, font, font_size} = config_text.children;
+        const actions = this.actions;
+        const {text, font, font_size, optimize_path, fill} = config.children;
+        const {fill_density} = fill.children;
 
         const fontOptions = [];
         for (const font of buildInFonts) {
@@ -53,55 +48,55 @@ class ConfigSvgText extends PureComponent {
         for (const font of userFonts) {
             fontOptions.push({label: font.fontName, value: font.path, color: '#007777'})
         }
-
-        const {optimize_path, fill} = config.children;
-        const {fill_density} = fill.children;
-
         return (
             <div>
                 <Line/>
-                <div style={{
-                    padding: "8px",
-                }}>
-                    <ConfigTitle text={t('Text')}/>
-                    <Tooltip title={t('Content of the Text.')}>
+                <div style={{padding: "8px"}}>
+                    <ConfigTitle text={t(config.label)}/>
+                    <Tooltip title={t(text.description)}>
                         <Row>
                             <Col span={13}>
-                                <ConfigText text={`${t('Content')}`}/>
+                                <ConfigText text={t(text.label)}/>
                             </Col>
                             <Col span={11}>
-                                <Input.TextArea style={{fontSize: "12px", resize: "none"}}
-                                                value={text.default_value}
-                                                onChange={actions.setText}/>
+                                <Input.TextArea
+                                    style={{fontSize: "12px", resize: "none"}}
+                                    value={text.default_value}
+                                    onChange={actions.setText}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Font of the Text.')}>
+                    <Tooltip title={t(font.description)}>
                         <Row>
                             <Col span={13}>
-                                <ConfigText text={`${t(font.label)}`}/>
+                                <ConfigText text={t(font.label)}/>
                             </Col>
                             <Col span={11}>
-                                <ConfigSelect options={fontOptions} value={font.default_value}
-                                              onChange={actions.setFont}/>
+                                <ConfigSelect
+                                    options={fontOptions}
+                                    value={font.default_value}
+                                    onChange={actions.setFont}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Font size of the Text.')}>
+                    <Tooltip title={t(font_size.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(font_size.label)}`}/>
+                                <ConfigText text={t(font_size.label)}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
                                     min={font_size.minimum_value}
                                     max={font_size.maximum_value}
                                     value={font_size.default_value}
-                                    onAfterChange={actions.setFontSize}/>
+                                    onAfterChange={actions.setFontSize}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Optimizes the path based on the proximity of the lines in the image.')}>
+                    <Tooltip title={t(optimize_path.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(optimize_path.label)}`}/>
@@ -111,7 +106,7 @@ class ConfigSvgText extends PureComponent {
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Set the degree to which an area is filled with laser dots.')}>
+                    <Tooltip title={t(fill.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(fill.label)}`}/>
@@ -122,7 +117,7 @@ class ConfigSvgText extends PureComponent {
                         </Row>
                     </Tooltip>
                     {fill.default_value &&
-                    <Tooltip title={t('')}>
+                    <Tooltip title={t(fill_density.description)}>
                         <Row>
                             <Col span={17} push={2}>
                                 <ConfigText text={`${t(fill_density.label)}`}/>
@@ -143,24 +138,5 @@ class ConfigSvgText extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model, config, config_text} = state.laser;
-    const {buildInFonts, userFonts} = state.fonts;
-    return {
-        model,
-        config,
-        config_text,
-        buildInFonts,
-        userFonts,
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateConfigText: (key, value) => dispatch(laserActions.updateConfigText(key, value)),
-        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigSvgText));
+export default Index;
 

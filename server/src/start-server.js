@@ -413,7 +413,7 @@ const setupSocket = () => {
             socket.on(
                 TOOL_PATH_GENERATE_LASER,
                 async (data) => {
-                    console.log(TOOL_PATH_GENERATE_LASER)
+                    console.log(TOOL_PATH_GENERATE_LASER, JSON.stringify(data, null, 2))
                     const {url, settings, toolPathId, fileType} = data;
                     const toolPathLines = await generateToolPathLines(fileType, url, settings);
                     socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});

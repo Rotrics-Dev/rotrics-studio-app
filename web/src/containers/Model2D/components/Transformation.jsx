@@ -1,16 +1,12 @@
 import React, {PureComponent} from 'react';
-import {Select, Row, Col} from 'antd';
-import styles from './styles.css';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
+import {Row, Col} from 'antd';
+import NumberInput from '../../../components/NumberInput/Index.jsx';
+import Line from '../../../components/Line/Index.jsx'
+import Tooltip from '../../Tooltip/Index.jsx';
+import {ConfigText, ConfigTitle, ConfigSelect} from "../../../components/Config";
 
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as laserActions} from "../../../../reducers/laser";
-import {connect} from 'react-redux';
-import {ConfigText, ConfigTitle, ConfigSelect} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
-
-class Transformation extends PureComponent {
+//props: t, model, transformation, updateTransformation
+class Index extends PureComponent {
     actions = {
         setWidth: (value) => {
             this.props.updateTransformation("width", value, true)
@@ -29,31 +25,30 @@ class Transformation extends PureComponent {
         },
         setFlipModel: (value) => {
             this.props.updateTransformation("flip_model", value, true)
-        },
+        }
     };
 
     render() {
-        const {t} = this.props;
-        const {model, transformation} = this.props;
+        const {t, model, transformation} = this.props;
+
         if (!model || !transformation) {
             return null;
         }
+
         const actions = this.actions;
         const {width, height, rotation, x, y, flip_model} = transformation.children;
 
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
-            const option = flip_model.options[key];
-            flipModelOptions.push({label: t(key), value: option})
+            flipModelOptions.push({label: t(key), value: flip_model.options[key]})
         });
+
         return (
             <div>
                 <Line/>
-                <div style={{
-                    padding: "8px",
-                }}>
+                <div style={{padding: "8px"}}>
                     <ConfigTitle text={t(transformation.label)}/>
-                    <Tooltip title={t('Width of the picture.')}>
+                    <Tooltip title={t(width.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(width.label)}(${width.unit})`}/>
@@ -63,11 +58,12 @@ class Transformation extends PureComponent {
                                     min={width.minimum_value}
                                     max={width.maximum_value}
                                     value={width.default_value}
-                                    onAfterChange={actions.setWidth}/>
+                                    onAfterChange={actions.setWidth}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Height of the picture.')}>
+                    <Tooltip title={t(height.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(height.label)}(${height.unit})`}/>
@@ -77,11 +73,12 @@ class Transformation extends PureComponent {
                                     min={height.minimum_value}
                                     max={height.maximum_value}
                                     value={height.default_value}
-                                    onAfterChange={actions.setHeight}/>
+                                    onAfterChange={actions.setHeight}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Rotate of the picture.')}>
+                    <Tooltip title={t(rotation.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(rotation.label)}(${rotation.unit})`}/>
@@ -91,11 +88,12 @@ class Transformation extends PureComponent {
                                     min={rotation.minimum_value}
                                     max={rotation.maximum_value}
                                     value={rotation.default_value}
-                                    onAfterChange={actions.setRotationDegree}/>
+                                    onAfterChange={actions.setRotationDegree}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('X offset of the picture.')}>
+                    <Tooltip title={t(x.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(x.label)}(${x.unit})`}/>
@@ -105,11 +103,12 @@ class Transformation extends PureComponent {
                                     min={x.minimum_value}
                                     max={x.maximum_value}
                                     value={x.default_value}
-                                    onAfterChange={actions.setX}/>
+                                    onAfterChange={actions.setX}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Y offset of the picture.')}>
+                    <Tooltip title={t(y.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(y.label)}(${y.unit})`}/>
@@ -119,18 +118,22 @@ class Transformation extends PureComponent {
                                     min={y.minimum_value}
                                     max={y.maximum_value}
                                     value={y.default_value}
-                                    onAfterChange={actions.setY}/>
+                                    onAfterChange={actions.setY}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Flip the selected picture vertically, horizontally or in both directions.')}>
+                    <Tooltip title={t(flip_model.description)}>
                         <Row>
                             <Col span={15}>
-                                <ConfigText text={`${t(flip_model.label)}`}/>
+                                <ConfigText text={t(flip_model.label)}/>
                             </Col>
                             <Col span={9}>
-                                <ConfigSelect options={flipModelOptions} value={flip_model.default_value}
-                                              onChange={actions.setFlipModel}/>
+                                <ConfigSelect
+                                    options={flipModelOptions}
+                                    value={flip_model.default_value}
+                                    onChange={actions.setFlipModel}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -140,21 +143,7 @@ class Transformation extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model, transformation} = state.laser;
-    return {
-        model,
-        transformation
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Transformation));
+export default Index;
 
 
 

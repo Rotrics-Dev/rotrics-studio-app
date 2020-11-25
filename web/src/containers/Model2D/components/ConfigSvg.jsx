@@ -1,15 +1,12 @@
 import React, {PureComponent} from 'react';
 import {Checkbox, Row, Col} from 'antd';
-import styles from './styles.css';
-import NumberInput from '../../../../components/NumberInput/Index.jsx';
-import Line from '../../../../components/Line/Index.jsx'
-import {actions as laserActions} from "../../../../reducers/laser";
-import {connect} from 'react-redux';
-import {ConfigTitle, ConfigText, ConfigSelect} from "../../../../components/Config";
-import {withTranslation} from 'react-i18next';
-import Tooltip from '../../../Tooltip/Index.jsx';
+import NumberInput from '../../../components/NumberInput/Index.jsx';
+import Line from '../../../components/Line/Index.jsx'
+import {ConfigTitle, ConfigText} from "../../../components/Config";
+import Tooltip from '../../Tooltip/Index.jsx';
 
-class ConfigSvg extends PureComponent {
+//props: t, model, config, updateConfig
+class Index extends PureComponent {
     actions = {
         setOptimizePath: (e) => {
             this.props.updateConfig("optimize_path", e.target.checked)
@@ -19,12 +16,12 @@ class ConfigSvg extends PureComponent {
         },
         setFillDensity: (value) => {
             this.props.updateConfig("fill.fill_density", value)
-        },
+        }
     };
 
     render() {
-        const {t} = this.props;
-        const {model, config} = this.props;
+        const {t, model, config} = this.props;
+
         if (!model || model.fileType !== "svg" || !config) {
             return null;
         }
@@ -35,11 +32,9 @@ class ConfigSvg extends PureComponent {
         return (
             <div>
                 <Line/>
-                <div style={{
-                    padding: "8px",
-                }}>
+                <div style={{padding: "8px"}}>
                     <ConfigTitle text={t(config.label)}/>
-                    <Tooltip title={t('Optimizes the path based on the proximity of the lines in the image.')}>
+                    <Tooltip title={t(optimize_path.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(optimize_path.label)}`}/>
@@ -49,7 +44,7 @@ class ConfigSvg extends PureComponent {
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t('Set the degree to which an area is filled with laser dots.')}>
+                    <Tooltip title={t(fill.description)}>
                         <Row>
                             <Col span={19}>
                                 <ConfigText text={`${t(fill.label)}`}/>
@@ -60,7 +55,7 @@ class ConfigSvg extends PureComponent {
                         </Row>
                     </Tooltip>
                     {fill.default_value &&
-                    <Tooltip title={t('Content of the Text.')}>
+                    <Tooltip title={t(fill_density.description)}>
                         <Row>
                             <Col span={17} push={2}>
                                 <ConfigText text={`${t(fill_density.label)}`}/>
@@ -70,7 +65,8 @@ class ConfigSvg extends PureComponent {
                                     min={fill_density.minimum_value}
                                     max={fill_density.maximum_value}
                                     value={fill_density.default_value}
-                                    onAfterChange={actions.setFillDensity}/>
+                                    onAfterChange={actions.setFillDensity}
+                                />
                             </Col>
                         </Row>
                     </Tooltip>
@@ -81,20 +77,6 @@ class ConfigSvg extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {model, config} = state.laser;
-    return {
-        model,
-        config
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ConfigSvg));
+export default Index;
 
 

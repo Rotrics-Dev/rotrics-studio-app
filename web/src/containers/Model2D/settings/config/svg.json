@@ -1,0 +1,27 @@
+{
+  "label": "SVG",
+  "children": {
+    "optimize_path": {
+      "label": "Optimize Path",
+      "description": "Optimizes the path based on the proximity of the lines in the image.",
+      "default_value": false,
+      "type": "bool"
+    },
+    "fill": {
+      "default_value": false,
+      "label": "Fill",
+      "type": "bool",
+      "description": "",
+      "children": {
+        "fill_density": {
+          "label": "Fill Density",
+          "description": "Set the degree to which an area is filled with laser dots.",
+          "default_value": 4,
+          "type": "int",
+          "minimum_value": 1,
+          "maximum_value": 10
+        }
+      }
+    }
+  }
+}

@@ -1,38 +1,19 @@
 import * as THREE from 'three';
 import _ from 'lodash';
-import settingsBW from "./settings/bw.json";
-import settingsGS from "./settings/greyscale.json";
-import settingsSvg from "./settings/svg.json";
-import settingsText from "./settings/text.json";
 
-import {degree2radian, getUuid, getAvailableSize} from '../../../utils/index.js';
-import socketClientManager from "../../../socket/socketClientManager"
-import toolPathRenderer from './toolPathRenderer';
-import toolPathLines2gcode from "./toolPathLines2gcode";
+import configBW from "./settings/config/bw.json";
+import configGS from "./settings/config/greyscale.json";
+import configSvg from "./settings/config/svg.json";
+import configText from "./settings/config/text.json";
+import transformation from "./settings/transformation.json";
+import working_parameters from "./settings/working_parameters.json";
 
-import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
+import {degree2radian, getUuid} from '../../utils/index.js';
+import socketClientManager from "../../socket/socketClientManager"
+import toolPathRenderer from './toolPath/toolPathRenderer';
+import toolPathLines2gcode from "./toolPath/toolPathLines2gcode";
 
-const getSizeRestriction = (fileType) => {
-    let settings = null;
-    switch (fileType) {
-        case "bw":
-            settings = settingsBW;
-            break;
-        case "greyscale":
-            settings = settingsGS;
-            break;
-        case "svg":
-        case "text":
-            settings = settingsSvg;
-            break;
-    }
-    const children = settings.transformation.children;
-    const min_width = children.width.minimum_value;
-    const max_width = children.width.maximum_value;
-    const min_height = children.height.minimum_value;
-    const max_height = children.height.maximum_value;
-    return {min_width, max_width, min_height, max_height}
-};
+import {TOOL_PATH_GENERATE_LASER} from "../../constants.js"
 
 /**
  * Model2D is container，always keep rotation=0, scale=1; position will changed
@@ -40,18 +21,14 @@ const getSizeRestriction = (fileType) => {
  * remove(null) can work：https://github.com/mrdoob/three.js/blob/master/src/core/Object3D.js
  */
 class Model2D extends THREE.Group {
+    /**
+     * @param fileType: bw, greyscale, svg, text
+     */
     constructor(fileType) {
         super();
-        this.fileType = fileType; // bw, greyscale, svg, text
-        this.url = "";
-        //图片原始的size
-        this.img_width = 1;
-        this.img_height = 1;
+        this.fileType = fileType;
+
         this._isSelected = false;
-        this.settings = null;
-
-        this.sizeRestriction = getSizeRestriction(fileType);
-
         //tool path
         this.toolPathObj3d = null; //tool path渲染的结果，Object3D
         this.toolPathLines = null; //Array
@@ -61,40 +38,41 @@ class Model2D extends THREE.Group {
         this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
         this.isPreviewed = false;
 
-        switch (this.fileType) {
+        this.config = null;
+        this.transformation = transformation;
+        this.working_parameters = working_parameters;
+        switch (fileType) {
             case "bw":
-                this.settings = _.cloneDeep(settingsBW);
+                this.config = _.cloneDeep(configBW);
                 break;
             case "greyscale":
-                this.settings = _.cloneDeep(settingsGS);
+                this.config = _.cloneDeep(configGS);
                 break;
             case "svg":
-                this.config_text = _.cloneDeep(settingsSvg);
+                this.config = _.cloneDeep(configSvg);
                 break;
             case "text":
-                this.settings = _.cloneDeep(settingsText);
+                this.config = _.cloneDeep(configText);
                 break;
         }
 
         //data: {toolPathLines, toolPathId}
         socketClientManager.addServerListener(TOOL_PATH_GENERATE_LASER, (data) => {
-            // console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
-                this.loadToolPath(data.toolPathLines);
+                this._loadToolPath(data.toolPathLines);
                 this.isPreviewed = true;
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
     }
 
-    //url: 支持svg，raster
-    loadImg(url, img_width, img_height) {
-        this.url = url;
-        this.img_width = img_width;
-        this.img_height = img_height;
-
-        const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
-
+    /**
+     * @param url
+     * @param width
+     * @param height
+     */
+    loadImg(url, width, height) {
+        //TODO: resize image
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
 
@@ -109,27 +87,22 @@ class Model2D extends THREE.Group {
         });
         this.add(this.imgObj3d);
 
-        //reset transformation的部分配置
-        this.settings.transformation.children.img_width.default_value = img_width;
-        this.settings.transformation.children.img_height.default_value = img_height;
-
-        this.settings.transformation.children.width.default_value = width;
-        this.settings.transformation.children.height.default_value = height;
-
-        this.settings.transformation.children.rotation.default_value = 0;
+        this.transformation.children.img_width.default_value = width;
+        this.transformation.children.img_height.default_value = height;
+        this.transformation.children.width.default_value = width;
+        this.transformation.children.height.default_value = width;
+        this.transformation.children.rotation.default_value = 0;
 
         this._display('img');
         this._display('edge');
     }
 
-    loadToolPath(toolPathLines) {
+    _loadToolPath(toolPathLines) {
         this.remove(this.toolPathObj3d);
         this.toolPathLines = toolPathLines;
-
         this.toolPathObj3d = toolPathRenderer.render(this.toolPathLines);
         // this.toolPathObj3d.position.set(0, 100, 0);
         this.add(this.toolPathObj3d);
-
         this._display('toolPath');
     }
 
@@ -163,45 +136,38 @@ class Model2D extends THREE.Group {
     updateTransformation(key, value, preview) {
         switch (key) {
             case "width": {
-                const mWidth = value;
-                const mHeight = this.img_height * (mWidth / this.img_width);
-                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
-
-                this.settings.transformation.children.width.default_value = width;
-                this.settings.transformation.children.height.default_value = height;
-                const rotation = this.settings.transformation.children.rotation.default_value;
-                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
+                const width = value;
+                const height = this.transformation.img_height.default_value * (width / this.transformation.img_width.default_value);
+                this.transformation.children.width.default_value = width;
+                this.transformation.children.height.default_value = height;
+                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(this.transformation.children.rotation.default_value));
                 break;
             }
             case "height": {
-                const mHeight = value;
-                const mWidth = this.img_width * (mHeight / this.img_height);
-                const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
-
-                this.settings.transformation.children.width.default_value = width;
-                this.settings.transformation.children.height.default_value = height;
-                const rotation = this.settings.transformation.children.rotation.default_value;
-                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
+                const height = value;
+                const width = this.transformation.img_width.default_value * (height / this.transformation.img_height.default_value);
+                this.transformation.children.width.default_value = width;
+                this.transformation.children.height.default_value = height;
+                this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(this.transformation.children.rotation.default_value));
                 break;
             }
             case "rotation": {
-                const width = this.settings.transformation.children.width.default_value;
-                const height = this.settings.transformation.children.height.default_value;
-                //rotation unit is degree
+                const width = this.transformation.children.width.default_value;
+                const height = this.transformation.children.height.default_value;
                 this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(value));
-                this.settings.transformation.children[key].default_value = value;
+                this.transformation.children.rotation.default_value = value;
                 break;
             }
             case "x":
                 this.position.x = value;
-                this.settings.transformation.children[key].default_value = value;
+                this.transformation.children.x.default_value = value;
                 break;
             case "y":
                 this.position.y = value;
-                this.settings.transformation.children[key].default_value = value;
+                this.transformation.children.y.default_value = value;
                 break;
             case "flip_model":
-                this.settings.transformation.children[key].default_value = value;
+                this.transformation.children.flip_model.default_value = value;
                 break;
         }
 
@@ -220,9 +186,9 @@ class Model2D extends THREE.Group {
             const arr = key.split(".");
             const keyParent = arr[0];
             const keyChild = arr[1];
-            this.settings.config.children[keyParent].children[keyChild].default_value = value;
+            this.config.children[keyParent].children[keyChild].default_value = value;
         } else {
-            this.settings.config.children[key].default_value = value;
+            this.config.children[key].default_value = value;
         }
 
         //todo: config是否变化，决定preview
@@ -237,10 +203,10 @@ class Model2D extends THREE.Group {
             const arr = key.split(".");
             const keyParent = arr[0];
             const keyChild = arr[1];
-            this.settings.working_parameters.children[keyParent].children[keyChild].default_value = value;
+            this.working_parameters.children[keyParent].children[keyChild].default_value = value;
             return;
         }
-        this.settings.working_parameters.children[key].default_value = value;
+        this.working_parameters.children[key].default_value = value;
     }
 
     //todo: 使用controls替换
@@ -254,30 +220,25 @@ class Model2D extends THREE.Group {
         this.toolPathId = getUuid();
         socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
             url: this.url,
-            settings: this.settings,
+            fileType: this.fileType,
             toolPathId: this.toolPathId,
-            fileType: this.fileType
+            settings: {
+                config: this.config,
+                transformation: this.transformation,
+                working_parameters: this.working_parameters
+            }
         });
-        console.time(this.toolPathId);
-
         this.isPreviewed = false;
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
     generateGcode() {
-        return toolPathLines2gcode(this.toolPathLines, this.settings);
-    }
-
-    clone() {
-        const instance = new Model2D(this.fileType);
-
-        const url = this.url;
-        const img_width = this.settings.transformation.children.img_width.default_value;
-        const img_height = this.settings.transformation.children.img_height.default_value;
-
-        instance.loadImg(url, img_width, img_height);
-
-        return instance;
+        const settings = {
+            config: this.config,
+            transformation: this.transformation,
+            working_parameters: this.working_parameters
+        };
+        return toolPathLines2gcode(this.toolPathLines, settings);
     }
 }
 
