@@ -8,22 +8,25 @@ import {ConfigText, ConfigTitle, ConfigSelect} from "../../../components/Config"
 //props: t, model, transformation, updateTransformation
 class Index extends PureComponent {
     actions = {
-        setWidth: (value) => {
-            this.props.updateTransformation("width", value, true)
+        set_width_mm: (value) => {
+            this.props.updateTransformation("width_mm", value, true)
         },
-        setHeight: (value) => {
-            this.props.updateTransformation("height", value, true)
+        set_height_mm: (value) => {
+            this.props.updateTransformation("height_mm", value, true)
         },
-        setRotationDegree: (value) => {
+        /**
+         * @param value: unit is degree
+         */
+        set_rotation: (value) => {
             this.props.updateTransformation("rotation", value, true)
         },
-        setX: (value) => {
+        set_x: (value) => {
             this.props.updateTransformation("x", value, false)
         },
-        setY: (value) => {
+        set_y: (value) => {
             this.props.updateTransformation("y", value, false)
         },
-        setFlipModel: (value) => {
+        set_flip_model: (value) => {
             this.props.updateTransformation("flip_model", value, true)
         }
     };
@@ -36,7 +39,7 @@ class Index extends PureComponent {
         }
 
         const actions = this.actions;
-        const {width, height, rotation, x, y, flip_model} = transformation.children;
+        const {width_mm, height_mm, rotation, x, y, flip_model} = transformation.children;
 
         const flipModelOptions = [];
         Object.keys(flip_model.options).forEach((key) => {
@@ -48,32 +51,32 @@ class Index extends PureComponent {
                 <Line/>
                 <div style={{padding: "8px"}}>
                     <ConfigTitle text={t(transformation.label)}/>
-                    <Tooltip title={t(width.description)}>
+                    <Tooltip title={t(width_mm.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(width.label)}(${width.unit})`}/>
+                                <ConfigText text={`${t(width_mm.label)}(${width_mm.unit})`}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
-                                    min={width.minimum_value}
-                                    max={width.maximum_value}
-                                    value={width.default_value}
-                                    onAfterChange={actions.setWidth}
+                                    min={width_mm.minimum_value}
+                                    max={width_mm.maximum_value}
+                                    value={width_mm.default_value}
+                                    onAfterChange={actions.set_width_mm}
                                 />
                             </Col>
                         </Row>
                     </Tooltip>
-                    <Tooltip title={t(height.description)}>
+                    <Tooltip title={t(height_mm.description)}>
                         <Row>
                             <Col span={19}>
-                                <ConfigText text={`${t(height.label)}(${height.unit})`}/>
+                                <ConfigText text={`${t(height_mm.label)}(${height_mm.unit})`}/>
                             </Col>
                             <Col span={5}>
                                 <NumberInput
-                                    min={height.minimum_value}
-                                    max={height.maximum_value}
-                                    value={height.default_value}
-                                    onAfterChange={actions.setHeight}
+                                    min={height_mm.minimum_value}
+                                    max={height_mm.maximum_value}
+                                    value={height_mm.default_value}
+                                    onAfterChange={actions.set_height_mm}
                                 />
                             </Col>
                         </Row>
@@ -88,7 +91,7 @@ class Index extends PureComponent {
                                     min={rotation.minimum_value}
                                     max={rotation.maximum_value}
                                     value={rotation.default_value}
-                                    onAfterChange={actions.setRotationDegree}
+                                    onAfterChange={actions.set_rotation}
                                 />
                             </Col>
                         </Row>
@@ -103,7 +106,7 @@ class Index extends PureComponent {
                                     min={x.minimum_value}
                                     max={x.maximum_value}
                                     value={x.default_value}
-                                    onAfterChange={actions.setX}
+                                    onAfterChange={actions.set_x}
                                 />
                             </Col>
                         </Row>
@@ -118,7 +121,7 @@ class Index extends PureComponent {
                                     min={y.minimum_value}
                                     max={y.maximum_value}
                                     value={y.default_value}
-                                    onAfterChange={actions.setY}
+                                    onAfterChange={actions.set_y}
                                 />
                             </Col>
                         </Row>
@@ -132,7 +135,7 @@ class Index extends PureComponent {
                                 <ConfigSelect
                                     options={flipModelOptions}
                                     value={flip_model.default_value}
-                                    onChange={actions.setFlipModel}
+                                    onChange={actions.set_flip_model}
                                 />
                             </Col>
                         </Row>

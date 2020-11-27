@@ -1,0 +1,45 @@
+{
+  "label": "Working Parameters",
+  "children": {
+    "start_gcode": {
+      "label": "Start Gcode",
+      "default_value": ";----------- Start Gcode -----------\nM2000 ;custom:line mode\nM888 P0 ;custom:header is write_draw\n;-----------------------------------",
+      "type": "string"
+    },
+    "end_gcode": {
+      "label": "End Gcode",
+      "default_value": ";----------- End Gcode -------------\n;-----------------------------------",
+      "type": "string"
+    },
+    "work_speed": {
+      "label": "Work Speed",
+      "description": "Determines how fast the front end moves when it’s working.",
+      "placeholder": "#work_speed#",
+      "default_value": 400,
+      "type": "int",
+      "unit": "mm/min",
+      "minimum_value": 10,
+      "maximum_value": 4000
+    },
+    "jog_speed": {
+      "label": "Jog Speed",
+      "description": "Determines how fast the front end moves when it’s not working.",
+      "placeholder": "#jog_speed#",
+      "default_value": 400,
+      "type": "int",
+      "unit": "mm/min",
+      "minimum_value": 10,
+      "maximum_value": 4000
+    },
+    "jog_pen_offset": {
+      "label": "Jog Pen Offset",
+      "description": "Determines the offset of the pen when it is not drawn.",
+      "placeholder": "#jog_pen_offset#",
+      "default_value": 5,
+      "type": "int",
+      "unit": "mm",
+      "minimum_value": 1,
+      "maximum_value": 100
+    }
+  }
+}

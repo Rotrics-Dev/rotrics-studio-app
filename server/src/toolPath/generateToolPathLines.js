@@ -4,7 +4,7 @@ import toolPathStr2toolPathLines from "./toolPathStr2toolPathLines.js";
 import toolPathStr4greyscale from "./toolPathStr4greyscale.js";
 import {TOOL_PATH_RENDER_METHOD_POINT, TOOL_PATH_RENDER_METHOD_LINE} from "../constants.js"
 
-const generateToolPathLines = async (fileType, url, settings) => {
+const generateToolPathLines = async (url, fileType, settings) => {
     let toolPathStr = null;
     switch (fileType) {
         case "bw":
@@ -18,7 +18,7 @@ const generateToolPathLines = async (fileType, url, settings) => {
             toolPathStr = await toolPathStr4svg(url, settings);
             break;
     }
-    toolPathStr = preHandle(toolPathStr, settings);
+    // toolPathStr = preHandle(toolPathStr, settings);
     const toolPathLines = toolPathStr2toolPathLines(toolPathStr);
     return toolPathLines;
 };
@@ -34,8 +34,8 @@ const preHandle = (toolPathStr, settings) => {
             toolPathRenderMethod = TOOL_PATH_RENDER_METHOD_POINT;
         }
     }
-    const start_gcode = settings.start_gcode.default_value;
-    const end_gcode = settings.end_gcode.default_value;
+    const start_gcode = settings.working_parameters.start_gcode.default_value;
+    const end_gcode = settings.working_parameters.end_gcode.default_value;
 
     return [toolPathRenderMethod, start_gcode, toolPathStr, end_gcode].join("\n")
 };

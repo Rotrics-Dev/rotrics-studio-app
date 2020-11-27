@@ -7,11 +7,6 @@ export const TAP_BASIC = "TAP_BASIC";
 export const TAB_WRITE_AND_DRAW = "TAB_WRITE_AND_DRAW";
 export const TAP_DEBUG = "TAP_DEBUG";
 
-// tool path渲染方式: line or point; default line
-// 添加在gcode的第一行
-export const TOOL_PATH_RENDER_METHOD_LINE = ';TOOL_PATH_RENDER_METHOD_LINE';
-export const TOOL_PATH_RENDER_METHOD_POINT = ';TOOL_PATH_RENDER_METHOD_POINT';
-
 // p3d
 export const P3D_SLICE_START = 'P3D_SLICE_START';
 export const P3D_SLICE_STATUS = 'P3D_SLICE_STATUS';

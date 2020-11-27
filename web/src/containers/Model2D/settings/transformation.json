@@ -1,17 +1,17 @@
 {
   "label": "Transformation",
   "children": {
-    "img_width": {
+    "width_pixel": {
       "default_value": 1,
       "type": "int",
       "unit": "pixel"
     },
-    "img_height": {
+    "height_pixel": {
       "default_value": 1,
       "type": "int",
       "unit": "pixel"
     },
-    "width": {
+    "width_mm": {
       "label": "Width",
       "description": "Width of the picture.",
       "default_value": 5,
@@ -20,7 +20,7 @@
       "minimum_value": 5,
       "maximum_value": 297
     },
-    "height": {
+    "height_mm": {
       "label": "Height",
       "description": "Height of the picture.",
       "default_value": 5,

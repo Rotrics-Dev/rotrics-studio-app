@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import {TOOL_PATH_RENDER_METHOD_POINT} from "../../../constants.js"
 
 const UNIFORMS = {
     // rgba
@@ -37,20 +36,7 @@ class ToolPathRenderer {
         this.data = [];
     }
 
-    render(toolPathLines) {
-        if (toolPathLines.length === 1) {
-            return null;
-        }
-
-        //gcode第一行的comment，标识tool path渲染方式
-        if (toolPathLines[0].C === TOOL_PATH_RENDER_METHOD_POINT) {
-            return this._parseToPoints(toolPathLines);
-        } else {
-            return this._parseToLine(toolPathLines);
-        }
-    }
-
-    _parseToLine(toolPathLines) {
+    renderToLine(toolPathLines) {
         const positions = [];
         const gCodes = [];
 
@@ -103,7 +89,7 @@ class ToolPathRenderer {
         return new THREE.Line(bufferGeometry, material);
     }
 
-    _parseToPoints(toolPathLines) {
+    renderToPoints(toolPathLines) {
         const geometry = new THREE.Geometry();
         //TODO：
         //dwell time会影响point颜色深浅

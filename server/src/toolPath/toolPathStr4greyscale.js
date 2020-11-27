@@ -71,8 +71,8 @@ const normalize = function (x) {
 const file2img = async (url, settings) => {
     const {transformation, config} = settings;
 
-    const width = transformation.children.width.default_value;
-    const height = transformation.children.height.default_value;
+    const width_mm = transformation.children.width_mm.default_value;
+    const height_mm = transformation.children.height_mm.default_value;
     const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
     let flipFlag = getFlipFlag(flip_model);
@@ -106,7 +106,7 @@ const file2img = async (url, settings) => {
         .greyscale()
         // .flip((flipFlag & 2) > 0, (flipFlag & 1) > 0)
         .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
-        .resize(width * density, height * density)
+        .resize(width_mm * density, height_mm * density)
         .rotate(rotation)// rotate: unit is degree and clockwise
         .scan(0, 0, img.bitmap.width, img.bitmap.height, (x, y, idx) => {
             const data = img.bitmap.data;

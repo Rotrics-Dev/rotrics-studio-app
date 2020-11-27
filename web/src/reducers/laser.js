@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import {generateSvg, uploadImage} from "../api";
+import {generateSvg2, uploadImage} from "../api";
+import configText from "../containers/Model2D/settings/config/text.json";
+import Model2D from "../containers/Model2D/Model2D";
 
 const ACTION_UPDATE_STATE = 'laser/ACTION_UPDATE_STATE';
 
@@ -21,7 +23,22 @@ const actions = {
     setRendererParent: (object3d) => (dispatch) => {
         dispatch(actions._updateState({rendererParent: object3d}));
     },
-    addModel: (model) => async (dispatch, getState) => {
+    addModel: (fileType, file) => async (dispatch, getState) => {
+        console.log('add model: ', fileType, file)
+        if (fileType == "text"){
+            const text = configText.children.text.default_value;
+            const font = configText.children.font.default_value;
+            const font_size = configText.children.font_size.default_value;
+            const svg = await generateSvg2(text, font, font_size);
+            const blob = new Blob([svg], {type: 'text/plain'});
+            file = new File([blob], null);
+        }
+
+        const response = await uploadImage(file);
+        const {url, width, height} = response;
+        const model = new Model2D(fileType, 'laser');
+        model.loadImg(url, width, height);
+
         const {rendererParent} = getState().laser;
         for (const child of rendererParent.children) {
             child.setSelected(false);
@@ -135,16 +152,19 @@ const actions = {
         switch (model.fileType) {
             case "text":
                 model.updateConfig(key, value);
-                const svg = await generateSvg(config_text);
-                const filename = "text.svg";
-                const blob = new Blob([svg], {type: 'text/plain'});
-                const file = new File([blob], filename);
-
-                const response = await uploadImage(file);
-                const {url, width, height} = response;
-                model.loadImg(url, width, height);
+                if (["font", "font_size", "text"].includes(key)){
+                    const {config} = model;
+                    const text = config.children.text.default_value;
+                    const font = config.children.font.default_value;
+                    const font_size = config.children.font_size.default_value;
+                    const svg = await generateSvg2(text, font, font_size);
+                    const blob = new Blob([svg], {type: 'text/plain'});
+                    const file = new File([blob], null);
+                    const response = await uploadImage(file);
+                    const {url, width, height} = response;
+                    model.loadImg(url, width, height);
+                }
                 model.preview();
-
                 dispatch(actions._updateState({
                     config: _.cloneDeep(model.config),
                     transformation: _.cloneDeep(model.transformation),
@@ -153,11 +173,19 @@ const actions = {
                 }));
                 break;
             case "bw":
-            case "greyscale":
             case "svg":
                 model.updateConfig(key, value);
                 dispatch(actions._updateState({
                     config: _.cloneDeep(model.config),
+                    gcode: null
+                }));
+                break;
+            case "greyscale":
+                //if movement_mode change, the working_parameters will changed too
+                model.updateConfig(key, value);
+                dispatch(actions._updateState({
+                    config: _.cloneDeep(model.config),
+                    working_parameters: _.cloneDeep(model.working_parameters),
                     gcode: null
                 }));
                 break;

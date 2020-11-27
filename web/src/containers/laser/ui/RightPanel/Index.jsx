@@ -9,45 +9,25 @@ import ConfigSvg from '../../../Model2D/components/ConfigSvg.jsx';
 import Transformation from '../../../Model2D/components/Transformation.jsx';
 import WorkingParameters from '../../../Model2D/components/WorkingParameters.jsx';
 import {actions as laserActions} from "../../../../reducers/laser";
-import configText from "../../../Model2D/settings/config/text.json";
-import Model2D from "../../../Model2D/Model2D.js";
 import styles from './styles.css';
-import {generateSvg2, uploadImage} from "../../../../api";
 
 class Index extends React.Component {
     fileInput = React.createRef();
     state = {
-        fileType: '',
+        fileType: '', // bw, greyscale, svg, text
         accept: '',
     };
 
     actions = {
-        onChangeFile: async (event) => {
+        onChangeFile: (event) => {
+            const {fileType} = this.state;
             const file = event.target.files[0];
-            const fileType = this.state.fileType; // bw, greyscale, svg
-            const response = await uploadImage(file);
-            const {url, width, height} = response;
-            console.log(url, width, height);
-            const model = new Model2D(fileType);
-            model.loadImg(url, width, height);
-            this.props.addModel(model);
+            this.props.addModel(fileType, file);
         },
-        onClickToUpload: async (fileType) => {
+        onClickToUpload: (fileType) => {
             switch (fileType) {
                 case "text":
-                    const text = configText.children.text.default_value;
-                    const font = configText.children.font.default_value;
-                    const font_size = configText.children.font_size.default_value;
-                    const svg = await generateSvg2(text, font, font_size);
-                    const filename = "text.svg";
-                    const blob = new Blob([svg], {type: 'text/plain'});
-                    const file = new File([blob], filename);
-                    const response = await uploadImage(file);
-                    const {url, width, height} = response;
-                    console.log(url, width, height);
-                    const model = new Model2D(fileType);
-                    model.loadImg(url, width, height);
-                    this.props.addModel(model);
+                    this.props.addModel(fileType);
                     break;
                 case "bw":
                 case "greyscale":
@@ -92,8 +72,11 @@ class Index extends React.Component {
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px", paddingTop: "10px"}}
-                       size={16}>
+                <Space
+                    direction={"horizontal"}
+                    style={{width: "100%", paddingLeft: "10px", paddingTop: "10px"}}
+                    size={16}
+                >
                     <button
                         className={styles.btn_bw}
                         onClick={() => actions.onClickToUpload('bw')}
@@ -178,7 +161,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addModel: (model) => dispatch(laserActions.addModel(model)),
+        addModel: (fileType, file) => dispatch(laserActions.addModel(fileType, file)),
         updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
         updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
         updateWorkingParameters: (key, value) => dispatch(laserActions.updateWorkingParameters(key, value)),
