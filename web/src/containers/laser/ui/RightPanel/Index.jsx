@@ -138,7 +138,6 @@ class Index extends React.Component {
                     t={t}
                     model={model}
                     working_parameters={working_parameters}
-                    config={config}
                 />
             </div>
         )

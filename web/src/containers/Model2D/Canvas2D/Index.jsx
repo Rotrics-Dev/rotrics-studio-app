@@ -1,12 +1,10 @@
 import React from 'react';
 import * as THREE from 'three';
-import {connect} from 'react-redux';
 import PrintablePlate from "./PrintablePlate.js"
 import IntersectDetector from '../../../three-extensions/IntersectDetector';
 import PanControls from '../../../three-extensions/PanControls';
-import {actions as laserActions} from "../../../reducers/laser";
 
-//props: tap, model, setRendererParent
+//props: tap, model, modelParent
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -16,7 +14,7 @@ class Index extends React.Component {
         this.renderer = null;
         this.scene = null;
         this.group = null;
-        this.modelGroup = null;
+        this.modelParent = null;
         //controls
         this.intersectDetector = null; // detect the intersected model with mouse
         this.panControls = null;
@@ -27,7 +25,7 @@ class Index extends React.Component {
         this.setupZoom();
         this.setupIntersectDetector();
         this.setupPanControls();
-        this.props.setRendererParent(this.modelGroup);
+
         this.animate();
         this.group.add(new PrintablePlate(new THREE.Vector2(150, 120)));
         window.addEventListener('resize', this.resizeWindow, false);
@@ -43,11 +41,11 @@ class Index extends React.Component {
     }
 
     setupIntersectDetector() {
-        // recursive detect 'this.modelGroup.children'
+        // recursive detect 'this.modelParent.children'
         this.intersectDetector = new IntersectDetector(
             this.camera,
             this.renderer.domElement,
-            this.modelGroup.children,
+            this.modelParent.children,
             true
         );
         // triggered when "left mouse down on modelw"
@@ -80,8 +78,8 @@ class Index extends React.Component {
             'pan-end',
             (event) => {
                 const {x, y} = event.object.position;
-                this.props.model.updateTransformation("x", x, false);
-                this.props.model.updateTransformation("y", y, false);
+                this.props.model.updateTransformation('x', x, false);
+                this.props.model.updateTransformation('y', y, false);
             }
         );
     }
@@ -102,12 +100,12 @@ class Index extends React.Component {
 
         this.scene = new THREE.Scene();
         this.group = new THREE.Group();
-        this.modelGroup = new THREE.Group();
+        this.modelParent = this.props.modelParent;
 
-        //结构：scene--group--modelGroup--models
-        //因为需要IntersectDetector去检测modelGroup.children
+        //结构：scene--group--modelParent--models
+        //因为需要IntersectDetector去检测modelParent.children
         this.scene.add(this.group);
-        this.group.add(this.modelGroup);
+        this.group.add(this.modelParent);
 
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
         this.camera.position.copy(new THREE.Vector3(0, 0, 180));
@@ -168,20 +166,5 @@ class Index extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const {tap} = state.taps;
-    const {model} = state.laser;
-    return {
-        tap,
-        model
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default Index;
 

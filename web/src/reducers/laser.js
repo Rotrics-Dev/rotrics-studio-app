@@ -1,10 +1,11 @@
 import _ from 'lodash';
+import * as THREE from 'three';
 import Model2D from "../containers/Model2D/Model2D.js";
 
 const ACTION_UPDATE_STATE = 'laser/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    rendererParent: null,
+    modelParent: new THREE.Group(),
     model: null, // the selected model
     config: null, // config of selected model
     transformation: null, // transformation of selected model
@@ -18,15 +19,12 @@ const actions = {
     _updateState: (state) => {
         return {type: ACTION_UPDATE_STATE, state};
     },
-    setRendererParent: (object3d) => (dispatch) => {
-        dispatch(actions._updateState({rendererParent: object3d}));
-    },
     addModel: (model) => (dispatch, getState) => {
-        const {rendererParent} = getState().laser;
-        for (const child of rendererParent.children) {
+        const {modelParent} = getState().laser;
+        for (const child of modelParent.children) {
             child.setSelected(false);
         }
-        rendererParent.add(model);
+        modelParent.add(model);
         model.setSelected(true);
 
         const {config, transformation, working_parameters} = model;
@@ -35,7 +33,7 @@ const actions = {
             config,
             transformation,
             working_parameters,
-            modelCount: rendererParent.children.length,
+            modelCount: modelParent.children.length,
             isAllPreviewed: false,
             gcode: null
         }));
@@ -43,8 +41,8 @@ const actions = {
         model.addEventListener(Model2D.EVENT_TYPE_PREVIEWED, () => {
             console.log("EVENT_TYPE_PREVIEWED");
             let isAllPreviewed = true;
-            for (let i = 0; i < rendererParent.children.length; i++) {
-                const model = rendererParent.children[i];
+            for (let i = 0; i < modelParent.children.length; i++) {
+                const model = modelParent.children[i];
                 if (!model.isPreviewed) {
                     isAllPreviewed = false;
                     break;
@@ -55,8 +53,8 @@ const actions = {
 
         model.addEventListener(Model2D.EVENT_TYPE_SELECTED, () => {
             console.log("EVENT_TYPE_SELECTED");
-            const {rendererParent} = getState().laser;
-            for (const child of rendererParent.children) {
+            const {modelParent} = getState().laser;
+            for (const child of modelParent.children) {
                 if (child !== model){
                     child.setSelected(false);
                 }
@@ -87,7 +85,7 @@ const actions = {
         });
 
         model.addEventListener(Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS, () => {
-            console.log("EVENT_TYPE_CHANGED_WORKING_PARAMETERS");
+            console.log("EVENT_TYPE_CHANGED_WORKING_PARAMETERS: " + JSON.stringify(model.working_parameters, null,2));
             dispatch(actions._updateState({
                 working_parameters: _.cloneDeep(model.working_parameters),
                 gcode: null
@@ -101,20 +99,20 @@ const actions = {
             return {type: null};
         }
 
-        const {rendererParent} = getState().laser;
-        rendererParent.remove(getState().laser.model);
+        const {modelParent} = getState().laser;
+        modelParent.remove(getState().laser.model);
         dispatch(actions._updateState({
             model: null,
             config: null,
             transformation: null,
             working_parameters: null,
-            modelCount: rendererParent.children.length,
+            modelCount: modelParent.children.length,
             gcode: null
         }));
     },
     removeAll: () => (dispatch, getState) => {
-        const {rendererParent} = getState().laser;
-        rendererParent.remove(...rendererParent.children);
+        const {modelParent} = getState().laser;
+        modelParent.remove(...modelParent.children);
         dispatch(actions._updateState({
             model: null,
             config: null,
@@ -135,10 +133,10 @@ const actions = {
     },
     //g-code
     generateGcode: () => (dispatch, getState) => {
-        const {rendererParent} = getState().laser;
+        const {modelParent} = getState().laser;
         const gcodeArr = [];
-        for (let i = 0; i < rendererParent.children.length; i++) {
-            const model = rendererParent.children[i];
+        for (let i = 0; i < modelParent.children.length; i++) {
+            const model = modelParent.children[i];
             gcodeArr.push(model.generateGcode());
         }
         const gcode = gcodeArr.join('\n');

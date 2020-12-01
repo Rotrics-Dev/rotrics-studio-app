@@ -8,14 +8,14 @@ import {actions as laserActions} from "../../reducers/laser";
 
 class Index extends React.Component {
     render() {
-        const {tap, model, setRendererParent, selectModel} = this.props;
+        const {tap, model, modelParent, selectModel} = this.props;
         return (
             <div>
                 <div className={layout_styles.div_canvas}>
                     <Canvas2D
                         tap={tap}
                         model={model}
-                        setRendererParent={setRendererParent}
+                        modelParent={modelParent}
                         selectModel={selectModel}
                     />
                 </div>
@@ -32,16 +32,16 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {model} = state.laser;
+    const {modelParent, model} = state.laser;
     return {
         tap,
-        model
+        model,
+        modelParent
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
         selectModel: (model) => dispatch(laserActions.selectModel(model)),
     };
 };

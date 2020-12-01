@@ -29,24 +29,17 @@ class Model2D extends THREE.Group {
      */
     constructor(fileType, front_end, file) {
         super();
-
         this.fileType = fileType;
         this.front_end = front_end;
         this.file = file;
-
         this.url = null;
-
         this._isSelected = false;
-
         this.toolPathObj3d = null;
         this.toolPathLines = null; // Array
-        this.toolPathId = ""; // preview tool path id
-
+        this.toolPathId = null; // preview tool path id
         this.imgObj3d = new THREE.Mesh();
         this.edgeObj3d = null; // edge line of model; show when model is selected
-
         this.transformation = transformation;
-
         this.working_parameters = null;
         switch (front_end) {
             case "laser":
@@ -56,7 +49,6 @@ class Model2D extends THREE.Group {
                 this.working_parameters = _.cloneDeep(working_parameters_write_draw);
                 break;
         }
-
         this.config = null;
         switch (fileType) {
             case "bw":
@@ -240,6 +232,17 @@ class Model2D extends THREE.Group {
     async updateConfig(key, value) {
         console.log("updateConfig: ", key, value)
 
+        //fill.fill_density
+        if (key.indexOf(".") !== -1) {
+            const arr = key.split(".");
+            const keyParent = arr[0];
+            const keyChild = arr[1];
+            this.config.children[keyParent].children[keyChild].default_value = value;
+        } else {
+            this.config.children[key].default_value = value;
+        }
+        this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+
         switch (this.fileType) {
             case "greyscale":
                 if (key === 'movement_mode' && value === 'greyscale-dot') {
@@ -247,9 +250,9 @@ class Model2D extends THREE.Group {
                 } else {
                     this.working_parameters = _.cloneDeep(working_parameters_laser);
                 }
-                this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+                this.config.children[key].default_value = value;
                 this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS});
-                return;
+                break;
             case "text":
                 if (["font", "font_size", "text"].includes(key)) {
                     this.config.children[key].default_value = value;
@@ -282,33 +285,16 @@ class Model2D extends THREE.Group {
                     this._display('img');
                     this._display('edge');
 
-                    this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+
                     this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_TRANSFORMATION});
                 }
                 break;
         }
 
-        //fill.fill_density
-        if (key.indexOf(".") !== -1) {
-            const arr = key.split(".");
-            const keyParent = arr[0];
-            const keyChild = arr[1];
-            this.config.children[keyParent].children[keyChild].default_value = value;
-        } else {
-            this.config.children[key].default_value = value;
-        }
-
-        this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
-
-        this.toolPathLines = null;
-
-        //todo: config是否变化，决定preview
         this.preview();
     }
 
     updateWorkingParameters(key, value) {
-        console.log("updateWorkingParameters: ", key, value)
-
         //multi_pass.passes
         //multi_pass.pass_depth
         //fixed_power.power
