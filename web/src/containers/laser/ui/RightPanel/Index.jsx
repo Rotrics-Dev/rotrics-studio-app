@@ -111,25 +111,21 @@ class Index extends React.Component {
                     t={t}
                     model={model}
                     config={config}
-                    updateConfig={updateConfig}
                 />
                 <ConfigGreyscale
                     t={t}
                     model={model}
                     config={config}
-                    updateConfig={updateConfig}
                 />
                 <ConfigSvg
                     t={t}
                     model={model}
                     config={config}
-                    updateConfig={updateConfig}
                 />
                 <ConfigText
                     t={t}
                     model={model}
                     config={config}
-                    updateConfig={updateConfig}
                     buildInFonts={buildInFonts}
                     userFonts={userFonts}
                 />
@@ -137,13 +133,11 @@ class Index extends React.Component {
                     t={t}
                     model={model}
                     transformation={transformation}
-                    updateTransformation={updateTransformation}
                 />
                 <WorkingParameters
                     t={t}
                     model={model}
                     working_parameters={working_parameters}
-                    updateWorkingParameters={updateWorkingParameters}
                     config={config}
                 />
             </div>
@@ -167,9 +161,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addModel: (model) => dispatch(laserActions.addModel(model)),
-        updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
-        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
-        updateWorkingParameters: (key, value) => dispatch(laserActions.updateWorkingParameters(key, value)),
     };
 };
 

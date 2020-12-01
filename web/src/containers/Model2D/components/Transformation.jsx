@@ -5,29 +5,26 @@ import Line from '../../../components/Line/Index.jsx'
 import Tooltip from '../../Tooltip/Index.jsx';
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../components/Config";
 
-//props: t, model, transformation, updateTransformation
+//props: t, model, transformation
 class Index extends PureComponent {
     actions = {
-        set_width_mm: (value) => {
-            this.props.updateTransformation("width_mm", value, true)
+        setWidthMM: (value) => {
+            this.props.model.updateTransformation("width_mm", value, true)
         },
-        set_height_mm: (value) => {
-            this.props.updateTransformation("height_mm", value, true)
+        setHeightMM: (value) => {
+            this.props.model.updateTransformation("height_mm", value, true)
         },
-        /**
-         * @param value: unit is degree
-         */
-        set_rotation: (value) => {
-            this.props.updateTransformation("rotation", value, true)
+        setRotation: (degree) => {
+            this.props.model.updateTransformation("rotation", degree, true)
         },
-        set_x: (value) => {
-            this.props.updateTransformation("x", value, false)
+        setX: (value) => {
+            this.props.model.updateTransformation("x", value, false)
         },
-        set_y: (value) => {
-            this.props.updateTransformation("y", value, false)
+        setY: (value) => {
+            this.props.model.updateTransformation("y", value, false)
         },
-        set_flip_model: (value) => {
-            this.props.updateTransformation("flip_model", value, true)
+        setFlipModel: (value) => {
+            this.props.model.updateTransformation("flip_model", value, true)
         }
     };
 
@@ -61,7 +58,7 @@ class Index extends PureComponent {
                                     min={width_mm.minimum_value}
                                     max={width_mm.maximum_value}
                                     value={width_mm.default_value}
-                                    onAfterChange={actions.set_width_mm}
+                                    onAfterChange={actions.setWidthMM}
                                 />
                             </Col>
                         </Row>
@@ -76,7 +73,7 @@ class Index extends PureComponent {
                                     min={height_mm.minimum_value}
                                     max={height_mm.maximum_value}
                                     value={height_mm.default_value}
-                                    onAfterChange={actions.set_height_mm}
+                                    onAfterChange={actions.setHeightMM}
                                 />
                             </Col>
                         </Row>
@@ -91,7 +88,7 @@ class Index extends PureComponent {
                                     min={rotation.minimum_value}
                                     max={rotation.maximum_value}
                                     value={rotation.default_value}
-                                    onAfterChange={actions.set_rotation}
+                                    onAfterChange={actions.setRotation}
                                 />
                             </Col>
                         </Row>
@@ -106,7 +103,7 @@ class Index extends PureComponent {
                                     min={x.minimum_value}
                                     max={x.maximum_value}
                                     value={x.default_value}
-                                    onAfterChange={actions.set_x}
+                                    onAfterChange={actions.setX}
                                 />
                             </Col>
                         </Row>
@@ -121,7 +118,7 @@ class Index extends PureComponent {
                                     min={y.minimum_value}
                                     max={y.maximum_value}
                                     value={y.default_value}
-                                    onAfterChange={actions.set_y}
+                                    onAfterChange={actions.setY}
                                 />
                             </Col>
                         </Row>
@@ -135,7 +132,7 @@ class Index extends PureComponent {
                                 <ConfigSelect
                                     options={flipModelOptions}
                                     value={flip_model.default_value}
-                                    onChange={actions.set_flip_model}
+                                    onChange={actions.setFlipModel}
                                 />
                             </Col>
                         </Row>

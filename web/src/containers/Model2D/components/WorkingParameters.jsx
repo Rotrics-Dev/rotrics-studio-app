@@ -11,31 +11,31 @@ import {ConfigText, ConfigTitle} from "../../../components/Config";
 class Index extends PureComponent {
     actions = {
         setPrintOrder: (value) => {
-            this.props.updateWorkingParameters("print_order", value)
+            this.props.model.updateWorkingParameters("print_order", value)
         },
         setJogSpeed: (value) => {
-            this.props.updateWorkingParameters("jog_speed", value)
+            this.props.model.updateWorkingParameters("jog_speed", value)
         },
         setWorkSpeed: (value) => {
-            this.props.updateWorkingParameters("work_speed", value)
+            this.props.model.updateWorkingParameters("work_speed", value)
         },
         setDwellTime: (value) => {
-            this.props.updateWorkingParameters("dwell_time", value)
+            this.props.model.updateWorkingParameters("dwell_time", value)
         },
         setEngraveTime: (value) => {
-            this.props.updateWorkingParameters("engrave_time", value)
+            this.props.model.updateWorkingParameters("engrave_time", value)
         },
         setMultiPass: (e) => {
-            this.props.updateWorkingParameters("multi_pass", e.target.checked)
+            this.props.model.updateWorkingParameters("multi_pass", e.target.checked)
         },
         setMultiPassPasses: (value) => {
-            this.props.updateWorkingParameters("multi_pass.passes", value)
+            this.props.model.updateWorkingParameters("multi_pass.passes", value)
         },
         setMultiPassPassDepth: (value) => {
-            this.props.updateWorkingParameters("multi_pass.pass_depth", value)
+            this.props.model.updateWorkingParameters("multi_pass.pass_depth", value)
         },
         setPower: (value) => {
-            this.props.updateWorkingParameters("power", value)
+            this.props.model.updateWorkingParameters("power", value)
         }
     };
 

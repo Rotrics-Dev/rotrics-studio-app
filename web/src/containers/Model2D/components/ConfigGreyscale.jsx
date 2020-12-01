@@ -5,29 +5,29 @@ import Line from '../../../components/Line/Index.jsx'
 import {ConfigText, ConfigTitle, ConfigSelect} from "../../../components/Config";
 import Tooltip from '../../Tooltip/Index.jsx';
 
-//props: t, model, config, updateConfig
+//props: t, model, config
 class Index extends PureComponent {
     actions = {
         setInvert: (e) => {
-            this.props.updateConfig("invert", e.target.checked)
+            this.props.model.updateConfig("invert", e.target.checked)
         },
         setContrast: (value) => {
-            this.props.updateConfig("contrast", value)
+            this.props.model.updateConfig("contrast", value)
         },
         setBrightness: (value) => {
-            this.props.updateConfig("brightness", value)
+            this.props.model.updateConfig("brightness", value)
         },
         setWhiteClip: (value) => {
-            this.props.updateConfig("white_clip", value)
+            this.props.model.updateConfig("white_clip", value)
         },
         setAlgorithm: (value) => {
-            this.props.updateConfig("algorithm", value)
+            this.props.model.updateConfig("algorithm", value)
         },
         setMovementMode: (value) => {
-            this.props.updateConfig("movement_mode", value)
+            this.props.model.updateConfig("movement_mode", value)
         },
         setDensity: (value) => {
-            this.props.updateConfig("density", value)
+            this.props.model.updateConfig("density", value)
         }
     };
 
@@ -52,6 +52,7 @@ class Index extends PureComponent {
             const option = movement_mode.options[key];
             movementModeOptions.push({label: key, value: option})
         });
+
         return (
             <div>
                 <Line/>

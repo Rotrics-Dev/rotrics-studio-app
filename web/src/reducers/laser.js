@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Model2D from "../containers/Model2D/Model2D.js";
 
 const ACTION_UPDATE_STATE = 'laser/ACTION_UPDATE_STATE';
 
@@ -39,44 +40,61 @@ const actions = {
             gcode: null
         }));
 
-        model.addEventListener('preview', (event) => {
-            const {isPreviewed} = event.data;
-            if (!isPreviewed) {
-                dispatch(actions._updateState({isAllPreviewed: false}));
-            } else {
-                let isAllPreviewed = true;
-                for (let i = 0; i < rendererParent.children.length; i++) {
-                    const model = rendererParent.children[i];
-                    if (!model.isPreviewed) {
-                        isAllPreviewed = false;
-                        break;
-                    }
+        model.addEventListener(Model2D.EVENT_TYPE_PREVIEWED, () => {
+            console.log("EVENT_TYPE_PREVIEWED");
+            let isAllPreviewed = true;
+            for (let i = 0; i < rendererParent.children.length; i++) {
+                const model = rendererParent.children[i];
+                if (!model.isPreviewed) {
+                    isAllPreviewed = false;
+                    break;
                 }
-                dispatch(actions._updateState({isAllPreviewed}));
             }
+            dispatch(actions._updateState({isAllPreviewed}));
+        });
+
+        model.addEventListener(Model2D.EVENT_TYPE_SELECTED, () => {
+            console.log("EVENT_TYPE_SELECTED");
+            const {rendererParent} = getState().laser;
+            for (const child of rendererParent.children) {
+                if (child !== model){
+                    child.setSelected(false);
+                }
+            }
+            const {config, transformation, working_parameters} = model;
+            dispatch(actions._updateState({
+                model,
+                config,
+                transformation,
+                working_parameters
+            }));
+        });
+
+        model.addEventListener(Model2D.EVENT_TYPE_CHANGED_CONFIG, () => {
+            console.log("EVENT_TYPE_CHANGED_CONFIG");
+            dispatch(actions._updateState({
+                config: _.cloneDeep(model.config),
+                gcode: null
+            }));
+        });
+
+        model.addEventListener(Model2D.EVENT_TYPE_CHANGED_TRANSFORMATION, () => {
+            console.log("EVENT_TYPE_CHANGED_TRANSFORMATION");
+            dispatch(actions._updateState({
+                transformation: _.cloneDeep(model.transformation),
+                gcode: null
+            }));
+        });
+
+        model.addEventListener(Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS, () => {
+            console.log("EVENT_TYPE_CHANGED_WORKING_PARAMETERS");
+            dispatch(actions._updateState({
+                working_parameters: _.cloneDeep(model.working_parameters),
+                gcode: null
+            }));
         });
 
         model.preview();
-    },
-
-    selectModel: (model) => (dispatch, getState) => {
-        if (model === getState().laser.model) {
-            return {type: null};
-        }
-
-        const {rendererParent} = getState().laser;
-        for (const child of rendererParent.children) {
-            child.setSelected(false);
-        }
-        model.setSelected(true);
-
-        const {config, transformation, working_parameters} = model;
-        dispatch(actions._updateState({
-            model,
-            config,
-            transformation,
-            working_parameters
-        }));
     },
     removeSelected: () => (dispatch, getState) => {
         if (!getState().laser.model) {
@@ -114,43 +132,6 @@ const actions = {
     },
     redo: () => {
         return {type: null};
-    },
-    //TODO: 比较前后settings是否变化；不变则不更新数据
-    updateTransformation: (key, value, preview) => (dispatch, getState) => {
-        const {model} = getState().laser;
-        if (model.updateTransformation(key, value, preview)) {
-            dispatch(actions._updateState({
-                transformation: _.cloneDeep(model.transformation),
-                gcode: null
-            }));
-        } else {
-            return {type: null};
-        }
-    },
-    updateConfig: (key, value) => async (dispatch, getState) => {
-        const {model} = getState().laser;
-        if (await model.updateConfig(key, value)) {
-            // updateConfig may will change transformation
-            dispatch(actions._updateState({
-                config: _.cloneDeep(model.config),
-                transformation: _.cloneDeep(model.transformation),
-                isAllPreviewed: false,
-                gcode: null
-            }));
-        } else {
-            return {type: null};
-        }
-    },
-    updateWorkingParameters: (key, value) => (dispatch, getState) => {
-        const {model} = getState().laser;
-        if (model.updateWorkingParameters(key, value)) {
-            dispatch(actions._updateState({
-                working_parameters: _.cloneDeep(model.working_parameters),
-                gcode: null
-            }));
-        } else {
-            return {type: null};
-        }
     },
     //g-code
     generateGcode: () => (dispatch, getState) => {

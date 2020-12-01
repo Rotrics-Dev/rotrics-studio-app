@@ -6,7 +6,7 @@ import IntersectDetector from '../../../three-extensions/IntersectDetector';
 import PanControls from '../../../three-extensions/PanControls';
 import {actions as laserActions} from "../../../reducers/laser";
 
-//props: tap, model, setRendererParent, selectModel, updateTransformation
+//props: tap, model, setRendererParent
 class Index extends React.Component {
     constructor(props) {
         super(props);
@@ -56,7 +56,7 @@ class Index extends React.Component {
             (event) => {
                 //detect到的是model2d的children
                 const model = event.object.parent;
-                this.props.selectModel(model);
+                model.setSelected(true);
                 this.panControls.select(model);
             }
         );
@@ -80,8 +80,8 @@ class Index extends React.Component {
             'pan-end',
             (event) => {
                 const {x, y} = event.object.position;
-                this.props.updateTransformation("x", x, false)
-                this.props.updateTransformation("y", y, false)
+                this.props.model.updateTransformation("x", x, false);
+                this.props.model.updateTransformation("y", y, false);
             }
         );
     }
@@ -180,8 +180,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
-        selectModel: (model) => dispatch(laserActions.selectModel(model)),
-        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
     };
 };
 

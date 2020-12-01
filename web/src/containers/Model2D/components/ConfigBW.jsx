@@ -5,20 +5,20 @@ import Line from '../../../components/Line/Index.jsx'
 import Tooltip from '../../Tooltip/Index.jsx';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../components/Config";
 
-//props: t, model, config, updateConfig
+//props: t, model, config
 class Index extends PureComponent {
     actions = {
         setInvert: (e) => {
-            this.props.updateConfig("invert", e.target.checked)
+            this.props.model.updateConfig("invert", e.target.checked)
         },
         setBW: (value) => {
-            this.props.updateConfig("bw", value)
+            this.props.model.updateConfig("bw", value)
         },
         setDensity: (value) => {
-            this.props.updateConfig("density", value)
+            this.props.model.updateConfig("density", value)
         },
         setLineDirection: (value) => {
-            this.props.updateConfig("line_direction", value)
+            this.props.model.updateConfig("line_direction", value)
         }
     };
 
@@ -37,6 +37,7 @@ class Index extends PureComponent {
             const option = line_direction.options[key];
             directionOptions.push({label: key, value: option})
         });
+
         return (
             <div>
                 <Line/>

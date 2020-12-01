@@ -87,7 +87,8 @@ class Model2D extends THREE.Group {
                 // this.toolPathObj3d.position.set(0, 100, 0);
                 this.add(this.toolPathObj3d);
                 this._display('toolPath');
-                this.dispatchEvent({type: 'preview', data: {isPreviewed: true}});
+
+                this.dispatchEvent({type: Model2D.EVENT_TYPE_PREVIEWED});
             }
         });
     }
@@ -151,39 +152,36 @@ class Model2D extends THREE.Group {
         }
     }
 
-    //todo: add return value to mark whether changed
     updateTransformation(key, value, preview) {
-        console.log("updateTransformation: ", key, value, preview)
-
         switch (key) {
             case "width_mm":
                 if (this.transformation.children.width_mm.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
             case "height_mm":
                 if (this.transformation.children.height_mm.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
             case "rotation":
                 if (this.transformation.children.rotation.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
             case "x":
                 if (this.transformation.children.x.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
             case "y":
                 if (this.transformation.children.y.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
             case "flip_model":
                 if (this.transformation.children.flip_model.default_value === value) {
-                    return false;
+                    return;
                 }
                 break;
         }
@@ -216,12 +214,12 @@ class Model2D extends THREE.Group {
                 // no need to preview
                 this.position.x = value;
                 this.transformation.children.x.default_value = value;
-                return false;
+                break;
             case "y":
                 // no need to preview
                 this.position.y = value;
                 this.transformation.children.y.default_value = value;
-                return false;
+                break;
             case "flip_model":
                 this.transformation.children.flip_model.default_value = value;
                 break;
@@ -230,20 +228,18 @@ class Model2D extends THREE.Group {
         this.toolPathLines = null;
         this._display("edge");
 
-        //todo: setting是否变化，决定preview
         if (preview) {
             this._display("img");
             this.preview();
         }
 
-        console.log("#preview")
-
-        return true;
+        this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_TRANSFORMATION});
     }
 
 
     async updateConfig(key, value) {
         console.log("updateConfig: ", key, value)
+
         switch (this.fileType) {
             case "greyscale":
                 if (key === 'movement_mode' && value === 'greyscale-dot') {
@@ -251,7 +247,9 @@ class Model2D extends THREE.Group {
                 } else {
                     this.working_parameters = _.cloneDeep(working_parameters_laser);
                 }
-                break;
+                this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+                this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS});
+                return;
             case "text":
                 if (["font", "font_size", "text"].includes(key)) {
                     this.config.children[key].default_value = value;
@@ -283,6 +281,9 @@ class Model2D extends THREE.Group {
 
                     this._display('img');
                     this._display('edge');
+
+                    this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+                    this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_TRANSFORMATION});
                 }
                 break;
         }
@@ -296,6 +297,10 @@ class Model2D extends THREE.Group {
         } else {
             this.config.children[key].default_value = value;
         }
+
+        this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_CONFIG});
+
+        this.toolPathLines = null;
 
         //todo: config是否变化，决定preview
         this.preview();
@@ -315,17 +320,21 @@ class Model2D extends THREE.Group {
             return;
         }
         this.working_parameters.children[key].default_value = value;
+        this.dispatchEvent({type: Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS});
     }
 
     //todo: put edge in controls
     setSelected(isSelected) {
+        if (!this._isSelected && isSelected) {
+            this.dispatchEvent({type: Model2D.EVENT_TYPE_SELECTED});
+        }
         this._isSelected = isSelected;
         this._display("edge");
     }
 
     preview() {
         this.toolPathId = getUuid();
-        this.dispatchEvent({type: 'preview', data: {isPreviewed: false}});
+        this.toolPathLines = null;
         socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
             url: this.url,
             fileType: this.fileType,
@@ -353,5 +362,11 @@ class Model2D extends THREE.Group {
         return null;
     }
 }
+
+Model2D.EVENT_TYPE_PREVIEWED = 'EVENT_TYPE_PREVIEWED';
+Model2D.EVENT_TYPE_SELECTED = 'EVENT_TYPE_SELECTED';
+Model2D.EVENT_TYPE_CHANGED_CONFIG = 'EVENT_TYPE_CHANGED_CONFIG';
+Model2D.EVENT_TYPE_CHANGED_TRANSFORMATION = 'EVENT_TYPE_CHANGED_TRANSFORMATION';
+Model2D.EVENT_TYPE_CHANGED_WORKING_PARAMETERS = 'EVENT_TYPE_CHANGED_WORKING_PARAMETERS';
 
 export default Model2D;

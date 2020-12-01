@@ -5,28 +5,28 @@ import Line from '../../../components/Line/Index.jsx'
 import Tooltip from '../../Tooltip/Index.jsx';
 import {ConfigTitle, ConfigText, ConfigSelect} from "../../../components/Config";
 
-//props: t, model, config, updateConfig, buildInFonts, userFonts
+//props: t, model, config, buildInFonts, userFonts
 class Index extends PureComponent {
     actions = {
         setText: (e) => {
             if (e.target.value.trim().length > 0) {
-                this.props.updateConfig("text", e.target.value.trim())
+                this.props.model.updateConfig("text", e.target.value.trim())
             }
         },
         setFont: (value) => {
-            this.props.updateConfig("font", value)
+            this.props.model.updateConfig("font", value)
         },
         setFontSize: (value) => {
-            this.props.updateConfig("font_size", value)
+            this.props.model.updateConfig("font_size", value)
         },
         setOptimizePath: (e) => {
-            this.props.updateConfig("optimize_path", e.target.checked)
+            this.props.model.updateConfig("optimize_path", e.target.checked)
         },
         setFill: (e) => {
-            this.props.updateConfig("fill", e.target.checked)
+            this.props.model.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            this.props.updateConfig("fill.fill_density", value);
+            this.props.model.updateConfig("fill.fill_density", value);
         }
     };
 
@@ -48,6 +48,7 @@ class Index extends PureComponent {
         for (const font of userFonts) {
             fontOptions.push({label: font.fontName, value: font.path, color: '#007777'})
         }
+
         return (
             <div>
                 <Line/>

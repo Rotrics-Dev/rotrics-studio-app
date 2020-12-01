@@ -8,7 +8,7 @@ import {actions as laserActions} from "../../reducers/laser";
 
 class Index extends React.Component {
     render() {
-        const {tap, model, setRendererParent, selectModel, updateTransformation} = this.props;
+        const {tap, model, setRendererParent, selectModel} = this.props;
         return (
             <div>
                 <div className={layout_styles.div_canvas}>
@@ -17,7 +17,6 @@ class Index extends React.Component {
                         model={model}
                         setRendererParent={setRendererParent}
                         selectModel={selectModel}
-                        updateTransformation={updateTransformation}
                     />
                 </div>
                 <div className={layout_styles.div_tool_bar}>
@@ -44,7 +43,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setRendererParent: (modelsParent) => dispatch(laserActions.setRendererParent(modelsParent)),
         selectModel: (model) => dispatch(laserActions.selectModel(model)),
-        updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
     };
 };
 

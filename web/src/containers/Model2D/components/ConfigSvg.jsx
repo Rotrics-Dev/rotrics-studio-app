@@ -5,17 +5,17 @@ import Line from '../../../components/Line/Index.jsx'
 import {ConfigTitle, ConfigText} from "../../../components/Config";
 import Tooltip from '../../Tooltip/Index.jsx';
 
-//props: t, model, config, updateConfig
+//props: t, model, config
 class Index extends PureComponent {
     actions = {
         setOptimizePath: (e) => {
-            this.props.updateConfig("optimize_path", e.target.checked)
+            this.props.model.updateConfig("optimize_path", e.target.checked)
         },
         setFill: (e) => {
-            this.props.updateConfig("fill", e.target.checked)
+            this.props.model.updateConfig("fill", e.target.checked)
         },
         setFillDensity: (value) => {
-            this.props.updateConfig("fill.fill_density", value)
+            this.props.model.updateConfig("fill.fill_density", value)
         }
     };
 
@@ -29,6 +29,7 @@ class Index extends PureComponent {
         const actions = this.actions;
         const {optimize_path, fill} = config.children;
         const {fill_density} = fill.children;
+
         return (
             <div>
                 <Line/>
