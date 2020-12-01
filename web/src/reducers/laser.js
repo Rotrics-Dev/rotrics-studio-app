@@ -1,18 +1,15 @@
 import _ from 'lodash';
-import {generateSvg2, uploadImage} from "../api";
-import configText from "../containers/Model2D/settings/config/text.json";
-import Model2D from "../containers/Model2D/Model2D";
 
 const ACTION_UPDATE_STATE = 'laser/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
     rendererParent: null,
     model: null, // the selected model
-    config: null,
-    transformation: null,
-    working_parameters: null,
+    config: null, // config of selected model
+    transformation: null, // transformation of selected model
+    working_parameters: null, // working_parameters of selected model
     modelCount: 0,
-    isAllPreviewed: false, // 是否所有model全部previewed
+    isAllPreviewed: false, // whether all models are previewed
     gcode: null
 };
 
@@ -23,22 +20,7 @@ const actions = {
     setRendererParent: (object3d) => (dispatch) => {
         dispatch(actions._updateState({rendererParent: object3d}));
     },
-    addModel: (fileType, file) => async (dispatch, getState) => {
-        console.log('add model: ', fileType, file)
-        if (fileType == "text"){
-            const text = configText.children.text.default_value;
-            const font = configText.children.font.default_value;
-            const font_size = configText.children.font_size.default_value;
-            const svg = await generateSvg2(text, font, font_size);
-            const blob = new Blob([svg], {type: 'text/plain'});
-            file = new File([blob], null);
-        }
-
-        const response = await uploadImage(file);
-        const {url, width, height} = response;
-        const model = new Model2D(fileType, 'laser');
-        model.loadImg(url, width, height);
-
+    addModel: (model) => (dispatch, getState) => {
         const {rendererParent} = getState().laser;
         for (const child of rendererParent.children) {
             child.setSelected(false);
@@ -78,12 +60,11 @@ const actions = {
     },
 
     selectModel: (model) => (dispatch, getState) => {
-        const selected = getState().laser.model;
-        const {rendererParent} = getState().laser;
-        if (model === selected) {
+        if (model === getState().laser.model) {
             return {type: null};
         }
 
+        const {rendererParent} = getState().laser;
         for (const child of rendererParent.children) {
             child.setSelected(false);
         }
@@ -98,13 +79,12 @@ const actions = {
         }));
     },
     removeSelected: () => (dispatch, getState) => {
-        const selected = getState().laser.model;
-        const {rendererParent} = getState().laser;
-        if (!selected) {
+        if (!getState().laser.model) {
             return {type: null};
         }
 
-        rendererParent.remove(selected);
+        const {rendererParent} = getState().laser;
+        rendererParent.remove(getState().laser.model);
         dispatch(actions._updateState({
             model: null,
             config: null,
@@ -116,16 +96,13 @@ const actions = {
     },
     removeAll: () => (dispatch, getState) => {
         const {rendererParent} = getState().laser;
-        if (rendererParent.children.length === 0) {
-            return {type: null};
-        }
         rendererParent.remove(...rendererParent.children);
         dispatch(actions._updateState({
             model: null,
             config: null,
             transformation: null,
             working_parameters: null,
-            modelCount: rendererParent.children.length,
+            modelCount: 0,
             gcode: null
         }));
     },
@@ -141,71 +118,39 @@ const actions = {
     //TODO: 比较前后settings是否变化；不变则不更新数据
     updateTransformation: (key, value, preview) => (dispatch, getState) => {
         const {model} = getState().laser;
-        model.updateTransformation(key, value, preview);
-        dispatch(actions._updateState({
-            transformation: _.cloneDeep(model.transformation),
-            gcode: null
-        }));
+        if (model.updateTransformation(key, value, preview)) {
+            dispatch(actions._updateState({
+                transformation: _.cloneDeep(model.transformation),
+                gcode: null
+            }));
+        } else {
+            return {type: null};
+        }
     },
     updateConfig: (key, value) => async (dispatch, getState) => {
         const {model} = getState().laser;
-        switch (model.fileType) {
-            case "text":
-                model.updateConfig(key, value);
-                if (["font", "font_size", "text"].includes(key)){
-                    const {config} = model;
-                    const text = config.children.text.default_value;
-                    const font = config.children.font.default_value;
-                    const font_size = config.children.font_size.default_value;
-                    const svg = await generateSvg2(text, font, font_size);
-                    const blob = new Blob([svg], {type: 'text/plain'});
-                    const file = new File([blob], null);
-                    const response = await uploadImage(file);
-                    const {url, width, height} = response;
-                    model.loadImg(url, width, height);
-                }
-                model.preview();
-                dispatch(actions._updateState({
-                    config: _.cloneDeep(model.config),
-                    transformation: _.cloneDeep(model.transformation),
-                    isAllPreviewed: false,
-                    gcode: null
-                }));
-                break;
-            case "bw":
-            case "svg":
-                model.updateConfig(key, value);
-                dispatch(actions._updateState({
-                    config: _.cloneDeep(model.config),
-                    gcode: null
-                }));
-                break;
-            case "greyscale":
-                //if movement_mode change, the working_parameters will changed too
-                model.updateConfig(key, value);
-                dispatch(actions._updateState({
-                    config: _.cloneDeep(model.config),
-                    working_parameters: _.cloneDeep(model.working_parameters),
-                    gcode: null
-                }));
-                break;
+        if (await model.updateConfig(key, value)) {
+            // updateConfig may will change transformation
+            dispatch(actions._updateState({
+                config: _.cloneDeep(model.config),
+                transformation: _.cloneDeep(model.transformation),
+                isAllPreviewed: false,
+                gcode: null
+            }));
+        } else {
+            return {type: null};
         }
     },
     updateWorkingParameters: (key, value) => (dispatch, getState) => {
         const {model} = getState().laser;
-        dispatch(actions._updateState({
-            working_parameters: _.cloneDeep(model.working_parameters),
-            gcode: null
-        }));
-    },
-    //text独有
-    updateConfigText: (key, value) => async (dispatch, getState) => {
-        const {model} = getState().laser;
-        if (!model || model.fileType !== "text") {
+        if (model.updateWorkingParameters(key, value)) {
+            dispatch(actions._updateState({
+                working_parameters: _.cloneDeep(model.working_parameters),
+                gcode: null
+            }));
+        } else {
             return {type: null};
         }
-
-
     },
     //g-code
     generateGcode: () => (dispatch, getState) => {

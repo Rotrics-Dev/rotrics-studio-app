@@ -14,6 +14,7 @@ import toolPathLines2gcode4laser from "./toolPath/toolPathLines2gcode4laser";
 import toolPathLines2gcode4writeDraw from "./toolPath/toolPathLines2gcode4writeDraw";
 import {degree2radian, getUuid} from '../../utils/index.js';
 import {TOOL_PATH_GENERATE_LASER} from "../../constants.js"
+import {generateSvg2, uploadImage} from "../../api";
 
 /**
  * Model2D is a container，always keep rotation=0, scale=1, but position will be changed
@@ -24,14 +25,17 @@ class Model2D extends THREE.Group {
     /**
      * @param fileType: bw, greyscale, svg, text
      * @param front_end: laser, write_draw
+     * @param file: null when fileType=text; not null if fileType in [bw, greyscale, svg]
      */
-    constructor(fileType, front_end) {
+    constructor(fileType, front_end, file) {
         super();
 
         this.fileType = fileType;
         this.front_end = front_end;
+        this.file = file;
 
         this.url = null;
+
         this._isSelected = false;
 
         this.toolPathObj3d = null;
@@ -40,7 +44,6 @@ class Model2D extends THREE.Group {
 
         this.imgObj3d = new THREE.Mesh();
         this.edgeObj3d = null; // edge line of model; show when model is selected
-        this.isPreviewed = false;
 
         this.transformation = transformation;
 
@@ -84,21 +87,27 @@ class Model2D extends THREE.Group {
                 // this.toolPathObj3d.position.set(0, 100, 0);
                 this.add(this.toolPathObj3d);
                 this._display('toolPath');
-                this.isPreviewed = true;
-                this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
+                this.dispatchEvent({type: 'preview', data: {isPreviewed: true}});
             }
         });
     }
 
-    /**
-     * @param url: http url
-     * @param width: origin width of image by pixel
-     * @param height: origin height of image by pixel
-     */
-    loadImg(url, width, height) {
-        //TODO: resize image
-        this.url = url;
+    // add return value to mark success/failed
+    async init() {
+        if (this.fileType == "text") {
+            const text = configText.children.text.default_value;
+            const font = configText.children.font.default_value;
+            const font_size = configText.children.font_size.default_value;
+            const svg = await generateSvg2(text, font, font_size);
+            const blob = new Blob([svg], {type: 'text/plain'});
+            this.file = new File([blob], null);
+        }
 
+        // width, height: image size of pixel
+        const response = await uploadImage(this.file);
+        const {url, width, height} = response;
+
+        this.url = url;
         this.transformation.children.width_pixel.default_value = width;
         this.transformation.children.height_pixel.default_value = height;
         this.transformation.children.width_mm.default_value = width;
@@ -109,9 +118,7 @@ class Model2D extends THREE.Group {
         this.imgObj3d.material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             transparent: true,
-            opacity: 1,
-            map: new THREE.TextureLoader().load(url),
-            side: THREE.DoubleSide
+            map: new THREE.TextureLoader().load(url)
         });
         this.add(this.imgObj3d);
 
@@ -146,6 +153,41 @@ class Model2D extends THREE.Group {
 
     //todo: add return value to mark whether changed
     updateTransformation(key, value, preview) {
+        console.log("updateTransformation: ", key, value, preview)
+
+        switch (key) {
+            case "width_mm":
+                if (this.transformation.children.width_mm.default_value === value) {
+                    return false;
+                }
+                break;
+            case "height_mm":
+                if (this.transformation.children.height_mm.default_value === value) {
+                    return false;
+                }
+                break;
+            case "rotation":
+                if (this.transformation.children.rotation.default_value === value) {
+                    return false;
+                }
+                break;
+            case "x":
+                if (this.transformation.children.x.default_value === value) {
+                    return false;
+                }
+                break;
+            case "y":
+                if (this.transformation.children.y.default_value === value) {
+                    return false;
+                }
+                break;
+            case "flip_model":
+                if (this.transformation.children.flip_model.default_value === value) {
+                    return false;
+                }
+                break;
+        }
+
         switch (key) {
             case "width_mm": {
                 const width = value;
@@ -171,18 +213,21 @@ class Model2D extends THREE.Group {
                 break;
             }
             case "x":
+                // no need to preview
                 this.position.x = value;
                 this.transformation.children.x.default_value = value;
-                break;
+                return false;
             case "y":
+                // no need to preview
                 this.position.y = value;
                 this.transformation.children.y.default_value = value;
-                break;
+                return false;
             case "flip_model":
                 this.transformation.children.flip_model.default_value = value;
                 break;
         }
 
+        this.toolPathLines = null;
         this._display("edge");
 
         //todo: setting是否变化，决定preview
@@ -190,15 +235,56 @@ class Model2D extends THREE.Group {
             this._display("img");
             this.preview();
         }
+
+        console.log("#preview")
+
+        return true;
     }
 
-    updateConfig(key, value) {
-        if (this.fileType === 'greyscale') {
-            if (key === 'movement_mode' && value ===  'greyscale-dot') {
-                this.working_parameters = _.cloneDeep(working_parameters_laser_greyscale_dot);
-            } else {
-                this.working_parameters = _.cloneDeep(working_parameters_laser);
-            }
+
+    async updateConfig(key, value) {
+        console.log("updateConfig: ", key, value)
+        switch (this.fileType) {
+            case "greyscale":
+                if (key === 'movement_mode' && value === 'greyscale-dot') {
+                    this.working_parameters = _.cloneDeep(working_parameters_laser_greyscale_dot);
+                } else {
+                    this.working_parameters = _.cloneDeep(working_parameters_laser);
+                }
+                break;
+            case "text":
+                if (["font", "font_size", "text"].includes(key)) {
+                    this.config.children[key].default_value = value;
+                    const text = this.config.children.text.default_value;
+                    const font = this.config.children.font.default_value;
+                    const font_size = this.config.children.font_size.default_value;
+                    const svg = await generateSvg2(text, font, font_size);
+                    const blob = new Blob([svg], {type: 'text/plain'});
+                    this.file = new File([blob], null);
+
+                    // width, height: image size of pixel
+                    const response = await uploadImage(this.file);
+                    const {url, width, height} = response;
+
+                    this.url = url;
+                    this.transformation.children.width_pixel.default_value = width;
+                    this.transformation.children.height_pixel.default_value = height;
+                    this.transformation.children.width_mm.default_value = width;
+                    this.transformation.children.height_mm.default_value = height;
+                    this.transformation.children.rotation.default_value = 0;
+
+                    this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height);
+                    this.imgObj3d.material = new THREE.MeshBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        map: new THREE.TextureLoader().load(url)
+                    });
+                    this.add(this.imgObj3d);
+
+                    this._display('img');
+                    this._display('edge');
+                }
+                break;
         }
 
         //fill.fill_density
@@ -216,6 +302,8 @@ class Model2D extends THREE.Group {
     }
 
     updateWorkingParameters(key, value) {
+        console.log("updateWorkingParameters: ", key, value)
+
         //multi_pass.passes
         //multi_pass.pass_depth
         //fixed_power.power
@@ -229,17 +317,15 @@ class Model2D extends THREE.Group {
         this.working_parameters.children[key].default_value = value;
     }
 
-    //todo: 使用controls替换
+    //todo: put edge in controls
     setSelected(isSelected) {
         this._isSelected = isSelected;
         this._display("edge");
     }
 
-    //生成tool path
     preview() {
         this.toolPathId = getUuid();
-        this.isPreviewed = false;
-        this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
+        this.dispatchEvent({type: 'preview', data: {isPreviewed: false}});
         socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
             url: this.url,
             fileType: this.fileType,

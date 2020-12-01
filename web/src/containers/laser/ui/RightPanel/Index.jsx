@@ -10,6 +10,7 @@ import Transformation from '../../../Model2D/components/Transformation.jsx';
 import WorkingParameters from '../../../Model2D/components/WorkingParameters.jsx';
 import {actions as laserActions} from "../../../../reducers/laser";
 import styles from './styles.css';
+import Model2D from "../../../Model2D/Model2D.js";
 
 class Index extends React.Component {
     fileInput = React.createRef();
@@ -19,15 +20,19 @@ class Index extends React.Component {
     };
 
     actions = {
-        onChangeFile: (event) => {
+        onChangeFile: async (event) => {
             const {fileType} = this.state;
             const file = event.target.files[0];
-            this.props.addModel(fileType, file);
+            const model = new Model2D(fileType, 'laser', file);
+            await model.init();
+            this.props.addModel(model);
         },
-        onClickToUpload: (fileType) => {
+        onClickToUpload: async (fileType) => {
             switch (fileType) {
                 case "text":
-                    this.props.addModel(fileType);
+                    const model = new Model2D(fileType, 'laser');
+                    await model.init();
+                    this.props.addModel(model);
                     break;
                 case "bw":
                 case "greyscale":
@@ -161,7 +166,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addModel: (fileType, file) => dispatch(laserActions.addModel(fileType, file)),
+        addModel: (model) => dispatch(laserActions.addModel(model)),
         updateConfig: (key, value) => dispatch(laserActions.updateConfig(key, value)),
         updateTransformation: (key, value, preview) => dispatch(laserActions.updateTransformation(key, value, preview)),
         updateWorkingParameters: (key, value) => dispatch(laserActions.updateWorkingParameters(key, value)),
