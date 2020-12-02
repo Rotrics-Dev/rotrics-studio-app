@@ -4,7 +4,7 @@ import styles from './styles.css';
 import ReactGA from 'react-ga';
 import Header from '../header/Index.jsx';
 import Basic from '../basic/Index.jsx'
-import WriteAndDraw from '../writeAndDraw/Index.jsx'
+import WriteDraw from '../writeDraw/Index.jsx'
 import Laser from '../laser/Index.jsx';
 import P3D from '../p3d/Index.jsx';
 import Code from '../code/Index.jsx';
@@ -24,7 +24,7 @@ import {actions as fontsActions} from "../../reducers/fonts";
 import {actions as appConfigActions} from "../../reducers/appConfig";
 import notificationI18n from "../../utils/notificationI18n";
 import {getUuid} from '../../utils/index.js';
-import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
+import {TAP_BASIC, TAP_LASER, TAP_P3D, TAB_WRITE_DRAW, TAP_CODE, TAP_SETTINGS, TAP_DEBUG} from "../../constants.js";
 
 const GA_TRACKING_ID = 'UA-128953016-5';
 
@@ -89,8 +89,8 @@ class Index extends React.Component {
                         className={tap === TAP_BASIC ? styles.btn_basic_selected : styles.btn_basic}
                     />
                     <button
-                        onClick={() => changeTap(TAB_WRITE_AND_DRAW)}
-                        className={tap === TAB_WRITE_AND_DRAW ? styles.btn_write_draw_selected : styles.btn_write_draw}
+                        onClick={() => changeTap(TAB_WRITE_DRAW)}
+                        className={tap === TAB_WRITE_DRAW ? styles.btn_write_draw_selected : styles.btn_write_draw}
                     />
                     <button
                         onClick={() => changeTap(TAP_LASER)}
@@ -123,8 +123,8 @@ class Index extends React.Component {
                     <div className={tap === TAP_P3D ? styles.div_tap_show : styles.div_tap_hidden}>
                         <P3D/>
                     </div>
-                    <div className={tap === TAB_WRITE_AND_DRAW ? styles.div_tap_show : styles.div_tap_hidden}>
-                        <WriteAndDraw/>
+                    <div className={tap === TAB_WRITE_DRAW ? styles.div_tap_show : styles.div_tap_hidden}>
+                        <WriteDraw/>
                     </div>
                     <div className={tap === TAP_CODE ? styles.div_tap_show : styles.div_tap_hidden}>
                         <Code/>

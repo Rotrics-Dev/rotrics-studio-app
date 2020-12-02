@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {actions as model2dActions} from "../../../reducers/model2d";
 import {actions as p3dModelActions} from "../../../reducers/p3dModel";
-import {TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
+import {TAB_WRITE_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
 import messageI18n from "../../../utils/messageI18n";
 
 class Index extends React.Component {
@@ -28,10 +28,10 @@ class Index extends React.Component {
                 isAllPreviewed = this.props.isAllPreviewed4p3d;
                 generateGcode = this.props.generateGcode4p3d;
                 break;
-            case TAB_WRITE_AND_DRAW:
+            case TAB_WRITE_DRAW:
                 gcode = this.props.gcodeWriteDraw;
                 modelCount = this.props.modelCountWriteDraw;
-                isAllPreviewed = this.props.isAllPreviewed4writeAndDraw;
+                isAllPreviewed = this.props.isAllPreviewedWriteDraw;
                 generateGcode = this.props.generateGcode4writeAndDraw;
                 break;
         }
@@ -50,7 +50,7 @@ class Index extends React.Component {
             const filename = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].join('') + ".gcode";
             switch (tap) {
                 case TAP_LASER:
-                case TAB_WRITE_AND_DRAW: {
+                case TAB_WRITE_DRAW: {
                     const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
                     FileSaver.saveAs(blob, filename, true);
                     messageI18n.success('Success');
@@ -80,7 +80,7 @@ class Index extends React.Component {
         const {tap} = this.props;
         let generateDisabled = true;
         let exportDisabled = true;
-        if ([TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D].includes(tap)) {
+        if ([TAB_WRITE_DRAW, TAP_LASER, TAP_P3D].includes(tap)) {
             const {gcode, modelCount, isAllPreviewed} = this.getPropsByTap(tap);
             generateDisabled = (modelCount === 0 || !isAllPreviewed);
             exportDisabled = (!gcode);

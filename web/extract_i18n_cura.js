@@ -69,10 +69,4 @@ const extract_i18n_cura = () => {
     extract(filePathIn4en, filePathOutput4en);
 };
 
-module.exports = extract_i18n_cura;
-
-
-
-
-
-
+extract_i18n_cura();

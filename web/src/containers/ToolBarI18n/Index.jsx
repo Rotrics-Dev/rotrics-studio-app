@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {Space, Modal} from 'antd';
 import styles from './styles.css';
-import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW} from "../../constants.js";
+import {TAP_LASER, TAP_P3D, TAB_WRITE_DRAW} from "../../constants.js";
 import {actions as model2dActions} from "../../reducers/model2d";
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import messageI18n from "../../utils/messageI18n";
@@ -29,7 +29,7 @@ class Index extends PureComponent {
                 undo = this.props.undo4laser;
                 redo = this.props.redo4laser;
                 break;
-            case TAB_WRITE_AND_DRAW:
+            case TAB_WRITE_DRAW:
                 model = this.props.modelWriteDraw;
                 modelCount = this.props.modelCountWriteDraw;
                 removeSelected = this.props.removeSelected4writeAndDraw;

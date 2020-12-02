@@ -4,7 +4,7 @@ import {Space, Progress} from 'antd';
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {actions as gcodeSendActions} from "../../../reducers/gcodeSend";
-import {TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
+import {TAB_WRITE_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
 import getGcode4runBoundary from "../../../utils/getGcode4runBoundary";
 import Tooltip from '../../Tooltip/Index.jsx';
 
@@ -17,7 +17,7 @@ class Index extends React.Component {
                 modelParent = this.props.modelParentLaser;
                 gcode = this.props.gcodeLaser;
                 break;
-            case TAB_WRITE_AND_DRAW:
+            case TAB_WRITE_DRAW:
                 modelParent = this.props.modelParentWriteDraw;
                 gcode = this.props.gcodeWriteDraw;
                 break;

@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "start": "npm run copy_files && npm run extract_i18n && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server --mode=development",
-    "build": "npm run copy_files && npm run extract_i18n && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack --mode=production",
-    "extract_i18n": "node ./extract_i18n.js",
+    "start": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server --mode=development",
+    "build": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack --mode=production",
+    "extract_i18n_common": "node ./extract_i18n_common.js",
+    "extract_i18n_cura": "node ./extract_i18n_cura.js",
     "copy_files": "node ./copy_files.js"
   },
   "devDependencies": {
@@ -44,9 +45,7 @@
     "webpack-dev-server": "^3.3.1",
     "worker-loader": "^2.0.0",
     "xlsx": "^0.16.4",
-    "xml2js": "^0.4.23"
-  },
-  "dependencies": {
+    "xml2js": "^0.4.23",
     "i18next": "19.5.0",
     "i18next-browser-languagedetector": "5.0.0",
     "i18next-http-backend": "1.0.15",
