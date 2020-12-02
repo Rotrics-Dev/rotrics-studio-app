@@ -2,10 +2,10 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 
 /**
- * 一个文件只能有一个表格
- * 一个表格只能有两列
- * 第一列为英语
- * 第二列为目标语言
+ * a file must has only one sheet
+ * the first column must be english
+ * @param xlsxPath
+ * @param targetDir
  */
 const xlsx2json = (xlsxPath, targetDir) => {
     if (!fs.existsSync(targetDir)) {

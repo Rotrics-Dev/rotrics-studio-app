@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-//从filePathIn读取，写入到filePathOutput
 const extract = (filePathIn, filePathOutput) => {
     const jsObj = {};
     const content = fs.readFileSync(filePathIn, 'utf8');

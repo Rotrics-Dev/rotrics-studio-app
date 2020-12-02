@@ -1,7 +1,9 @@
 {
   "scripts": {
-    "start": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack-dev-server --mode=development",
-    "build": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm && webpack --mode=production",
+    "start": "webpack-dev-server --mode=development",
+    "build": "webpack --mode=production",
+    "prestart": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm",
+    "prebuild": "npm run copy_files && npm run extract_i18n_common && npm run extract_i18n_cura && npm link rotrics-scratch-blocks rotrics-scratch-vm",
     "extract_i18n_common": "node ./extract_i18n_common.js",
     "extract_i18n_cura": "node ./extract_i18n_cura.js",
     "copy_files": "node ./copy_files.js"
