@@ -10,7 +10,7 @@ import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
-import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
+import {TOOL_PATH_GENERATE_MODEL2D} from "../../../constants.js"
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
@@ -77,7 +77,7 @@ class Model2D extends THREE.Group {
         }
 
         //data: {toolPathLines, toolPathId}
-        socketClientManager.addServerListener(TOOL_PATH_GENERATE_LASER, (data) => {
+        socketClientManager.addServerListener(TOOL_PATH_GENERATE_MODEL2D, (data) => {
             // console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
@@ -252,7 +252,7 @@ class Model2D extends THREE.Group {
     //生成tool path
     preview() {
         this.toolPathId = getUuid();
-        socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
+        socketClientManager.emitToServer(TOOL_PATH_GENERATE_MODEL2D, {
             url: this.url,
             settings: this.settings,
             toolPathId: this.toolPathId,

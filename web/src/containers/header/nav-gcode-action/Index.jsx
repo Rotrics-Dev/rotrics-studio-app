@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
 import {actions as model2dActions} from "../../../reducers/model2d";
 import {actions as p3dModelActions} from "../../../reducers/p3dModel";
-import {actions as writeAndDrawActions} from "../../../reducers/writeAndDraw";
 import {TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
 import messageI18n from "../../../utils/messageI18n";
 
@@ -18,8 +17,8 @@ class Index extends React.Component {
         let generateGcode = null;
         switch (tap) {
             case TAP_LASER:
-                gcode = this.props.gcode4laser;
-                modelCount = this.props.modelCount4laser;
+                gcode = this.props.gcodeLaser;
+                modelCount = this.props.modelCountLaser;
                 isAllPreviewed = this.props.isAllPreviewed4laser;
                 generateGcode = this.props.generateGcode4laser;
                 break;
@@ -30,8 +29,8 @@ class Index extends React.Component {
                 generateGcode = this.props.generateGcode4p3d;
                 break;
             case TAB_WRITE_AND_DRAW:
-                gcode = this.props.gcode4writeAndDraw;
-                modelCount = this.props.modelCount4writeAndDraw;
+                gcode = this.props.gcodeWriteDraw;
+                modelCount = this.props.modelCountWriteDraw;
                 isAllPreviewed = this.props.isAllPreviewed4writeAndDraw;
                 generateGcode = this.props.generateGcode4writeAndDraw;
                 break;
@@ -101,17 +100,16 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {gcode: gcode4writeAndDraw, modelCount: modelCount4writeAndDraw, isAllPreviewed: isAllPreviewed4writeAndDraw} = state.writeAndDraw;
-    const {gcode: gcode4laser, modelCount: modelCount4laser, isAllPreviewed: isAllPreviewed4laser} = state.model2d;
+    const {gcodeLaser, modelCountLaser, isAllPreviewedLaser, gcodeWriteDraw, modelCountWriteDraw, isAllPreviewedWriteDraw} = state.model2d;
     const {gcodeUrl: gcode4p3d, modelCount: modelCount4p3d} = state.p3dModel;
     return {
         tap,
-        gcode4writeAndDraw,
-        modelCount4writeAndDraw,
-        isAllPreviewed4writeAndDraw,
-        gcode4laser,
-        modelCount4laser,
-        isAllPreviewed4laser,
+        gcodeWriteDraw,
+        modelCountWriteDraw,
+        isAllPreviewedWriteDraw,
+        gcodeLaser,
+        modelCountLaser,
+        isAllPreviewedLaser,
         gcode4p3d,
         modelCount4p3d,
         isAllPreviewed4p3d: true,
@@ -122,7 +120,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         generateGcode4laser: () => dispatch(model2dActions.generateGcode('laser')),
         generateGcode4p3d: () => dispatch(p3dModelActions.generateGcode()),
-        generateGcode4writeAndDraw: () => dispatch(writeAndDrawActions.generateGcode())
+        generateGcode4writeAndDraw: () => dispatch(model2dActions.generateGcode('write_draw'))
     };
 };
 

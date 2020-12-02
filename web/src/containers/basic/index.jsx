@@ -1,6 +1,6 @@
 import React from 'react';
 import {Tabs} from 'antd';
-import Canvas2D from '../writeAndDraw/ui/Canvas2D/Index.jsx';
+import Canvas2D from '../Model2D/Canvas2D/Index.jsx';
 import TeachAndPlay from './ui/TeachAndPlay/Index.jsx';
 import Gcode from './ui/Gcode/Index.jsx';
 import {withTranslation} from 'react-i18next';
@@ -13,7 +13,7 @@ class Index extends React.Component {
         return (
             <div>
                 <div className={layout_styles.div_canvas}>
-                    <Canvas2D/>
+                    {/*<Canvas2D/>*/}
                 </div>
                 <div style={{
                     position: "absolute",

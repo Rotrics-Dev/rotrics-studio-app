@@ -14,7 +14,7 @@ const svg2toolPathStr = async (url, settings) => {
 
     const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = working_parameters.children.jog_speed.placeholder;
-    const power_placeholder = working_parameters.children.power.placeholder;
+    const power_placeholder = (working_parameters.children.power ? working_parameters.children.power.placeholder : 'power_placeholder');
 
     const originWidth = transformation.children.width_pixel.default_value;
     const originHeight = transformation.children.height_pixel.default_value;

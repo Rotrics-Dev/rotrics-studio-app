@@ -10,19 +10,19 @@ import Tooltip from '../../Tooltip/Index.jsx';
 
 class Index extends React.Component {
     getPropsByTap = (tap) => {
-        let rendererParent = null;
+        let modelParent = null;
         let gcode = null;
         switch (tap) {
             case TAP_LASER:
-                rendererParent = this.props.modelParentLaser;
+                modelParent = this.props.modelParentLaser;
                 gcode = this.props.gcodeLaser;
                 break;
             case TAB_WRITE_AND_DRAW:
-                rendererParent = this.props.rendererParent4writeAndDraw;
-                gcode = this.props.gcode4writeAndDraw;
+                modelParent = this.props.modelParentWriteDraw;
+                gcode = this.props.gcodeWriteDraw;
                 break;
         }
-        return {gcode, rendererParent};
+        return {gcode, modelParent};
     };
 
     actions = {
@@ -45,8 +45,8 @@ class Index extends React.Component {
             this.props.stopTask();
         },
         runBoundary: () => {
-            const {rendererParent} = this.getPropsByTap(this.props.tap);
-            this.props.send(getGcode4runBoundary(rendererParent.children));
+            const {modelParent} = this.getPropsByTap(this.props.tap);
+            this.props.send(getGcode4runBoundary(modelParent.children));
         }
     };
 
@@ -98,7 +98,7 @@ const mapStateToProps = (state) => {
     const {tap} = state.taps;
     const {path} = state.serialPort;
     const {curStatus, total, sent, task} = state.gcodeSend;
-    const {rendererParent: rendererParent4writeAndDraw, gcode: gcode4writeAndDraw} = state.writeAndDraw;
+    const { modelParentWriteDraw, gcodeWriteDraw} = state.model2d;
     const {modelParentLaser, gcodeLaser} = state.model2d;
     // const { gcodeUrl: gcode4p3d} = state.p3dModel;
     return {
@@ -108,9 +108,9 @@ const mapStateToProps = (state) => {
         total,
         sent,
         task,
-        gcode4writeAndDraw,
+        gcodeWriteDraw,
         gcodeLaser,
-        rendererParent4writeAndDraw,
+        modelParentWriteDraw,
         modelParentLaser
         // gcode4p3d,
     };

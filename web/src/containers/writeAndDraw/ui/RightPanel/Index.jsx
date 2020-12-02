@@ -1,79 +1,59 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import styles from './styles.css';
-import {Space, List} from 'antd';
-import Transformation from './Transformation.jsx';
-import ConfigSvg from './ConfigSvg.jsx';
-import ConfigSvgText from './ConfigSvgText.jsx';
-import WorkingParameters from './WorkingParameters.jsx';
-import {actions as writeAndDrawActions} from "../../../../reducers/writeAndDraw";
-import {getBuildInSvgArray, base64ToBlob} from "../../buildInSvg";
 import {withTranslation} from 'react-i18next';
-
-//Jimp支持的文件格式  https://github.com/oliver-moran/jimp
-const getAccept = (fileType) => {
-    let accept = '';
-    switch (fileType) {
-        case "bw":
-        case "greyscale":
-            //TODO: .tiff读取报错
-            // Error: read ECONNRESET
-            //       at TCP.onStreamRead (internal/stream_base_commons.js:205:27)
-            // accept = '.bmp, .gif, .jpeg, .jpg, .png, .tiff';
-            accept = '.bmp, .gif, .jpeg, .jpg, .png';
-            break;
-        case "svg":
-        case "text":
-            accept = '.svg';
-            break;
-    }
-    return accept;
-};
+import {Space, List} from 'antd';
+import ConfigText from '../../../Model2D/components/ConfigText.jsx';
+import ConfigSvg from '../../../Model2D/components/ConfigSvg.jsx';
+import Transformation from '../../../Model2D/components/Transformation.jsx';
+import WorkingParameters from '../../../Model2D/components/WorkingParameters.jsx';
+import {actions as model2dActions} from "../../../../reducers/model2d";
+import styles from './styles.css';
+import Model2D from "../../../Model2D/Model2D.js";
+import {base64ToBlob, getExampleSvgArray} from "../../buildInSvg";
 
 class Index extends React.Component {
     fileInput = React.createRef();
-    buildInSvgList = React.createRef();
-    state = {
-        fileType: '', // bw, greyscale, svg, text
-        accept: '',
+
+    state={
+        exampleListVisible: false
     };
 
     actions = {
-        onChooseBuildInSvg: async (event) => {
-            this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
-            const filename = "select.svg";
+        loadExampleSvg: async (event) => {
             const blob = base64ToBlob(event.target.src.toString());
-            const file = new File([blob], filename);
-            console.log(`before:this.props.addModel('svg', ${file});`)
-            this.props.addModel('svg', file);
+            const file = new File([blob], "write_draw.svg");
+            const model = new Model2D('svg', 'write_draw', file);
+            await model.init();
+            this.props.addModel(model);
+        },
+        onClickExample: () => {
+            this.setState({exampleListVisible: true})
+        },
+        onClickSvg: () => {
+            this.setState({exampleListVisible: false})
+            this.fileInput.current.value = null;
+            this.fileInput.current.click();
+        },
+        onClickText: async () => {
+            this.setState({exampleListVisible: false})
+            const fileType = 'text';
+            const front_end = 'laser';
+            const model = new Model2D(fileType, front_end);
+            await model.init();
+            this.props.addModel(model);
         },
         onChangeFile: async (event) => {
-            //bw, greyscale, svg
             const file = event.target.files[0];
-            const fileType = this.state.fileType;
-            this.props.addModel(fileType, file);
-        },
-        onClickToUpload: async (fileType) => {
-            this.buildInSvgList.current.style.display = "none";//关闭点选 buildinSvg List
-            if (fileType === "text") {
-                this.props.addModel(fileType);
-            } else {
-                this.setState({
-                    fileType,
-                    accept: getAccept(fileType)
-                }, () => {
-                    this.fileInput.current.value = null;
-                    this.fileInput.current.click();
-                });
-            }
+            const model = new Model2D('svg', 'write_draw', file);
+            await model.init();
+            this.props.addModel(model);
         }
     };
 
     render() {
-        const {accept} = this.state;
-        const {model} = this.props;
-        const {t} = this.props;
+        const {t, model, config, transformation, working_parameters, updateConfig, updateTransformation, updateWorkingParameters, buildInFonts, userFonts} = this.props;
         const actions = this.actions;
+        const {exampleListVisible} = this.state;
         return (
             <div style={{
                 width: "100%",
@@ -82,68 +62,88 @@ class Index extends React.Component {
                 <input
                     ref={this.fileInput}
                     type="file"
-                    accept={accept}
+                    accept=".svg"
                     style={{display: 'none'}}
                     multiple={false}
                     onChange={actions.onChangeFile}
                 />
-                <Space direction={"horizontal"} style={{width: "100%", paddingLeft: "10px", paddingTop: "10px"}}
-                       size={16}>
-                    <button
-                        className={styles.btn_select}
-                        onClick={() => {
-                            this.buildInSvgList.current.style.display = 'block'
-                        }}
-                    >
+                <Space
+                    direction={"horizontal"}
+                    style={{width: "100%", paddingLeft: "10px", paddingTop: "10px"}}
+                    size={16}
+                >
+                    <button className={styles.btn_example} onClick={actions.onClickExample}>
                         <h6 className={styles.h_file_type}>{t('Example')}</h6>
                     </button>
-                    <button
-                        className={styles.btn_svg}
-                        onClick={() => actions.onClickToUpload('svg')}
-                    >
+                    <button className={styles.btn_svg} onClick={actions.onClickSvg}>
                         <h6 className={styles.h_file_type}>{t('SVG')}</h6>
                     </button>
-                    <button
-                        className={styles.btn_text}
-                        onClick={() => actions.onClickToUpload('text')}
-                    >
+                    <button className={styles.btn_svg} onClick={actions.onClickText}>
                         <h6 className={styles.h_file_type}>{t('Text')}</h6>
                     </button>
                 </Space>
-                <div
-                    ref={this.buildInSvgList}
-                    style={{width: "100%", padding: "5px 5px 5px 20px", display: "none"}}>
+                {!exampleListVisible &&
+                <div>
+                    <ConfigSvg
+                        t={t}
+                        model={model}
+                        config={config}
+                    />
+                    <ConfigText
+                        t={t}
+                        model={model}
+                        config={config}
+                        buildInFonts={buildInFonts}
+                        userFonts={userFonts}
+                    />
+                    <Transformation
+                        t={t}
+                        model={model}
+                        transformation={transformation}
+                    />
+                    <WorkingParameters
+                        t={t}
+                        model={model}
+                        working_parameters={working_parameters}
+                    />
+                </div>
+                }
+                {exampleListVisible &&
+                <div style={{padding: "30px"}}>
                     <List
                         grid={{gutter: 4, column: 4}}
-                        dataSource={getBuildInSvgArray()}
-                        renderItem={(item, index) => (
+                        dataSource={getExampleSvgArray()}
+                        renderItem={(item) => (
                             <List.Item>
-                                <img className={styles.img_list_item} src={item} onClick={actions.onChooseBuildInSvg}/>
+                                <img className={styles.img_list_item} src={item} onClick={actions.loadExampleSvg}/>
                             </List.Item>
                         )}
                     />
                 </div>
-                <ConfigSvg/>
-                <ConfigSvgText/>
-                <Transformation/>
-                <WorkingParameters/>
-                <div style={{height: "15px"}}/>
+                }
+
+
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    const {status} = state.serialPort;
+    const {modelWriteDraw: model, configWriteDraw: config, transformationWriteDraw: transformation, workingParametersWriteDraw: working_parameters} = state.model2d;
+    const {buildInFonts, userFonts} = state.fonts;
     return {
-        serialPortStatus: status
+        model,
+        config,
+        transformation,
+        working_parameters,
+        buildInFonts,
+        userFonts,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addModel: (fileType, file) => dispatch(writeAndDrawActions.addModel(fileType, file)),
-        generateGcode: () => dispatch(writeAndDrawActions.generateGcode()),
+        addModel: (model) => dispatch(model2dActions.addModel('write_draw', model)),
     };
 };
 

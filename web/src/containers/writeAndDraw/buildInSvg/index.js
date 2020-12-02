@@ -1,19 +1,17 @@
-let buildInSvgArray = [];
-export const getBuildInSvgArray = () => {
-    if (buildInSvgArray.length === 0) {
+export const getExampleSvgArray = () => {
+    const exampleSvgArr = [];
+    if (exampleSvgArr.length === 0) {
         for (let i = 1; i <= 48; i++) {
-            let url = require(`./${i}.svg`);
-            buildInSvgArray.push(url);
+            const url = require(`./${i}.svg`);
+            exampleSvgArr.push(url);
         }
     }
-    return buildInSvgArray;
-}
+    return exampleSvgArr;
+};
 
-// base64 to blob
 export const base64ToBlob = (uri) => {
     // convert base64/URLEncoded data component to raw binary data held in a string
     let byteString;
-    console.log('base64ToBlob()  ' + uri);
     if (uri.split(',')[0].indexOf('base64') >= 0) {
         byteString = atob(uri.split(',')[1]);
     } else {
@@ -31,4 +29,4 @@ export const base64ToBlob = (uri) => {
         uint8Array[i] = byteString.charCodeAt(i);
     }
     return new Blob([uint8Array], {type: mimeString});
-}
+};

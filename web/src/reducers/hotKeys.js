@@ -3,7 +3,6 @@ import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "..
 
 import {actions as model2dActions} from "./model2d";
 import {actions as p3dModelActions} from "./p3dModel";
-import {actions as writeAndDrawActions} from "./writeAndDraw";
 
 export const actions = {
     init: () => (dispatch, getState) => {
@@ -17,7 +16,7 @@ export const actions = {
                     dispatch(model2dActions.removeSelected('laser'));
                     break;
                 case TAB_WRITE_AND_DRAW:
-                    dispatch(writeAndDrawActions.removeSelected());
+                    dispatch(model2dActions.removeSelected('write_draw'));
             }
         });
         return {type: null};

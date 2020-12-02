@@ -50,7 +50,6 @@ class PanControls extends THREE.EventDispatcher {
 
     //选中要pan的selectedObject
     select(selectedObject) {
-        console.log("select: " + selectedObject)
         this.selectedObject = selectedObject;
     }
 
@@ -58,9 +57,6 @@ class PanControls extends THREE.EventDispatcher {
         if (!this.selectedObject) {
             return;
         }
-
-        console.log("onMouseDown: " )
-
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -77,6 +73,7 @@ class PanControls extends THREE.EventDispatcher {
     }
 
     onMouseMove = (event) => {
+        console.log()
         if (!this.selectedObject) return;
 
         if (event.button === THREE.MOUSE.LEFT) {
@@ -104,9 +101,6 @@ class PanControls extends THREE.EventDispatcher {
 
     onMouseUp = (event) => {
         if (!this.selectedObject) return;
-
-        console.log("onMouseUp: " )
-
 
         event.preventDefault();
 

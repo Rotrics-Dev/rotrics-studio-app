@@ -44,8 +44,7 @@ import {
     GCODE_SENDER_ON_STATUS_CHANGE,
     GCODE_SENDER_ON_PROGRESS_CHANGE,
 
-    TOOL_PATH_GENERATE_LASER,
-    TOOL_PATH_GENERATE_WRITE_AND_DRAW,
+    TOOL_PATH_GENERATE_MODEL2D,
 
     P3D_CONFIG_MATERIAL_SETTINGS_FETCH,
     P3D_CONFIG_MATERIAL_SETTING_UPDATE,
@@ -411,19 +410,10 @@ const setupSocket = () => {
 
             //laser
             socket.on(
-                TOOL_PATH_GENERATE_LASER,
+                TOOL_PATH_GENERATE_MODEL2D,
                 async ( {url, fileType, toolPathId, settings}) => {
                     const toolPathLines = await generateToolPathLines(url, fileType, settings);
-                    socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
-                }
-            );
-            socket.on(
-                TOOL_PATH_GENERATE_WRITE_AND_DRAW,
-                async (data) => {
-                    console.log(TOOL_PATH_GENERATE_WRITE_AND_DRAW)
-                    const {url, settings, toolPathId, fileType} = data;
-                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
-                    socket.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {toolPathLines, toolPathId});
+                    socket.emit(TOOL_PATH_GENERATE_MODEL2D, {toolPathLines, toolPathId});
                 }
             );
 

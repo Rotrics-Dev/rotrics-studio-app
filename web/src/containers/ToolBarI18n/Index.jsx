@@ -8,7 +8,6 @@ import styles from './styles.css';
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW} from "../../constants.js";
 import {actions as model2dActions} from "../../reducers/model2d";
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
-import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import messageI18n from "../../utils/messageI18n";
 
 class Index extends PureComponent {
@@ -22,8 +21,8 @@ class Index extends PureComponent {
         let redo = null;
         switch (tap) {
             case TAP_LASER:
-                model = this.props.model4laser;
-                modelCount = this.props.modelCount4laser;
+                model = this.props.modelLaser;
+                modelCount = this.props.modelCountLaser;
                 removeSelected = this.props.removeSelected4laser;
                 removeAll = this.props.removeAll4laser;
                 duplicateSelected = this.props.duplicateSelected4laser;
@@ -31,8 +30,8 @@ class Index extends PureComponent {
                 redo = this.props.redo4laser;
                 break;
             case TAB_WRITE_AND_DRAW:
-                model = this.props.model4writeAndDraw;
-                modelCount = this.props.modelCount4writeAndDraw;
+                model = this.props.modelWriteDraw;
+                modelCount = this.props.modelCountWriteDraw;
                 removeSelected = this.props.removeSelected4writeAndDraw;
                 removeAll = this.props.removeAll4writeAndDraw;
                 duplicateSelected = this.props.duplicateSelected4writeAndDraw;
@@ -132,18 +131,17 @@ class Index extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {model: model4laser, modelCount: modelCount4laser} = state.model2d;
+    const {modelLaser,  modelCountLaser, modelWriteDraw, modelCountWriteDraw} = state.model2d;
     const {model: model4p3d, modelCount: modelCount4p3d} = state.p3dModel;
-    const {model: model4writeAndDraw, modelCount: modelCount4writeAndDraw} = state.writeAndDraw;
     const {rendererParent4model: rendererParent4model4p3d} = state.p3dModel;
     return {
         tap,
-        model4laser,
-        modelCount4laser,
+        modelLaser,
+        modelCountLaser,
         model4p3d,
         modelCount4p3d,
-        model4writeAndDraw,
-        modelCount4writeAndDraw,
+        modelWriteDraw,
+        modelCountWriteDraw,
         rendererParent4model4p3d
     };
 };
@@ -156,11 +154,11 @@ const mapDispatchToProps = (dispatch) => {
         undo4laser: () => dispatch(model2dActions.undo('laser')),
         redo4laser: () => dispatch(model2dActions.redo('laser')),
 
-        removeSelected4writeAndDraw: () => dispatch(writeAndDrawActions.removeSelected()),
-        removeAll4writeAndDraw: () => dispatch(writeAndDrawActions.removeAll()),
-        duplicateSelected4writeAndDraw: () => dispatch(writeAndDrawActions.duplicateSelected()),
-        undo4writeAndDraw: () => dispatch(writeAndDrawActions.undo()),
-        redo4writeAndDraw: () => dispatch(writeAndDrawActions.redo()),
+        removeSelected4writeAndDraw: () => dispatch(model2dActions.removeSelected('write_draw')),
+        removeAll4writeAndDraw: () => dispatch(model2dActions.removeAll('write_draw')),
+        duplicateSelected4writeAndDraw: () => dispatch(model2dActions.duplicateSelected('write_draw')),
+        undo4writeAndDraw: () => dispatch(model2dActions.undo('write_draw')),
+        redo4writeAndDraw: () => dispatch(model2dActions.redo('write_draw')),
 
         removeSelected4p3d: () => dispatch(p3dModelActions.removeSelected()),
         removeAll4p3d: () => dispatch(p3dModelActions.removeAll()),

@@ -13,7 +13,7 @@ import toolPathRenderer from './toolPath/toolPathRenderer';
 import toolPathLines2gcode4laser from "./toolPath/toolPathLines2gcode4laser";
 import toolPathLines2gcode4writeDraw from "./toolPath/toolPathLines2gcode4writeDraw";
 import {degree2radian, getUuid} from '../../utils/index.js';
-import {TOOL_PATH_GENERATE_LASER} from "../../constants.js"
+import {TOOL_PATH_GENERATE_MODEL2D} from "../../constants.js"
 import {generateSvg2, uploadImage} from "../../api";
 
 /**
@@ -65,7 +65,8 @@ class Model2D extends THREE.Group {
                 break;
         }
 
-        socketClientManager.addServerListener(TOOL_PATH_GENERATE_LASER, ({toolPathLines, toolPathId}) => {
+        socketClientManager.addServerListener(TOOL_PATH_GENERATE_MODEL2D, ({toolPathLines, toolPathId}) => {
+            console.log("# previewed: " + toolPathId)
             if (this.toolPathId === toolPathId) {
                 this.remove(this.toolPathObj3d);
                 this.toolPathLines = toolPathLines;
@@ -98,7 +99,9 @@ class Model2D extends THREE.Group {
 
         // width, height: image size of pixel
         const response = await uploadImage(this.file);
+
         const {url, width, height} = response;
+        console.log(url)
 
         this.url = url;
         this.transformation.children.width_pixel.default_value = width;
@@ -320,8 +323,10 @@ class Model2D extends THREE.Group {
 
     preview() {
         this.toolPathId = getUuid();
+        console.log("# preview: " + this.toolPathId)
+
         this.toolPathLines = null;
-        socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
+        socketClientManager.emitToServer(TOOL_PATH_GENERATE_MODEL2D, {
             url: this.url,
             fileType: this.fileType,
             toolPathId: this.toolPathId,

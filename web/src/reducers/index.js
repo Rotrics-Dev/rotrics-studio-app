@@ -3,7 +3,6 @@ import gcodeSend from "./gcodeSend";
 import hotKeys from "./hotKeys";
 import teachAndPlay from "./teachAndPlay";
 import model2d from "./model2d";
-import writeAndDraw from "./writeAndDraw";
 import p3dModel from "./p3dModel";
 import p3dMaterialSettings from "./p3dMaterialSettings";
 import p3dPrintSettings from "./p3dPrintSettings";
@@ -23,7 +22,6 @@ export default combineReducers({
     hotKeys,
     teachAndPlay,
     model2d,
-    writeAndDraw,
     // p3d
     p3dModel,
     p3dMaterialSettings,
