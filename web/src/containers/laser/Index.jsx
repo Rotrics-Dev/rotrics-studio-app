@@ -4,11 +4,10 @@ import Canvas2D from '../Model2D/Canvas2D/Index.jsx';
 import ToolBarI18n from '../ToolBarI18n/Index.jsx'
 import RightPanel from "./ui/RightPanel/Index.jsx";
 import layout_styles from '../layout_styles.css';
-import {actions as laserActions} from "../../reducers/laser";
 
 class Index extends React.Component {
     render() {
-        const {tap, model, modelParent, selectModel} = this.props;
+        const {tap, model, modelParent} = this.props;
         return (
             <div>
                 <div className={layout_styles.div_canvas}>
@@ -16,7 +15,6 @@ class Index extends React.Component {
                         tap={tap}
                         model={model}
                         modelParent={modelParent}
-                        selectModel={selectModel}
                     />
                 </div>
                 <div className={layout_styles.div_tool_bar}>
@@ -32,7 +30,7 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {modelParent, model} = state.laser;
+    const {modelParentLaser: modelParent, modelLaser: model} = state.model2d;
     return {
         tap,
         model,
@@ -40,13 +38,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        selectModel: (model) => dispatch(laserActions.selectModel(model)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps)(Index);
 
 
 

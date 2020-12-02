@@ -53,6 +53,7 @@ class Index extends React.Component {
             'detected',
             (event) => {
                 //detect到的是model2d的children
+                console.log("detected")
                 const model = event.object.parent;
                 model.setSelected(true);
                 this.panControls.select(model);
@@ -77,6 +78,7 @@ class Index extends React.Component {
         this.panControls.addEventListener(
             'pan-end',
             (event) => {
+                console.log('pan - end')
                 const {x, y} = event.object.position;
                 this.props.model.updateTransformation('x', x, false);
                 this.props.model.updateTransformation('y', y, false);

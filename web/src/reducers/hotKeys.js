@@ -1,7 +1,7 @@
 import hotKeys from 'hotkeys-js';
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW, TAP_CODE, TAP_SETTINGS} from "../constants.js";
 
-import {actions as laserActions} from "./laser";
+import {actions as model2dActions} from "./model2d";
 import {actions as p3dModelActions} from "./p3dModel";
 import {actions as writeAndDrawActions} from "./writeAndDraw";
 
@@ -14,7 +14,7 @@ export const actions = {
                     dispatch(p3dModelActions.removeSelected());
                     break;
                 case TAP_LASER:
-                    dispatch(laserActions.removeSelected());
+                    dispatch(model2dActions.removeSelected('laser'));
                     break;
                 case TAB_WRITE_AND_DRAW:
                     dispatch(writeAndDrawActions.removeSelected());

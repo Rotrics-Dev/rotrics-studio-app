@@ -6,7 +6,7 @@ import {withTranslation} from 'react-i18next';
 import {Space, Modal} from 'antd';
 import styles from './styles.css';
 import {TAP_LASER, TAP_P3D, TAB_WRITE_AND_DRAW} from "../../constants.js";
-import {actions as laserActions} from "../../reducers/laser";
+import {actions as model2dActions} from "../../reducers/model2d";
 import {actions as p3dModelActions, exportModelsToBlob} from "../../reducers/p3dModel";
 import {actions as writeAndDrawActions} from "../../reducers/writeAndDraw";
 import messageI18n from "../../utils/messageI18n";
@@ -132,7 +132,7 @@ class Index extends PureComponent {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
-    const {model: model4laser, modelCount: modelCount4laser} = state.laser;
+    const {model: model4laser, modelCount: modelCount4laser} = state.model2d;
     const {model: model4p3d, modelCount: modelCount4p3d} = state.p3dModel;
     const {model: model4writeAndDraw, modelCount: modelCount4writeAndDraw} = state.writeAndDraw;
     const {rendererParent4model: rendererParent4model4p3d} = state.p3dModel;
@@ -150,11 +150,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        removeSelected4laser: () => dispatch(laserActions.removeSelected()),
-        removeAll4laser: () => dispatch(laserActions.removeAll()),
-        duplicateSelected4laser: () => dispatch(laserActions.duplicateSelected()),
-        undo4laser: () => dispatch(laserActions.undo()),
-        redo4laser: () => dispatch(laserActions.redo()),
+        removeSelected4laser: () => dispatch(model2dActions.removeSelected('laser')),
+        removeAll4laser: () => dispatch(model2dActions.removeAll('laser')),
+        duplicateSelected4laser: () => dispatch(model2dActions.duplicateSelected('laser')),
+        undo4laser: () => dispatch(model2dActions.undo('laser')),
+        redo4laser: () => dispatch(model2dActions.redo('laser')),
 
         removeSelected4writeAndDraw: () => dispatch(writeAndDrawActions.removeSelected()),
         removeAll4writeAndDraw: () => dispatch(writeAndDrawActions.removeAll()),

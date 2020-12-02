@@ -4,7 +4,7 @@ import styles from './styles.css';
 import {Space} from 'antd';
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import {actions as laserActions} from "../../../reducers/laser";
+import {actions as model2dActions} from "../../../reducers/model2d";
 import {actions as p3dModelActions} from "../../../reducers/p3dModel";
 import {actions as writeAndDrawActions} from "../../../reducers/writeAndDraw";
 import {TAB_WRITE_AND_DRAW, TAP_LASER, TAP_P3D} from "../../../constants";
@@ -102,7 +102,7 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
     const {gcode: gcode4writeAndDraw, modelCount: modelCount4writeAndDraw, isAllPreviewed: isAllPreviewed4writeAndDraw} = state.writeAndDraw;
-    const {gcode: gcode4laser, modelCount: modelCount4laser, isAllPreviewed: isAllPreviewed4laser} = state.laser;
+    const {gcode: gcode4laser, modelCount: modelCount4laser, isAllPreviewed: isAllPreviewed4laser} = state.model2d;
     const {gcodeUrl: gcode4p3d, modelCount: modelCount4p3d} = state.p3dModel;
     return {
         tap,
@@ -120,7 +120,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        generateGcode4laser: () => dispatch(laserActions.generateGcode()),
+        generateGcode4laser: () => dispatch(model2dActions.generateGcode('laser')),
         generateGcode4p3d: () => dispatch(p3dModelActions.generateGcode()),
         generateGcode4writeAndDraw: () => dispatch(writeAndDrawActions.generateGcode())
     };

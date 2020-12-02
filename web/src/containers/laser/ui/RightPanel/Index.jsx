@@ -8,7 +8,7 @@ import ConfigText from '../../../Model2D/components/ConfigText.jsx';
 import ConfigSvg from '../../../Model2D/components/ConfigSvg.jsx';
 import Transformation from '../../../Model2D/components/Transformation.jsx';
 import WorkingParameters from '../../../Model2D/components/WorkingParameters.jsx';
-import {actions as laserActions} from "../../../../reducers/laser";
+import {actions as model2dActions} from "../../../../reducers/model2d";
 import styles from './styles.css';
 import Model2D from "../../../Model2D/Model2D.js";
 
@@ -145,7 +145,7 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {model, config, transformation, working_parameters} = state.laser;
+    const {modelLaser: model, configLaser: config, transformationLaser: transformation, workingParametersLaser: working_parameters} = state.model2d;
     const {buildInFonts, userFonts} = state.fonts;
     return {
         model,
@@ -159,7 +159,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addModel: (model) => dispatch(laserActions.addModel(model)),
+        addModel: (model) => dispatch(model2dActions.addModel('laser', model)),
     };
 };
 

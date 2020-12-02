@@ -14,8 +14,8 @@ class Index extends React.Component {
         let gcode = null;
         switch (tap) {
             case TAP_LASER:
-                rendererParent = this.props.rendererParent4laser;
-                gcode = this.props.gcode4laser;
+                rendererParent = this.props.modelParentLaser;
+                gcode = this.props.gcodeLaser;
                 break;
             case TAB_WRITE_AND_DRAW:
                 rendererParent = this.props.rendererParent4writeAndDraw;
@@ -99,7 +99,7 @@ const mapStateToProps = (state) => {
     const {path} = state.serialPort;
     const {curStatus, total, sent, task} = state.gcodeSend;
     const {rendererParent: rendererParent4writeAndDraw, gcode: gcode4writeAndDraw} = state.writeAndDraw;
-    const {rendererParent: rendererParent4laser, gcode: gcode4laser} = state.laser;
+    const {modelParentLaser, gcodeLaser} = state.model2d;
     // const { gcodeUrl: gcode4p3d} = state.p3dModel;
     return {
         tap,
@@ -109,9 +109,9 @@ const mapStateToProps = (state) => {
         sent,
         task,
         gcode4writeAndDraw,
-        gcode4laser,
+        gcodeLaser,
         rendererParent4writeAndDraw,
-        rendererParent4laser
+        modelParentLaser
         // gcode4p3d,
     };
 };
