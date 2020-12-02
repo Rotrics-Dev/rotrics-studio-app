@@ -35,8 +35,8 @@ class Index extends React.Component {
         if (this.props.tap !== nextProps.tap) {
             this.resizeWindow();
         }
-        if (this.props.model && !nextProps.model) {
-            this.panControls.dispose();
+        if (!nextProps.model) {
+            this.panControls.select(null);
         }
     }
 

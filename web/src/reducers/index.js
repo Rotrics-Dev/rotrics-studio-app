@@ -22,7 +22,6 @@ export default combineReducers({
     hotKeys,
     teachAndPlay,
     model2d,
-    // p3d
     p3dModel,
     p3dMaterialSettings,
     p3dPrintSettings,
