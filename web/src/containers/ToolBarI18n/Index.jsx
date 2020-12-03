@@ -23,29 +23,29 @@ class Index extends PureComponent {
             case TAP_LASER:
                 model = this.props.modelLaser;
                 modelCount = this.props.modelCountLaser;
-                removeSelected = this.props.removeSelected4laser;
-                removeAll = this.props.removeAll4laser;
-                duplicateSelected = this.props.duplicateSelected4laser;
-                undo = this.props.undo4laser;
-                redo = this.props.redo4laser;
+                removeSelected = this.props.removeSelectedLaser;
+                removeAll = this.props.removeAllLaser;
+                duplicateSelected = this.props.duplicateSelectedLaser;
+                undo = this.props.undoLaser;
+                redo = this.props.redoLaser;
                 break;
             case TAB_WRITE_DRAW:
                 model = this.props.modelWriteDraw;
                 modelCount = this.props.modelCountWriteDraw;
-                removeSelected = this.props.removeSelected4writeAndDraw;
-                removeAll = this.props.removeAll4writeAndDraw;
-                duplicateSelected = this.props.duplicateSelected4writeAndDraw;
-                undo = this.props.undo4writeAndDraw;
-                redo = this.props.redo4writeAndDraw;
+                removeSelected = this.props.removeSelectedWriteDraw;
+                removeAll = this.props.removeAllWriteDraw;
+                duplicateSelected = this.props.duplicateSelectedWriteDraw;
+                undo = this.props.undoWriteDraw;
+                redo = this.props.redoWriteDraw;
                 break;
             case TAP_P3D:
                 model = this.props.model4p3d;
                 modelCount = this.props.modelCount4p3d;
-                removeSelected = this.props.removeSelected4p3d;
-                removeAll = this.props.removeAll4p3d;
-                duplicateSelected = this.props.duplicateSelected4p3d;
-                undo = this.props.undo4p3d;
-                redo = this.props.redo4p3d;
+                removeSelected = this.props.removeSelectedP3d;
+                removeAll = this.props.removeAllP3d;
+                duplicateSelected = this.props.duplicateSelectedP3d;
+                undo = this.props.undoP3d;
+                redo = this.props.redoP3d;
                 break;
         }
         return {model, modelCount, removeSelected, removeAll, duplicateSelected, undo, redo};
@@ -77,7 +77,7 @@ class Index extends PureComponent {
 
     render() {
         const actions = this.actions;
-        const {t, tap, layFlat4p3d} = this.props;
+        const {t, tap, layFlatP3d} = this.props;
         const {model, modelCount, removeSelected, duplicateSelected, undo, redo} = this.getPropsByTap(tap);
         return (
             <div className={styles.div_root}>
@@ -109,7 +109,7 @@ class Index extends PureComponent {
                     <Tooltip title={t('lay flat')}>
                         <button
                             disabled={!model}
-                            onClick={layFlat4p3d}
+                            onClick={layFlatP3d}
                             className={!model ? styles.btn_lay_flat_disabled : styles.btn_lay_flat}
                         />
                     </Tooltip>
@@ -148,24 +148,24 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        removeSelected4laser: () => dispatch(model2dActions.removeSelected('laser')),
-        removeAll4laser: () => dispatch(model2dActions.removeAll('laser')),
-        duplicateSelected4laser: () => dispatch(model2dActions.duplicateSelected('laser')),
-        undo4laser: () => dispatch(model2dActions.undo('laser')),
-        redo4laser: () => dispatch(model2dActions.redo('laser')),
+        removeSelectedLaser: () => dispatch(model2dActions.removeSelected('laser')),
+        removeAllLaser: () => dispatch(model2dActions.removeAll('laser')),
+        duplicateSelectedLaser: () => dispatch(model2dActions.duplicateSelected('laser')),
+        undoLaser: () => dispatch(model2dActions.undo('laser')),
+        redoLaser: () => dispatch(model2dActions.redo('laser')),
 
-        removeSelected4writeAndDraw: () => dispatch(model2dActions.removeSelected('write_draw')),
-        removeAll4writeAndDraw: () => dispatch(model2dActions.removeAll('write_draw')),
-        duplicateSelected4writeAndDraw: () => dispatch(model2dActions.duplicateSelected('write_draw')),
-        undo4writeAndDraw: () => dispatch(model2dActions.undo('write_draw')),
-        redo4writeAndDraw: () => dispatch(model2dActions.redo('write_draw')),
+        removeSelectedWriteDraw: () => dispatch(model2dActions.removeSelected('write_draw')),
+        removeAllWriteDraw: () => dispatch(model2dActions.removeAll('write_draw')),
+        duplicateSelectedWriteDraw: () => dispatch(model2dActions.duplicateSelected('write_draw')),
+        undoWriteDraw: () => dispatch(model2dActions.undo('write_draw')),
+        redoWriteDraw: () => dispatch(model2dActions.redo('write_draw')),
 
-        removeSelected4p3d: () => dispatch(p3dModelActions.removeSelected()),
-        removeAll4p3d: () => dispatch(p3dModelActions.removeAll()),
-        duplicateSelected4p3d: () => dispatch(p3dModelActions.duplicateSelected()),
-        undo4p3d: () => dispatch(p3dModelActions.undo()),
-        redo4p3d: () => dispatch(p3dModelActions.redo()),
-        layFlat4p3d: () => dispatch(p3dModelActions.layFlat()),
+        removeSelectedP3d: () => dispatch(p3dModelActions.removeSelected()),
+        removeAllP3d: () => dispatch(p3dModelActions.removeAll()),
+        duplicateSelectedP3d: () => dispatch(p3dModelActions.duplicateSelected()),
+        undoP3d: () => dispatch(p3dModelActions.undo()),
+        redoP3d: () => dispatch(p3dModelActions.redo()),
+        layFlatP3d: () => dispatch(p3dModelActions.layFlat()),
     };
 };
 
