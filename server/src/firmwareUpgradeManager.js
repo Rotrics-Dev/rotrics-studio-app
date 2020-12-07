@@ -28,7 +28,6 @@ class FirmwareUpgradeManager {
         this.frameCount = 0;
         this.curFrame = null;
         this.cCount = 0;
-        this.isProcessing = false;
 
         this.onReceiveLine = async (line) => {
             // console.log("#onReceiveLine: " + line);
@@ -46,7 +45,7 @@ class FirmwareUpgradeManager {
                 this.onChange(8, 'finish');
 
                 await sleep(2000);
-                serialPortManager.serialPort = null;
+                serialPortManager.port = null;
                 serialPortManager.open(this.path);
             }
         };
@@ -114,9 +113,10 @@ class FirmwareUpgradeManager {
      * @returns {Promise<void>}
      */
     async start(cache_dir, isInBootLoader, onChange) {
+        console.log("# firmware -> start")
         this.cache_dir = cache_dir;
         this.onChange = onChange;
-        this.serialPort = serialPortManager.serialPort;
+        this.serialPort = serialPortManager.port;
         this.path = serialPortManager.getOpenPath();
         this.frames = [];
         this.frameCount = 0;
@@ -127,7 +127,7 @@ class FirmwareUpgradeManager {
         //是否连接，是否正在发送gcode，网络是否可用
         this.onChange(0, 'process');
         if (!this.path) {
-            this.onChange(0, 'error', 'Connect DexArm first');
+            this.onChange(0, 'error', 'Please connect DexArm first');
             return;
         }
         if (gcodeSender.curStatus !== "idle") {
@@ -135,7 +135,7 @@ class FirmwareUpgradeManager {
             return;
         }
         if (!(await isOnline())) {
-            this.onChange(0, 'error', 'Network unavailable, please connect first');
+            this.onChange(0, 'error', 'Network unavailable');
             return;
         }
 
@@ -170,7 +170,7 @@ class FirmwareUpgradeManager {
             return;
         }
         if (!url) {
-            this.onChange(2, 'error', "url is null");
+            this.onChange(2, 'error', "Url is null");
             return;
         }
 
@@ -235,7 +235,10 @@ class FirmwareUpgradeManager {
     async upgrade4app() {
         //step-1: Collect DexArm info
         let {firmwareVersion, hardwareVersion} = await this.getDeviceInfo4app();
-        // firmwareVersion = "V2.1.1";
+        console.log("# firmware -> firmwareVersion: " + firmwareVersion)
+        console.log("# firmware -> hardwareVersion: " + hardwareVersion)
+
+        firmwareVersion = "V2.1.1";
         if (!firmwareVersion || !hardwareVersion) {
             this.onChange(1, 'error', 'Time out, please retry');
             return;

@@ -57,16 +57,16 @@ class Index extends PureComponent {
             const d = new Date();
             const filename = [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].join("") + ".stl";
             FileSaver.saveAs(blob, filename, true);
-            messageI18n.success('Export model success', 1);
+            messageI18n.success('Success', 1);
         },
         showClearConfirmDialog: () => {
             const {t, tap} = this.props;
             Modal.confirm({
                 title: t('Are you sure to delete all?'),
                 centered: true,
-                okText: t('delete'),
+                okText: t('Delete'),
                 okType: 'danger',
-                cancelText: t('cancel'),
+                cancelText: t('Cancel'),
                 onOk: () => {
                     const {removeAll} = this.getPropsByTap(tap);
                     removeAll();

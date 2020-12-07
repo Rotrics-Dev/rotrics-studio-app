@@ -9,22 +9,11 @@ import {actions as settingsGeneralActions} from '../../reducers/settingsGeneral.
 import {withTranslation} from 'react-i18next';
 import language from "./lib/language.json";
 
-const stepTitles = [
-    "Check", //0
-    "Collect DexArm info", //1
-    "Check need upgrade", //2
-    "Download firmware", //3
-    "Enter boot loader", //4
-    "Connect DexArm", //5
-    "Load firmware", //6
-    "Execute firmware", //7
-    "Done" //8
-];
-
 class General extends React.Component {
     state = {
         firmwareUpgradeModalVisible: false,
     };
+
     componentDidMount() {
         ReactGA.event({
             category: 'appVersion',
@@ -35,6 +24,7 @@ class General extends React.Component {
             action: this.props.i18n.language
         });
     }
+
     actions = {
         closeFirmwareUpgradeModal: () => {
             this.setState({
@@ -59,12 +49,22 @@ class General extends React.Component {
         const spanCol1 = 8;
 
         const stepEles = [];
+        const stepTitles = [
+            t("Check"), //0
+            t("Collect DexArm info"), //1
+            t("Check need upgrade"), //2
+            t("Download firmware"), //3
+            t("Enter boot loader"), //4
+            t("Connect DexArm"), //5
+            t("Load firmware"), //6
+            t("Execute firmware"), //7
+            t("Done") //8
+        ];
         for (let i = 0; i < stepTitles.length; i++) {
-            const title = stepTitles[i];
             stepEles.push(
                 <Steps.Step
                     key={i}
-                    title={t(title)}
+                    title={stepTitles[i]}
                     description={current === i ? t(description) : undefined}
                     icon={(current === i && status === "process") ? <LoadingOutlined/> : undefined}
                 />
@@ -134,25 +134,25 @@ class General extends React.Component {
                     <Result
                         icon={<SmileOutlined/>}
                         title={t("Firmware is up to date, no need to upgrade.")}
-                        extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>OK</Button>}
+                        extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>{t('Confirm')}</Button>}
                     />
                     }
                     {isFirmwareUpgradeSuccess &&
                     <Result
                         status="success"
                         title={t("Successfully Upgrade!")}
-                        extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>OK</Button>}
+                        extra={<Button type="primary" ghost onClick={actions.closeFirmwareUpgradeModal}>{t('Confirm')}</Button>}
                     />
                     }
                 </Modal>
                 <Modal
-                    title={t("Boot Loader Alert")}
+                    title={t("Firmware Upgrade")}
                     visible={bootLoaderModalVisible}
                     footer={null}
                     centered={true}
                     closable={false}
                 >
-                    <p>{t("You should upgrade firmware")}</p>
+                    <p>{t("You need to upgrade the firmware to work properly\n")}</p>
                     <Button
                         type="link"
                         size="small"
@@ -161,7 +161,7 @@ class General extends React.Component {
                             actions.startFirmwareUpgrade();
                         }}
                     >
-                        {t("start upgrade")}
+                        {t("Start Upgrade")}
                     </Button>
                 </Modal>
             </div>

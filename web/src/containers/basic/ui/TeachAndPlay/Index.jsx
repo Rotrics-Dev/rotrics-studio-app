@@ -1,14 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next'
 import {List, Modal, Checkbox, Select, Row, Col, Radio, Space} from 'antd';
-
 import Line from '../../../../components/Line/Index.jsx'
-import {actions as gcodeSendActions} from "../../../../reducers/gcodeSend";
 import {actions as teachAndPlayActions} from "../../../../reducers/teachAndPlay";
 import NumberInput from '../../../../components/NumberInput/Index.jsx';
 import teach_and_play from "../../lib/settings/teach_and_play.json";
 import styles from "./styles.css";
-import {withTranslation} from 'react-i18next'
 
 const FRONT_END_STYLE = {
     laser: {
@@ -28,7 +26,6 @@ const FRONT_END_STYLE = {
 };
 
 class Index extends React.Component {
-
     actions = {
         setTeachAndPlay: (event) => {
             if (event.target.checked) {
@@ -87,13 +84,12 @@ class Index extends React.Component {
                             </Checkbox>
                         </Col>
                     </Row>
-
                     {teachAndPlayMode &&
                     <Row>
                         <Col span={6}>
                             <span> {t(teach_and_play.front_end.options[this.props.currentFrontEnd].label)}</span>
                         </Col>
-                        <Col span={18} align={"right"}>{/*前端模块*/}
+                        <Col span={18} align={"right"}>
                             <Radio.Group
                                 value={currentFrontEndState}
                                 buttonStyle="solid"
@@ -233,8 +229,10 @@ class Index extends React.Component {
                     title={t("Select Front End")}
                     visible={this.props.showFrontEndSelect}
                     onCancel={this.actions.onCancel}
-                    onOk={this.actions.onOk}>
-                    {/*<Space direction={"vertical"}>*/}
+                    onOk={this.actions.onOk}
+                    cancelText={t('Cancel')}
+                    okText={t('Confirm')}
+                >
                     <Select style={{width: 300}}
                             onChange={this.props.onSelectFrontEnd}
                             placeholder={t("select front end")}
@@ -249,6 +247,7 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
     return state.teachAndPlay;
 };
+
 const mapDispatchToProps = (dispatch) => {
     return {
         recordStep: () => dispatch(teachAndPlayActions.recordStep()),

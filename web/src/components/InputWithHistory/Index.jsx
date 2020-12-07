@@ -61,7 +61,7 @@ class Index extends PureComponent {
     render() {
         const state = this.state;
         const actions = this.actions;
-        const {...rest} = this.props;
+        const {isUppercaseEnabled, ...rest} = this.props;
         return (
             <Input
                 {...rest}
