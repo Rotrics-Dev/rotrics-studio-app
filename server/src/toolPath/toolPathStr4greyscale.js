@@ -162,10 +162,11 @@ const img2toolPathStrGs = (img, settings) => {
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
 
-    const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
-    const dwell_time_placeholder = working_parameters.children.dwell_time.placeholder;
-    const engrave_time_placeholder = working_parameters.children.engrave_time.placeholder;
-    const power_placeholder = working_parameters.children.power.placeholder;
+    const {children} = working_parameters;
+    const work_speed_placeholder = (children.work_speed ? children.work_speed.placeholder : null);
+    const dwell_time_placeholder = (children.dwell_time ? children.dwell_time.placeholder : null);
+    const engrave_time_placeholder = (children.engrave_time ? children.engrave_time.placeholder : null);
+    const power_placeholder = (children.power ? children.power.placeholder : null);
 
     img.mirror(false, true);
 

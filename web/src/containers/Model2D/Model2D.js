@@ -220,7 +220,6 @@ class Model2D extends THREE.Group {
                 break;
         }
 
-        this.toolPathLines = null;
         this._display("edge");
 
         if (preview) {

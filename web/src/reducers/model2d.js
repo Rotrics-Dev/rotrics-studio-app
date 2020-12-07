@@ -90,7 +90,7 @@ const actions = {
         model.addEventListener(Model2D.EVENT_TYPE_PREVIEWED, () => {
             console.log("EVENT_TYPE_PREVIEWED");
             const isAllPreviewed = modelParent.children.every((element) => {
-                return element.isPreviewed; //TODO: use tool path lines
+                return !!element.toolPathLines; //TODO: use tool path lines
             });
             switch (front_end) {
                 case "laser":
@@ -248,7 +248,15 @@ const actions = {
             gcodeArr.push(model.generateGcode());
         }
         const gcode = gcodeArr.join('\n');
-        dispatch(actions._updateState({gcode}));
+
+        switch (front_end) {
+            case "laser":
+                dispatch(actions._updateState({gcodeLaser: gcode}));
+                break;
+            case "write_draw":
+                dispatch(actions._updateState({gcodeWriteDraw: gcode}));
+                break;
+        }
     }
 };
 

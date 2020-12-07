@@ -1,18 +1,21 @@
 const index = (toolPathLines, settings) => {
-    const start_gcode = settings.working_parameters.children.start_gcode.default_value;
-    const end_gcode = settings.working_parameters.children.end_gcode.default_value;
+    const children = settings.working_parameters.children;
 
-    const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
-    const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
-    const dwell_time_placeholder = settings.working_parameters.children.dwell_time.placeholder;
-    const engrave_time_placeholder = settings.working_parameters.children.engrave_time.placeholder;
-    const power_placeholder = settings.working_parameters.children.power.placeholder;
+    const start_gcode = children.start_gcode.default_value;
+    const end_gcode = children.end_gcode.default_value;
 
-    const work_speed_value = settings.working_parameters.children.work_speed.default_value;
-    const jog_speed_value = settings.working_parameters.children.jog_speed.default_value;
-    const dwell_time_value = settings.working_parameters.children.dwell_time.default_value;
-    const engrave_time_value = settings.working_parameters.children.engrave_time.default_value;
-    const power_value = settings.working_parameters.children.power.default_value;
+    const work_speed_placeholder = (children.work_speed ? children.work_speed.placeholder : null);
+    const jog_speed_placeholder = (children.jog_speed ? children.jog_speed.placeholder : null);
+
+    const dwell_time_placeholder = (children.dwell_time ? children.dwell_time.placeholder : null);
+    const engrave_time_placeholder = (children.engrave_time ? children.engrave_time.placeholder : null);
+    const power_placeholder = (children.power ? children.power.placeholder : null);
+
+    const work_speed_value = (children.work_speed ? children.work_speed.default_value : null);
+    const jog_speed_value = (children.jog_speed ? children.jog_speed.default_value : null);
+    const dwell_time_value = (children.dwell_time ? children.dwell_time.default_value : null);
+    const engrave_time_value = (children.engrave_time ? children.engrave_time.default_value : null);
+    const power_value = (children.power ? children.power.default_value : null);
 
     const translateX = settings.transformation.children.x.default_value;
     const translateY = settings.transformation.children.y.default_value;

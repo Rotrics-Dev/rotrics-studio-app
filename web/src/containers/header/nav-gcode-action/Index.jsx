@@ -19,20 +19,20 @@ class Index extends React.Component {
             case TAP_LASER:
                 gcode = this.props.gcodeLaser;
                 modelCount = this.props.modelCountLaser;
-                isAllPreviewed = this.props.isAllPreviewed4laser;
-                generateGcode = this.props.generateGcode4laser;
+                isAllPreviewed = this.props.isAllPreviewedLaser;
+                generateGcode = this.props.generateGcodeLaser;
                 break;
             case TAP_P3D:
-                gcode = this.props.gcode4p3d;
-                modelCount = this.props.modelCount4p3d;
+                gcode = this.props.gcodeP3d;
+                modelCount = this.props.modelCountP3d;
                 isAllPreviewed = this.props.isAllPreviewed4p3d;
-                generateGcode = this.props.generateGcode4p3d;
+                generateGcode = this.props.generateGcodeP3d;
                 break;
             case TAB_WRITE_DRAW:
                 gcode = this.props.gcodeWriteDraw;
                 modelCount = this.props.modelCountWriteDraw;
                 isAllPreviewed = this.props.isAllPreviewedWriteDraw;
-                generateGcode = this.props.generateGcode4writeAndDraw;
+                generateGcode = this.props.generateGcodeWriteDraw;
                 break;
         }
         return {gcode, modelCount, isAllPreviewed, generateGcode};
@@ -101,7 +101,7 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
     const {gcodeLaser, modelCountLaser, isAllPreviewedLaser, gcodeWriteDraw, modelCountWriteDraw, isAllPreviewedWriteDraw} = state.model2d;
-    const {gcodeUrl: gcode4p3d, modelCount: modelCount4p3d} = state.p3dModel;
+    const {gcodeUrl: gcodeP3d, modelCount: modelCountP3d} = state.p3dModel;
     return {
         tap,
         gcodeWriteDraw,
@@ -110,17 +110,17 @@ const mapStateToProps = (state) => {
         gcodeLaser,
         modelCountLaser,
         isAllPreviewedLaser,
-        gcode4p3d,
-        modelCount4p3d,
+        gcodeP3d,
+        modelCountP3d,
         isAllPreviewed4p3d: true,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        generateGcode4laser: () => dispatch(model2dActions.generateGcode('laser')),
-        generateGcode4p3d: () => dispatch(p3dModelActions.generateGcode()),
-        generateGcode4writeAndDraw: () => dispatch(model2dActions.generateGcode('write_draw'))
+        generateGcodeLaser: () => dispatch(model2dActions.generateGcode('laser')),
+        generateGcodeWriteDraw: () => dispatch(model2dActions.generateGcode('write_draw')),
+        generateGcodeP3d: () => dispatch(p3dModelActions.generateGcode())
     };
 };
 
