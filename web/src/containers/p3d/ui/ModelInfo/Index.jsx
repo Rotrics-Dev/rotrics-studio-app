@@ -1,17 +1,17 @@
 import React from 'react';
 import {connect} from 'react-redux';
-
-const getSizeDes = (boundingBox) => {
-    const {min, max} = boundingBox;
-    const width = Math.round(max.x - min.x);
-    const height = Math.round(max.y - min.y);
-    const depth = Math.round(max.z - min.z);
-    return `model size: ${width} x ${height} x ${depth} mm`;
-};
+import {withTranslation} from 'react-i18next';
 
 class Index extends React.Component {
     render() {
-        const {boundingBox, filePath} = this.props;
+        const {t, boundingBox, filePath} = this.props;
+        const getSizeDes = (boundingBox) => {
+            const {min, max} = boundingBox;
+            const width = Math.round(max.x - min.x);
+            const height = Math.round(max.y - min.y);
+            const depth = Math.round(max.z - min.z);
+            return `${t('model size')}: ${width} x ${height} x ${depth} mm`;
+        };
         if (!boundingBox) {
             return null;
         }
@@ -32,4 +32,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(Index);
+export default connect(mapStateToProps)(withTranslation()(Index));
+

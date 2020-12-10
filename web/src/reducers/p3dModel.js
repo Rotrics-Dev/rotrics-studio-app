@@ -9,6 +9,7 @@ import socketClientManager from "../socket/socketClientManager";
 import {P3D_SLICE_START, P3D_SLICE_STATUS} from "../constants";
 import gcodeBufferGeometryToObj3d from "../containers/p3d/lib/GcodeToBufferGeometry/gcodeBufferGeometryToObj3d";
 import GcodeToBufferGeometryWorker from '../containers/p3d/lib/GcodeToBufferGeometry.worker';
+import messageI18n from "../utils/messageI18n";
 
 const ACTION_UPDATE_STATE = 'p3dModel/ACTION_UPDATE_STATE';
 
@@ -25,9 +26,8 @@ const INITIAL_STATE = {
     layerCountVisible: 0, //当前显示的多少层gcode line
     lineTypeVisibility: null, //gcode渲染后，不同type的visibility
     bounds: null,
-    //slice progress
+    //slice progress or load model progress
     progress: 0,
-    progressTitle: "",
     //slice result: {gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
     gcodeFileName: null,
     printTime: 0,
@@ -167,6 +167,8 @@ const actions = {
             const {status, value} = data;
             switch (status) {
                 case 'succeed': {
+                    messageI18n.success('Loading model succeeded');
+
                     worker.terminate();
                     destoryGcodeObj3d();
 
@@ -211,7 +213,6 @@ const actions = {
                         lineTypeVisibility: null,
                         bounds: null,
                         progress: 100,
-                        progressTitle: 'Load model ok',
                         gcodeFileName: null,
                         printTime: 0,
                         filamentLength: 0,
@@ -222,12 +223,13 @@ const actions = {
                     break;
                 }
                 case 'progress':
-                    dispatch(actions._updateState({progress: value * 100, progressTitle: 'Loading model'}));
+                    dispatch(actions._updateState({progress: value * 100}));
                     break;
                 case 'err':
                     worker.terminate();
                     console.error(value);
-                    dispatch(actions._updateState({progress: 0, progressTitle: 'Failed to load model'}));
+                    messageI18n.error('Loading model failed');
+                    dispatch(actions._updateState({progress: 0}));
                     break;
                 default:
                     break;
@@ -405,6 +407,8 @@ const actions = {
     },
     //g-code
     generateGcode: () => async (dispatch, getState) => {
+        messageI18n.info('Generating G-code started');
+
         destoryGcodeObj3d();
 
         dispatch(actions._updateState({
@@ -420,7 +424,6 @@ const actions = {
         //设置初始状态
         dispatch(actions._updateState({
             progress: 0,
-            progressTitle: "slicing",
             gcodeFileName: null,
             printTime: 0,
             filamentLength: 0,
@@ -440,15 +443,16 @@ const actions = {
             }
             const {progress, error, result} = data;
             if (error) {
-                dispatch(actions._updateState({progress: 0, progressTitle: "slicing error"}));
+                messageI18n.error('Generating G-code failed');
+                dispatch(actions._updateState({progress: 0}));
             } else if (progress) {
-                dispatch(actions._updateState({progress, progressTitle: "slicing"}));
+                dispatch(actions._updateState({progress}));
             } else if (result) {
+                messageI18n.success('Generating G-code succeeded');
                 const {gcodeName, printTime, filamentLength, filamentWeight, gcodePath} = result;
                 const gcodeUrl = window.serverCacheAddress + result.gcodeName;
                 dispatch(actions._updateState({
                     progress: 1,
-                    progressTitle: "slicing completed",
                     gcodeName,
                     printTime,
                     filamentLength,
@@ -462,7 +466,9 @@ const actions = {
         socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, materialSettingFilename, printSettingFilename, id})
     },
     _renderGcode: (gcodeUrl) => (dispatch, getState) => {
-        dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));
+        messageI18n.info('Rendering G-code started');
+
+        dispatch(actions._updateState({progress: 0}));
 
         gcodeRenderingWorker.postMessage({fileUrl: gcodeUrl});
         gcodeRenderingWorker.onmessage = (e) => {
@@ -470,6 +476,8 @@ const actions = {
             const {status, value} = data;
             switch (status) {
                 case 'succeed': {
+                    messageI18n.success('Rendering G-code succeeded');
+
                     const {positions, colors, layerIndices, typeCodes, layerCount, bounds} = value;
                     const bufferGeometry = new THREE.BufferGeometry();
                     const positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
@@ -539,18 +547,18 @@ const actions = {
                         layerCountVisible,
                         bounds,
                         lineTypeVisibility,
-                        progress: 1,
-                        progressTitle: "renderer g-code completed",
+                        progress: 1
                     }));
                     break;
                 }
                 case 'progress': {
-                    dispatch(actions._updateState({progress: value, progressTitle: "rendering g-code"}));
+                    dispatch(actions._updateState({progress: value}));
                     break;
                 }
                 case 'err': {
                     console.error(value);
-                    dispatch(actions._updateState({progress: 0, progressTitle: "renderer g-code error"}));
+                    messageI18n.error('Rendering G-code failed');
+                    dispatch(actions._updateState({progress: 0}));
                     break;
                 }
             }
@@ -593,14 +601,12 @@ const addGcodeObj3d = (object3d) => {
 const exportModelsToFile = (rendererParent4model) => {
     const blob = exportModelsToBlob(rendererParent4model);
     const fileName = "output.stl";
-    const file = new File([blob], fileName);
-    return file;
+    return new File([blob], fileName);
 };
 
 const exportModelsToBlob = (rendererParent4model) => {
     const output = new ModelExporter().parseToBinaryStl(rendererParent4model);
-    const blob = new Blob([output], {type: 'text/plain'});
-    return blob;
+    return new Blob([output], {type: 'text/plain'});
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
