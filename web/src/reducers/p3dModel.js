@@ -81,7 +81,7 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
     };
 
     if (rendererParent4model.children.length === 0) {
-        return {x: 0, z: -300/* default z */};
+        return {x: 0, z: 0};
     }
     model.computeBoundingBox();
     const modelBox3 = model.boundingBox;
@@ -91,8 +91,8 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
         box3Arr.push(model.boundingBox);
     }
 
-    const length = 40;
-    const step = 10; // min distance of models &
+    const length = 65;
+    const step = 5; // min distance of models
     const y = 1;
     for (let stepCount = 1; stepCount < length / step; stepCount++) {
         // check the 4 positions on x&z axis first
@@ -136,7 +136,7 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
             //     continue;
             // }
             if (!_isBox3IntersectOthers(modelBox3Clone, box3Arr)) {
-                return {x: position.x, z: position.z - 300/* default z */};
+                return {x: position.x, z: position.z};
             }
         }
     }
@@ -186,9 +186,7 @@ const actions = {
                     const {rendererParent4model} = getState().p3dModel;
                     const xz = _computeAvailableXZ(rendererParent4model, model);
                     model.position.x = xz.x;
-                    model.position.z = xz.z /*- 300*/;//设置Y方向的偏移到 y300 陈会龙 2020年8月24日Z
-                    model.transformation.x = model.position.x;
-                    model.transformation.y = -model.position.z;
+                    model.position.z = xz.z;
                     model.computeBoundingBox();
                     rendererParent4model.add(model);
 
@@ -304,12 +302,10 @@ const actions = {
         const {model} = getState().p3dModel;
         const newModel = model.clone();
         newModel.position.x = 0;
-        newModel.position.z = -300;//先将模型 移动到默认位置，
+        newModel.position.z = 0;
         const xz = _computeAvailableXZ(rendererParent4model, newModel);
         newModel.position.x = xz.x;
         newModel.position.z = xz.z;
-        newModel.transformation.x = newModel.position.x;
-        newModel.transformation.y = -newModel.position.z;
         rendererParent4model.add(newModel);
 
         for (const child of rendererParent4model.children) {

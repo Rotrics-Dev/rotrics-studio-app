@@ -49,14 +49,12 @@ class Model3D extends THREE.Mesh {
 
         this.transformation = {
             x: 0,
-            y: 300,
+            y: 0,
             rx: 0,
             ry: 0,
             rz: 0,
             scale: 1,
         };
-        this.position.x = 0;
-        this.position.z = -300;
 
         let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 6);
         let edgesMtl = new THREE.LineBasicMaterial({color: 0x4169E1});
@@ -149,7 +147,7 @@ class Model3D extends THREE.Mesh {
         const {x, y, rx, ry, rz, scale} = this.transformation;
         clone.transformation = this.transformation;
         clone.position.x = x;
-        clone.position.z = -y; //坐标轴不同
+        clone.position.z = y; //坐标轴不同
 
         clone.rotation.x = rx;
         clone.rotation.y = ry;
@@ -295,7 +293,7 @@ class Model3D extends THREE.Mesh {
         this.transformation[key] = value;
         const {x, y, rx, ry, rz, scale} = this.transformation;
         this.position.x = x;
-        this.position.z = -y; //坐标轴不同
+        this.position.z = y; //坐标轴不同
 
         this.rotation.x = rx;
         this.rotation.y = ry;

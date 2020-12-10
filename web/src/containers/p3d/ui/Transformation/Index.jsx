@@ -70,8 +70,8 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>X</span>
                         <Slider
-                            min={-400}
-                            max={400}
+                            min={-110}
+                            max={110}
                             step={1}
                             value={x}
                             disabled={disabled}
@@ -84,8 +84,8 @@ class Index extends React.Component {
                     <Space direction={"horizontal"}>
                         <span>Y</span>
                         <Slider
-                            min={0}
-                            max={400}
+                            min={-110}
+                            max={110}
                             step={1}
                             value={y}
                             disabled={disabled}
