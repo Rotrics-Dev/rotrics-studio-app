@@ -61,7 +61,7 @@ class Index extends React.Component {
     };
 
     render() {
-        const {t, model, config, transformation, working_parameters, updateConfig, updateTransformation, updateWorkingParameters, buildInFonts, userFonts} = this.props;
+        const {t, model, config, transformation, working_parameters, buildInFonts, userFonts} = this.props;
         const {accept} = this.state;
         const actions = this.actions;
         return (

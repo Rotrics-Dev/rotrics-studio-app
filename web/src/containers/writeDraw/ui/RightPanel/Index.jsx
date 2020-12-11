@@ -27,17 +27,17 @@ class Index extends React.Component {
             this.props.addModel(model);
         },
         onClickExample: () => {
-            this.setState({exampleListVisible: true})
+            this.setState({exampleListVisible: !this.state.exampleListVisible});
         },
         onClickSvg: () => {
-            this.setState({exampleListVisible: false})
+            this.setState({exampleListVisible: false});
             this.fileInput.current.value = null;
             this.fileInput.current.click();
         },
         onClickText: async () => {
-            this.setState({exampleListVisible: false})
+            this.setState({exampleListVisible: false});
             const fileType = 'text';
-            const front_end = 'laser';
+            const front_end = 'write_draw';
             const model = new Model2D(fileType, front_end);
             await model.init();
             this.props.addModel(model);
@@ -51,7 +51,7 @@ class Index extends React.Component {
     };
 
     render() {
-        const {t, model, config, transformation, working_parameters, updateConfig, updateTransformation, updateWorkingParameters, buildInFonts, userFonts} = this.props;
+        const {t, model, config, transformation, working_parameters, buildInFonts, userFonts} = this.props;
         const actions = this.actions;
         const {exampleListVisible} = this.state;
         return (
@@ -82,7 +82,19 @@ class Index extends React.Component {
                         <h6 className={styles.h_file_type}>{t('Text')}</h6>
                     </button>
                 </Space>
-                {!exampleListVisible &&
+                {exampleListVisible &&
+                <div style={{padding: "20px"}}>
+                    <List
+                        grid={{gutter: 3, column: 6}}
+                        dataSource={getExampleSvgArray()}
+                        renderItem={(item) => (
+                            <List.Item>
+                                <img className={styles.img_list_item} src={item} onClick={actions.loadExampleSvg}/>
+                            </List.Item>
+                        )}
+                    />
+                </div>
+                }
                 <div>
                     <ConfigSvg
                         t={t}
@@ -107,22 +119,6 @@ class Index extends React.Component {
                         working_parameters={working_parameters}
                     />
                 </div>
-                }
-                {exampleListVisible &&
-                <div style={{padding: "30px"}}>
-                    <List
-                        grid={{gutter: 4, column: 4}}
-                        dataSource={getExampleSvgArray()}
-                        renderItem={(item) => (
-                            <List.Item>
-                                <img className={styles.img_list_item} src={item} onClick={actions.loadExampleSvg}/>
-                            </List.Item>
-                        )}
-                    />
-                </div>
-                }
-
-
             </div>
         )
     }
