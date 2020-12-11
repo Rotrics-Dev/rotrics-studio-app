@@ -221,6 +221,10 @@ export const actions = {
             state
         };
     },
+    loadEmptyProject: () => (dispatch, getState) => {
+        getState().code.vm.loadProject(defaultProjectJson);
+        return {type: null};
+    },
     init: () => (dispatch, getState) => {
         const vm = new VM();
         dispatch(actions._updateState({vm}));
