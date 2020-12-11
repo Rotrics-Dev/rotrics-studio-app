@@ -202,7 +202,7 @@ const actions = {
         const extension = CODE_PROJECT_EXTENSION;
         const {status} = await saveAs(content, name, extension);
         if (status === "ok") {
-            messageI18n.success(`Your project has been imported to My Projects. Name is ${name}`);
+            messageI18n.success(`Your project has been imported to My Projects. ${name}`);
             const {status, data: myProjectInfos} = await fetchMyProjectInfos();
             dispatch(actions._updateState({myProjectInfos}));
         } else {

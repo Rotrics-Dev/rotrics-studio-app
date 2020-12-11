@@ -3,8 +3,9 @@ import {Button, Row, Col, Modal} from 'antd';
 import {actions as codeProjectActions, isProjectNameExist, compareProject} from "../../../../reducers/codeProject";
 import {connect} from 'react-redux';
 import {withTranslation} from 'react-i18next';
-import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
-import showNameInput from "../modal-tool/showNameInput.jsx";
+import showSaveConfirmI18n from "../modal-tool/showSaveConfirmI18n.jsx";
+import showSaveAsConfirmI18n from "../modal-tool/showSaveAsConfirmI18n.jsx";
+import showNameInputI18n from "../modal-tool/showNameInputI18n.jsx";
 import messageI18n from "../../../../utils/messageI18n";
 import styles from './styles.css';
 
@@ -29,16 +30,14 @@ class Index extends React.Component {
             const {name, location, isSaved} = this.props.projectInfo;
             if (!isSaved) {
                 if (location === "example") {
-                    showSaveConfirm({
+                    showSaveAsConfirmI18n({
                         title: 'The example project has been modified. Save as a new project?',
-                        saveText: "Save as",
-                        doNotSaveText: "Don't save as",
-                        onDoNotSave: () => {
+                        onCancel: () => {
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
-                        onSave: () => {
-                            showNameInput({
+                        onOk: () => {
+                            showNameInputI18n({
                                 title: 'Save as',
                                 defaultValue: name,
                                 onOk: (inputName) => {
@@ -62,15 +61,13 @@ class Index extends React.Component {
                         }
                     });
                 } else {
-                    showSaveConfirm({
+                    showSaveConfirmI18n({
                         title: 'Your project has been modified. Save it?',
-                        saveText: "Save",
-                        doNotSaveText: "Don't save",
-                        onDoNotSave: () => {
+                        onCancel: () => {
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
-                        onSave: async () => {
+                        onOk: async () => {
                             await this.props.save();
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})

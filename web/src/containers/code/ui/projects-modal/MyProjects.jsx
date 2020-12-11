@@ -8,8 +8,9 @@ import {withTranslation} from 'react-i18next';
 import {timestamp2date} from '../../../../utils/index.js';
 import styles from './styles.css';
 import messageI18n from "../../../../utils/messageI18n";
-import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
-import showNameInput from "../modal-tool/showNameInput.jsx";
+import showSaveConfirmI18n from "../modal-tool/showSaveConfirmI18n.jsx";
+import showSaveAsConfirmI18n from "../modal-tool/showSaveAsConfirmI18n.jsx";
+import showNameInputI18n from "../modal-tool/showNameInputI18n.jsx";
 import {fetchProjectContent} from "../../../../api/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
 
@@ -35,16 +36,14 @@ class Index extends React.Component {
             const {name, location, isSaved} = this.props.projectInfo;
             if (!isSaved) {
                 if (location === "example") {
-                    showSaveConfirm({
+                    showSaveAsConfirmI18n({
                         title: 'The example project has been modified. Save as a new project?',
-                        saveText: "Save as",
-                        doNotSaveText: "Don't save as",
-                        onDoNotSave: () => {
+                        onCancel: () => {
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
-                        onSave: () => {
-                            showNameInput({
+                        onOk: () => {
+                            showNameInputI18n({
                                 title: 'Save as',
                                 defaultValue: name,
                                 onOk: (inputName) => {
@@ -68,15 +67,13 @@ class Index extends React.Component {
                         }
                     });
                 } else {
-                    showSaveConfirm({
+                    showSaveConfirmI18n({
                         title: 'Your project has been modified. Save it?',
-                        saveText: "Save",
-                        doNotSaveText: "Don't save",
-                        onDoNotSave: () => {
+                        onCancel: () => {
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})
                         },
-                        onSave: async () => {
+                        onOk: async () => {
                             await this.props.save();
                             this.props.openLocal(projectInfo);
                             this.setState({selected: null})
@@ -89,13 +86,14 @@ class Index extends React.Component {
             }
         },
         delProject: (projectInfo) => {
+            const {t} = this.props;
             Modal.confirm({
-                title: 'Are you sure to delete this project?',
+                title: t('Are you sure to delete this project?'),
                 icon: <ExclamationCircleOutlined/>,
                 centered: true,
-                okText: 'Delete',
+                okText: t('Delete'),
                 okType: 'danger',
-                cancelText: 'Cancel',
+                cancelText: t('Cancel'),
                 onOk: () => {
                     this.setState({selected: null});
                     this.props.del(projectInfo);
@@ -103,7 +101,7 @@ class Index extends React.Component {
             })
         },
         renameProject: (projectInfo) => {
-            showNameInput({
+            showNameInputI18n({
                 title: 'Rename',
                 defaultValue: projectInfo.name,
                 onOk: (inputName) => {

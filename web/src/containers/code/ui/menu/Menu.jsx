@@ -6,8 +6,9 @@ import {Button, Space, Menu, Dropdown, Input, Tooltip} from 'antd';
 import {FolderOutlined, SaveOutlined} from '@ant-design/icons';
 import {actions as codeProjectActions, isProjectNameExist} from "../../../../reducers/codeProject";
 import {CODE_PROJECT_EXTENSION} from "../../../../constants";
-import showSaveConfirm from "../modal-tool/showSaveConfirm.jsx";
-import showNameInput from "../modal-tool/showNameInput.jsx";
+import showSaveConfirmI18n from "../modal-tool/showSaveConfirmI18n.jsx";
+import showSaveAsConfirmI18n from "../modal-tool/showSaveAsConfirmI18n.jsx";
+import showNameInputI18n from "../modal-tool/showNameInputI18n.jsx";
 import messageI18n from "../../../../utils/messageI18n";
 import styles from './styles.css';
 
@@ -35,15 +36,13 @@ class Index extends React.Component {
                     }
                     if (!isSaved) {
                         if (location === "example") {
-                            showSaveConfirm({
+                            showSaveAsConfirmI18n({
                                 title: 'The example project has been modified. Save as a new project?',
-                                saveText: "Save as",
-                                doNotSaveText: "Don't save as",
-                                onDoNotSave: () => {
+                                onCancel: () => {
                                     this.props.create()
                                 },
-                                onSave: () => {
-                                    showNameInput({
+                                onOk: () => {
+                                    showNameInputI18n({
                                         title: 'Save as',
                                         defaultValue: name,
                                         onOk: (inputName) => {
@@ -66,14 +65,12 @@ class Index extends React.Component {
                                 }
                             });
                         } else {
-                            showSaveConfirm({
+                            showSaveConfirmI18n({
                                 title: 'Your project has been modified. Save it?',
-                                saveText: "Save",
-                                doNotSaveText: "Don't save",
-                                onDoNotSave: () => {
+                                onCancel: () => {
                                     this.props.create()
                                 },
-                                onSave: async () => {
+                                onOk: async () => {
                                     await this.props.save();
                                     this.props.create();
                                 }
@@ -85,7 +82,7 @@ class Index extends React.Component {
                     break;
                 }
                 case "Save As":
-                    showNameInput({
+                    showNameInputI18n({
                         title: "Save As",
                         defaultValue: name,
                         onOk: (inputName) => {
@@ -137,14 +134,12 @@ class Index extends React.Component {
         save: () => {
             const {name, location} = this.props.projectInfo;
             if (location === "example") {
-                showSaveConfirm({
+                showSaveAsConfirmI18n({
                     title: "The example project can't be modified. Save as a new project?",
-                    saveText: "Save as",
-                    doNotSaveText: "Don't save as",
-                    onDoNotSave: () => {
+                    onCancel: () => {
                     },
-                    onSave: () => {
-                        showNameInput({
+                    onOk: () => {
+                        showNameInputI18n({
                             title: 'Save as',
                             defaultValue: name,
                             onOk: (inputName) => {
