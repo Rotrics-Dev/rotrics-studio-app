@@ -163,7 +163,7 @@ class FirmwareUpgradeManager {
         //step-2: Check need upgrade
         this.onChange(2, 'process');
         //必须升级，因此指定firmwareVersion为老版本即可
-        const firmwareVersion = "V2.1.1";
+        // const firmwareVersion = "V2.1.1";
         const {err: err4needUpgrade, url} = await this.isNeedUpgrade(firmwareVersion, hardwareVersion);
         if (err4needUpgrade) {
             this.onChange(2, 'error', err4needUpgrade);
