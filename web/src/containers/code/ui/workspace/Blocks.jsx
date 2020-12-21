@@ -35,40 +35,34 @@ const BLOCKS_DEFAULT_OPTIONS = {
     sounds: false
 };
 
+// map local from "cura" to "scratch"
 const getLocale = (language) => {
-    let locale = "en";
     switch (language) {
         case "de-DE":
-            locale = "de";
-            break;
+            return "de";
         case "en":
-            break;
+            return "en";
         case "es-ES":
-            locale = "de";
-            break;
+            return "de";
         case "fr-FR":
-            locale = "fr";
-            break;
+            return "fr";
         case "it-IT":
-            locale = "it";
-            break;
+            return "it";
         case "ja-JP":
-            locale = "ja";
-            break;
+            return "ja";
         case "ko-KR":
-            locale = "ko";
-            break;
+            return "ko";
         case "ru-RU":
-            locale = "ru";
-            break;
+            return "ru";
         case "zh-CN":
-            locale = "zh-cn";
-            break;
+            return "zh-cn";
         case "zh-TW":
-            locale = "zh-tw";
-            break;
+            return "zh-tw";
+        case "pt-BR":
+            return "pt-br";
+        default:
+            return "en";
     }
-    return locale;
 };
 
 class Blocks extends React.Component {
