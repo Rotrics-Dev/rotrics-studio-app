@@ -18,20 +18,21 @@ class Config extends React.Component {
 
     render() {
         const actions = this.actions;
-        const {t} = this.props;
-        const {is_show_tip} = this.props;
+        const {t, i18n, is_show_tip} = this.props;
+
         const languageOptions = [];
         Object.keys(language).forEach((key) => {
             languageOptions.push({value: key, label: language[key]})
         });
+
         return (
             <Space direction={"vertical"} size={20}>
                 <div>
                     <h3 style={{marginBottom: "3px"}}>{t("Language")}</h3>
                     <ConfigSelect
                         style={{width: "200px"}}
-                        value={this.props.i18n.language}
-                        onChange={this.actions.changeLanguage}
+                        value={i18n.language}
+                        onChange={actions.changeLanguage}
                         options={languageOptions}/>
                 </div>
                 <div>
