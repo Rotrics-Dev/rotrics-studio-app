@@ -27,6 +27,7 @@ class Index extends React.Component {
         this.setupPanControls();
 
         this.animate();
+        this.renderScene();
         this.group.add(new PrintablePlate(new THREE.Vector2(150, 120)));
         window.addEventListener('resize', this.resizeWindow, false);
     }
@@ -67,6 +68,7 @@ class Index extends React.Component {
         this.panControls.addEventListener(
             'panning',
             (event) => {
+                this.renderScene();
                 // 比较卡
                 // const {x, y} = event.object.position;
                 // this.props.updateTransformation("x", x, false)
@@ -118,9 +120,14 @@ class Index extends React.Component {
         this.node.current.appendChild(this.renderer.domElement);
     }
 
+    renderScene = () => {
+        this.renderer.render(this.scene, this.camera);
+    };
     animate = () => {
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.animate);
+        setTimeout( ()=> {
+            requestAnimationFrame( this.animate );
+        }, 200);
     };
 
     getVisibleWidth() {
@@ -154,6 +161,7 @@ class Index extends React.Component {
             }
             this.camera.position.z = z;
             this.camera.updateProjectionMatrix();
+            this.renderScene();
         };
 
         this.renderer.domElement.addEventListener('mousewheel', mousewheel, false);

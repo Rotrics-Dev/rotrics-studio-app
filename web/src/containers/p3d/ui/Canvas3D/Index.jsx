@@ -68,6 +68,7 @@ class Index extends React.Component {
                 const model = event.object;
                 this.props.selectModel(model);
                 // this.panControls.select(model);
+                this.renderScene();
             }
         );
     }
@@ -93,6 +94,7 @@ class Index extends React.Component {
         this.msrControls.addEventListener(
             'move',
             () => {
+                this.renderScene();
                 // console.log("move")
                 // this.updateTransformControl2D();
             }
@@ -169,11 +171,17 @@ class Index extends React.Component {
         this.scene.add(this.group);
 
         this.node.current.appendChild(this.renderer.domElement);
+        this.renderer.domElement.addEventListener('wheel', this.renderScene, false);
     }
 
-    animate = () => {
+    renderScene = () => {
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.animate);
+    };
+    animate = () => {
+        this.renderScene();
+        setTimeout( ()=> {
+            requestAnimationFrame( this.animate );
+        }, this.props.tap == 'TAP_P3D' ? 30 : 1000);
     };
 
     getVisibleWidth() {
