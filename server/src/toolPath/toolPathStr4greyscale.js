@@ -71,8 +71,8 @@ const normalize = function (x) {
 const file2img = async (url, settings) => {
     const {transformation, config} = settings;
 
-    const width_mm = transformation.children.width_mm.default_value;
-    const height_mm = transformation.children.height_mm.default_value;
+    const width = transformation.children.width.default_value;
+    const height = transformation.children.height.default_value;
     const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
     let flipFlag = getFlipFlag(flip_model);
@@ -106,7 +106,7 @@ const file2img = async (url, settings) => {
         .greyscale()
         // .flip((flipFlag & 2) > 0, (flipFlag & 1) > 0)
         .flip(!!(Math.floor(flipFlag / 2)), !!(flipFlag % 2))
-        .resize(width_mm * density, height_mm * density)
+        .resize(width * density, height * density)
         .rotate(rotation)// rotate: unit is degree and clockwise
         .scan(0, 0, img.bitmap.width, img.bitmap.height, (x, y, idx) => {
             const data = img.bitmap.data;
@@ -162,11 +162,10 @@ const img2toolPathStrGs = (img, settings) => {
     const bw = config.children.bw.default_value;
     const density = config.children.density.default_value;
 
-    const {children} = working_parameters;
-    const work_speed_placeholder = (children.work_speed ? children.work_speed.placeholder : null);
-    const dwell_time_placeholder = (children.dwell_time ? children.dwell_time.placeholder : null);
-    const engrave_time_placeholder = (children.engrave_time ? children.engrave_time.placeholder : null);
-    const power_placeholder = (children.power ? children.power.placeholder : null);
+    const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
+    const dwell_time_placeholder = working_parameters.children.dwell_time.placeholder;
+    const engrave_time_placeholder = working_parameters.children.engrave_time.placeholder;
+    const power_placeholder = working_parameters.children.power.placeholder;
 
     img.mirror(false, true);
 

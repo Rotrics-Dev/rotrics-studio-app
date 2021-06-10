@@ -17,20 +17,15 @@ const materialTransparent = new THREE.MeshPhongMaterial({
 });
 
 class Model3D extends THREE.Mesh {
-    /**
-     *
-     * @param bufferGeometry
-     * @param convexBufferGeometry
-     * @param filePath
-     */
-    constructor(bufferGeometry, convexBufferGeometry, filePath) {
+    constructor(bufferGeometry, convexBufferGeometry, modelName, modelPath) {
         super(bufferGeometry, materialNormal);
 
         this.boundingBox = null; // the boundingBox is aligned parent axis
 
         this.bufferGeometry = bufferGeometry;
         this.convexBufferGeometry = convexBufferGeometry;
-        this.filePath = filePath;
+        this.modelName = modelName;
+        this.modelPath = modelPath;
 
         this.isSelected = false;
         this.mode = 'prepare';
@@ -48,13 +43,32 @@ class Model3D extends THREE.Mesh {
         this.convexGeometry.mergeVertices();
 
         this.transformation = {
+            // xyz位置
             x: 0,
-            y: 0,
+            y: 300,
+            z: 0,
+            // xyz选择
             rx: 0,
             ry: 0,
             rz: 0,
             scale: 1,
+            // xyz缩放
+            sx: 1,
+            sy: 1,
+            sz: 1,
+            // 原始缩放尺寸
+            ogScaleWidth: 0,
+            ogScaleHeight: 0,
+            ogScaleDepth: 0,
+            // 缩放尺寸
+            scaleWidth: 0,
+            scaleHeight: 0,
+            scaleDepth: 0,
+            // 
+            isUniformScaling: true
         };
+        this.position.x = 0;
+        this.position.z = -300;
 
         let cubeEdges = new THREE.EdgesGeometry(this.bufferGeometry, 6);
         let edgesMtl = new THREE.LineBasicMaterial({color: 0x4169E1});
@@ -140,20 +154,21 @@ class Model3D extends THREE.Mesh {
         const clone = new Model3D(
             this.bufferGeometry.clone(),
             this.convexBufferGeometry.clone(),
-            this.filePath
+            this.modelName,
+            this.modelPath
         );
 
         //TODO：setMatrix居然不符合预期
-        const {x, y, rx, ry, rz, scale} = this.transformation;
+        const {x, y, rx, ry, rz, sx, sy, sz} = this.transformation;
         clone.transformation = this.transformation;
         clone.position.x = x;
-        clone.position.z = y; //坐标轴不同
+        clone.position.z = -y; //坐标轴不同
 
         clone.rotation.x = rx;
         clone.rotation.y = ry;
         clone.rotation.z = rz;
 
-        clone.scale.copy(new THREE.Vector3(scale, scale, scale));
+        clone.scale.copy(new THREE.Vector3(sx, sy, sz));
         clone.stickToPlate();
         return clone;
     }
@@ -288,18 +303,79 @@ class Model3D extends THREE.Mesh {
         return matrix4;
     }
 
-    updateTransformation(key, value) {
+    // 优化 3D打印功能 模型调整操作区
+    updateTransformation(key, value, uniformScaleFlag) {
+        console.log(`更新 ${key} ${value}`)
+        if (isNaN(value) && key !== 'isUniformScaling') value = 0
+
         //TODO：增加判断
         this.transformation[key] = value;
-        const {x, y, rx, ry, rz, scale} = this.transformation;
+
+        let {x, y, z, rx, ry, rz, scale, sx, sy, sz, scaleWidth, scaleHeight, scaleDepth, ogScaleWidth, ogScaleHeight, ogScaleDepth, isUniformScaling} = this.transformation;
+        console.log(`锁定比例 ${isUniformScaling}`)
+        
         this.position.x = x;
-        this.position.z = y; //坐标轴不同
+        this.position.y = z;
+        // this.position.z = z;
+        this.position.z = -y; //坐标轴不同
 
         this.rotation.x = rx;
         this.rotation.y = ry;
         this.rotation.z = rz;
 
-        this.scale.copy(new THREE.Vector3(scale, scale, scale));
+        if (key === 'scaleWidth') {
+            sx = Number.parseFloat(scaleWidth / ogScaleWidth)
+            this.updateTransformation('sx', sx)
+            return
+        }
+
+        if (key === 'scaleHeight') {
+            sy = Number.parseFloat(scaleHeight / ogScaleHeight)
+            this.updateTransformation('sy', sy)
+            return
+        }
+
+        if (key === 'scaleDepth') {
+            sz = Number.parseFloat(scaleDepth / ogScaleDepth)
+            this.updateTransformation('sz', sz)
+            return
+        }
+
+        if (key === 'sx') {
+            scaleWidth = Number(Number.parseFloat(sx * ogScaleWidth).toFixed(2))
+            this.transformation.scaleWidth = scaleWidth
+            this.scale.copy(new THREE.Vector3(this.transformation.sx, this.transformation.sy, this.transformation.sz));
+            
+            if (!uniformScaleFlag && isUniformScaling) {
+                this.updateTransformation('sy', this.transformation.sx, true)
+                this.updateTransformation('sz', this.transformation.sx, true)
+            }
+        }
+
+        if (key === 'sy') {
+            scaleHeight = Number(Number.parseFloat(sy * ogScaleHeight).toFixed(2))
+            this.transformation.scaleHeight = scaleHeight
+            this.scale.copy(new THREE.Vector3(this.transformation.sx, this.transformation.sy, this.transformation.sz));
+
+            if (!uniformScaleFlag && isUniformScaling) {
+                this.updateTransformation('sx', this.transformation.sy, true)
+                this.updateTransformation('sz', this.transformation.sy, true)
+            }
+        }
+
+        if (key === 'sz') {
+            scaleDepth = Number(Number.parseFloat(sz * ogScaleDepth).toFixed(2))
+            this.transformation.scaleDepth = scaleDepth
+            this.scale.copy(new THREE.Vector3(this.transformation.sx, this.transformation.sy, this.transformation.sz));
+
+            if (!uniformScaleFlag && isUniformScaling) {
+                this.updateTransformation('sy', this.transformation.sz, true)
+                this.updateTransformation('sx', this.transformation.sz, true)
+            }
+        }
+
+        // console.log(this.scale)
+        console.log(this.transformation.sx, this.transformation.sy, this.transformation.sz)
     }
 }
 

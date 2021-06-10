@@ -1,4 +1,4 @@
-const {app, BrowserWindow, shell, Menu, MenuItem} = require('electron');
+const {app, BrowserWindow, shell, Menu, MenuItem, globalShortcut, powerSaveBlocker} = require('electron');
 const path = require('path');
 
 function setUpMenu() {
@@ -44,7 +44,11 @@ function createWindow() {
         event.preventDefault();
         shell.openExternal(url);
     });
+
+    return mainWindow
 }
+
+let mainWindow = null
 
 //https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = false;
@@ -53,7 +57,7 @@ app.allowRendererProcessReuse = false;
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow();
+    mainWindow = createWindow();
     app.on('activate', () => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
@@ -71,6 +75,32 @@ app.on('window-all-closed', () => {
         app.quit()
     }
 });
+
+app.on("browser-window-focus", () => {
+    // console.log('focus')
+
+    // Mac环境下注册复制粘贴快捷键
+    if (process.platform !== 'darwin' || !mainWindow) return
+    globalShortcut.register('CommandOrControl+C', () => {
+        // console.log('复制')
+        mainWindow.webContents.copy()
+    })
+
+    globalShortcut.register("CommandOrControl+V", () => {
+        // console.log('粘贴')
+        mainWindow.webContents.paste();
+    });
+    // console.log('注册')
+})
+
+app.on("browser-window-blur", () => {
+    // console.log('blur')
+    globalShortcut.unregisterAll()
+})
+
+// 省电拦截器
+const id = powerSaveBlocker.start('prevent-app-suspension')
+console.log(`是否开启省电拦截器 ${powerSaveBlocker.isStarted(id)}`)
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

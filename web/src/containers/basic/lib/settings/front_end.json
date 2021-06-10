@@ -1,27 +1,37 @@
 {
   "p3d": {
     "label": "3d print",
-    "description": "3d print",
+    "description": "3D Print",
     "gcode": "M888 P3\nM2000\n"
   },
   "laser": {
     "label": "laser",
-    "description": "laser",
+    "description": "Laser",
     "gcode": "M888 P1\nM2000\n"
   },
   "air_pick": {
     "label": "air picker",
-    "description": "air picker",
+    "description": "Air Picker",
     "gcode": "M888 P2\nM2000\n"
+  },
+  "rotary_air_pick": {
+    "label": "Rotary Air Picker",
+    "description": "Rotary Air Pick",
+    "gcode": "M888 P6\nM2100\nM2101\nM1003\n"
   },
   "soft_gripper": {
     "label": "soft gripper",
-    "description": "soft gripper",
+    "description": "Soft Gripper",
     "gcode": "M888 P2\nM2000\n"
+  },
+  "rotary_soft_gripper": {
+    "label": "Rotary Soft Gripper",
+    "description": "Rotary Soft Gripper",
+    "gcode": "M888 P6\nM2100\nM2101\nM1003\n"
   },
   "pen": {
     "label": "pen",
-    "description": "pen",
+    "description": "Pen",
     "gcode": "M888 P0\nM2000\n"
   }
 }

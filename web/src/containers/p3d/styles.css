@@ -1,3 +1,4 @@
+/*左侧垂直居中*/
 .div_transformation {
     position: absolute;
     top: 50%;
@@ -5,6 +6,7 @@
     -webkit-transform: translateY(-50%);
 }
 
+/*右侧垂直居中*/
 .div_gcode_preview_control {
     position: absolute;
     top: 50%;
@@ -22,19 +24,10 @@
     height: 38px;
 }
 
-.div_gcode_info {
+.div_info {
     position: absolute;
     bottom: 15px;
     right: 410px;
     height: 45px;
     width: 100px;
-}
-
-.div_model_info {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    padding: 5px;
-    height: 30px;
-    width: 350px;
 }

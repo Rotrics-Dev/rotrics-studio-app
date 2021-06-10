@@ -1,0 +1,144 @@
+.btn_rotate_left {
+  width: 45px;
+  background-image: url('../../images/rotate_left.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_rotate_right {
+  width: 45px;
+  background-image: url('../../images/rotate_right.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_swag {
+  width: 45px;
+  background-image: url('../../images/swag.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_clockwise {
+  width: 45px;
+  background-image: url('../../images/clockwise.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_anticlockwise {
+  width: 45px;
+  background-image: url('../../images/anticlockwise.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_power {
+  width: 45px;
+  background-image: url('../../images/power.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_power_disable {
+  width: 45px;
+  background-image: url('../../images/power_disable.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_power {
+  width: 45px;
+  background-image: url('../../images/power.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_backward {
+  width: 45px;
+  background-image: url('../../images/backward_dark.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_backward_disable {
+  width: 45px;
+  background-image: url('../../images/backward_gray.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_forward {
+  width: 45px;
+  background-image: url('../../images/forward_dark.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_forward_disable {
+  width: 45px;
+  background-image: url('../../images/forward_gray.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_stop {
+  width: 45px;
+  background-image: url('../../images/stop_dark.svg') !important;
+  background-size: 25px 25px !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+  background-position: center !important;
+  vertical-align: middle !important;
+}
+
+.btn_rotate_left:active, 
+.btn_rotate_right:active,
+.btn_swag:active,
+.btn_clockwise:active,
+.btn_anticlockwise:active,
+.btn_power:active,
+.btn_power_disable:active,
+.btn_backward:active,
+.btn_backward:active,
+.btn_backward_disable:active,
+.btn_backward_disable:active,
+.btn_stop:active {
+  opacity: .4;
+}

@@ -9,36 +9,30 @@ import socketClientManager from "../socket/socketClientManager";
 import {P3D_SLICE_START, P3D_SLICE_STATUS} from "../constants";
 import gcodeBufferGeometryToObj3d from "../containers/p3d/lib/GcodeToBufferGeometry/gcodeBufferGeometryToObj3d";
 import GcodeToBufferGeometryWorker from '../containers/p3d/lib/GcodeToBufferGeometry.worker';
-import messageI18n from "../utils/messageI18n";
 
 const ACTION_UPDATE_STATE = 'p3dModel/ACTION_UPDATE_STATE';
 
 const INITIAL_STATE = {
-    rendererParent4model: null,
     model: null,
-    boundingBox: null,
-    filePath: null,
     modelCount: 0,
     transformation: null,
     //gcode
     gcodeObj3d: null,
+    result: null, //切片结果：{gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
     layerCount: 0, //gcode渲染后，一共多少层
     layerCountVisible: 0, //当前显示的多少层gcode line
     lineTypeVisibility: null, //gcode渲染后，不同type的visibility
     bounds: null,
-    //slice progress or load model progress
+    //progress
     progress: 0,
-    //slice result: {gcodeFileName, printTime, filamentLength, filamentWeight, gcodeFilePath}
-    gcodeFileName: null,
-    printTime: 0,
-    filamentLength: 0,
-    filamentWeight: 0,
-    gcodeFilePath: null,
-    gcodeUrl: null
+    progressTitle: "",
+    // 是否锁定比例
+    isUniformScaling: true
 };
 
 const gcodeRenderingWorker = new GcodeToBufferGeometryWorker();
 
+let rendererParent4model = null;
 let rendererParent4gcode = null;
 
 const _computeAvailableXZ = (rendererParent4model, model) => {
@@ -53,6 +47,7 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
     };
 
     const _getPositionBetween = (p1, p2, step) => {
+        console.log('_getPositionBetween')
         const positions = [];
         if (p1.x !== p2.x) {
             const z = p1.z;
@@ -81,7 +76,7 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
     };
 
     if (rendererParent4model.children.length === 0) {
-        return {x: 0, z: 0};
+        return {x: 0, z: -300/* default z */};
     }
     model.computeBoundingBox();
     const modelBox3 = model.boundingBox;
@@ -91,8 +86,8 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
         box3Arr.push(model.boundingBox);
     }
 
-    const length = 65;
-    const step = 5; // min distance of models
+    const length = 40;
+    const step = 10; // min distance of models &
     const y = 1;
     for (let stepCount = 1; stepCount < length / step; stepCount++) {
         // check the 4 positions on x&z axis first
@@ -136,7 +131,7 @@ const _computeAvailableXZ = (rendererParent4model, model) => {
             //     continue;
             // }
             if (!_isBox3IntersectOthers(modelBox3Clone, box3Arr)) {
-                return {x: position.x, z: position.z};
+                return {x: position.x, z: position.z - 300/* default z */};
             }
         }
     }
@@ -150,16 +145,16 @@ const actions = {
             state
         };
     },
-    setRendererParent4model: (object3d) => (dispatch, getState) => {
-        dispatch(actions._updateState({
-            rendererParent4model: object3d
-        }));
+    setRendererParent4model: (object3d) => {
+        rendererParent4model = object3d;
+        return {type: null};
     },
     setRendererParent4gcode: (object3d) => {
         rendererParent4gcode = object3d;
         return {type: null};
     },
-    loadModel: (url, filePath) => (dispatch, getState) => {
+    loadModel: (url) => (dispatch, getState) => {
+        console.log('加载模型')
         const worker = new File3dToBufferGeometryWorker();
         worker.postMessage({url});
         worker.onmessage = (e) => {
@@ -167,8 +162,6 @@ const actions = {
             const {status, value} = data;
             switch (status) {
                 case 'succeed': {
-                    messageI18n.success('Loading model succeeded');
-
                     worker.terminate();
                     destoryGcodeObj3d();
 
@@ -183,14 +176,35 @@ const actions = {
                     bufferGeometry.addAttribute('position', modelPositionAttribute);
                     bufferGeometry.computeVertexNormals();
                     convexBufferGeometry.addAttribute('position', modelConvexPositionAttribute);
-
-                    const model = new Model3D(bufferGeometry, convexBufferGeometry);
-                    const {rendererParent4model} = getState().p3dModel;
+                    console.log('生成model')
+                    console.log(bufferGeometry, convexBufferGeometry)
+                    const model = new Model3D(bufferGeometry, convexBufferGeometry, url, url);
+                    model.computeBoundingBox()
                     const xz = _computeAvailableXZ(rendererParent4model, model);
                     model.position.x = xz.x;
-                    model.position.z = xz.z;
-                    model.computeBoundingBox();
+                    model.position.z = xz.z /*- 300*/;//设置Y方向的偏移到 y300 陈会龙 2020年8月24日Z
+                    model.transformation.x = model.position.x;
+                    model.transformation.y = -model.position.z;
                     rendererParent4model.add(model);
+
+                    // 获取stl尺寸
+                    const { boundingBox } = model;
+                    // var object3DWidth  = bb.max.x - bb.min.x;
+                    // var object3DHeight = bb.max.y - bb.min.y;
+                    // var object3DDepth  = bb.max.z - bb.min.z;
+                    // console.log(object3DWidth, object3DHeight, object3DDepth)
+
+                    // 缩放尺寸
+                    model.transformation.ogScaleWidth = Number(Number.parseFloat(boundingBox.max.x - boundingBox.min.x).toFixed(2)),
+                    model.transformation.ogScaleHeight = Number(Number.parseFloat(boundingBox.max.z - boundingBox.min.z).toFixed(2)),
+                    model.transformation.ogScaleDepth = Number(Number.parseFloat(boundingBox.max.y - boundingBox.min.y).toFixed(2))
+
+                    // 原始缩放尺寸
+                    model.transformation.scaleWidth = Number(Number.parseFloat(boundingBox.max.x - boundingBox.min.x).toFixed(2)),
+                    model.transformation.scaleHeight = Number(Number.parseFloat(boundingBox.max.z - boundingBox.min.z).toFixed(2)),
+                    model.transformation.scaleDepth = Number(Number.parseFloat(boundingBox.max.y - boundingBox.min.y).toFixed(2))
+
+                    model.transformation.isUniformScaling = true
 
                     for (const child of rendererParent4model.children) {
                         child.setSelected(false);
@@ -198,38 +212,34 @@ const actions = {
                     }
                     model.setSelected(true);
 
-                    const {transformation, boundingBox, filePath} = model;
+                    const transformation = model.transformation;
                     const modelCount = rendererParent4model.children.length;
+
+
+                    console.log(model)
 
                     dispatch(actions._updateState({
                         model,
-                        boundingBox,
-                        filePath,
                         modelCount,
                         transformation,
                         gcodeObj3d: null,
+                        result: null,
                         layerCount: 0,
                         layerCountVisible: 0,
                         lineTypeVisibility: null,
                         bounds: null,
                         progress: 100,
-                        gcodeFileName: null,
-                        printTime: 0,
-                        filamentLength: 0,
-                        filamentWeight: 0,
-                        gcodeFilePath: null,
-                        gcodeUrl: null
+                        progressTitle: 'Load model ok'
                     }));
                     break;
                 }
                 case 'progress':
-                    dispatch(actions._updateState({progress: value * 100}));
+                    dispatch(actions._updateState({progress: value * 100, progressTitle: 'Loading model'}));
                     break;
                 case 'err':
                     worker.terminate();
                     console.error(value);
-                    messageI18n.error('Loading model failed');
-                    dispatch(actions._updateState({progress: 0}));
+                    dispatch(actions._updateState({progress: 0, progressTitle: 'Failed to load model'}));
                     break;
                 default:
                     break;
@@ -237,77 +247,61 @@ const actions = {
         };
     },
     selectModel: (model) => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
         for (const child of rendererParent4model.children) {
             child.setSelected(false);
         }
         model.setSelected(true);
-        const {transformation, boundingBox, filePath} = model;
+        const transformation = model.transformation;
         dispatch(actions._updateState({
             model,
-            boundingBox,
-            filePath,
             transformation
         }));
     },
     removeSelected: () => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
+        console.log("remove")
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         rendererParent4model.remove(model);
         const modelCount = rendererParent4model.children.length;
         dispatch(actions._updateState({
             model: null,
-            boundingBox: null,
-            filePath: null,
             modelCount,
             transformation: null,
             gcodeObj3d: null,
+            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
         }));
     },
     removeAll: () => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         rendererParent4model.remove(...rendererParent4model.children);
         dispatch(actions._updateState({
             model: null,
-            boundingBox: null,
-            filePath: null,
             modelCount: 0,
             transformation: null,
             gcodeObj3d: null,
+            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
         }));
     },
     duplicateSelected: () => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         const newModel = model.clone();
         newModel.position.x = 0;
-        newModel.position.z = 0;
+        newModel.position.z = -300;//先将模型 移动到默认位置，
         const xz = _computeAvailableXZ(rendererParent4model, newModel);
         newModel.position.x = xz.x;
         newModel.position.z = xz.z;
+        newModel.transformation.x = newModel.position.x;
+        newModel.transformation.y = -newModel.position.z;
+
         rendererParent4model.add(newModel);
 
         for (const child of rendererParent4model.children) {
@@ -317,16 +311,11 @@ const actions = {
         dispatch(actions._updateState({
             modelCount,
             gcodeObj3d: null,
+            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
         }));
     },
     undo: () => {
@@ -338,7 +327,6 @@ const actions = {
         return {type: null};
     },
     layFlat: () => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.layFlat();
@@ -347,24 +335,17 @@ const actions = {
             child.setMode('prepare');
         }
         dispatch(actions._updateState({
-            boundingBox: model.boundingBox,
-            filePath: model.filePath,
             transformation,
             gcodeObj3d: null,
+            result: null,
             layerCount: 0,
             layerCountVisible: 0,
             lineTypeVisibility: null,
             bounds: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
         }));
     },
     updateTransformation: (key, value) => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
+        console.log(key, value)
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.updateTransformation(key, value);
@@ -375,16 +356,10 @@ const actions = {
         dispatch(actions._updateState({
             transformation,
             gcodeObj3d: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
+            result: null,
         }));
     },
     afterUpdateTransformation: (key, value) => (dispatch, getState) => {
-        const {rendererParent4model} = getState().p3dModel;
         destoryGcodeObj3d();
         const {model} = getState().p3dModel;
         model.updateTransformation(key, value);
@@ -394,43 +369,27 @@ const actions = {
         }
         const transformation = _.cloneDeep(model.transformation);
         dispatch(actions._updateState({
-            boundingBox: model.boundingBox,
             transformation,
             gcodeObj3d: null,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
+            result: null,
         }));
     },
     //g-code
-    generateGcode: () => async (dispatch, getState) => {
-        messageI18n.info('Generating G-code started');
-
+    startSlice: () => async (dispatch, getState) => {
+        // 开始切片
         destoryGcodeObj3d();
 
         dispatch(actions._updateState({
             gcodeObj3d: null,
         }));
 
-        //导出数据并上传到server
-        const {rendererParent4model} = getState().p3dModel;
-        const file = exportModelsToFile(rendererParent4model);
+        // 导出数据并上传到server
+        const file = exportModelsToFile();
         const response = await uploadFile(file);
         const {url: stlUrl} = response;
 
         //设置初始状态
-        dispatch(actions._updateState({
-            progress: 0,
-            gcodeFileName: null,
-            printTime: 0,
-            filamentLength: 0,
-            filamentWeight: 0,
-            gcodeFilePath: null,
-            gcodeUrl: null
-        }));
+        dispatch(actions._updateState({progress: 0, progressTitle: "slicing", result: null}));
 
         //异步切片
         const materialSettingFilename = getState().p3dMaterialSettings.selected.filename;
@@ -443,32 +402,24 @@ const actions = {
             }
             const {progress, error, result} = data;
             if (error) {
-                messageI18n.error('Generating G-code failed');
-                dispatch(actions._updateState({progress: 0}));
+                dispatch(actions._updateState({progress: 0, progressTitle: "slicing error"}));
             } else if (progress) {
-                dispatch(actions._updateState({progress}));
+                dispatch(actions._updateState({progress, progressTitle: "slicing"}));
             } else if (result) {
-                messageI18n.success('Generating G-code succeeded');
-                const {gcodeName, printTime, filamentLength, filamentWeight, gcodePath} = result;
+                //result: {gcodeName, printTime, filamentLength, filamentWeight, gcodePath}
                 const gcodeUrl = window.serverCacheAddress + result.gcodeName;
-                dispatch(actions._updateState({
-                    progress: 1,
-                    gcodeName,
-                    printTime,
-                    filamentLength,
-                    filamentWeight,
-                    gcodePath,
-                    gcodeUrl
-                }));
+                result.gcodeUrl = gcodeUrl;
+                dispatch(actions._updateState({progress: 1, progressTitle: "slicing completed", result}));
                 dispatch(actions._renderGcode(gcodeUrl));
             }
         });
+
+        // 触发P3D_SLICE_START
+        console.log('触发 P3D_SLICE_START')
         socketClientManager.emitToServer(P3D_SLICE_START, {stlUrl, materialSettingFilename, printSettingFilename, id})
     },
-    _renderGcode: (gcodeUrl) => (dispatch, getState) => {
-        messageI18n.info('Rendering G-code started');
-
-        dispatch(actions._updateState({progress: 0}));
+    _renderGcode: (gcodeUrl) => (dispatch) => {
+        dispatch(actions._updateState({progress: 0, progressTitle: "rendering g-code"}));
 
         gcodeRenderingWorker.postMessage({fileUrl: gcodeUrl});
         gcodeRenderingWorker.onmessage = (e) => {
@@ -476,8 +427,6 @@ const actions = {
             const {status, value} = data;
             switch (status) {
                 case 'succeed': {
-                    messageI18n.success('Rendering G-code succeeded');
-
                     const {positions, colors, layerIndices, typeCodes, layerCount, bounds} = value;
                     const bufferGeometry = new THREE.BufferGeometry();
                     const positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
@@ -536,7 +485,6 @@ const actions = {
                         }
                     };
 
-                    const {rendererParent4model} = getState().p3dModel;
                     for (const child of rendererParent4model.children) {
                         child.setMode('preview');
                     }
@@ -547,18 +495,18 @@ const actions = {
                         layerCountVisible,
                         bounds,
                         lineTypeVisibility,
-                        progress: 1
+                        progress: 1,
+                        progressTitle: "renderer g-code completed",
                     }));
                     break;
                 }
                 case 'progress': {
-                    dispatch(actions._updateState({progress: value}));
+                    dispatch(actions._updateState({progress: value, progressTitle: "rendering g-code"}));
                     break;
                 }
                 case 'err': {
                     console.error(value);
-                    messageI18n.error('Rendering G-code failed');
-                    dispatch(actions._updateState({progress: 0}));
+                    dispatch(actions._updateState({progress: 0, progressTitle: "renderer g-code error"}));
                     break;
                 }
             }
@@ -586,6 +534,14 @@ const actions = {
 
         dispatch(actions._updateState({lineTypeVisibility: visibility}));
     },
+
+    // 切换锁定比例
+    toggleIsUniformScaling: () => (dispatch, getState) => {
+        const { isUniformScaling } = getState().p3dModel
+        dispatch(actions._updateState({
+            isUniformScaling: !isUniformScaling
+        }))
+    }
 };
 
 const destoryGcodeObj3d = () => {
@@ -598,15 +554,19 @@ const addGcodeObj3d = (object3d) => {
     rendererParent4gcode.add(object3d);
 };
 
-const exportModelsToFile = (rendererParent4model) => {
-    const blob = exportModelsToBlob(rendererParent4model);
+const exportModelsToFile = () => {
+    const blob = exportModelsToBlob();
     const fileName = "output.stl";
-    return new File([blob], fileName);
+    const file = new File([blob], fileName);
+    return file;
 };
 
-const exportModelsToBlob = (rendererParent4model) => {
+const exportModelsToBlob = () => {
+    console.log('rendererParent4model')
+    console.log(rendererParent4model)
     const output = new ModelExporter().parseToBinaryStl(rendererParent4model);
-    return new Blob([output], {type: 'text/plain'});
+    const blob = new Blob([output], {type: 'text/plain'});
+    return blob;
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

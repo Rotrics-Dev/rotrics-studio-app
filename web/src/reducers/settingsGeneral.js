@@ -1,12 +1,13 @@
-import ReactGA from 'react-ga';
 import socketClientManager from "../socket/socketClientManager";
+import ReactGA from 'react-ga';
 import {actions as serialPortActions} from './serialPort';
 import {
     FIRMWARE_UPGRADE_START,
-    SERIAL_PORT_ON_OPEN,
+    SERIAL_PORT_OPEN,
     FIRMWARE_UPGRADE_STEP_CHANGE,
-    SERIAL_PORT_ON_RECEIVED_LINE,
-    SERIAL_PORT_ON_CLOSE,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_CLOSE
 } from "../constants.js"
 
 const ACTION_UPDATE_STATE = 'settingsGeneral/ACTION_UPDATE_STATE';
@@ -14,6 +15,7 @@ const ACTION_UPDATE_STATE = 'settingsGeneral/ACTION_UPDATE_STATE';
 const INITIAL_STATE = {
     firmwareVersion: null,
     hardwareVersion: null,
+    path: null,
     bootLoaderModalVisible: false,
     isInBootLoader: false,
     //ack
@@ -24,11 +26,15 @@ const INITIAL_STATE = {
 
 export const actions = {
     init: () => (dispatch, getState) => {
-        socketClientManager.addServerListener(SERIAL_PORT_ON_OPEN, () => {
-            //TODO: 使用gcode sender
-            dispatch(serialPortActions.write('M2010\nM2011\na5\n'));
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_CLOSE, (path) => {
+        const callback4open = (path) => {
+            if (path) {
+                dispatch(serialPortActions.write('M2010\nM2011\na5\n'));
+            }
+        };
+        socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, callback4open);
+        socketClientManager.addServerListener(SERIAL_PORT_OPEN, callback4open);
+
+        socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
             dispatch(actions._updateState({
                 firmwareVersion: null,
                 hardwareVersion: null,
@@ -36,40 +42,44 @@ export const actions = {
                 isInBootLoader: false
             }));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-            //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
-            //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
-            if (line.startsWith("Hardware Version:")) {
-                const hardwareVersion = line.replace("Hardware Version:", "").replace("\r", "").trim();
-                dispatch(actions._updateState({
-                    hardwareVersion,
-                    bootLoaderModalVisible: true,
-                    isInBootLoader: true
-                }));
-            } else if (line.startsWith("Firmware ")) {
-                const firmwareVersion = line.replace("Firmware", "").replace("\r", "").trim();
-                dispatch(actions._updateState({
-                    firmwareVersion,
-                    bootLoaderModalVisible: false,
-                    isInBootLoader: false
-                }));
-                ReactGA.event({
-                    category: 'firmwareVersion',
-                    action: firmwareVersion
-                });
-            } else if (line.startsWith("Hardware ")) {
-                const hardwareVersion = line.replace("Hardware", "").replace("\r", "").trim();
-                dispatch(actions._updateState({
-                    hardwareVersion,
-                    bootLoaderModalVisible: false,
-                    isInBootLoader: false
-                }));
-                ReactGA.event({
-                    category: 'hardwareVersion',
-                    action: hardwareVersion
-                });
+        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
+            const {received} = data;
+            if (received) {
+                //收到"Hardware Version: Vxx"，表示处在boot loader模式下，提示强制升级
+                //收到"Hardware Vxx"或"Firmware Vxx"，表示处在app
+                if (received.startsWith("Hardware Version:")) {
+                    const hardwareVersion = received.replace("Hardware Version:", "").replace("\r", "").trim();
+                    dispatch(actions._updateState({
+                        hardwareVersion,
+                        bootLoaderModalVisible: true,
+                        isInBootLoader: true
+                    }));
+                } else if (received.startsWith("Firmware ")) {
+                    const firmwareVersion = received.replace("Firmware", "").replace("\r", "").trim();
+                    dispatch(actions._updateState({
+                        firmwareVersion,
+                        bootLoaderModalVisible: false,
+                        isInBootLoader: false
+                    }));
+                    ReactGA.event({
+                        category: 'firmwareVersion',
+                        action: firmwareVersion
+                    });
+                } else if (received.startsWith("Hardware ")) {
+                    const hardwareVersion = received.replace("Hardware", "").replace("\r", "").trim();
+                    dispatch(actions._updateState({
+                        hardwareVersion,
+                        bootLoaderModalVisible: false,
+                        isInBootLoader: false
+                    }));
+                    ReactGA.event({
+                        category: 'hardwareVersion',
+                        action: hardwareVersion
+                    });
+                }
             }
         });
+
         //data: {step, status, description}
         socketClientManager.addServerListener(FIRMWARE_UPGRADE_STEP_CHANGE, (data) => {
             const {current, status, description} = data;

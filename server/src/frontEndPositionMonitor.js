@@ -1,46 +1,49 @@
-import EventEmitter from "events";
-import serialPortManager from "./serialPortManager";
 import {
     FRONT_END_POSITION_MONITOR,
-    SERIAL_PORT_ACTION_CLOSE,
-    SERIAL_PORT_ON_RECEIVED_LINE,
-    SERIAL_PORT_ON_ERROR,
-    SERIAL_PORT_ACTION_OPEN,
-    SERIAL_PORT_ON_WRITE_ERROR,
-    SERIAL_PORT_ON_WRITE_OK
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_DATA, SERIAL_PORT_ERROR,
+    SERIAL_PORT_OPEN, SERIAL_PORT_WRITE_ERROR,
+    SERIAL_PORT_WRITE_OK,
+    TEMPERATURE_MONITOR
 } from "./constants";
+import EventEmitter from "events";
+import serialPortManager from "./serialPortManager";
 
 class FrontEndPositionMonitor extends EventEmitter {
-    constructor() {
-        super();
-        serialPortManager.on(SERIAL_PORT_ACTION_OPEN, () => {
+    registerListeners() {
+        serialPortManager.on(SERIAL_PORT_OPEN, () => {
             this.onOpen();
         });
-        serialPortManager.on(SERIAL_PORT_ACTION_CLOSE, () => {
+        serialPortManager.on(SERIAL_PORT_CLOSE, () => {
             this.onClose();
         });
-        serialPortManager.on(SERIAL_PORT_ON_ERROR, () => {
+        serialPortManager.on(SERIAL_PORT_ERROR, () => {
             this.onError();
         });
-        serialPortManager.on(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-            this.onRead(line);
+        serialPortManager.on(SERIAL_PORT_DATA, ({received}) => {//read
+            // console.log('接收 read SERIAL_PORT_DATA')
+            // console.log(received)
+            this.onRead(received);
         });
-        serialPortManager.on(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
-            //TODO: data不一定是string
+        serialPortManager.on(SERIAL_PORT_WRITE_OK, (data) => {//write
+            // console.log('接收 write SERIAL_PORT_WRITE_OK')
+            // console.log(received)
             this.onWrite(data);
         });
-        serialPortManager.on(SERIAL_PORT_ON_WRITE_ERROR, ({data}) => {
+        serialPortManager.on(SERIAL_PORT_WRITE_ERROR, (data) => {
             this.onWriteError();
         });
     }
 
     resetPosition() {
         this.currentX = 0;
-        this.currentY = 0;
+        this.currentY = 0
         this.currentZ = 0;
+        this.currentE = 0;
         this.nextX = 0;
         this.nextY = 0;
         this.nextZ = 0;
+        this.nextE = 0;
         this.isAbsolutePosition = true;
         this.needProcessM114 = false;
     }
@@ -69,6 +72,7 @@ class FrontEndPositionMonitor extends EventEmitter {
         this.currentX = this.nextX;
         this.currentY = this.nextY;
         this.currentZ = this.nextZ;
+        this.currentE = this.nextE;
         this.sendPosition();
     }
 
@@ -106,10 +110,19 @@ class FrontEndPositionMonitor extends EventEmitter {
     }
 
     onRead(line) {
+        console.log(`前端位置监听器获取行 ${line}`)
         if (!line) {
             return;
         }
-        if (line.startsWith('ok')) {
+
+        if (line.startsWith('ok') || line.startsWith('T:')) {
+            // 判断是否为温度
+            if (line.startsWith('ok T:') || line.startsWith('T:')) {
+                console.log('前端位置监听器发送温度')
+                this.sendTemperature(line)
+                return
+            }
+
             this.onReadOk();
         } else if (this.needProcessM114) {
             this.processM114(line);
@@ -121,9 +134,20 @@ class FrontEndPositionMonitor extends EventEmitter {
         this.currentX = Math.round((this.currentX) * 10) / 10
         this.currentY = Math.round((this.currentY) * 10) / 10
         this.currentZ = Math.round((this.currentZ) * 10) / 10
+        this.currentE = Math.round((this.currentE) * 10) / 10
 
-        const position = {x: this.currentX, y: this.currentY, z: this.currentZ};
+        const position = {
+            x: this.currentX, 
+            y: this.currentY, 
+            z: this.currentZ, 
+            e: this.currentE
+        };
         this.emit(FRONT_END_POSITION_MONITOR, position);
+    }
+
+    // 发送温度
+    sendTemperature (receive) {
+        this.emit(TEMPERATURE_MONITOR, receive)
     }
 
     onWriteG0(line) {
@@ -173,6 +197,7 @@ class FrontEndPositionMonitor extends EventEmitter {
         this.nextX = parseFloat(split[0].split(':')[1]);
         this.nextY = parseFloat(split[1].split(':')[1]);
         this.nextZ = parseFloat(split[2].split(':')[1]);
+        this.nextE = parseFloat(split[3].split(':')[1])
         this.needProcessM114 = false;
         this.sendPosition();
     }
@@ -181,6 +206,7 @@ class FrontEndPositionMonitor extends EventEmitter {
         let x = Number.MIN_VALUE;
         let y = Number.MIN_VALUE;
         let z = Number.MIN_VALUE;
+        let e = Number.MIN_VALUE;
         line.split(' ').forEach((value) => {
             if (value.startsWith('X')) {
                 x = parseFloat(value.slice(1, value.length));
@@ -189,6 +215,8 @@ class FrontEndPositionMonitor extends EventEmitter {
 
             } else if (value.startsWith('Z')) {
                 z = parseFloat(value.slice(1, value.length));
+            } else if (value.startsWith('E')) {
+                e = parseFloat(value.slice(1, value.length));
             }
         });
 
@@ -196,14 +224,15 @@ class FrontEndPositionMonitor extends EventEmitter {
             this.nextX = (x === Number.MIN_VALUE || x.isNaN) ? this.nextX : x;
             this.nextY = (y === Number.MIN_VALUE || x.isNaN) ? this.nextY : y;
             this.nextZ = (z === Number.MIN_VALUE || x.isNaN) ? this.nextZ : z;
+            this.nextE = (e === Number.MIN_VALUE || e.isNaN) ?  this.nextE : e;
         } else {
             this.nextX += (x === Number.MIN_VALUE || x.isNaN) ? 0 : x;
             this.nextY += (y === Number.MIN_VALUE || x.isNaN) ? 0 : y;
             this.nextZ += (z === Number.MIN_VALUE || x.isNaN) ? 0 : z;
+            this.nextE += (e === Number.MIN_VALUE || x.isNaN) ? 0 : e;
         }
     }
 }
 
 const frontEndPositionMonitor = new FrontEndPositionMonitor();
-
 export default frontEndPositionMonitor;

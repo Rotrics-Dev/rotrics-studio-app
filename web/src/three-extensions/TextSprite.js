@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { getIsAdvance } from '../utils'
+
 
 // TextSprite
 class TextSprite {
@@ -56,6 +58,13 @@ class TextSprite {
         sprite.scale.set(textWidth / textHeight * size, size, 1);
 
         textObject.add(sprite);
+
+        // console.log('修改红字')
+        // console.log(options)
+        // console.log(getIsAdvance())
+        // if (options.checkIsAdvance && getIsAdvance()) {
+        //     textObject.translateY(-200)
+        // }
 
         return textObject;
     }

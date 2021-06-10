@@ -8,44 +8,31 @@ import koaBody from 'koa-body';
 import Router from 'koa-router';
 import serve from 'koa-static';
 import isElectron from 'is-electron';
-import {getImageSize, getUniqueFilename} from './utils';
+import {getImageSize, getUniqueFilename} from './utils/index.js';
 import serialPortManager from './serialPortManager.js';
 import generateToolPathLines from './toolPath/generateToolPathLines.js';
-import gcodeSender from './gcodeSender.js';
+import gcodeSender from './gcode/gcodeSender.js';
 import frontEndPositionMonitor from "./frontEndPositionMonitor";
 import p3dStartSlice from './p3dStartSlice.js';
+import {checkFileExist} from "./utils/fsUtils";
 import storeManager from './storeManager.js';
-
 import {
-    SERIAL_PORT_ACTION_GET_ALL_PATHS,
-    SERIAL_PORT_ACTION_GET_OPEN_PATH,
-    SERIAL_PORT_ACTION_OPEN,
-    SERIAL_PORT_ACTION_CLOSE,
-    SERIAL_PORT_ACTION_WRITE,
-    SERIAL_PORT_ON_GET_ALL_PATHS,
-    SERIAL_PORT_ON_GET_OPEN_PATH,
-    SERIAL_PORT_ON_OPEN,
-    SERIAL_PORT_ON_CLOSE,
-    SERIAL_PORT_ON_ERROR,
-    SERIAL_PORT_ON_WRITE_ERROR,
-    SERIAL_PORT_ON_WRITE_OK,
-    SERIAL_PORT_ON_WARNING,
-    SERIAL_PORT_ON_RECEIVED_LINE,
-    SERIAL_PORT_ON_INSERT,
-    SERIAL_PORT_ON_PULL_OUT,
+    SERIAL_PORT_PATH_UPDATE,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE,
+    TOOL_PATH_GENERATE_LASER,
+    TOOL_PATH_GENERATE_WRITE_AND_DRAW,
 
-    GCODE_SENDER_ACTION_START,
-    GCODE_SENDER_ACTION_PAUSE,
-    GCODE_SENDER_ACTION_RESUME,
-    GCODE_SENDER_ACTION_STOP,
-    GCODE_SENDER_ACTION_GET_STATUS,
-    GCODE_SENDER_ACTION_GET_PROGRESS,
-    GCODE_SENDER_ON_WARNING,
-    GCODE_SENDER_ON_STATUS_CHANGE,
-    GCODE_SENDER_ON_PROGRESS_CHANGE,
-
-    TOOL_PATH_GENERATE_MODEL2D,
-
+    GCODE_SENDER_STATUS_CHANGE,
+    GCODE_SENDER_START,
+    GCODE_SENDER_STOP,
+    GCODE_SENDER_PAUSE,
+    GCODE_SENDER_RESUME,
+    GCODE_SENDER_REFUSE,
     P3D_CONFIG_MATERIAL_SETTINGS_FETCH,
     P3D_CONFIG_MATERIAL_SETTING_UPDATE,
     P3D_CONFIG_MATERIAL_SETTING_DELETE,
@@ -69,6 +56,7 @@ import {
     P3D_DIR_CONFIG_MATERIAL_SETTINGS
 } from './init.js';
 import SVGParser from './SVGParser/index.js';
+import { TEMPERATURE_MONITOR } from './constants';
 
 let serverCacheAddress; //获取端口后，再初始化
 //socket.io conjunction with koa: https://github.com/socketio/socket.io
@@ -240,7 +228,8 @@ const setupHttpServer = () => {
             const filePath = path.join(storeManager.dir_code_projects_my, `${name}${extension}`);
             fs.writeFileSync(filePath, content);
             return ctx.body = {status: "ok"};
-        });
+        })
+    ;
 
     router.post('/font/upload', async (ctx) => {
         let fontName = '';
@@ -260,7 +249,7 @@ const setupHttpServer = () => {
         if (!font) font = null;
         if (font) {
             const fontPath = path.join(STATIC_DIR, font)
-            if (fs.existsSync(fontPath)) {
+            if (checkFileExist(fontPath)) {
                 fs.unlinkSync(fontPath);
             } else {
                 font = null;
@@ -273,19 +262,6 @@ const setupHttpServer = () => {
             userFonts
         };
     });
-
-    // app config
-    router
-        .get('/app_config/get/all', (ctx) => {
-            const data = storeManager.getAllAppConfig();
-            return ctx.body = {status: "ok", data};
-        })
-        .post('/app_config/set/one', (ctx) => {
-            const {key, value} = JSON.parse(ctx.request.body);
-            storeManager.setAppConfig(key, value);
-            const data = storeManager.getAllAppConfig();
-            return ctx.body = {status: "ok", data};
-        });
 
     app.use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');
@@ -335,85 +311,86 @@ const setupSocket = () => {
                 socket.removeAllListeners();
                 serialPortManager.removeAllListeners();
                 gcodeSender.removeAllListeners();
-            });
-
-            frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
-                socket.emit(FRONT_END_POSITION_MONITOR, position);
+                frontEndPositionMonitor.removeAllListeners();
             });
 
             //注意：最好都使用箭头函数，否则this可能指向其他对象
             //serial port
-            socket.on(SERIAL_PORT_ACTION_GET_ALL_PATHS, () => serialPortManager.getAllPaths());
-            socket.on(SERIAL_PORT_ACTION_GET_OPEN_PATH, () => {
-                socket.emit(SERIAL_PORT_ON_GET_OPEN_PATH, serialPortManager.getOpenPath());
+            serialPortManager.on(SERIAL_PORT_PATH_UPDATE, (paths) => {
+                socket.emit(SERIAL_PORT_PATH_UPDATE, paths);
             });
-            socket.on(SERIAL_PORT_ACTION_OPEN, path => serialPortManager.open(path));
-            socket.on(SERIAL_PORT_ACTION_CLOSE, () => serialPortManager.close());
-            socket.on(SERIAL_PORT_ACTION_WRITE, data => serialPortManager.write(data));
+            
+            frontEndPositionMonitor.registerListeners();
+            frontEndPositionMonitor.on(FRONT_END_POSITION_MONITOR, (position) => {
+                console.log('socket emit postion', position)
+                socket.emit(FRONT_END_POSITION_MONITOR, position);
+            });
 
-            serialPortManager.on(SERIAL_PORT_ON_GET_ALL_PATHS, (paths) => {
-                socket.emit(SERIAL_PORT_ON_GET_ALL_PATHS, paths)
+            frontEndPositionMonitor.on(TEMPERATURE_MONITOR, (temperature) => {
+                console.log('socket emit temperature', temperature)
+                socket.emit(TEMPERATURE_MONITOR, temperature);
             });
-            serialPortManager.on(SERIAL_PORT_ON_OPEN, (path) => {
-                socket.emit(SERIAL_PORT_ON_OPEN, path)
+
+            socket.on(SERIAL_PORT_GET_OPENED, () => {
+                const path = serialPortManager.getOpened();
+                socket.emit(SERIAL_PORT_GET_OPENED, path);
             });
-            serialPortManager.on(SERIAL_PORT_ON_CLOSE, (path) => {
-                socket.emit(SERIAL_PORT_ON_CLOSE, path)
+
+            socket.on(SERIAL_PORT_OPEN, path => {
+                serialPortManager.open(path)
+                // Debug 解决“G-code sending task started, please do not repeat”报错导致无法操作机械臂的bug
+                console.log('gcodeSender 重置状态为 idle')
+                gcodeSender.curStatus = 'idle'
             });
-            serialPortManager.on(SERIAL_PORT_ON_ERROR, ({message}) => {
-                socket.emit(SERIAL_PORT_ON_ERROR, {message})
+            socket.on(SERIAL_PORT_CLOSE, () => serialPortManager.close());
+            socket.on(SERIAL_PORT_WRITE, data => serialPortManager.write(data));
+
+            serialPortManager.on(SERIAL_PORT_OPEN, (path) => {
+                socket.emit(SERIAL_PORT_OPEN, path);
             });
-            serialPortManager.on(SERIAL_PORT_ON_WRITE_ERROR, ({message, data}) => {
-                socket.emit(SERIAL_PORT_ON_WRITE_ERROR, {message, data})
+            serialPortManager.on(SERIAL_PORT_CLOSE, (path) => {
+                socket.emit(SERIAL_PORT_CLOSE, path);
             });
-            serialPortManager.on(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
-                socket.emit(SERIAL_PORT_ON_WRITE_OK, {data})
+            serialPortManager.on(SERIAL_PORT_ERROR, (error) => {
+                socket.emit(SERIAL_PORT_ERROR, error);
             });
-            serialPortManager.on(SERIAL_PORT_ON_WARNING, ({message}) => {
-                socket.emit(SERIAL_PORT_ON_WARNING, {message});
-            });
-            serialPortManager.on(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-                socket.emit(SERIAL_PORT_ON_RECEIVED_LINE, line);
-            });
-            serialPortManager.on(SERIAL_PORT_ON_INSERT, (paths) => {
-                socket.emit(SERIAL_PORT_ON_INSERT, paths)
-            });
-            serialPortManager.on(SERIAL_PORT_ON_PULL_OUT, (paths) => {
-                socket.emit(SERIAL_PORT_ON_PULL_OUT, paths)
+            serialPortManager.on(SERIAL_PORT_DATA, (data) => {
+                socket.emit(SERIAL_PORT_DATA, data);
             });
 
             //gcode sender
-            socket.on(GCODE_SENDER_ACTION_START, ({gcode, isLaser, taskId}) => {
-                gcodeSender.start({gcode, isLaser, taskId})
+            socket.on(GCODE_SENDER_START, (data) => {
+                const {gcode, isAckChange, isLaser, taskId} = data;
+                gcodeSender.start(gcode, isAckChange, isLaser, taskId)
             });
-            socket.on(GCODE_SENDER_ACTION_PAUSE, () => gcodeSender.pause());
-            socket.on(GCODE_SENDER_ACTION_RESUME, () => gcodeSender.resume());
-            socket.on(GCODE_SENDER_ACTION_STOP, () => gcodeSender.stop());
-            socket.on(GCODE_SENDER_ACTION_GET_STATUS, () => {
-                const {preStatus, curStatus, taskId} = gcodeSender;
-                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus, taskId})
-            });
-            socket.on(GCODE_SENDER_ACTION_GET_PROGRESS, () => {
-                const {total, sent, taskId} = gcodeSender;
-                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent, taskId})
-            });
+            socket.on(GCODE_SENDER_PAUSE, () => gcodeSender.pause());
+            socket.on(GCODE_SENDER_RESUME, () => gcodeSender.resume());
+            socket.on(GCODE_SENDER_STOP, () => gcodeSender.stop());
 
-            gcodeSender.on(GCODE_SENDER_ON_WARNING, ({msg}) => {
-                socket.emit(GCODE_SENDER_ON_WARNING, {msg});
+            gcodeSender.on(GCODE_SENDER_STATUS_CHANGE, (data) => {
+                socket.emit(GCODE_SENDER_STATUS_CHANGE, data);
             });
-            gcodeSender.on(GCODE_SENDER_ON_STATUS_CHANGE, ({preStatus, curStatus, taskId}) => {
-                socket.emit(GCODE_SENDER_ON_STATUS_CHANGE, {preStatus, curStatus, taskId});
-            });
-            gcodeSender.on(GCODE_SENDER_ON_PROGRESS_CHANGE, ({total, sent, taskId}) => {
-                socket.emit(GCODE_SENDER_ON_PROGRESS_CHANGE, {total, sent, taskId});
+            gcodeSender.on(GCODE_SENDER_REFUSE, (data) => {
+                socket.emit(GCODE_SENDER_REFUSE, data);
             });
 
             //laser
             socket.on(
-                TOOL_PATH_GENERATE_MODEL2D,
-                async ( {url, fileType, toolPathId, settings}) => {
-                    const toolPathLines = await generateToolPathLines(url, fileType, settings);
-                    socket.emit(TOOL_PATH_GENERATE_MODEL2D, {toolPathLines, toolPathId});
+                TOOL_PATH_GENERATE_LASER,
+                async (data) => {
+                    console.log(TOOL_PATH_GENERATE_LASER)
+                    const {url, settings, toolPathId, fileType} = data;
+                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
+                    socket.emit(TOOL_PATH_GENERATE_LASER, {toolPathLines, toolPathId});
+                }
+            );
+            socket.on(
+                TOOL_PATH_GENERATE_WRITE_AND_DRAW,
+                async (data) => {
+                    console.log(TOOL_PATH_GENERATE_WRITE_AND_DRAW)
+                    const {url, settings, toolPathId, fileType} = data;
+                    const toolPathLines = await generateToolPathLines(fileType, url, settings);
+                    socket.emit(TOOL_PATH_GENERATE_WRITE_AND_DRAW, {toolPathLines, toolPathId});
                 }
             );
 

@@ -1,9 +1,9 @@
-import http from "http";
 import SVGParser, {flip, rotate, scale, sortShapes, translate} from '../SVGParser/index.js';
 import {svgToSegments} from './SVGFill.js';
 import Normalizer from './Normalizer.js';
 import getFlipFlag from "./getFlipFlag.js";
-import {degree2radian} from '../utils';
+import {degree2radian} from '../utils/index.js';
+import http from "http";
 
 function pointEqual(p1, p2) {
     return p1[0] === p2[0] && p1[1] === p2[1];
@@ -14,17 +14,17 @@ const svg2toolPathStr = async (url, settings) => {
 
     const work_speed_placeholder = working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = working_parameters.children.jog_speed.placeholder;
-    const power_placeholder = (working_parameters.children.power ? working_parameters.children.power.placeholder : 'power_placeholder');
+    const power_placeholder = working_parameters.children.power.placeholder;
 
-    const originWidth = transformation.children.width_pixel.default_value;
-    const originHeight = transformation.children.height_pixel.default_value;
+    const originWidth = transformation.children.img_width.default_value;
+    const originHeight = transformation.children.img_height.default_value;
     const rotation = transformation.children.rotation.default_value; //degree and counter-clockwise
     const flip_model = transformation.children.flip_model.default_value;
 
     let flipFlag = getFlipFlag(flip_model);
 
-    const targetWidth = transformation.children.width_mm.default_value;
-    const targetHeight = transformation.children.height_mm.default_value;
+    const targetWidth = transformation.children.width.default_value;
+    const targetHeight = transformation.children.height.default_value;
 
     const fillEnabled = config.children.fill.default_value;
     const fillDensity = config.children.fill.children.fill_density.default_value;
@@ -106,7 +106,8 @@ const getSvgStr = async (url) => {
             });
         })
     });
-    return await promise;
+    let svg = await promise;
+    return svg;
 };
 
 const toolPathStr4svg = async (url, settings) => {

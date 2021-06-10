@@ -185,6 +185,17 @@ const str2Number  = (value) =>{
     return n;
 };
 
+/**
+ * 判断是否打开高级设置
+ * @returns 
+ */
+ const getIsAdvance = () => {
+    const advance = localStorage.getItem('ADVANCE')
+    return advance 
+        ? Number(advance) === 1 
+        : false
+}
+
 export {
     EPS,
     ensureRange,
@@ -194,6 +205,7 @@ export {
     getUuid,
     getAvailableSize,
     timestamp2date,
-    str2Number
+    str2Number,
+    getIsAdvance
 };
 

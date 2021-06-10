@@ -1,6 +1,8 @@
 const ACTION_UPDATE_STATE = 'p3dSettingVisibility/ACTION_UPDATE_STATE';
-
-const MATERIAL_SETTINGS_ALL = null;
+1
+const MATERIAL_SETTINGS_ALL = [
+    "infill.children.infill_sparse_density.children.infill_line_distance"
+];
 const MATERIAL_SETTINGS_BASIC = [
     "material.children.material_print_temperature",
     "material.children.material_print_temperature_layer_0",

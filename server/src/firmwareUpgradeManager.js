@@ -7,9 +7,9 @@ import SerialPort from 'serialport';
 import ReadLineParser from '@serialport/parser-readline';
 import {start_frame, end_frame, eot, chunk_frame} from "./frameUtil.js";
 import serialPortManager from './serialPortManager.js';
-import gcodeSender from "./gcodeSender.js";
+import gcodeSender from "./gcode/gcodeSender.js";
 
-const baudRate = 9600;
+const baudRate = 115200; // 9600;
 
 const sleep = (time) => {
     return new Promise(resolve => {
@@ -28,6 +28,7 @@ class FirmwareUpgradeManager {
         this.frameCount = 0;
         this.curFrame = null;
         this.cCount = 0;
+        this.isProcessing = false;
 
         this.onReceiveLine = async (line) => {
             // console.log("#onReceiveLine: " + line);
@@ -45,7 +46,7 @@ class FirmwareUpgradeManager {
                 this.onChange(8, 'finish');
 
                 await sleep(2000);
-                serialPortManager.port = null;
+                serialPortManager.serialPort = null;
                 serialPortManager.open(this.path);
             }
         };
@@ -113,11 +114,10 @@ class FirmwareUpgradeManager {
      * @returns {Promise<void>}
      */
     async start(cache_dir, isInBootLoader, onChange) {
-        console.log("# firmware -> start")
         this.cache_dir = cache_dir;
         this.onChange = onChange;
-        this.serialPort = serialPortManager.port;
-        this.path = serialPortManager.getOpenPath();
+        this.serialPort = serialPortManager.serialPort;
+        this.path = serialPortManager.getOpened();
         this.frames = [];
         this.frameCount = 0;
         this.curFrame = null;
@@ -127,7 +127,7 @@ class FirmwareUpgradeManager {
         //是否连接，是否正在发送gcode，网络是否可用
         this.onChange(0, 'process');
         if (!this.path) {
-            this.onChange(0, 'error', 'Please connect DexArm first');
+            this.onChange(0, 'error', 'Connect DexArm first');
             return;
         }
         if (gcodeSender.curStatus !== "idle") {
@@ -135,7 +135,7 @@ class FirmwareUpgradeManager {
             return;
         }
         if (!(await isOnline())) {
-            this.onChange(0, 'error', 'Network unavailable');
+            this.onChange(0, 'error', 'Network unavailable, please connect first');
             return;
         }
 
@@ -163,14 +163,14 @@ class FirmwareUpgradeManager {
         //step-2: Check need upgrade
         this.onChange(2, 'process');
         //必须升级，因此指定firmwareVersion为老版本即可
-        // const firmwareVersion = "V2.1.1";
+        const firmwareVersion = "V2.1.1";
         const {err: err4needUpgrade, url} = await this.isNeedUpgrade(firmwareVersion, hardwareVersion);
         if (err4needUpgrade) {
             this.onChange(2, 'error', err4needUpgrade);
             return;
         }
         if (!url) {
-            this.onChange(2, 'error', "Url is null");
+            this.onChange(2, 'error', "url is null");
             return;
         }
 
@@ -235,10 +235,7 @@ class FirmwareUpgradeManager {
     async upgrade4app() {
         //step-1: Collect DexArm info
         let {firmwareVersion, hardwareVersion} = await this.getDeviceInfo4app();
-        console.log("# firmware -> firmwareVersion: " + firmwareVersion)
-        console.log("# firmware -> hardwareVersion: " + hardwareVersion)
-
-        firmwareVersion = "V2.1.1";
+        // firmwareVersion = "V2.1.1";
         if (!firmwareVersion || !hardwareVersion) {
             this.onChange(1, 'error', 'Time out, please retry');
             return;

@@ -1,0 +1,34 @@
+.div_fix {
+    padding: 8px;
+    position: absolute;
+    left: 60px;
+    top: 50px;
+    z-index: 9999;
+    width: 400px;
+    height: 310px;
+    background-color: #f0f0f0;
+    opacity: 1;
+    border: 1px solid #C0C0C0;
+    border-radius: 3px;
+}
+
+.div_clear {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+}
+
+.div_close {
+    position: absolute;
+    right: 70px;
+    bottom: 8px;
+}
+
+.textarea_received {
+    width: 100%;
+    height: 230px;
+    resize: none;
+    font-size: 13px;
+    color: rgba(0, 0, 0, .85) !important;
+}
+

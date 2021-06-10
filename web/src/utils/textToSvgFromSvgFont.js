@@ -93,7 +93,7 @@ const getGlyphs = async (url) => {
     });
     return glyphs;
 }
-const textToSvgFromSvgFont = async (fontUrl, text, options) => {
+const textToSvgFromSvgFont = async (fontUrl, text, options, index = 0) => {
     if (!text) return;
     text = text.trim();
     if (text.length === 0) return;
@@ -105,8 +105,9 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
     const offsetToWidthOfCharacter = 0.7;//通常svg字体是手写体。这时候字符之间是有重叠的，经过调查，字符之间重叠30% 比较合理
 
     let paths = '';
-    let height = fontSize;
+    let height = fontSize * (index + 1);
     let width = 0;
+    console.log('height = ' + height)
 
     for (const c of text) {
         const glyph = glyphs[c.charCodeAt(0).toString(16)];
@@ -115,7 +116,7 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
             paths += '<path fill="none" stroke="#000000" stroke-width="1" d="' +
                 new SvgPath('M 100 300  L 400 300 L 400 700 L 100 700 L100 300 L400 700 M 100 700 L 400 300')
                     .scale(scale, scale)
-                    .translate(translateX, 0)
+                    .translate(translateX, fontSize * (index))
                     .toString()
                 + '"/>';
             width = translateX + 500 * scale;
@@ -125,7 +126,7 @@ const textToSvgFromSvgFont = async (fontUrl, text, options) => {
             paths += '<path fill="none" stroke="#000000" stroke-width="1" d="' +
                 new SvgPath(glyph.path)
                     .scale(scale, scale)
-                    .translate(translateX, 0)
+                    .translate(translateX, fontSize * (index))
                     .toString()
                 + '"/>';
         }

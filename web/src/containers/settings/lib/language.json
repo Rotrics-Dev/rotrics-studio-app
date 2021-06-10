@@ -1,13 +1,12 @@
 {
-  "en": "English",
-  "zh-CN": "中文-简体",
-  "zh-TW": "中文-繁體",
-  "ja-JP": "日本語",
-  "ko-KR": "한국어",
   "de-DE": "Deutsch",
+  "en": "English",
   "es-ES": "Español",
   "fr-FR": "Français",
   "it-IT": "Italiano",
-  "ru-RU": "Русский",
-  "pt-BR": "Português do Brasil"
+  "ja-JP": "日本語",
+  "ko-KR": "한국어",
+  "ru-RU": "Россия",
+  "zh-CN": "中文-简体",
+  "zh-TW": "中文-繁體"
 }

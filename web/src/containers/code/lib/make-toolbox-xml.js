@@ -69,12 +69,30 @@ const motion = function () {
                 </shadow>
             </value>
        </block>
+       <block type="RS_MOTION_ROTATE_WRIST_TO">
+            <value name="VALUE1">
+                <shadow type="math_number">
+                    <field name="NUM">15</field>
+                </shadow>
+            </value>
+       </block>
+       <block type="RS_MOTION_KEEP_ROTATE">
+            <value name="VALUE2">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+       </block>
        ${categorySeparator}
     </category>
     `;
 };
 
 const frontEnd = function () {
+    /**
+     * <block type="RS_ROTARY_FRONT_END_AIR_PICKER"/>
+        <block type="RS_ROTARY_FRONT_END_SOFT_GRIPPER"/>
+     */
     return `
     <category name="%{BKY_CATEGORY_RS_FRONT_END}" id="front_end" colour="#6F53F4" secondaryColour="#583FF3">
         <block type="RS_FRONT_END_AIR_PICKER"/>
@@ -109,6 +127,7 @@ const settings = function () {
     `;
 };
 
+// - 补充 When item detected，参考官方的when I receive message 实现过程。定时监控下位机返回的字符串，当获取到对应字符串 为1，否则为0.
 const events = function () {
     return `
     <category name="%{BKY_CATEGORY_EVENTS}" id="events" colour="#FFD500" secondaryColour="#CC9900">
@@ -402,6 +421,18 @@ const variables = function () {
     `;
 };
 
+const myBlocks = function () {
+    return `
+    <category
+        name="%{BKY_CATEGORY_MYBLOCKS}"
+        id="myBlocks"
+        colour="#FF6680"
+        secondaryColour="#FF4D6A"
+        custom="PROCEDURE">
+    </category>
+    `;
+};
+
 const xmlOpen = '<xml style="display: none">';
 const xmlClose = '</xml>';
 
@@ -417,7 +448,7 @@ const xmlClose = '</xml>';
  * @param {?string} soundName -  The name of the default selected sound dropdown.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
-const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeName = '', backdropName = '', soundName = '') {
+const makeToolboxXML = function (isInitialSetup, isStage, targetId, categoriesXML = [], costumeName = '', backdropName = '', soundName = '') {
     const gap = [categorySeparator];
 
     categoriesXML = categoriesXML.slice();
@@ -438,6 +469,7 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
     const sensingXML = moveCategory('sensing') || sensing(isStage, targetId);
     const operatorsXML = moveCategory('operators') || operators(isStage, targetId);
     const variablesXML = moveCategory('data') || variables(isStage, targetId);
+    const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId);
 
     //TODO: 弄明白代码
     const everything = [
@@ -451,7 +483,8 @@ const makeToolboxXML = function (isStage, targetId, categoriesXML = [], costumeN
         controlXML, gap,
         sensingXML, gap,
         operatorsXML, gap,
-        variablesXML
+        variablesXML,
+        // myBlocksXML
     ];
 
     for (const extensionCategory of categoriesXML) {

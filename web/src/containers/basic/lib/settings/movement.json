@@ -1,0 +1,24 @@
+{
+  "mode": {
+    "fast_mode": {
+      "label": "Fast Mode",
+      "description": "Fast Mode Description",
+      "gcode": "M2001\n"
+    },
+    "straight_mode": {
+      "label": "Straight Mode",
+      "description": "Straight Mode Description",
+      "gcode": "M2000\n"
+    }
+  },
+  "speed": {
+    "label": "Speed",
+    "description": "Speed description",
+    "default_value": 1000,
+    "type": "int",
+    "unit": "mm/min",
+    "step": 100,
+    "minimum_value": 1,
+    "maximum_value": 10000
+  }
+}

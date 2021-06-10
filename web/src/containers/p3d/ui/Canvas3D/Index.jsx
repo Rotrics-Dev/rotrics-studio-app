@@ -6,8 +6,9 @@ import PrintableCube from './PrintableCube.jsx';
 import {connect} from 'react-redux';
 import IntersectDetector from "../../../../three-extensions/IntersectDetector";
 import {actions as p3dModelActions} from "../../../../reducers/p3dModel";
+import PrintablePlate from "./PrintablePlate";
 
-const SIZ = 220;
+// const SIZ = 220;
 
 class Index extends React.Component {
     constructor(props) {
@@ -27,8 +28,11 @@ class Index extends React.Component {
         //controls
         this.msrControls = null; // pan/scale/rotate print area
 
-        this.size = new THREE.Vector3(SIZ, SIZ, SIZ)
-        this.printableArea = new PrintableCube(this.size);
+        // this.this = new THREE.Vector3(SIZ, SIZ, SIZ)
+        this.size = new THREE.Vector3(450, 260, 300)
+        // this.printableArea = new PrintableCube(this.size);
+        this.printableArea = new PrintablePlate(new THREE.Vector2(this.size.x, this.size.y), this.props.workHeight);
+        this.printableArea.rotation.x = Math.PI / 2;
     }
 
     state = {};
@@ -143,9 +147,11 @@ class Index extends React.Component {
         const width = this.getVisibleWidth();
         const height = this.getVisibleHeight();
 
-        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-        this.camera.position.copy(new THREE.Vector3(0, SIZ / 2, 450));
-        this.camera.lookAt(new THREE.Vector3(0, SIZ / 2, 0));
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
+        // this.camera.position.copy(new THREE.Vector3(0, this.size.y / 2, 450));
+        this.camera.position.copy(new THREE.Vector3(0, 150, 500));
+        this.camera.lookAt(new THREE.Vector3(0, 150, 0));
+        // this.camera.lookAt(new THREE.Vector3(0, this.size.y / 2, 0));
 
         this.renderer = new THREE.WebGLRenderer({antialias: true});
         this.renderer.setClearColor(new THREE.Color(0xfafafa), 1);
@@ -185,6 +191,12 @@ class Index extends React.Component {
     }
 
     render() {
+        const {workHeight} = this.props
+        if (this.workHeight !== workHeight) {
+            if (this.printableArea)
+                this.printableArea.setUpWorkArea(workHeight)
+            this.workHeight = workHeight
+        }
         return (
             <div
                 ref={this.node}
@@ -195,7 +207,10 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {tap} = state.taps;
+    const {workHeightP3d} = state.persistentData
+
     return {
+        workHeight: workHeightP3d,
         tap
     };
 };

@@ -1,0 +1,83 @@
+{
+  "sliding_rail": {
+    "label": "Sliding Rail",
+    "description": "Sliding Rail",
+    "feat_list": [
+      {
+        "title": "Initialization",
+        "menus": [
+          {
+            "title": "power",
+            "type": "button",
+            "gcode": "M2005"
+          }
+        ]
+      },
+      {
+        "title": "Step Length",
+        "title_suffix": "(mm)",
+        "menus": [
+          {
+            "title": "backward",
+            "type": "button",
+            "gcode_prefix": "G1 E-",
+            "gcode_suffix": " F"
+          },
+          {
+            "title": "step_length",
+            "type": "input",
+            "gcode": "",
+            "minimum_value": 0,
+            "maximum_value": 1000,
+            "default_value": 20,
+            "callback": "setAccessorySlidingRailStep"
+          },
+          {
+            "title": "forward",
+            "type": "button",
+            "gcode_prefix": "G1 E",
+            "gcode_suffix": " F"
+          }
+        ]
+      }
+    ]
+  },
+  "conveyor_belt": {
+    "label": "Conveyor Belt",
+    "description": "Conveyor Belt",
+    "feat_list": [
+      {
+        "title": "Speed",
+        "title_suffix": "(mm/min)",
+        "menus": [
+          {
+            "title": "stop",
+            "type": "button",
+            "gcode": "M2013"
+          },
+          {
+            "title": "backward",
+            "type": "button",
+            "gcode_prefix": "M2012 F",
+            "gcode_suffix": " D1"
+          },
+          {
+            "title": "step_length",
+            "type": "input",
+            "gcode": "",
+            "minimum_value": 1000,
+            "maximum_value": 8000,
+            "default_value": 2000,
+            "callback": "setAccessoryConveyorBeltStep"
+          },
+          {
+            "title": "forward",
+            "type": "button",
+            "gcode_prefix": "M2012 F",
+            "gcode_suffix": " D0"
+          }
+        ]
+      }
+    ]
+  }
+}

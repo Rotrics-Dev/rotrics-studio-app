@@ -2,10 +2,10 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 
 /**
- * a file must has only one sheet
- * the first column must be english
- * @param xlsxPath
- * @param targetDir
+ * 一个文件只能有一个表格
+ * 一个表格只能有两列
+ * 第一列为英语
+ * 第二列为目标语言
  */
 const xlsx2json = (xlsxPath, targetDir) => {
     if (!fs.existsSync(targetDir)) {
@@ -13,23 +13,24 @@ const xlsx2json = (xlsxPath, targetDir) => {
     }
 
     fs.access(xlsxPath, (err) => {
+        console.log(`当前处理文件:${xlsxPath}`)
         if (err) {
-            return console.error(`${xlsxPath} error: file not exist`);
+            return console.log(`${xlsxPath} 不存在`);
         }
         let workBook = xlsx.readFile(xlsxPath, {raw: true});
         if (!workBook) {
-            console.error(`${xlsxPath} read error`);
+            console.log(`${xlsxPath} 读取错误`);
             return
         }
         if (workBook.SheetNames === 0) {
-            console.error(`${xlsxPath} error: no sheet`);
+            console.log(`${xlsxPath} 不含表格`);
             return;
         }
 
-        const sheet = workBook.Sheets[workBook.SheetNames[0]];
+        const sheet = workBook.Sheets[workBook.SheetNames[0]];//读取工作表
         let sheetJson = xlsx.utils.sheet_to_json(sheet, {header: 0});
         if (sheetJson.length <= 1) {
-            console.error(`sheetJson is empty`);
+            console.log(`sheetJson is empty`);
             return;
         }
         const table = {};
@@ -55,11 +56,12 @@ const xlsx2json = (xlsxPath, targetDir) => {
 
 const json2xlsx = (filePath, targetDir) => {
     fs.access(filePath, (err) => {
+        console.log(`当前处理文件:${filePath}`)
         if (err) {
-            return console.log(`${filePath} error: file not exist`);
+            return console.log(`${filePath} 不存在`);
         }
         const language = filePath.slice(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
-        const json = JSON.parse(fs.readFileSync(filePath));
+        const json = JSON.parse(fs.readFileSync(filePath))
         const languageArray = [];
         Object.keys(json).forEach(
             (key) => {

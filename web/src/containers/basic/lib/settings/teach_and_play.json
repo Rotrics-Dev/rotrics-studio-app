@@ -11,12 +11,177 @@
   "front_end": {
     "label": "Front End",
     "description": "Front End description",
-    "default_value": "air_pick",
+    "default_value": "rotary_air_pick",
     "type": "enum",
     "options": {
+      "rotary_air_pick": {
+        "label": "Rotary Air Picker",
+        "description": "Rotary Air Pick",
+        "gcode": "M888 P6\nM2100\nM2101",
+        "default_value": "state_0",
+        "type": "enum",
+        "state": {
+          "state_0": {
+            "label": "off",
+            "description": "Off Description",
+            "gcode": "M1003\nM2101 S0"
+          },
+          "state_1": {
+            "label": "release",
+            "description": "Place Description",
+            "gcode": "M1002"
+          },
+          "state_2": {
+            "label": "pick",
+            "description": "Pick Description",
+            "gcode": "M1000"
+          }
+        },
+        "default_rotary": "rotary_0",
+        "rotary": {
+          "rotary_0": {
+            "label": "Relative",
+            "description": "Relative Description",
+            "gcode": "M2101"
+          },
+          "rotary_1": {
+            "label": "Absolute",
+            "description": "Absolute Description",
+            "gcode": "M2101"
+          },
+          "rotary_2": {
+            "label": "Continuous",
+            "description": "Continuous Description",
+            "gcode": "M2101"
+          }
+        },
+        "angle": {
+          "order": 2,
+          "default_value": 15,
+          "minimum_value": 0,
+          "maximum_value": 7200
+        },
+        "buttons": [
+          {
+            "label": "swag",
+            "type": "rotary_1",
+            "order": 1,
+            "gcode": "M2101 P"
+          },
+          {
+            "label": "rotate_left",
+            "type": "rotary_0",
+            "order": 1,
+            "gcode": "M2101 R-"
+          },
+          {
+            "label": "rotate_right",
+            "type": "rotary_0",
+            "order": 3,
+            "gcode": "M2101 R"
+          },
+          {
+            "label": "clockwise",
+            "type": "rotary_2",
+            "order": 1,
+            "gcode": "M2101 S"
+          },
+          {
+            "label": "anticlockwise",
+            "type": "rotary_2",
+            "order": 3,
+            "gcode": "M2101 S-"
+          }
+        ]
+      },
+      "rotary_soft_gripper": {
+        "label": "Rotary Soft Gripper",
+        "description": "Rotary Soft Gripper",
+        "gcode": "M888 P6\nM2100\nM2101",
+        "default_value": "state_0",
+        "type": "enum",
+        "state": {
+          "state_0": {
+            "label": "Off",
+            "description": "Off Description",
+            "gcode": "M1003"
+          },
+          "state_1": {
+            "label": "neutral",
+            "description": "Neutral Description",
+            "gcode": "M1002"
+          },
+          "state_2": {
+            "label": "grip",
+            "description": "Pick Description",
+            "gcode": "M1001"
+          },
+          "state_3": {
+            "label": "release",
+            "description": "Release Description",
+            "gcode": "M1000"
+          }
+        },
+        "default_rotary": "rotary_0",
+        "rotary": {
+          "rotary_0": {
+            "label": "Relative",
+            "description": "Relative Description",
+            "gcode": "M2101"
+          },
+          "rotary_1": {
+            "label": "Absolute",
+            "description": "Absolute Description",
+            "gcode": "M2101"
+          },
+          "rotary_2": {
+            "label": "Continuous",
+            "description": "Continuous Description",
+            "gcode": "M2101"
+          }
+        },
+        "angle": {
+          "order": 2,
+          "default_value": 15,
+          "minimum_value": 0,
+          "maximum_value": 7200
+        },
+        "buttons": [
+          {
+            "label": "swag",
+            "type": "rotary_1",
+            "order": 1,
+            "gcode": "M2101 P"
+          },
+          {
+            "label": "rotate_left",
+            "type": "rotary_0",
+            "order": 1,
+            "gcode": "M2101 R-"
+          },
+          {
+            "label": "rotate_right",
+            "type": "rotary_0",
+            "order": 3,
+            "gcode": "M2101 R"
+          },
+          {
+            "label": "clockwise",
+            "type": "rotary_2",
+            "order": 1,
+            "gcode": "M2101 S"
+          },
+          {
+            "label": "anticlockwise",
+            "type": "rotary_2",
+            "order": 3,
+            "gcode": "M2101 S-"
+          }
+        ]
+      },
       "air_pick": {
         "label": "air picker",
-        "description": "air picker",
+        "description": "Air Picker",
         "gcode": "M888 P2",
         "default_value": "state_0",
         "type": "enum",
@@ -27,12 +192,12 @@
             "gcode": "M1003"
           },
           "state_1": {
-            "label": "Place",
+            "label": "release",
             "description": "Place Description",
             "gcode": "M1002"
           },
           "state_2": {
-            "label": "Pick",
+            "label": "pick",
             "description": "Pick Description",
             "gcode": "M1000"
           }
@@ -40,28 +205,28 @@
       },
       "soft_gripper": {
         "label": "soft gripper",
-        "description": "soft gripper",
+        "description": "Soft Gripper",
         "gcode": "M888 P2",
         "default_value": "state_0",
         "type": "enum",
         "state": {
           "state_0": {
-            "label": "Off",
+            "label": "off",
             "description": "Off Description",
             "gcode": "M1003"
           },
           "state_1": {
-            "label": "Neutral",
+            "label": "neutral",
             "description": "Neutral Description",
             "gcode": "M1002"
           },
           "state_2": {
-            "label": "Grip",
+            "label": "grip",
             "description": "Pick Description",
             "gcode": "M1001"
           },
           "state_3": {
-            "label": "Release",
+            "label": "release",
             "description": "Drop Description",
             "gcode": "M1000"
           }
@@ -69,19 +234,19 @@
       },
       "laser": {
         "label": "laser",
-        "description": "laser",
+        "description": "Laser",
         "gcode": "M888 P1",
         "default_value": "state_0",
         "type": "enum",
         "state": {
           "state_0": {
             "label": "Off",
-            "description": "laser Off",
+            "description": "Laser Off",
             "gcode": "M5"
           },
           "state_1": {
             "label": "On",
-            "description": "laser On",
+            "description": "Laser On",
             "gcode": "M3"
           }
         },

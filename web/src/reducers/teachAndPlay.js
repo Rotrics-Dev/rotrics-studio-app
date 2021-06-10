@@ -58,24 +58,41 @@ const actions = {
             stepArray: _.cloneDeep(stepArray)
         }));
     },
-    recordStep: () => (dispatch, getState) => {
-        dispatch(serialPortActions.addOneShootGcodeResponseListener('M893',
-            (x, y, z) => {
-                console.log('12231231231313')
-                const {currentFrontEnd, laserPower, currentFrontEndState, stepArray} = getState().teachAndPlay;
-                stepArray.push({
-                    x,
-                    y,
-                    z,
-                    delay: 0,
-                    currentFrontEnd,
-                    currentFrontEndState,
-                    laserPower
-                });
-                dispatch(actions._updateState({
-                    stepArray: _.cloneDeep(stepArray)
-                }));
-            }));
+    recordStep: () => async (dispatch, getState) => {
+        // 加入数据
+        const getPosition = () => new Promise((resolve) => {
+            dispatch(serialPortActions.addOneShootGcodeResponseListener("M895", (x, y, z) => {
+                resolve ({ x, y, z })
+            }))
+        })
+
+        const getRotatePosition = () => new Promise((resolve) => {
+            dispatch(serialPortActions.addOneShootGcodeResponseListener("M2101", (r) => {
+                resolve(r)
+            }))
+        })
+
+        const { x, y, z } = await getPosition()
+        console.log('获取结果', x, y, z)
+        const r = await getRotatePosition()
+        console.log('获取结果', r)
+
+        const {currentFrontEnd, laserPower, currentFrontEndState, stepArray} = getState().teachAndPlay;
+
+        stepArray.push({
+            x,
+            y,
+            z,
+            r,
+            delay: 0,
+            currentFrontEnd,
+            currentFrontEndState,
+            laserPower
+        });
+        
+        dispatch(actions._updateState({
+            stepArray: _.cloneDeep(stepArray)
+        }));
     },
     startPlayStep: (startIndex, doRepeat) => (dispatch, getState) => {
         const {currentFrontEnd, stepArray, laserPower, repeatCount} = getState().teachAndPlay;
@@ -97,7 +114,7 @@ const actions = {
         const gcodeArray = [];
         for (let index = startIndex; index < stepArray.length; index++) {
             const step = stepArray[index];
-            gcodeArray.push(`M894 X${step.x} Y${step.y} Z${step.z}`);
+            gcodeArray.push(`M896 X${step.x} Y${step.y} Z${step.z}`);
             const frontEndObj = teach_and_play.front_end.options[step.currentFrontEnd];
             if (step.currentFrontEnd === 'laser' && step.currentFrontEndState === 'state_1') {//laser on
                 gcodeArray.push(`${frontEndObj.state[step.currentFrontEndState].gcode} S${Math.round(laserPower * 2.55)}`);
@@ -180,7 +197,7 @@ const actions = {
         const gcode = actions.stepArray2Gcode(currentFrontEnd, stepArray, laserPower, 0, repeatCount);
         const blob = new Blob([gcode], {type: 'text/plain;charset=utf-8'});
         FileSaver.saveAs(blob, fileName, true);
-    },
+    }
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

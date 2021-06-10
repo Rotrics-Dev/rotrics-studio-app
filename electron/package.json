@@ -1,7 +1,7 @@
 {
   "name": "rotrics-studio-app",
   "productName": "Rotrics Studio",
-  "version": "0.3.0",
+  "version": "1.0.1",
   "author": "Rotrics Dev",
   "license": "MIT",
   "main": "main.js",
@@ -10,12 +10,14 @@
     "rebuild": "electron-rebuild -f -w serialport",
     "build:mac-x64": "npm run copy_files mac && electron-builder --mac --x64",
     "build:win-x64": "npm run copy_files windows && electron-builder --windows --x64",
-    "copy_files": "node ./copy_files.js"
+    "copy_files": "node ./copy_files.js",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "appId": "com.rotrics.rotrics-studio-app",
     "asar": false,
     "productName": "Rotrics Studio",
+    "npmRebuild": false,
     "directories": {
       "buildResources": "build",
       "output": "output"
@@ -59,7 +61,7 @@
     }
   },
   "devDependencies": {
-    "electron": "^9.0.0",
+    "electron": "^8.5.5",
     "electron-builder": "^22.6.1",
     "electron-rebuild": "^1.11.0"
   },

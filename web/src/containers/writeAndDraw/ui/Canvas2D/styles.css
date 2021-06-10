@@ -1,0 +1,17 @@
+.div_primary_panel {
+    position: absolute;
+    width: 240px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: lightcoral;
+}
+
+.div_easy_control_panel {
+    position: absolute;
+    width: 600px;
+    height: 150px;
+    left: 30px;
+    bottom: 15px;
+    background-color: lightseagreen;
+}

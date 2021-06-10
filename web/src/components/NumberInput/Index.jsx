@@ -47,7 +47,13 @@ class Index extends PureComponent {
         const state = this.state;
         // required props: onAfterChange, value
         // https://ant.design/components/input-number-cn/
-        const {max = 999999, min = -99999, precision = 0, ...rest} = this.props;
+        const {
+            max = 999999, 
+            min = -99999, 
+            precision = 0,
+            disabled = false, 
+            ...rest
+        } = this.props;
         const actions = this.actions;
         const step = 1 / Math.pow(10, precision);
         return (
@@ -63,6 +69,7 @@ class Index extends PureComponent {
                 onBlur={actions.onBlur}
                 onKeyUp={actions.onKeyUp}
                 onChange={actions.onChange}
+                disabled={disabled}
             />
         );
     }

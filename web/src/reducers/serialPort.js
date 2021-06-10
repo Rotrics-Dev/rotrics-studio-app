@@ -1,52 +1,50 @@
 import messageI18n from "../utils/messageI18n";
 import socketClientManager from "../socket/socketClientManager";
 import {
-    SERIAL_PORT_ACTION_GET_ALL_PATHS,
-    SERIAL_PORT_ACTION_GET_OPEN_PATH,
-    SERIAL_PORT_ACTION_OPEN,
-    SERIAL_PORT_ACTION_CLOSE,
-    SERIAL_PORT_ACTION_WRITE,
-
-    SERIAL_PORT_ON_GET_ALL_PATHS,
-    SERIAL_PORT_ON_GET_OPEN_PATH,
-    SERIAL_PORT_ON_OPEN,
-    SERIAL_PORT_ON_CLOSE,
-    SERIAL_PORT_ON_ERROR,
-    SERIAL_PORT_ON_WRITE_ERROR,
-    SERIAL_PORT_ON_WRITE_OK,
-    SERIAL_PORT_ON_RECEIVED_LINE,
-    SERIAL_PORT_ON_WARNING,
-    SERIAL_PORT_ON_INSERT,
-    SERIAL_PORT_ON_PULL_OUT,
+    SERIAL_PORT_PATH_UPDATE,
+    SERIAL_PORT_GET_OPENED,
+    SERIAL_PORT_OPEN,
+    SERIAL_PORT_CLOSE,
+    SERIAL_PORT_ERROR,
+    SERIAL_PORT_DATA,
+    SERIAL_PORT_WRITE,
+    MSG_SERIAL_PORT_CLOSE_TOAST
 } from "../constants.js"
-import {getUuid} from "../utils";
-import notificationI18n from "../utils/notificationI18n";
+import {actions as tapsActions} from "./taps";
+import {actions as codeActions} from './code'
+import { message } from "antd";
 
 const ACTION_UPDATE_STATE = 'serialPort/ACTION_UPDATE_STATE';
 
-const KEY_ON_INSERT = getUuid();
-const KEY_ON_PULL_OUT = getUuid();
-
 const INITIAL_STATE = {
     paths: [],
-    path: null //当前已连接的serial port的path; path为空，则表示serial port close；否则open
+    path: null, //当前已连接的serial port的path; path为空，则表示serial port close；否则open
+    serialPortReceive: '' // 最近一条串口接收到的消息
 };
 
 let gcodeResponseListenType = null;
 let gcodeResponseListener = null;
 
-const processGcodeResponseListen = (line) => {
+// Gcode响应监听器
+const processGcodeResponseListen = (data) => {
     if (!gcodeResponseListenType) return;
-    if (!line) return;
+    if (!data) return;
+    if (!data.received) return;
 
     let needClearListener;
+
     switch (gcodeResponseListenType) {
-        case 'M893':
-            needClearListener = processM894(line);
+        case 'M895':
+            needClearListener = processM894(data.received);
             break;
         case 'M114':
-            needClearListener = processM114(line);
+            needClearListener = processM114(data.received);
             break;
+
+        case 'M2101':
+            needClearListener = processM2101(data.received);
+            break;
+
         default:
             console.log('add unsupported gcode listener')
             needClearListener = true;
@@ -59,24 +57,24 @@ const processGcodeResponseListen = (line) => {
 }
 
 const processM894 = (received) => {
-    if (!received.startsWith("M894")) return false;
-    console.log(received);
+    console.log(received)
+    if (!received) return false;
 
-    const split = received.trim().split(' ');
-    gcodeResponseListener && gcodeResponseListener(
-        parseFloat(split[1].slice(1, split[1].length)),//X
-        parseFloat(split[2].slice(1, split[2].length)),//Y
-        parseFloat(split[3].slice(1, split[3].length)),//Z
-    );
+    const receivedSplit = received.trim().split(' ');
+    console.log(receivedSplit)
+    const x = parseInt(receivedSplit[0].split(':')[1] || 0)
+    const y = parseInt(receivedSplit[1].split(':')[1] || 0)
+    const z = parseInt(receivedSplit[2].split(':')[1] || 0)
+
+    gcodeResponseListener && gcodeResponseListener(x, y, z);
     return true;
 }
-
 const processM114 = (received) => {
+    console.log(received)
     if (!received.startsWith('X:')) return false;
     const split = received.trim().split(' ');
     if (!split[1].startsWith('Y:')) return false;
     if (!split[2].startsWith('Z:')) return false;
-    console.log(received);
 
     gcodeResponseListener && gcodeResponseListener(
         parseFloat(split[0].split(':')[1]),
@@ -86,78 +84,74 @@ const processM114 = (received) => {
     return true;
 }
 
+const processM2101 = (received) => {
+    console.log('M2101 结果 ' + received)
+    const splitReceived = received.split('current positon = ')
+    if (splitReceived.length === 2) {
+        gcodeResponseListener && gcodeResponseListener(parseFloat(splitReceived[1]));
+    return true
+    } else {
+        return false
+    }
+}
+
 export const actions = {
     init: () => (dispatch) => {
-        setInterval(() => {
-            socketClientManager.emitToServer(SERIAL_PORT_ACTION_GET_ALL_PATHS);
-        }, 1000);
         socketClientManager.addServerListener("connect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
-            socketClientManager.emitToServer(SERIAL_PORT_ACTION_GET_OPEN_PATH);
+            socketClientManager.emitToServer(SERIAL_PORT_GET_OPENED);
         });
         socketClientManager.addServerListener("disconnect", () => {
             dispatch(actions._updateState({paths: [], path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_GET_ALL_PATHS, (paths) => {
+        socketClientManager.addServerListener(SERIAL_PORT_PATH_UPDATE, (paths) => {
             dispatch(actions._updateState({paths}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_GET_OPEN_PATH, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_GET_OPENED, (path) => {
             dispatch(actions._updateState({path}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_OPEN, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_OPEN, (path) => {
             dispatch(actions._updateState({path}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_CLOSE, (path) => {
+        socketClientManager.addServerListener(SERIAL_PORT_CLOSE, (path) => {
+            dispatch(tapsActions.setTerminalVisible(false))
             dispatch(actions._updateState({path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_ERROR, ({message}) => {
-            messageI18n.error(message);
+        socketClientManager.addServerListener(SERIAL_PORT_ERROR, () => {
+            console.error("serial port -> err");
             dispatch(actions._updateState({path: null}));
         });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_WRITE_ERROR, ({message, data}) => {
-            messageI18n.error(message);
-            dispatch(actions._updateState({path: null}));
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_WRITE_OK, ({data}) => {
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_WARNING, ({message}) => {
-            messageI18n.warning(message);
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_RECEIVED_LINE, (line) => {
-            // console.log('receive: ', line)
-            processGcodeResponseListen(line);
+        socketClientManager.addServerListener(SERIAL_PORT_DATA, (data) => {
+            // console.log('web 监听串口数据')
+            // console.log(data)
+            data && data.received && dispatch(codeActions.broadcastSerialPortReceive(data.received))
+
+            // Gcode响应监听器
+            processGcodeResponseListen(data);
+
+            // 全局通知消息
+            let {received} = data;
+
+            // 保存最新接收的数据
+            actions._updateState({ serialPortReceive: received || '' })
+            
+            // 显示 报错信息
+            if (String(received).toLowerCase().includes('error')) {
+                message.error(received)
+            }
+
             //存在单词拼写错误，fix it
-            if (line.indexOf("beyound limit..") !== -1) {
-                line = line.replace("beyound", "beyond");
+            if (received.indexOf("beyound limit..") !== -1) {
+                received = received.replace("beyound", "beyond");
             }
             if (
-                line.indexOf("beyond limit..") !== -1 ||
-                line.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
-                line.indexOf("Warning!Laser protection door opened") !== -1 ||
-                line.indexOf("Laser protection door closed") !== -1
+                received.indexOf("beyond limit..") !== -1 ||
+                received.indexOf("Send M1112 or click HOME to initialize DexArm first before any motion") !== -1 ||
+                received.indexOf("Warning!Laser protection door opened") !== -1 ||
+                received.indexOf("Laser protection door closed") !== -1
             ) {
-                messageI18n.warning(line);
+                messageI18n.warning(received);
             }
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_INSERT, (paths) => {
-            console.log(SERIAL_PORT_ON_INSERT, paths)
-            notificationI18n.success({
-                key: KEY_ON_INSERT,
-                message: 'Cable Inserted',
-                description: paths[0],
-                // duration: 3
-            });
-            notificationI18n.close(KEY_ON_PULL_OUT);
-        });
-        socketClientManager.addServerListener(SERIAL_PORT_ON_PULL_OUT, (paths) => {
-            console.log(SERIAL_PORT_ON_PULL_OUT, paths)
-            notificationI18n.error({
-                key: KEY_ON_PULL_OUT,
-                message: 'Cable Pulled Out',
-                description: paths[0],
-                duration: 1  //设置延时，防止调平断联时消息不消失
-            });
-            notificationI18n.close(KEY_ON_INSERT)
         });
     },
     _updateState: (state) => {
@@ -167,29 +161,32 @@ export const actions = {
         };
     },
     open: (path) => () => {
-        socketClientManager.emitToServer(SERIAL_PORT_ACTION_OPEN, path);
+        console.log("path: " + path)
+        socketClientManager.emitToServer(SERIAL_PORT_OPEN, path);
         return {type: null};
     },
     //close当前已连接的串口
     close: () => () => {
-        socketClientManager.emitToServer(SERIAL_PORT_ACTION_CLOSE);
+        socketClientManager.emitToServer(SERIAL_PORT_CLOSE);
         return {type: null};
     },
     //data: string|Buffer|Array<number>
     write: (data) => (dispatch, getState) => {
         if (getState().serialPort.path) {
-            socketClientManager.emitToServer(SERIAL_PORT_ACTION_WRITE, data);
+            socketClientManager.emitToServer(SERIAL_PORT_WRITE, data);
         } else {
-            messageI18n.warning('Please connect DexArm first');
+            messageI18n.warning(MSG_SERIAL_PORT_CLOSE_TOAST);
         }
         return {type: null};
     },
+
     /**
      * 添加查询回调
      * @param gcode M114 M893，等用于查询的Gcode
      * @param listener
      */
     addOneShootGcodeResponseListener: (gcode, listener) => (dispatch, getState) => {
+        console.log('监听 gcode = '+ gcode)
         gcodeResponseListenType = gcode;
         gcodeResponseListener = listener;
         dispatch(actions.write(gcode + '\n'));

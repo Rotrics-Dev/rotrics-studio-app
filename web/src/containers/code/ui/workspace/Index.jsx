@@ -7,6 +7,7 @@ import styles from './styles.css';
 class Index extends React.Component {
     actions = {
         startVM: () => {
+            console.log('点击绿旗 startVm')
             this.props.vm.greenFlag();
         },
         stopVM: () => {
@@ -17,6 +18,7 @@ class Index extends React.Component {
     render() {
         const actions = this.actions;
         const {running} = this.props;
+        // console.log(this.props)
         return (
             <div style={{width: "100%", height: "100%"}}>
                 <Blocks/>
@@ -32,9 +34,11 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
     const {vm, running} = state.code;
+    const { serialPortReceive } = state.serialPort;
     return {
         vm,
-        running
+        running,
+        serialPortReceive
     };
 };
 

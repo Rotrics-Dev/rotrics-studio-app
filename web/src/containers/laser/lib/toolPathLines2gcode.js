@@ -1,4 +1,5 @@
-const toolPathLines2gcode = (toolPathLines, settings) => {
+const toolPathLines2gcode = (toolPathLines, settings, advance) => {
+    console.log('激光 生成Gcode 是否为高级模式 ' + advance)
     const work_speed_placeholder = settings.working_parameters.children.work_speed.placeholder;
     const jog_speed_placeholder = settings.working_parameters.children.jog_speed.placeholder;
     const dwell_time_placeholder = settings.working_parameters.children.dwell_time.placeholder;
@@ -41,7 +42,8 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
                 case 'X':
                     value += translateX;
                     value = value.toFixed(2)
-                    cmds.push(key + value);
+                    // 高级模式下，需要将X替换为E
+                    cmds.push(`${advance ? 'E' : key}` + value);
                     break;
                 case 'Y':
                     value += translateY;
@@ -93,7 +95,7 @@ const toolPathLines2gcode = (toolPathLines, settings) => {
 
     // process "multi-pass"
     gcodeStr = processGcodeMultiPass(gcodeStr, settings);
-
+    console.log(gcodeStr)
     return gcodeStr;
 };
 

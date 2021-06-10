@@ -5,6 +5,7 @@ import styles from './styles.css';
 
 class Index extends React.Component {
     render() {
+        // console.log(this.props)
         const {variables} = this.props;
         return (
             <Space direction={"vertical"} size={2} >

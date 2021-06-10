@@ -17,6 +17,8 @@ class PanControls extends THREE.EventDispatcher {
         this.panPosStart = new THREE.Vector3();
         this.panPosEnd = new THREE.Vector3();
         this.panPosDelta = new THREE.Vector3();
+
+        this.addListeners();
     }
 
     addListeners() {
@@ -25,7 +27,7 @@ class PanControls extends THREE.EventDispatcher {
         this.domElement.addEventListener('mouseup', this.onMouseUp);
         this.domElement.addEventListener('contextmenu', this.onContextMenu);
 
-        //TODO:
+        //TODO: 将来再处理
         // this.domElement.addEventListener('mouseleave', (event) => {
         // console.log("mouseleave")
         // });
@@ -41,23 +43,21 @@ class PanControls extends THREE.EventDispatcher {
         this.domElement.removeEventListener('contextmenu', this.onContextMenu);
     }
 
-    /**
-     * select the Object3D which will be paned
-     * @param object
-     */
-    select(object) {
-        this.selectedObject = object;
-        if (object){
-            this.addListeners();
-        } else {
-            this.removeListeners();
-        }
+    dispose() {
+        this.removeListeners();
+        this.selectedObject = null;
+    }
+
+    //选中要pan的selectedObject
+    select(selectedObject) {
+        this.selectedObject = selectedObject;
     }
 
     onMouseDown = (event) => {
         if (!this.selectedObject) {
             return;
         }
+        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -68,12 +68,17 @@ class PanControls extends THREE.EventDispatcher {
                 this.panPosStart.copy(ThreeUtils.getEventWorldPosition(event, this.domElement, this.camera));
             }
         } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
             event.stopPropagation();
+
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseDown');
         }
-    };
+    }
 
     onMouseMove = (event) => {
+        console.log()
         if (!this.selectedObject) return;
+        console.log(event.button)
 
         if (event.button === THREE.MOUSE.LEFT) {
             event.preventDefault();
@@ -91,14 +96,18 @@ class PanControls extends THREE.EventDispatcher {
 
                 this.dispatchEvent({type: 'panning', object: this.selectedObject});
             }
+            console.log('event.button===THREE.MOUSE.LEFT onMouseMove');
 
         } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
             event.stopPropagation();
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseMove');
         }
-    };
+    }
 
     onMouseUp = (event) => {
         if (!this.selectedObject) return;
+        console.log(event.button)
 
         event.preventDefault();
 
@@ -111,9 +120,12 @@ class PanControls extends THREE.EventDispatcher {
                 this.domElement.style.cursor = 'auto';
             }
         } else if (event.button === THREE.MOUSE.RIGHT) {
+            // event.preventDefault();
             event.stopPropagation();
+
+            console.log('event.button===THREE.MOUSE.RIGHT onMouseUp');
         }
-    };
+    }
 
     onContextMenu = (event) => {
         event.preventDefault();

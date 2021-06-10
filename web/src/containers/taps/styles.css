@@ -1,14 +1,14 @@
 .div_header {
     width: 100%;
-    height: 45px;
+    height: 44px;
     background-color: #F2F2F2;
     border-bottom: 1px solid #C0C0C0
 }
 
 .div_tap_bar {
+    width: 56px;
     position: absolute;
-    width: 55px;
-    top: 45px;
+    top: 44px;
     bottom: 0;
     background-color: #F2F2F2;
     border-right: 1px solid #C0C0C0
@@ -16,32 +16,20 @@
 
 .div_workspace {
     position: absolute;
-    top: 45px;
-    left: 55px;
+    top: 44px;
+    left: 56px;
     right: 0;
-    bottom: 0;
-    background-color: #F2F2F2;
-}
-
-.div_tap_show {
-    display: block;
-    width: 100%;
-    height:  100%;
-}
-
-.div_tap_hidden {
-    display: none;
-    width: 100%;
-    height:  100%;
+    bottom: 20px;
+    background-color: lightgray;
 }
 
 .btn_basic {
-    width: 55px;
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid transparent;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
@@ -53,55 +41,25 @@
 }
 
 .btn_basic_selected {
-    width: 55px;
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid dodgerblue;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/basic-hover.svg);
 }
 
-.btn_write_draw {
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid transparent;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/write-draw.svg);
-}
-
-.btn_write_draw:active {
-    opacity: 0.4;
-}
-
-.btn_write_draw_selected {
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid dodgerblue;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/write-draw-hover.svg);
-}
-
 .btn_laser {
-    width: 55px;
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid transparent;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
@@ -113,25 +71,119 @@
 }
 
 .btn_laser_selected {
-    width: 55px;
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid dodgerblue;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/laser-hover.svg);
 }
 
-.btn_3d {
-    width: 55px;
+.btn_write_and_draw {
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid transparent;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/write-draw.svg);
+}
+
+.btn_write_and_draw:active {
+    opacity: 0.4;
+}
+
+.btn_write_and_draw_selected {
+    width: 56px;
+    height: 40px;
     background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid dodgerblue;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/write-draw-hover.svg);
+}
+
+.btn_code {
+    width: 56px;
+    height: 40px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid transparent;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/scratch.svg);
+}
+
+.btn_code:active {
+    opacity: 0.4;
+}
+
+.btn_code_selected {
+    width: 56px;
+    height: 40px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid dodgerblue;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/scratch-hover.svg);
+}
+
+.btn_settings {
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid transparent;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/settings.svg);
+    position: absolute;
+    bottom: 20px;
+}
+
+.btn_settings:active {
+    opacity: 0.4;
+}
+
+.btn_settings_selected {
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid dodgerblue;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./images/settings-hover.svg);
+    position: absolute;
+    bottom: 20px;
+}
+
+.btn_3d {
+    width: 56px;
+    height: 40px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-right: 4px solid transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
@@ -143,61 +195,31 @@
 }
 
 .btn_3d_selected {
-    width: 55px;
+    width: 56px;
     height: 40px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid dodgerblue;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/p3d-hover.svg);
 }
 
-.btn_code {
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid transparent;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/code.svg);
-}
-
-.btn_code:active {
-    opacity: 0.4;
-}
-
-.btn_code_selected {
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid dodgerblue;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/code-hover.svg);
-}
-
 .btn_debug {
-    position: absolute;
-    bottom: 40px;
-    width: 55px;
-    height: 40px;
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid transparent;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(./images/debug.svg);
+    position: absolute;
+    bottom: 60px;
 }
 
 .btn_debug:active {
@@ -205,50 +227,16 @@
 }
 
 .btn_debug_selected {
-    position: absolute;
-    bottom: 40px;
-    width: 55px;
-    height: 40px;
+    width: 56px;
+    height: 45px;
+    background-color: transparent;
     outline: none;
     border: none;
     border-right: 4px solid dodgerblue;
-    background-color: transparent;
     background-size: 25px 25px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./images/debug-hover.svg);
-}
-
-.btn_settings {
+    background-image: url(./images/debug.svg);
     position: absolute;
-    bottom: 0;
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid transparent;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/settings.svg);
-}
-
-.btn_settings:active {
-    opacity: 0.4;
-}
-
-.btn_settings_selected {
-    position: absolute;
-    bottom: 0;
-    width: 55px;
-    height: 40px;
-    outline: none;
-    border: none;
-    border-right: 4px solid dodgerblue;
-    background-color: transparent;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(./images/settings-hover.svg);
+    bottom: 60px;
 }

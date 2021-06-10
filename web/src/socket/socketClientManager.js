@@ -24,26 +24,35 @@ class SocketClientManager {
      * @returns {boolean} 是否成功
      */
     emitToServer(eventName, data, ack) {
+        // console.log('触发监听 ' + eventName)
+        // console.log(data)
+        // console.log(ack)
         if (this.isSocketConnected) {
+            // console.log('触发监听成功')
             this.socketClient.emit(eventName, data, ack);
             return true;
         }
+
+        // console.log('触发监听失败')
         return false;
     }
 
     addServerListener(eventName, listener) {
+        // console.log('添加监听 ' + eventName)
         this.socketClient.on(eventName, (data) => {
             listener(data);
         });
     }
 
     removeServerListener(eventName, listener) {
+        // console.log('移除监听 ' + eventName)
         //https://github.com/socketio/socket.io-client/blob/master/docs/API.md#socketoneventname-callback
         //https://github.com/component/emitter
         this.socketClient.off(eventName, listener);
     }
 
     removeAllServerListener(eventName) {
+        // console.log('移除所有监听')
         this.socketClient.off(eventName)
     }
 }

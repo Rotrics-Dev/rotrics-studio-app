@@ -56,17 +56,17 @@
         "default_value": 0,
         "type": "int",
         "unit": "mm",
-        "minimum_value": -100,
-        "maximum_value": 100
+        "minimum_value": -350,
+        "maximum_value": 350
       },
       "y": {
         "label": "Move Y",
         "description": "Move Y description",
-        "default_value": 0,
+        "default_value": 300,
         "type": "int",
         "unit": "mm",
-        "minimum_value": -100,
-        "maximum_value": 100
+        "minimum_value": 0,
+        "maximum_value": 700
       },
       "flip_model": {
         "label": "Flip Model",
@@ -84,7 +84,7 @@
   },
   "config": {
     "icon": "base64xxx",
-    "label": "GREYSCALE",
+    "label": "Greyscale",
     "type": "category",
     "description": "Config of Greyscale",
     "children": {

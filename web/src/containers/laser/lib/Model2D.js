@@ -1,25 +1,39 @@
 import * as THREE from 'three';
 import _ from 'lodash';
-import settingsBW from "./settings/bw.json";
-import settingsGS from "./settings/greyscale.json";
+
+import settingsBw from "./settings/bw.json";
+import settingsGs from "./settings/greyscale.json";
 import settingsSvg from "./settings/svg.json";
-import settingsText from "./settings/text.json";
+import config_text from "./settings/config_text.json";
 
 import {degree2radian, getUuid, getAvailableSize} from '../../../utils/index.js';
 import socketClientManager from "../../../socket/socketClientManager"
 import toolPathRenderer from './toolPathRenderer';
 import toolPathLines2gcode from "./toolPathLines2gcode";
 
-import {TOOL_PATH_GENERATE_MODEL2D} from "../../../constants.js"
+import {TOOL_PATH_GENERATE_LASER} from "../../../constants.js"
+import inWorkArea2D from "../../../utils/inWorkArea2D";
+import {FRONT_END, getLimit} from "../../../utils/workAreaUtils";
+
+/**
+ * 判断是否打开高级设置
+ * @returns 
+ */
+ const getIsAdvance = () => {
+    const advance = localStorage.getItem('ADVANCE')
+    return advance 
+        ? Number(advance) === 1 
+        : false
+}
 
 const getSizeRestriction = (fileType) => {
     let settings = null;
     switch (fileType) {
         case "bw":
-            settings = settingsBW;
+            settings = settingsBw;
             break;
         case "greyscale":
-            settings = settingsGS;
+            settings = settingsGs;
             break;
         case "svg":
         case "text":
@@ -28,16 +42,16 @@ const getSizeRestriction = (fileType) => {
     }
     const children = settings.transformation.children;
     const min_width = children.width.minimum_value;
-    const max_width = children.width.maximum_value;
+    const max_width = getIsAdvance() ? Number.MAX_SAFE_INTEGER : children.width.maximum_value;
     const min_height = children.height.minimum_value;
-    const max_height = children.height.maximum_value;
+    const max_height = getIsAdvance() ? Number.MAX_SAFE_INTEGER : children.height.maximum_value;
     return {min_width, max_width, min_height, max_height}
 };
 
 /**
- * Model2D is container，always keep rotation=0, scale=1; position will changed
- * Model2D has 3 children：toolPathObj3d，imgObj3d，edgeObj3d
- * remove(null) can work：https://github.com/mrdoob/three.js/blob/master/src/core/Object3D.js
+ * Model2D作为容器，一直保持：rotation=0, scale=1, position会变化
+ * 三个child：toolPathObj3d，imgObj3d，edgeObj3d
+ * remove(null)是OK的：https://github.com/mrdoob/three.js/blob/master/src/core/Object3D.js
  */
 class Model2D extends THREE.Group {
     constructor(fileType) {
@@ -58,26 +72,31 @@ class Model2D extends THREE.Group {
         this.toolPathId = ""; //每次preview的tool path id
 
         this.imgObj3d = new THREE.Mesh();//图片渲染的结果，Object3D
-        this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
-        this.isPreviewed = false;
 
+        this.edgeObj3d = null; //模型的边界线；选中时候，显示模型的边框线
+
+        this.isPreviewed = false;
+        this.inWorkArea = true;
+        //需要deep clone
         switch (this.fileType) {
             case "bw":
-                this.settings = _.cloneDeep(settingsBW);
+                this.settings = _.cloneDeep(settingsBw);
                 break;
             case "greyscale":
-                this.settings = _.cloneDeep(settingsGS);
+                this.settings = _.cloneDeep(settingsGs);
                 break;
             case "svg":
-                this.config_text = _.cloneDeep(settingsSvg);
-                break;
             case "text":
-                this.settings = _.cloneDeep(settingsText);
+                this.settings = _.cloneDeep(settingsSvg);
                 break;
         }
 
+        if (this.fileType === "text") {
+            this.config_text = _.cloneDeep(config_text);
+        }
+
         //data: {toolPathLines, toolPathId}
-        socketClientManager.addServerListener(TOOL_PATH_GENERATE_MODEL2D, (data) => {
+        socketClientManager.addServerListener(TOOL_PATH_GENERATE_LASER, (data) => {
             // console.timeEnd(this.toolPathId);
             if (this.toolPathId === data.toolPathId) {
                 this.loadToolPath(data.toolPathLines);
@@ -85,16 +104,20 @@ class Model2D extends THREE.Group {
                 this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
             }
         });
+        this.position.y = this.settings.transformation.children.y.default_value;//获取默认threeObj的位置
     }
 
     //url: 支持svg，raster
     loadImg(url, img_width, img_height) {
+        const advance = false
+        console.log('加载图片' + ' ' + advance)
         this.url = url;
         this.img_width = img_width;
         this.img_height = img_height;
 
         const {width, height} = getAvailableSize(img_width, img_height, this.sizeRestriction);
 
+        // loader.setCrossOrigin("anonymous");
         const loader = new THREE.TextureLoader();
         const texture = loader.load(url);
 
@@ -148,7 +171,7 @@ class Model2D extends THREE.Group {
                 if (this._isSelected) {
                     this.remove(this.edgeObj3d);
                     const geometry = new THREE.EdgesGeometry(this.imgObj3d.geometry);
-                    const color = 0x007700;
+                    const color = this.inWorkArea ? 0x007700 : 0xFF0000;
                     this.edgeObj3d = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color: color}));
                     this.add(this.edgeObj3d);
                 } else {
@@ -160,15 +183,22 @@ class Model2D extends THREE.Group {
 
     //todo: 增加返回值，是否有修改
     //修改model2d，并修改settings
-    updateTransformation(key, value, preview) {
+    updateTransformation(key, value, preview, workHeight, isLockScale) {
         switch (key) {
             case "width": {
                 const mWidth = value;
                 const mHeight = this.img_height * (mWidth / this.img_width);
                 const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
 
+                // // 若非高级模式 => 获取可用尺寸
+                // const {width, height} = getIsAdvance() 
+                //     ? { width: value, height: value } 
+                //     : getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+
                 this.settings.transformation.children.width.default_value = width;
-                this.settings.transformation.children.height.default_value = height;
+                this.settings.transformation.children.height.default_value = !isLockScale 
+                    ? this.settings.transformation.children.height.default_value
+                    : height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
                 this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
                 break;
@@ -178,7 +208,14 @@ class Model2D extends THREE.Group {
                 const mWidth = this.img_width * (mHeight / this.img_height);
                 const {width, height} = getAvailableSize(mWidth, mHeight, this.sizeRestriction);
 
-                this.settings.transformation.children.width.default_value = width;
+                // // 若非高级模式 => 获取可用尺寸
+                // const {width, height} = getIsAdvance() 
+                //     ? { width: value, height: value } 
+                //     : getAvailableSize(mWidth, mHeight, this.sizeRestriction);
+
+                this.settings.transformation.children.width.default_value = !isLockScale 
+                    ? this.settings.transformation.children.width.default_value
+                    : width;
                 this.settings.transformation.children.height.default_value = height;
                 const rotation = this.settings.transformation.children.rotation.default_value;
                 this.imgObj3d.geometry = new THREE.PlaneGeometry(width, height).rotateZ(degree2radian(rotation));
@@ -204,6 +241,22 @@ class Model2D extends THREE.Group {
                 this.settings.transformation.children[key].default_value = value;
                 break;
         }
+
+        const {outerRadius, innerRadius} = getLimit(workHeight, FRONT_END.LASER)
+
+        this.inWorkArea = getIsAdvance() 
+            ? true 
+            : inWorkArea2D(
+                innerRadius, 
+                outerRadius,
+                this.position.x, 
+                this.position.y,
+                this.settings.transformation.children.width.default_value,
+                this.settings.transformation.children.height.default_value,
+                this.settings.transformation.children.rotation.default_value
+            )
+
+        console.log("2D越界检测:" + this.inWorkArea);
 
         this._display("edge");
 
@@ -252,7 +305,7 @@ class Model2D extends THREE.Group {
     //生成tool path
     preview() {
         this.toolPathId = getUuid();
-        socketClientManager.emitToServer(TOOL_PATH_GENERATE_MODEL2D, {
+        socketClientManager.emitToServer(TOOL_PATH_GENERATE_LASER, {
             url: this.url,
             settings: this.settings,
             toolPathId: this.toolPathId,
@@ -264,8 +317,8 @@ class Model2D extends THREE.Group {
         this.dispatchEvent({type: 'preview', data: {isPreviewed: this.isPreviewed}});
     }
 
-    generateGcode() {
-        return toolPathLines2gcode(this.toolPathLines, this.settings);
+    generateGcode(advance) {
+        return toolPathLines2gcode(this.toolPathLines, this.settings, advance);
     }
 
     clone() {
@@ -275,7 +328,7 @@ class Model2D extends THREE.Group {
         const img_width = this.settings.transformation.children.img_width.default_value;
         const img_height = this.settings.transformation.children.img_height.default_value;
 
-        instance.loadImg(url, img_width, img_height);
+        instance.loadImg(url, img_width, img_height)
 
         return instance;
     }

@@ -58,7 +58,13 @@ const callCuraEngine = (modelPath, activatedSettingPath, gcodePath) => {
 
 // data: {stlUrl, materialSettingFilename, printSettingFilename, id}
 const p3dStartSlice = (data, onProgress, onSucceed, onError) => {
+    console.log('server 开始切片')
+    console.log('data')
+    console.log(data)
+
     const {configPath, modelPath, gcodePath, gcodeName} = preHandle(data);
+    console.log(configPath, modelPath, gcodePath, gcodeName)
+
     let progress, filamentLength, filamentWeight, printTime;
     if (!fs.existsSync(CURA_ENGINE_PATH)) {
         onError(`Slice Error: Cura Engine not exist -> ${CURA_ENGINE_PATH}`);

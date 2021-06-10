@@ -1,0 +1,8 @@
+.style_default {
+    max-width: 320px;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    display: block;
+}
+
+

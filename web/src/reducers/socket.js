@@ -30,7 +30,10 @@ export const actions = {
         });
     },
     _updateState: (state) => {
-        return {type: ACTION_UPDATE_STATE, state};
+        return {
+            type: ACTION_UPDATE_STATE,
+            state
+        };
     }
 };
 

@@ -2,7 +2,7 @@
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 25px 25px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -12,28 +12,14 @@
 }
 
 .btn_move:active {
-    opacity: 0.4;
-}
-
-.btn_move_disabled {
-    width: 40px;
-    height: 40px;
-    outline: none;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 4px 4px 0 0;
-    vertical-align: middle;
-    background-image: url(./images/translate.svg);
-    opacity: 0.4;
+    background-color: lightskyblue;
 }
 
 .btn_scale {
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 25px 25px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -44,29 +30,15 @@
 }
 
 .btn_scale:active {
-    opacity: 0.4;
-}
-
-.btn_scale_disabled {
-    width: 40px;
-    height: 40px;
-    outline: none;
-    background-size: 25px 25px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #C0C0C0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    vertical-align: middle;
+    background-color: lightskyblue;
     background-image: url(./images/scale.svg);
-    opacity: 0.4;
 }
 
 .btn_rotate {
     width: 40px;
     height: 40px;
     outline: none;
-    background-size: 25px 25px;
+    background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #C0C0C0;
@@ -76,21 +48,25 @@
 }
 
 .btn_rotate:active {
-    opacity: 0.4;
+    background-color: lightskyblue;
+    background-image: url(./images/rotate.svg);
 }
 
-
-.btn_rotate_disabled {
-    width: 40px;
-    height: 40px;
-    outline: none;
-    background-size: 25px 25px;
+.btn_reset {
+    position: relative;
+    display: inline-block;
+    height: 24px;
+    margin: 0;
+    padding: 0 15px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    line-height: 30px;
+    border: 1px solid #d9d9d9;
+    cursor: pointer;
+    transition: color 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    background-image: url('./images/reset.svg');
     background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid #C0C0C0;
-    border-radius: 0 0 4px 4px;
-    vertical-align: middle;
-    background-image: url(./images/rotate.svg);
-    opacity: 0.4;
+    background-size: 28px 28px;
 }
 

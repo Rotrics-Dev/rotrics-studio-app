@@ -1,3 +1,4 @@
+//先执行copy_files，再执行extract_i18n
 const fs = require('fs');
 const path = require('path');
 

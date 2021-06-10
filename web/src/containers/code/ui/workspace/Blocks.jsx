@@ -5,6 +5,9 @@ import {withTranslation} from 'react-i18next';
 import ScratchBlocks from 'rotrics-scratch-blocks';
 import makeToolboxXML from '../../lib/make-toolbox-xml';
 import {TAP_CODE} from "../../../../constants.js";
+import {activateCustomProcedures, deactivateCustomProcedures} from '../../../../reducers/custom-procedures';
+import { Modal, Input, Form } from 'antd'
+import _ from 'lodash'
 
 const BLOCKS_DEFAULT_OPTIONS = {
     media: './asset/rotrics-scratch-blocks/media/',
@@ -73,7 +76,81 @@ class Blocks extends React.Component {
         this.flyoutWorkspace = null;
     }
 
+    state = {
+        // 是否显示弹窗
+        modalVisible: false,
+
+        // 变量名
+        variableName: ''
+    }
+
+    actions = {
+        // 打开关闭变量名弹窗
+        toggleModal: (value) => {
+            this.setState({
+                modalVisible: value,
+                variableName: value ? '' : this.state.variableName
+            })
+        },
+
+        // 输入变量
+        onVariableNameChange: (value) => {
+            this.setState({
+                variableName: value
+            })
+        },
+
+        // 保存
+        saveVariableName: () => {
+            console.log(11)
+        },
+
+        // 创建新变量
+        onCreareVariableName: () => {
+            return new Promise((resolve) => {
+                const { t } = this.props
+                const inputRef = React.createRef();
+                Modal.confirm({
+                    title: this.props.t("Create new variable"),
+                    content: (
+                        <Form
+                            labelCol={{ span: 6 }}
+                            labelAlign={'left'}>
+                            <Form.Item
+                                label={this.props.t("Name")}
+                                name="name">
+                                <Input
+                                    ref={inputRef}
+                                    placeholder={this.props.t("Please input variable name")}
+                                    defaultValue={''}
+                                />
+                            </Form.Item>
+                        </Form>
+                    ),
+                    cancelText: t('Cancel'),
+                    okText: t("Save"),
+                    onOk () {
+                        resolve(inputRef.current.input.value)
+                    },
+                    onCancel () {
+                        resolve('')
+                    }
+                })
+            })
+        }
+    }
+    
+
     componentDidMount() {
+        ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
+        
+        // ScratchBlocks.prompt
+        console.log(Modal.info)
+        window.test = async () => {
+            const res = await this.actions.onCreareVariableName()
+            console.log(res)
+            return res
+        }
         const toolbox = makeToolboxXML();
         const workspaceConfig = Object.assign(
             {},
@@ -193,7 +270,7 @@ class Blocks extends React.Component {
             const targetCostumes = target.getCostumes();
             const targetSounds = target.getSounds();
             const dynamicBlocksXML = this.props.vm.runtime.getBlocksXML();
-            return makeToolboxXML(target.isStage, target.id, dynamicBlocksXML,
+            return makeToolboxXML(false, target.isStage, target.id, dynamicBlocksXML,
                 targetCostumes[0].name,
                 stageCostumes[0].name,
                 targetSounds.length > 0 ? targetSounds[0].name : ''
@@ -204,8 +281,13 @@ class Blocks extends React.Component {
     };
 
     render() {
+        // const { variableName, modalVisible } = this.state
+        // const { onVariableNameChange, saveVariableName, toggleModal } = this.actions
+        // const { t } = this.props
+
         return (
-            <div style={{width: "100%", height: "100%"}} ref={this.blocks}/>
+            <div style={{width: "100%", height: "100%"}} ref={this.blocks}>
+            </div>
         )
     }
 }
@@ -218,6 +300,31 @@ const mapStateToProps = (state) => {
         tap
     };
 };
+
+// const mapDispatchToProps = dispatch => ({
+//     onActivateColorPicker: callback => dispatch(activateColorPicker(callback)),
+//     onActivateCustomProcedures: (data, callback) => dispatch(activateCustomProcedures(data, callback)),
+//     onOpenConnectionModal: id => {
+//         dispatch(setConnectionModalExtensionId(id));
+//         dispatch(openConnectionModal());
+//     },
+//     onOpenSoundRecorder: () => {
+//         dispatch(activateTab(SOUNDS_TAB_INDEX));
+//         dispatch(openSoundRecorder());
+//     },
+//     onRequestCloseExtensionLibrary: () => {
+//         dispatch(closeExtensionLibrary());
+//     },
+//     onRequestCloseCustomProcedures: data => {
+//         dispatch(deactivateCustomProcedures(data));
+//     },
+//     updateToolboxState: toolboxXML => {
+//         dispatch(updateToolbox(toolboxXML));
+//     },
+//     updateMetrics: metrics => {
+//         dispatch(updateMetrics(metrics));
+//     }
+// });
 
 export default connect(mapStateToProps)(withTranslation()(Blocks));
 
