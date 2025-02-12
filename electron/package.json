@@ -70,7 +70,7 @@
     "is-electron": "^2.2.0",
     "is-online": "^8.4.0",
     "jimp": "^0.10.3",
-    "koa": "^2.11.0",
+    "koa": "^2.15.4",
     "koa-body": "^4.1.1",
     "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
